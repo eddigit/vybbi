@@ -197,18 +197,18 @@ export default function ArtistProfile() {
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {media.slice(0, 6).map((item) => (
                     <div key={item.id} className="aspect-square bg-muted rounded-lg overflow-hidden group cursor-pointer">
-                      {item.type === 'image' ? (
-                        <img 
-                          src={item.url} 
-                          alt={item.title || 'Portfolio item'}
-                          className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                        />
-                      ) : (
-                        <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                          <Music2 className="h-8 w-8 text-primary" />
-                          <span className="sr-only">{item.type} file</span>
-                        </div>
-                      )}
+                       {item.media_type === 'image' ? (
+                         <img 
+                           src={item.file_url} 
+                           alt={item.file_name || 'Portfolio item'}
+                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                         />
+                       ) : (
+                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
+                           <Music2 className="h-8 w-8 text-primary" />
+                           <span className="sr-only">{item.media_type} file</span>
+                         </div>
+                       )}
                     </div>
                   ))}
                 </div>

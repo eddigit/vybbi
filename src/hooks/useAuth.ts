@@ -8,32 +8,56 @@ export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [profile, setProfile] = useState<Profile | null>(null);
-  const [roles, setRoles] = useState<UserRole[]>([]);
+  const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   const fetchProfile = async (userId: string) => {
     try {
-      const { data: profileData } = await (supabase as any)
+      // First ensure profile exists
+      const { data: profileId } = await supabase
+        .rpc('ensure_user_profile', { 
+          _user_id: userId,
+          _display_name: 'Nouvel Utilisateur',
+          _profile_type: 'artist'
+        });
+
+      // Fetch profile
+      const { data: profileData, error: profileError } = await supabase
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
         .single();
-      
-      if (profileData) {
-        setProfile(profileData);
+
+      if (profileError) {
+        console.error('Error fetching profile:', profileError);
+        setLoading(false);
+        return;
       }
 
-      const { data: rolesData } = await (supabase as any)
+      // Fetch roles
+      const { data: rolesData, error: rolesError } = await supabase
         .from('user_roles')
-        .select('*')
+        .select('role')
         .eq('user_id', userId);
+
+      if (rolesError) {
+        console.error('Error fetching roles:', rolesError);
+        setLoading(false);
+        return;
+      }
+
+      setProfile(profileData);
+      setRoles(rolesData?.map(r => r.role) || []);
       
-      if (rolesData) {
-        setRoles(rolesData);
+      // Auto-redirect artists to their edit page
+      if (profileData?.profile_type === 'artist' && window.location.pathname === '/') {
+        window.location.href = `/artists/${profileData.id}/edit`;
       }
     } catch (error) {
-      console.error('Error fetching profile:', error);
+      console.error('Error in fetchProfile:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -94,32 +118,37 @@ export function useAuth() {
   };
 
   const hasRole = (role: AppRole) => {
-    return roles.some(r => r.role === role);
+    return roles.some(r => r === role);
   };
 
   useEffect(() => {
+    // Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {
         fetchProfile(session.user.id);
+      } else {
+        setLoading(false);
       }
-      setLoading(false);
     });
 
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (event, session) => {
-      setSession(session);
-      setUser(session?.user ?? null);
-      if (session?.user) {
-        await fetchProfile(session.user.id);
-      } else {
-        setProfile(null);
-        setRoles([]);
+    // Listen for changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (event, session) => {
+        setSession(session);
+        setUser(session?.user ?? null);
+        if (session?.user) {
+          setTimeout(() => {
+            fetchProfile(session.user.id);
+          }, 0);
+        } else {
+          setProfile(null);
+          setRoles([]);
+          setLoading(false);
+        }
       }
-      setLoading(false);
-    });
+    );
 
     return () => subscription.unsubscribe();
   }, []);

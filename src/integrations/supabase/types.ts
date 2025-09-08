@@ -112,12 +112,17 @@ export type Database = {
           experience: string | null
           genres: string[] | null
           id: string
+          instagram_url: string | null
           is_public: boolean
           location: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
+          soundcloud_url: string | null
+          spotify_url: string | null
+          tiktok_url: string | null
           updated_at: string
           user_id: string
           website: string | null
+          youtube_url: string | null
         }
         Insert: {
           avatar_url?: string | null
@@ -127,12 +132,17 @@ export type Database = {
           experience?: string | null
           genres?: string[] | null
           id?: string
+          instagram_url?: string | null
           is_public?: boolean
           location?: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
+          soundcloud_url?: string | null
+          spotify_url?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           user_id: string
           website?: string | null
+          youtube_url?: string | null
         }
         Update: {
           avatar_url?: string | null
@@ -142,12 +152,17 @@ export type Database = {
           experience?: string | null
           genres?: string[] | null
           id?: string
+          instagram_url?: string | null
           is_public?: boolean
           location?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
+          soundcloud_url?: string | null
+          spotify_url?: string | null
+          tiktok_url?: string | null
           updated_at?: string
           user_id?: string
           website?: string | null
+          youtube_url?: string | null
         }
         Relationships: []
       }
@@ -212,6 +227,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      ensure_user_profile: {
+        Args: {
+          _display_name?: string
+          _profile_type?: Database["public"]["Enums"]["profile_type"]
+          _user_id: string
+        }
+        Returns: string
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

@@ -137,9 +137,10 @@ export interface Booking {
 export interface MediaAsset {
   id: string;
   profile_id: string;
-  type: MediaType;
-  url: string;
-  title?: string;
+  media_type: MediaType;
+  file_url: string;
+  file_name: string;
+  description?: string;
   created_at: string;
 }
 
