@@ -8,6 +8,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile, MediaAsset, Review } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+import { getLanguageByCode } from '@/lib/languages';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
@@ -143,6 +144,22 @@ export default function ArtistProfile() {
                 <span>{artist.experience}</span>
               )}
             </div>
+            {/* Language flags prominently displayed */}
+            {(artist as any).languages && (artist as any).languages.length > 0 && (
+              <div className="flex items-center gap-2 mt-2">
+                {(artist as any).languages.map((langCode: string) => {
+                  const lang = getLanguageByCode(langCode);
+                  return lang ? (
+                    <div key={langCode} className="group relative">
+                      <span className="text-2xl" title={lang.name}>
+                        {lang.flag}
+                      </span>
+                      <span className="sr-only">{lang.name}</span>
+                    </div>
+                  ) : null;
+                })}
+              </div>
+            )}
           </div>
         </div>
       </div>
@@ -177,21 +194,7 @@ export default function ArtistProfile() {
                   <h4 className="font-semibold mb-2">Langues parlées</h4>
                   <div className="flex flex-wrap gap-2">
                     {(artist as any).languages.map((langCode: string) => {
-                      const languageMap: { [key: string]: { name: string; flag: string } } = {
-                        'fr': { name: 'Français', flag: '🇫🇷' },
-                        'en': { name: 'English', flag: '🇬🇧' },
-                        'es': { name: 'Español', flag: '🇪🇸' },
-                        'de': { name: 'Deutsch', flag: '🇩🇪' },
-                        'it': { name: 'Italiano', flag: '🇮🇹' },
-                        'pt': { name: 'Português', flag: '🇵🇹' },
-                        'ar': { name: 'العربية', flag: '🇸🇦' },
-                        'ja': { name: '日本語', flag: '🇯🇵' },
-                        'ko': { name: '한국어', flag: '🇰🇷' },
-                        'zh': { name: '中文', flag: '🇨🇳' },
-                        'ru': { name: 'Русский', flag: '🇷🇺' },
-                        'nl': { name: 'Nederlands', flag: '🇳🇱' }
-                      };
-                      const lang = languageMap[langCode];
+                      const lang = getLanguageByCode(langCode);
                       return lang ? (
                         <Badge key={langCode} variant="outline" className="gap-1">
                           <span>{lang.flag}</span>

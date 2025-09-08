@@ -11,6 +11,7 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, Trash2, Music, Instagram, Youtube } from 'lucide-react';
 import { Profile, MediaAsset, MediaType } from '@/lib/types';
+import { LANGUAGES } from '@/lib/languages';
 
 export default function ArtistProfileEdit() {
   const { id } = useParams<{ id: string }>();
@@ -404,20 +405,7 @@ export default function ArtistProfileEdit() {
           <div>
             <Label>Langues parlées</Label>
             <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-2">
-              {[
-                { code: 'fr', name: 'Français', flag: '🇫🇷' },
-                { code: 'en', name: 'English', flag: '🇬🇧' },
-                { code: 'es', name: 'Español', flag: '🇪🇸' },
-                { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
-                { code: 'it', name: 'Italiano', flag: '🇮🇹' },
-                { code: 'pt', name: 'Português', flag: '🇵🇹' },
-                { code: 'ar', name: 'العربية', flag: '🇸🇦' },
-                { code: 'ja', name: '日本語', flag: '🇯🇵' },
-                { code: 'ko', name: '한국어', flag: '🇰🇷' },
-                { code: 'zh', name: '中文', flag: '🇨🇳' },
-                { code: 'ru', name: 'Русский', flag: '🇷🇺' },
-                { code: 'nl', name: 'Nederlands', flag: '🇳🇱' }
-              ].map((lang) => (
+              {LANGUAGES.map((lang) => (
                 <Button
                   key={lang.code}
                   type="button"
