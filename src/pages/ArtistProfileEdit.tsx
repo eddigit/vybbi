@@ -30,6 +30,8 @@ export default function ArtistProfileEdit() {
     location: '',
     website: '',
     genres: [] as string[],
+    genresString: '', // Add this for the input display
+    languages: [] as string[],
     experience: '',
     spotify_url: '',
     soundcloud_url: '',
@@ -78,6 +80,8 @@ export default function ArtistProfileEdit() {
         location: data.location || '',
         website: data.website || '',
         genres: data.genres || [],
+        genresString: (data.genres || []).join(', '),
+        languages: data.languages || [],
         experience: data.experience || '',
         spotify_url: data.spotify_url || '',
         soundcloud_url: data.soundcloud_url || '',
@@ -211,6 +215,12 @@ export default function ArtistProfileEdit() {
     
     setSaving(true);
     try {
+      // Convert genresString to genres array before saving
+      const genresArray = formData.genresString
+        .split(',')
+        .map(g => g.trim())
+        .filter(g => g.length > 0);
+      
       const { error } = await supabase
         .from('profiles')
         .update({
@@ -218,7 +228,8 @@ export default function ArtistProfileEdit() {
           bio: formData.bio,
           location: formData.location,
           website: formData.website,
-          genres: formData.genres.length > 0 ? formData.genres : null,
+          genres: genresArray.length > 0 ? genresArray : null,
+          languages: formData.languages.length > 0 ? formData.languages : null,
           experience: formData.experience,
           spotify_url: formData.spotify_url || null,
           soundcloud_url: formData.soundcloud_url || null,
@@ -319,13 +330,47 @@ export default function ArtistProfileEdit() {
             <Label htmlFor="genres">Genres musicaux (séparés par des virgules)</Label>
             <Input
               id="genres"
-              value={Array.isArray(formData.genres) ? formData.genres.join(', ') : ''}
-              onChange={(e) => {
-                const genresArray = e.target.value.split(',').map(g => g.trim()).filter(g => g.length > 0);
-                handleInputChange('genres', genresArray);
-              }}
+              value={formData.genresString}
+              onChange={(e) => handleInputChange('genresString', e.target.value)}
               placeholder="Rock, Jazz, Pop..."
             />
+          </div>
+
+          <div>
+            <Label>Langues parlées</Label>
+            <div className="grid grid-cols-3 md:grid-cols-4 gap-2 mt-2">
+              {[
+                { code: 'fr', name: 'Français', flag: '🇫🇷' },
+                { code: 'en', name: 'English', flag: '🇬🇧' },
+                { code: 'es', name: 'Español', flag: '🇪🇸' },
+                { code: 'de', name: 'Deutsch', flag: '🇩🇪' },
+                { code: 'it', name: 'Italiano', flag: '🇮🇹' },
+                { code: 'pt', name: 'Português', flag: '🇵🇹' },
+                { code: 'ar', name: 'العربية', flag: '🇸🇦' },
+                { code: 'ja', name: '日本語', flag: '🇯🇵' },
+                { code: 'ko', name: '한국어', flag: '🇰🇷' },
+                { code: 'zh', name: '中文', flag: '🇨🇳' },
+                { code: 'ru', name: 'Русский', flag: '🇷🇺' },
+                { code: 'nl', name: 'Nederlands', flag: '🇳🇱' }
+              ].map((lang) => (
+                <Button
+                  key={lang.code}
+                  type="button"
+                  variant={formData.languages.includes(lang.code) ? "default" : "outline"}
+                  size="sm"
+                  className="justify-start text-xs h-auto py-2"
+                  onClick={() => {
+                    const newLanguages = formData.languages.includes(lang.code)
+                      ? formData.languages.filter(l => l !== lang.code)
+                      : [...formData.languages, lang.code];
+                    handleInputChange('languages', newLanguages);
+                  }}
+                >
+                  <span className="mr-1">{lang.flag}</span>
+                  {lang.name}
+                </Button>
+              ))}
+            </div>
           </div>
 
           <div>
