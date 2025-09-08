@@ -319,8 +319,11 @@ export default function ArtistProfileEdit() {
             <Label htmlFor="genres">Genres musicaux (séparés par des virgules)</Label>
             <Input
               id="genres"
-              value={formData.genres.join(', ')}
-              onChange={(e) => handleInputChange('genres', e.target.value.split(',').map(g => g.trim()).filter(g => g))}
+              value={Array.isArray(formData.genres) ? formData.genres.join(', ') : ''}
+              onChange={(e) => {
+                const genresArray = e.target.value.split(',').map(g => g.trim()).filter(g => g.length > 0);
+                handleInputChange('genres', genresArray);
+              }}
               placeholder="Rock, Jazz, Pop..."
             />
           </div>

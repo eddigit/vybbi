@@ -1,15 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Star, ExternalLink, Music2, Instagram, Music } from 'lucide-react';
+import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile, MediaAsset, Review } from '@/lib/types';
+import { useAuth } from '@/hooks/useAuth';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
+  const { user } = useAuth();
   const [artist, setArtist] = useState<Profile | null>(null);
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -267,7 +269,16 @@ export default function ArtistProfile() {
           {/* Contact & Actions */}
           <Card>
             <CardContent className="p-6">
-              <Button className="w-full mb-4">Contact Artist</Button>
+              {user && artist.user_id === user.id ? (
+                <Button className="w-full mb-4" asChild>
+                  <Link to={`/artists/${id}/edit`}>
+                    <Edit className="h-4 w-4 mr-2" />
+                    Modifier mon profil
+                  </Link>
+                </Button>
+              ) : (
+                <Button className="w-full mb-4">Contact Artist</Button>
+              )}
               {artist.website && (
                 <Button variant="outline" className="w-full" asChild>
                   <a href={artist.website} target="_blank" rel="noopener noreferrer">
