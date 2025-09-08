@@ -33,7 +33,7 @@ export default function Landing() {
     name: "DJ Luna",
     role: "DJ / Producer",
     image: "/placeholder.svg",
-    quote: "Artis.io a révolutionné ma façon de trouver des bookings. Plus de 50 événements cette année !",
+    quote: "Vybbi a révolutionné ma façon de trouver des bookings. Plus de 50 événements cette année !",
     rating: 5
   }, {
     name: "Marc Dubois",
@@ -148,7 +148,7 @@ export default function Landing() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Pour tous les acteurs de la scène</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Que vous soyez artiste, agent ou gérant de lieu, Artis.io s'adapte à vos besoins
+              Que vous soyez artiste, agent ou gérant de lieu, Vybbi s'adapte à vos besoins
             </p>
           </div>
 
@@ -320,7 +320,7 @@ export default function Landing() {
             <CardContent className="p-12 text-center">
               <h2 className="text-4xl font-bold mb-4 text-primary-foreground">Prêt à transformer votre carrière ?</h2>
               <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
-                Rejoignez des milliers de professionnels qui utilisent déjà Artis.io pour développer leur activité
+                Rejoignez des milliers de professionnels qui utilisent déjà Vybbi pour développer leur activité
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
