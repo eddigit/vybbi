@@ -67,7 +67,7 @@ export default function Auth() {
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-4">
-            <img src={wolfLogo} alt="Vybbi Logo" className="w-16 h-16" />
+            <img src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi Logo" className="w-16 h-16" />
           </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Vybbi
