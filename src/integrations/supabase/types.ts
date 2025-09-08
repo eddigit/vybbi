@@ -309,6 +309,7 @@ export type Database = {
           display_name: string
           experience: string | null
           genres: string[] | null
+          header_url: string | null
           id: string
           instagram_url: string | null
           is_public: boolean
@@ -330,6 +331,7 @@ export type Database = {
           display_name: string
           experience?: string | null
           genres?: string[] | null
+          header_url?: string | null
           id?: string
           instagram_url?: string | null
           is_public?: boolean
@@ -351,6 +353,7 @@ export type Database = {
           display_name?: string
           experience?: string | null
           genres?: string[] | null
+          header_url?: string | null
           id?: string
           instagram_url?: string | null
           is_public?: boolean

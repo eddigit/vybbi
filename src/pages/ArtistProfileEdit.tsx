@@ -23,6 +23,7 @@ export default function ArtistProfileEdit() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
+  const [uploadingHeader, setUploadingHeader] = useState(false);
 
   const [formData, setFormData] = useState({
     display_name: '',
@@ -152,6 +153,40 @@ export default function ArtistProfileEdit() {
     }
   };
 
+  const handleHeaderUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploadingHeader(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/header.${fileExt}`;
+      
+      const { error: uploadError } = await supabase.storage
+        .from('media')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('media')
+        .getPublicUrl(fileName);
+
+      await supabase
+        .from('profiles')
+        .update({ header_url: publicUrl } as any)
+        .eq('id', id);
+
+      setProfile(prev => prev ? { ...prev, header_url: publicUrl } as any : null);
+      toast({ title: "Image de header mise à jour" });
+    } catch (error) {
+      console.error('Error uploading header:', error);
+      toast({ title: "Erreur", description: "Impossible de télécharger l'image de header", variant: "destructive" });
+    } finally {
+      setUploadingHeader(false);
+    }
+  };
+
   const handleMediaUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user || !id) return;
@@ -270,6 +305,36 @@ export default function ArtistProfileEdit() {
           <CardTitle>Modifier mon profil d'artiste</CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Header Image Section */}
+          <div>
+            <Label className="text-base font-semibold">Image de header</Label>
+            <div className="mt-2">
+              {(profile as any).header_url && (
+                <div className="relative mb-4">
+                  <img 
+                    src={(profile as any).header_url} 
+                    alt="Header" 
+                    className="w-full h-32 object-cover rounded-lg"
+                  />
+                </div>
+              )}
+              <Label htmlFor="header" className="cursor-pointer">
+                <div className="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/90">
+                  <Upload className="w-4 h-4" />
+                  {uploadingHeader ? 'Téléchargement...' : 'Changer image de header'}
+                </div>
+              </Label>
+              <input
+                id="header"
+                type="file"
+                accept="image/*"
+                onChange={handleHeaderUpload}
+                className="hidden"
+                disabled={uploadingHeader}
+              />
+            </div>
+          </div>
+
           {/* Avatar Section */}
           <div className="flex items-center gap-4">
             <Avatar className="w-24 h-24">

@@ -112,7 +112,16 @@ export default function ArtistProfile() {
   return (
     <div className="container mx-auto p-6">
       {/* Header Section with Cover Image */}
-      <div className="relative h-64 md:h-80 bg-gradient-to-r from-primary/20 via-purple-500/20 to-pink-500/20 rounded-xl mb-8 overflow-hidden">
+      <div 
+        className="relative h-64 md:h-80 rounded-xl mb-8 overflow-hidden"
+        style={{
+          backgroundImage: (artist as any).header_url 
+            ? `url(${(artist as any).header_url})` 
+            : 'linear-gradient(to right, rgba(var(--primary) / 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center'
+        }}
+      >
         <div className="absolute inset-0 bg-black/20"></div>
         <div className="absolute bottom-6 left-6 flex items-end gap-6">
           <Avatar className="h-24 w-24 md:h-32 md:w-32 ring-4 ring-white/20">
