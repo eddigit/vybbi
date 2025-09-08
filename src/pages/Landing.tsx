@@ -344,9 +344,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
-                  <Music className="w-4 h-4 text-primary-foreground" />
-                </div>
+                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-8 h-8" />
                  <span className="font-bold text-xl text-foreground">Vybbi</span>
                </div>
                <p className="text-muted-foreground">
