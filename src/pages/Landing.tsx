@@ -1,90 +1,67 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { 
-  Music, 
-  Users, 
-  Building2, 
-  Star, 
-  MessageCircle, 
-  FileCheck, 
-  CreditCard, 
-  TrendingUp,
-  ArrowRight,
-  Play,
-  CheckCircle,
-  Zap,
-  Globe,
-  Shield
-} from 'lucide-react';
+import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
-
-  const features = [
-    {
-      icon: Users,
-      title: "Réseau Professionnel",
-      description: "Connectez-vous avec des artistes, agents et lieux d'événements dans votre région",
-      gradient: "from-blue-500 to-cyan-500"
-    },
-    {
-      icon: MessageCircle,
-      title: "Messagerie Temps Réel",
-      description: "Échangez instantanément avec vos contacts et négociez vos contrats",
-      gradient: "from-purple-500 to-pink-500"
-    },
-    {
-      icon: FileCheck,
-      title: "Contrats Numériques",
-      description: "Créez, signez et gérez vos contrats d'événements en toute sécurité",
-      gradient: "from-green-500 to-emerald-500"
-    },
-    {
-      icon: CreditCard,
-      title: "Paiements Sécurisés",
-      description: "Système de paiement intégré avec gestion automatique des commissions",
-      gradient: "from-orange-500 to-red-500"
-    }
-  ];
-
-  const testimonials = [
-    {
-      name: "DJ Luna",
-      role: "DJ / Producer",
-      image: "/placeholder.svg",
-      quote: "Artis.io a révolutionné ma façon de trouver des bookings. Plus de 50 événements cette année !",
-      rating: 5
-    },
-    {
-      name: "Marc Dubois",
-      role: "Manager @ TechnoVibes",
-      image: "/placeholder.svg", 
-      quote: "La gestion de mes artistes n'a jamais été aussi simple. Un gain de temps énorme.",
-      rating: 5
-    },
-    {
-      name: "Le Warehouse",
-      role: "Club - Paris",
-      image: "/placeholder.svg",
-      quote: "Nous trouvons maintenant les meilleurs DJs en quelques clics. Interface intuitive et efficace.",
-      rating: 5
-    }
-  ];
-
-  const stats = [
-    { number: "10K+", label: "Artistes" },
-    { number: "5K+", label: "Événements" },
-    { number: "500+", label: "Lieux" },
-    { number: "98%", label: "Satisfaction" }
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const features = [{
+    icon: Users,
+    title: "Réseau Professionnel",
+    description: "Connectez-vous avec des artistes, agents et lieux d'événements dans votre région",
+    gradient: "from-blue-500 to-cyan-500"
+  }, {
+    icon: MessageCircle,
+    title: "Messagerie Temps Réel",
+    description: "Échangez instantanément avec vos contacts et négociez vos contrats",
+    gradient: "from-purple-500 to-pink-500"
+  }, {
+    icon: FileCheck,
+    title: "Contrats Numériques",
+    description: "Créez, signez et gérez vos contrats d'événements en toute sécurité",
+    gradient: "from-green-500 to-emerald-500"
+  }, {
+    icon: CreditCard,
+    title: "Paiements Sécurisés",
+    description: "Système de paiement intégré avec gestion automatique des commissions",
+    gradient: "from-orange-500 to-red-500"
+  }];
+  const testimonials = [{
+    name: "DJ Luna",
+    role: "DJ / Producer",
+    image: "/placeholder.svg",
+    quote: "Artis.io a révolutionné ma façon de trouver des bookings. Plus de 50 événements cette année !",
+    rating: 5
+  }, {
+    name: "Marc Dubois",
+    role: "Manager @ TechnoVibes",
+    image: "/placeholder.svg",
+    quote: "La gestion de mes artistes n'a jamais été aussi simple. Un gain de temps énorme.",
+    rating: 5
+  }, {
+    name: "Le Warehouse",
+    role: "Club - Paris",
+    image: "/placeholder.svg",
+    quote: "Nous trouvons maintenant les meilleurs DJs en quelques clics. Interface intuitive et efficace.",
+    rating: 5
+  }];
+  const stats = [{
+    number: "10K+",
+    label: "Artistes"
+  }, {
+    number: "5K+",
+    label: "Événements"
+  }, {
+    number: "500+",
+    label: "Lieux"
+  }, {
+    number: "98%",
+    label: "Satisfaction"
+  }];
+  return <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
         <div className="container mx-auto px-6 py-4">
@@ -155,12 +132,10 @@ export default function Landing() {
 
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
-              {stats.map((stat, index) => (
-                <div key={index} className="text-center">
+              {stats.map((stat, index) => <div key={index} className="text-center">
                   <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
+                </div>)}
             </div>
           </div>
         </div>
@@ -178,7 +153,7 @@ export default function Landing() {
 
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 border-blue-200 dark:border-blue-800">
-              <CardContent className="p-8 text-center">
+              <CardContent className="p-8 text-center bg-slate-800">
                 <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <Music className="w-8 h-8 text-white" />
                 </div>
@@ -204,7 +179,7 @@ export default function Landing() {
             </Card>
 
             <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 border-purple-200 dark:border-purple-800">
-              <CardContent className="p-8 text-center">
+              <CardContent className="p-8 text-center bg-slate-800">
                 <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <Users className="w-8 h-8 text-white" />
                 </div>
@@ -230,7 +205,7 @@ export default function Landing() {
             </Card>
 
             <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-200 dark:border-green-800">
-              <CardContent className="p-8 text-center">
+              <CardContent className="p-8 text-center bg-slate-800">
                 <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
                   <Building2 className="w-8 h-8 text-white" />
                 </div>
@@ -270,16 +245,7 @@ export default function Landing() {
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              {features.map((feature, index) => (
-                <Card 
-                  key={index}
-                  className={`cursor-pointer transition-all duration-300 ${
-                    activeFeature === index 
-                      ? 'ring-2 ring-primary shadow-lg scale-105' 
-                      : 'hover:shadow-md'
-                  }`}
-                  onClick={() => setActiveFeature(index)}
-                >
+              {features.map((feature, index) => <Card key={index} className={`cursor-pointer transition-all duration-300 ${activeFeature === index ? 'ring-2 ring-primary shadow-lg scale-105' : 'hover:shadow-md'}`} onClick={() => setActiveFeature(index)}>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
                       <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${feature.gradient} flex items-center justify-center flex-shrink-0`}>
@@ -291,15 +257,16 @@ export default function Landing() {
                       </div>
                     </div>
                   </CardContent>
-                </Card>
-              ))}
+                </Card>)}
             </div>
 
             <div className="relative">
               <div className="aspect-video bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-xl flex items-center justify-center">
               <div className="text-center">
                 <div className={`w-24 h-24 rounded-full bg-gradient-to-r ${features[activeFeature].gradient} flex items-center justify-center mx-auto mb-4 animate-pulse`}>
-                  {features[activeFeature].icon && React.createElement(features[activeFeature].icon, { className: "w-12 h-12 text-white" })}
+                  {features[activeFeature].icon && React.createElement(features[activeFeature].icon, {
+                    className: "w-12 h-12 text-white"
+                  })}
                 </div>
                 <h3 className="text-2xl font-bold mb-2">{features[activeFeature].title}</h3>
                 <p className="text-muted-foreground max-w-xs">{features[activeFeature].description}</p>
@@ -321,13 +288,10 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => (
-              <Card key={index} className="bg-card/95 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+            {testimonials.map((testimonial, index) => <Card key={index} className="bg-card/95 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => (
-                      <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    ))}
+                    {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
                   </div>
                   <p className="text-muted-foreground mb-6 italic">"{testimonial.quote}"</p>
                   <div className="flex items-center gap-3">
@@ -343,8 +307,7 @@ export default function Landing() {
                     </div>
                   </div>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -424,6 +387,5 @@ export default function Landing() {
           </div>
         </div>
       </footer>
-    </div>
-  );
+    </div>;
 }
