@@ -16,6 +16,7 @@ import Messages from "./pages/Messages";
 import Artists from "./pages/Artists";
 import Lieux from "./pages/Lieux";
 import ArtistProfile from "./pages/ArtistProfile";
+import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
 
@@ -27,7 +28,7 @@ const App = () => (
       <BrowserRouter>
         <Layout>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/commissions" element={<Commissions />} />
@@ -38,6 +39,7 @@ const App = () => (
             <Route path="/artists" element={<Artists />} />
             <Route path="/artists/:id" element={<ArtistProfile />} />
             <Route path="/lieux" element={<Lieux />} />
+            <Route path="/" element={<Landing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
