@@ -12,6 +12,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Upload, Trash2, Music, Instagram, Youtube } from 'lucide-react';
 import { Profile, MediaAsset, MediaType } from '@/lib/types';
 import { LANGUAGES } from '@/lib/languages';
+import { HeaderImageEditor } from '@/components/HeaderImageEditor';
 
 export default function ArtistProfileEdit() {
   const { id } = useParams<{ id: string }>();
@@ -39,7 +40,8 @@ export default function ArtistProfileEdit() {
     soundcloud_url: '',
     youtube_url: '',
     instagram_url: '',
-    tiktok_url: ''
+    tiktok_url: '',
+    header_position_y: 50
   });
 
   useEffect(() => {
@@ -89,7 +91,8 @@ export default function ArtistProfileEdit() {
         soundcloud_url: data.soundcloud_url || '',
         youtube_url: data.youtube_url || '',
         instagram_url: data.instagram_url || '',
-        tiktok_url: data.tiktok_url || ''
+        tiktok_url: data.tiktok_url || '',
+        header_position_y: (data as any).header_position_y || 50
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -116,7 +119,7 @@ export default function ArtistProfileEdit() {
     }
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string | string[]) => {
+  const handleInputChange = (field: keyof typeof formData, value: string | string[] | number) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -291,7 +294,8 @@ export default function ArtistProfileEdit() {
           soundcloud_url: formData.soundcloud_url || null,
           youtube_url: formData.youtube_url || null,
           instagram_url: formData.instagram_url || null,
-          tiktok_url: formData.tiktok_url || null
+          tiktok_url: formData.tiktok_url || null,
+          header_position_y: formData.header_position_y
         })
         .eq('id', id);
 
@@ -327,34 +331,13 @@ export default function ArtistProfileEdit() {
         </CardHeader>
         <CardContent className="space-y-6">
           {/* Header Image Section */}
-          <div>
-            <Label className="text-base font-semibold">Image de header</Label>
-            <div className="mt-2">
-              {(profile as any).header_url && (
-                <div className="relative mb-4">
-                  <img 
-                    src={(profile as any).header_url} 
-                    alt="Header" 
-                    className="w-full h-32 object-cover rounded-lg"
-                  />
-                </div>
-              )}
-              <Label htmlFor="header" className="cursor-pointer">
-                <div className="flex items-center gap-2 bg-secondary text-secondary-foreground px-4 py-2 rounded-md hover:bg-secondary/90">
-                  <Upload className="w-4 h-4" />
-                  {uploadingHeader ? 'Téléchargement...' : 'Changer image de header'}
-                </div>
-              </Label>
-              <input
-                id="header"
-                type="file"
-                accept="image/*"
-                onChange={handleHeaderUpload}
-                className="hidden"
-                disabled={uploadingHeader}
-              />
-            </div>
-          </div>
+          <HeaderImageEditor
+            imageUrl={(profile as any).header_url}
+            positionY={formData.header_position_y}
+            onPositionChange={(position) => handleInputChange('header_position_y', position)}
+            onImageUpload={handleHeaderUpload}
+            uploading={uploadingHeader}
+          />
 
           {/* Avatar Section */}
           <div className="flex items-center gap-4">

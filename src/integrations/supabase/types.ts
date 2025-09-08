@@ -309,6 +309,7 @@ export type Database = {
           display_name: string
           experience: string | null
           genres: string[] | null
+          header_position_y: number | null
           header_url: string | null
           id: string
           instagram_url: string | null
@@ -331,6 +332,7 @@ export type Database = {
           display_name: string
           experience?: string | null
           genres?: string[] | null
+          header_position_y?: number | null
           header_url?: string | null
           id?: string
           instagram_url?: string | null
@@ -353,6 +355,7 @@ export type Database = {
           display_name?: string
           experience?: string | null
           genres?: string[] | null
+          header_position_y?: number | null
           header_url?: string | null
           id?: string
           instagram_url?: string | null

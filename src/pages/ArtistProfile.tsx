@@ -120,7 +120,9 @@ export default function ArtistProfile() {
             ? `url(${(artist as any).header_url})` 
             : 'linear-gradient(to right, rgba(var(--primary) / 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))',
           backgroundSize: 'cover',
-          backgroundPosition: 'center'
+          backgroundPosition: (artist as any).header_url 
+            ? `center ${(artist as any).header_position_y || 50}%`
+            : 'center'
         }}
       >
         <div className="absolute inset-0 bg-black/20"></div>
