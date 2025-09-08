@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile, MediaAsset, Review } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { getLanguageByCode } from '@/lib/languages';
+import { getTalentById } from '@/lib/talents';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
@@ -160,6 +161,30 @@ export default function ArtistProfile() {
                     </div>
                   ) : null;
                 })}
+              </div>
+            )}
+            
+            {/* Talents display */}
+            {(artist as any).talents && (artist as any).talents.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-3">
+                {(artist as any).talents.slice(0, 4).map((talentId: string) => {
+                  const talent = getTalentById(talentId);
+                  return talent ? (
+                    <div 
+                      key={talentId} 
+                      className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium"
+                      title={talent.label}
+                    >
+                      <span>{talent.icon}</span>
+                      <span>{talent.label}</span>
+                    </div>
+                  ) : null;
+                })}
+                {(artist as any).talents.length > 4 && (
+                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                    +{(artist as any).talents.length - 4}
+                  </div>
+                )}
               </div>
             )}
           </div>

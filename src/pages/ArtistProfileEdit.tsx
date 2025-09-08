@@ -13,6 +13,7 @@ import { Upload, Trash2, Music, Instagram, Youtube } from 'lucide-react';
 import { Profile, MediaAsset, MediaType } from '@/lib/types';
 import { LANGUAGES } from '@/lib/languages';
 import { HeaderImageEditor } from '@/components/HeaderImageEditor';
+import { TALENTS, TALENT_CATEGORIES, getTalentById } from '@/lib/talents';
 
 export default function ArtistProfileEdit() {
   const { id } = useParams<{ id: string }>();
@@ -41,7 +42,8 @@ export default function ArtistProfileEdit() {
     youtube_url: '',
     instagram_url: '',
     tiktok_url: '',
-    header_position_y: 50
+    header_position_y: 50,
+    talents: [] as string[]
   });
 
   useEffect(() => {
@@ -92,7 +94,8 @@ export default function ArtistProfileEdit() {
         youtube_url: data.youtube_url || '',
         instagram_url: data.instagram_url || '',
         tiktok_url: data.tiktok_url || '',
-        header_position_y: (data as any).header_position_y || 50
+        header_position_y: (data as any).header_position_y || 50,
+        talents: (data as any).talents || []
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -295,7 +298,8 @@ export default function ArtistProfileEdit() {
           youtube_url: formData.youtube_url || null,
           instagram_url: formData.instagram_url || null,
           tiktok_url: formData.tiktok_url || null,
-          header_position_y: formData.header_position_y
+          header_position_y: formData.header_position_y,
+          talents: formData.talents.length > 0 ? formData.talents : null
         })
         .eq('id', id);
 
@@ -427,6 +431,41 @@ export default function ArtistProfileEdit() {
                 </Button>
               ))}
             </div>
+          </div>
+
+          {/* Talents Section */}
+          <div>
+            <Label className="text-base font-semibold">Talents artistiques</Label>
+            <p className="text-sm text-muted-foreground mb-4">Sélectionnez tous vos talents (sélection multiple possible)</p>
+            
+            {TALENT_CATEGORIES.map((category) => (
+              <div key={category.id} className="mb-6">
+                <h4 className="font-medium flex items-center gap-2 mb-3 text-sm">
+                  <span>{category.icon}</span>
+                  {category.label}
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+                  {TALENTS.filter(talent => talent.category === category.id).map((talent) => (
+                    <Button
+                      key={talent.id}
+                      type="button"
+                      variant={formData.talents.includes(talent.id) ? "default" : "outline"}
+                      size="sm"
+                      className="justify-start text-xs h-auto py-2 px-3"
+                      onClick={() => {
+                        const newTalents = formData.talents.includes(talent.id)
+                          ? formData.talents.filter(t => t !== talent.id)
+                          : [...formData.talents, talent.id];
+                        handleInputChange('talents', newTalents);
+                      }}
+                    >
+                      <span className="mr-2">{talent.icon}</span>
+                      {talent.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            ))}
           </div>
 
           <div>

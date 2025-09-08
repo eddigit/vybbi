@@ -319,6 +319,7 @@ export type Database = {
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url: string | null
           spotify_url: string | null
+          talents: string[] | null
           tiktok_url: string | null
           updated_at: string
           user_id: string
@@ -342,6 +343,7 @@ export type Database = {
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
           spotify_url?: string | null
+          talents?: string[] | null
           tiktok_url?: string | null
           updated_at?: string
           user_id: string
@@ -365,6 +367,7 @@ export type Database = {
           profile_type?: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
           spotify_url?: string | null
+          talents?: string[] | null
           tiktok_url?: string | null
           updated_at?: string
           user_id?: string
