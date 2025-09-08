@@ -66,12 +66,12 @@ export default function Landing() {
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-gradient-to-r from-primary to-purple-500 rounded-lg flex items-center justify-center">
-                <Music className="w-4 h-4 text-white" />
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
+                  <Music className="w-4 h-4 text-primary-foreground" />
+                </div>
+                <span className="font-bold text-xl text-foreground">Artis.io</span>
               </div>
-              <span className="font-bold text-xl">Artis.io</span>
-            </div>
             
             <div className="hidden md:flex items-center gap-8">
               <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
@@ -106,10 +106,13 @@ export default function Landing() {
               La plateforme #1 pour l'industrie musicale
             </Badge>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent leading-tight">
-              Connectez votre
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Connectez votre
+              </span>
               <br />
-              <span className="animate-pulse">talent</span> au monde
+              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
+              <span className="text-foreground"> au monde</span>
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
@@ -152,79 +155,79 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-950/50 dark:to-cyan-950/50 border-blue-200 dark:border-blue-800">
-              <CardContent className="p-8 text-center bg-slate-800">
-                <div className="w-16 h-16 bg-gradient-to-r from-blue-500 to-cyan-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <Music className="w-8 h-8 text-white" />
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
+                  <Music className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Artistes</h3>
+                <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
                 <p className="text-muted-foreground mb-6">
                   DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings.
                 </p>
                 <ul className="text-left space-y-2 text-sm">
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Portfolio multimédia
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Portfolio multimédia</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Agenda des disponibilités
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Agenda des disponibilités</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Gestion des contrats
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Gestion des contrats</span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-950/50 dark:to-pink-950/50 border-purple-200 dark:border-purple-800">
-              <CardContent className="p-8 text-center bg-slate-800">
-                <div className="w-16 h-16 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <Users className="w-8 h-8 text-white" />
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
+                  <Users className="w-8 h-8 text-primary-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Agents & Managers</h3>
+                <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
                   Gérez vos artistes, développez leurs carrières et maximisez leurs opportunités de bookings.
                 </p>
                 <ul className="text-left space-y-2 text-sm">
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Gestion de roster
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Gestion de roster</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Suivi des commissions
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Suivi des commissions</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Analytics de performance
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Analytics de performance</span>
                   </li>
                 </ul>
               </CardContent>
             </Card>
 
-            <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/50 dark:to-emerald-950/50 border-green-200 dark:border-green-800 bg-slate-800">
-              <CardContent className="p-8 text-center bg-slate-800">
-                <div className="w-16 h-16 bg-gradient-to-r from-green-500 to-emerald-500 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform">
-                  <Building2 className="w-8 h-8 text-white" />
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 bg-gradient-success rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
+                  <Building2 className="w-8 h-8 text-success-foreground" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4">Lieux d'événements</h3>
+                <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
                   Clubs, festivals, bars, restaurants. Trouvez les talents parfaits pour vos événements.
                 </p>
                 <ul className="text-left space-y-2 text-sm">
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Recherche d'artistes
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Recherche d'artistes</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Gestion d'événements
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Gestion d'événements</span>
                   </li>
                   <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-green-500 mr-2" />
-                    Planning automatisé
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Planning automatisé</span>
                   </li>
                 </ul>
               </CardContent>
@@ -245,14 +248,14 @@ export default function Landing() {
 
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
-              {features.map((feature, index) => <Card key={index} className={`cursor-pointer transition-all duration-300 ${activeFeature === index ? 'ring-2 ring-primary shadow-lg scale-105' : 'hover:shadow-md'}`} onClick={() => setActiveFeature(index)}>
+              {features.map((feature, index) => <Card key={index} className={`cursor-pointer transition-all duration-300 bg-gradient-card border-border ${activeFeature === index ? 'ring-2 ring-primary shadow-glow scale-105' : 'hover:shadow-glow'}`} onClick={() => setActiveFeature(index)}>
                   <CardContent className="p-6">
                     <div className="flex items-start gap-4">
-                      <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${feature.gradient} flex items-center justify-center flex-shrink-0`}>
-                        <feature.icon className="w-6 h-6 text-white" />
+                      <div className="w-12 h-12 rounded-lg bg-gradient-primary flex items-center justify-center flex-shrink-0 shadow-glow">
+                        <feature.icon className="w-6 h-6 text-primary-foreground" />
                       </div>
                       <div>
-                        <h3 className="text-xl font-semibold mb-2">{feature.title}</h3>
+                        <h3 className="text-xl font-semibold mb-2 text-foreground">{feature.title}</h3>
                         <p className="text-muted-foreground">{feature.description}</p>
                       </div>
                     </div>
@@ -261,17 +264,17 @@ export default function Landing() {
             </div>
 
             <div className="relative">
-              <div className="aspect-video bg-gradient-to-br from-primary/20 to-purple-500/20 rounded-xl flex items-center justify-center">
-              <div className="text-center">
-                <div className={`w-24 h-24 rounded-full bg-gradient-to-r ${features[activeFeature].gradient} flex items-center justify-center mx-auto mb-4 animate-pulse`}>
-                  {features[activeFeature].icon && React.createElement(features[activeFeature].icon, {
-                    className: "w-12 h-12 text-white"
-                  })}
-                </div>
-                <h3 className="text-2xl font-bold mb-2">{features[activeFeature].title}</h3>
-                <p className="text-muted-foreground max-w-xs">{features[activeFeature].description}</p>
-              </div>
-              </div>
+              <Card className="aspect-video bg-gradient-card border-border shadow-glow flex items-center justify-center">
+                <CardContent className="text-center p-8">
+                  <div className="w-24 h-24 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4 animate-pulse shadow-glow">
+                    {features[activeFeature].icon && React.createElement(features[activeFeature].icon, {
+                      className: "w-12 h-12 text-primary-foreground"
+                    })}
+                  </div>
+                  <h3 className="text-2xl font-bold mb-2 text-foreground">{features[activeFeature].title}</h3>
+                  <p className="text-muted-foreground max-w-xs">{features[activeFeature].description}</p>
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
@@ -288,21 +291,21 @@ export default function Landing() {
           </div>
 
           <div className="grid md:grid-cols-3 gap-8">
-            {testimonials.map((testimonial, index) => <Card key={index} className="bg-card/95 backdrop-blur-sm hover:shadow-lg transition-all duration-300">
+            {testimonials.map((testimonial, index) => <Card key={index} className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
                 <CardContent className="p-6">
                   <div className="flex items-center mb-4">
-                    {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-yellow-400 text-yellow-400" />)}
+                    {[...Array(testimonial.rating)].map((_, i) => <Star key={i} className="w-4 h-4 fill-warning text-warning" />)}
                   </div>
                   <p className="text-muted-foreground mb-6 italic">"{testimonial.quote}"</p>
                   <div className="flex items-center gap-3">
                     <Avatar>
                       <AvatarImage src={testimonial.image} />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-secondary text-secondary-foreground">
                         {testimonial.name.split(' ').map(n => n[0]).join('')}
                       </AvatarFallback>
                     </Avatar>
                     <div>
-                      <div className="font-semibold">{testimonial.name}</div>
+                      <div className="font-semibold text-foreground">{testimonial.name}</div>
                       <div className="text-sm text-muted-foreground">{testimonial.role}</div>
                     </div>
                   </div>
@@ -315,10 +318,10 @@ export default function Landing() {
       {/* CTA Section */}
       <section className="py-16 px-6">
         <div className="container mx-auto">
-          <Card className="bg-gradient-to-r from-primary to-purple-500 text-white border-0">
+          <Card className="bg-gradient-primary border-border shadow-glow">
             <CardContent className="p-12 text-center">
-              <h2 className="text-4xl font-bold mb-4">Prêt à transformer votre carrière ?</h2>
-              <p className="text-xl mb-8 opacity-90 max-w-2xl mx-auto">
+              <h2 className="text-4xl font-bold mb-4 text-primary-foreground">Prêt à transformer votre carrière ?</h2>
+              <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
                 Rejoignez des milliers de professionnels qui utilisent déjà Artis.io pour développer leur activité
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
@@ -328,7 +331,7 @@ export default function Landing() {
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
-                <Button size="lg" variant="outline" className="text-lg px-8 py-6 bg-white/10 border-white/20 text-white hover:bg-white/20">
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
                   Planifier une démo
                 </Button>
               </div>
@@ -343,10 +346,10 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <div className="w-8 h-8 bg-gradient-to-r from-primary to-purple-500 rounded-lg flex items-center justify-center">
-                  <Music className="w-4 h-4 text-white" />
+                <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
+                  <Music className="w-4 h-4 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-xl">Artis.io</span>
+                <span className="font-bold text-xl text-foreground">Artis.io</span>
               </div>
               <p className="text-muted-foreground">
                 La plateforme qui connecte l'industrie musicale et nocturne.
