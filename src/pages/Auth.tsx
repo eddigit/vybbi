@@ -8,6 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Music, Users, MapPin, Briefcase } from 'lucide-react';
+import wolfLogo from '@/assets/wolf-logo.png';
 
 export default function Auth() {
   const { user, loading, signUp, signIn } = useAuth();
@@ -65,6 +66,9 @@ export default function Auth() {
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
         <div className="text-center">
+          <div className="flex justify-center mb-4">
+            <img src={wolfLogo} alt="Vybbi Logo" className="w-16 h-16" />
+          </div>
           <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
             Vybbi
           </h1>

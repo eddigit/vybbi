@@ -10,8 +10,9 @@ interface LayoutProps {
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
+  const isAuthPage = location.pathname === '/auth';
 
-  if (isLandingPage) {
+  if (isLandingPage || isAuthPage) {
     return <>{children}</>;
   }
 
