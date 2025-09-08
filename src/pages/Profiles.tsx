@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -12,6 +13,7 @@ import { useAuth } from '@/hooks/useAuth';
 
 export default function Profiles() {
   const { user } = useAuth();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
@@ -19,7 +21,12 @@ export default function Profiles() {
 
   useEffect(() => {
     fetchProfiles();
-  }, []);
+    // Initialize filter from URL params
+    const typeParam = searchParams.get('type');
+    if (typeParam && ['artist', 'agent', 'venue'].includes(typeParam)) {
+      setTypeFilter(typeParam);
+    }
+  }, [searchParams]);
 
   const fetchProfiles = async () => {
     try {
@@ -100,7 +107,14 @@ export default function Profiles() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        <Select value={typeFilter} onValueChange={setTypeFilter}>
+        <Select value={typeFilter} onValueChange={(value) => {
+          setTypeFilter(value);
+          if (value === 'all') {
+            setSearchParams({});
+          } else {
+            setSearchParams({ type: value });
+          }
+        }}>
           <SelectTrigger className="w-full sm:w-48">
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>

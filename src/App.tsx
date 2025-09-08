@@ -21,6 +21,8 @@ import { AgentProfileEdit } from "./pages/AgentProfileEdit";
 import { ManagerProfileEdit } from "./pages/ManagerProfileEdit";
 import { AnnonceManager } from "./pages/AnnonceManager";
 import Landing from "./pages/Landing";
+import Promotion from "./pages/Promotion";
+import VenueProfile from "./pages/VenueProfile";
 
 const queryClient = new QueryClient();
 
@@ -47,6 +49,8 @@ const App = () => (
             <Route path="/managers/:id/edit" element={<ManagerProfileEdit />} />
             <Route path="/annonces" element={<AnnonceManager />} />
             <Route path="/lieux" element={<Lieux />} />
+            <Route path="/lieux/:id" element={<VenueProfile />} />
+            <Route path="/promotion" element={<Promotion />} />
             <Route path="/" element={<Landing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

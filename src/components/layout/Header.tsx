@@ -1,4 +1,4 @@
-import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut } from "lucide-react";
+import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
@@ -45,6 +45,9 @@ export function Header() {
     }
     if (location.pathname === '/reports') {
       return "Rapports";
+    }
+    if (location.pathname === '/promotion') {
+      return "Se mettre en avant";
     }
     return "Vybbi";
   };
@@ -142,9 +145,27 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
+                  <Link to="/lieux" className="flex items-center">
+                    <MapPin className="mr-2 h-4 w-4" />
+                    Trouver une prestation
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profiles?type=agent" className="flex items-center">
+                    <Users className="mr-2 h-4 w-4" />
+                    Rechercher un agent
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
                   <Link to="/profiles" className="flex items-center">
                     <Users className="mr-2 h-4 w-4" />
                     Annuaire (agents et autres)
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/promotion" className="flex items-center">
+                    <Star className="mr-2 h-4 w-4" />
+                    Se mettre en avant
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
