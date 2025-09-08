@@ -63,22 +63,35 @@ export function Header() {
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="flex h-full items-center justify-between px-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 min-w-0 flex-1">
           {!isArtistPage && <SidebarTrigger />}
           
+          {/* Logo and App Name */}
+          <div className="flex items-center gap-3">
+            <img 
+              src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
+              alt="Vybbi Logo" 
+              className="w-8 h-8"
+            />
+            <span className="font-bold text-lg text-primary">Vybbi</span>
+          </div>
+        </div>
+
+        {/* Centered Title */}
+        <div className="flex-1 flex justify-center">
           <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold text-foreground">
+            <h1 className="text-xl font-semibold text-foreground text-center">
               {getPageTitle()}
             </h1>
             {showAdminControls && (
-              <Badge variant="secondary" className="text-xs">
+              <Badge variant="secondary" className="text-xs whitespace-nowrap">
                 lundi 8 septembre 2025 à 16:39
               </Badge>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-4 min-w-0 flex-1 justify-end">
           {showAdminControls && (
             <>
               <div className="hidden sm:flex items-center gap-2">
