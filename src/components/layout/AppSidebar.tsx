@@ -59,9 +59,11 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="p-4">
           <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-8 h-8" />
+            <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center">
+              <Music className="w-4 h-4 text-white" />
+            </div>
             {open && (
-              <span className="font-bold text-lg text-foreground">Vybbi</span>
+              <span className="font-bold text-lg text-foreground">Artis.io</span>
             )}
           </div>
         </div>
