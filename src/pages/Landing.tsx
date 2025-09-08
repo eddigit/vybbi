@@ -68,7 +68,7 @@ export default function Landing() {
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
-                  <Music className="w-4 h-4 text-primary-foreground" />
+                  <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Artis.io Logo" className="w-6 h-6" />
                 </div>
                 <span className="font-bold text-xl text-foreground">Artis.io</span>
               </div>
