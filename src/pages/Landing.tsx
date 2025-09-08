@@ -106,11 +106,11 @@ export default function Landing() {
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Le loup des nuits
+                Connectez votre
               </span>
               <br />
-              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">déniche</span> 
-              <span className="text-foreground"> les talents</span>
+              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
+              <span className="text-foreground"> au monde</span>
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
