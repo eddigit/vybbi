@@ -14,16 +14,222 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      annonces: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string
+          deadline: string | null
+          description: string
+          event_date: string | null
+          genres: string[] | null
+          id: string
+          location: string | null
+          requirements: string | null
+          status: Database["public"]["Enums"]["annonce_status"]
+          title: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          deadline?: string | null
+          description: string
+          event_date?: string | null
+          genres?: string[] | null
+          id?: string
+          location?: string | null
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["annonce_status"]
+          title: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          deadline?: string | null
+          description?: string
+          event_date?: string | null
+          genres?: string[] | null
+          id?: string
+          location?: string | null
+          requirements?: string | null
+          status?: Database["public"]["Enums"]["annonce_status"]
+          title?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      media_assets: {
+        Row: {
+          created_at: string
+          description: string | null
+          file_name: string
+          file_url: string
+          id: string
+          media_type: Database["public"]["Enums"]["media_type"]
+          profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          file_name: string
+          file_url: string
+          id?: string
+          media_type: Database["public"]["Enums"]["media_type"]
+          profile_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          file_name?: string
+          file_url?: string
+          id?: string
+          media_type?: Database["public"]["Enums"]["media_type"]
+          profile_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "media_assets_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          avatar_url: string | null
+          bio: string | null
+          created_at: string
+          display_name: string
+          experience: string | null
+          genres: string[] | null
+          id: string
+          is_public: boolean
+          location: string | null
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          updated_at: string
+          user_id: string
+          website: string | null
+        }
+        Insert: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name: string
+          experience?: string | null
+          genres?: string[] | null
+          id?: string
+          is_public?: boolean
+          location?: string | null
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          updated_at?: string
+          user_id: string
+          website?: string | null
+        }
+        Update: {
+          avatar_url?: string | null
+          bio?: string | null
+          created_at?: string
+          display_name?: string
+          experience?: string | null
+          genres?: string[] | null
+          id?: string
+          is_public?: boolean
+          location?: string | null
+          profile_type?: Database["public"]["Enums"]["profile_type"]
+          updated_at?: string
+          user_id?: string
+          website?: string | null
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          comment: string | null
+          created_at: string
+          id: string
+          rating: number
+          reviewed_profile_id: string
+          reviewer_id: string
+        }
+        Insert: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating: number
+          reviewed_profile_id: string
+          reviewer_id: string
+        }
+        Update: {
+          comment?: string | null
+          created_at?: string
+          id?: string
+          rating?: number
+          reviewed_profile_id?: string
+          reviewer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_reviewed_profile_id_fkey"
+            columns: ["reviewed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_roles: {
+        Row: {
+          created_at: string
+          id: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          role: Database["public"]["Enums"]["app_role"]
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      has_role: {
+        Args: {
+          _role: Database["public"]["Enums"]["app_role"]
+          _user_id: string
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      annonce_status: "draft" | "published" | "closed" | "cancelled"
+      app_role: "admin" | "artist" | "agent" | "manager" | "lieu"
+      application_status: "pending" | "accepted" | "rejected"
+      availability_status: "available" | "busy" | "unavailable"
+      booking_status: "pending" | "confirmed" | "cancelled" | "completed"
+      conversation_type: "direct" | "group"
+      event_status: "draft" | "published" | "cancelled" | "completed"
+      media_type: "image" | "video" | "audio"
+      profile_type: "artist" | "agent" | "manager" | "lieu"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -150,6 +356,16 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      annonce_status: ["draft", "published", "closed", "cancelled"],
+      app_role: ["admin", "artist", "agent", "manager", "lieu"],
+      application_status: ["pending", "accepted", "rejected"],
+      availability_status: ["available", "busy", "unavailable"],
+      booking_status: ["pending", "confirmed", "cancelled", "completed"],
+      conversation_type: ["direct", "group"],
+      event_status: ["draft", "published", "cancelled", "completed"],
+      media_type: ["image", "video", "audio"],
+      profile_type: ["artist", "agent", "manager", "lieu"],
+    },
   },
 } as const

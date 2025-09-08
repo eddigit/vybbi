@@ -17,8 +17,8 @@ export function useAuth() {
       const { data: profileData } = await (supabase as any)
         .from('profiles')
         .select('*')
-        .eq('id', userId)
-        .single();
+        .eq('user_id', userId)
+        .maybeSingle();
       
       if (profileData) {
         setProfile(profileData);
@@ -42,7 +42,7 @@ export function useAuth() {
       const { error: profileError } = await (supabase as any)
         .from('profiles')
         .insert({
-          id: userId,
+          user_id: userId,
           display_name: displayName,
           profile_type: profileType,
         });
@@ -75,9 +75,18 @@ export function useAuth() {
 
   const signUp = async (email: string, password: string, displayName: string, profileType: string) => {
     try {
+      const redirectUrl = `${window.location.origin}/`;
+      
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: redirectUrl,
+          data: {
+            display_name: displayName,
+            profile_type: profileType,
+          }
+        }
       });
 
       if (error) throw error;
