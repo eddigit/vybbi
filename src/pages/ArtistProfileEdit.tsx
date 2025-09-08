@@ -39,9 +39,11 @@ export default function ArtistProfileEdit() {
   });
 
   useEffect(() => {
-    fetchProfile();
-    fetchMediaAssets();
-  }, [id]);
+    if (user) {
+      fetchProfile();
+      fetchMediaAssets();
+    }
+  }, [id, user]);
 
   const fetchProfile = async () => {
     if (!id) return;
@@ -55,11 +57,17 @@ export default function ArtistProfileEdit() {
 
       if (error) throw error;
       
-      // Check if user owns this profile
-      if (data.user_id !== user?.id) {
-        console.log('Access denied - Profile user_id:', data.user_id, 'Current user id:', user?.id);
+      // Check if user owns this profile - but only if user is loaded
+      if (user && data.user_id !== user.id) {
+        console.log('Access denied - Profile user_id:', data.user_id, 'Current user id:', user.id);
         toast({ title: "Accès refusé", variant: "destructive" });
         navigate('/', { replace: true });
+        return;
+      }
+
+      // If user is not loaded yet, don't show access denied
+      if (!user) {
+        setLoading(false);
         return;
       }
 

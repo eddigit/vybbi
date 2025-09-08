@@ -52,13 +52,14 @@ export function useAuth() {
       setProfile(profileData);
       setRoles(rolesData?.map(r => r.role) || []);
       
-      // Auto-redirect artists to their edit page from certain routes
-      const redirectPaths = ['/', '/auth', '/dashboard'];
-      if (profileData?.profile_type === 'artist' && redirectPaths.includes(window.location.pathname)) {
-        setTimeout(() => {
+      // Only redirect after everything is set and we're sure user is available
+      setTimeout(() => {
+        // Auto-redirect artists to their edit page from certain routes
+        const redirectPaths = ['/', '/auth', '/dashboard'];
+        if (profileData?.profile_type === 'artist' && redirectPaths.includes(window.location.pathname)) {
           navigate(`/artists/${profileData.id}/edit`, { replace: true });
-        }, 100);
-      }
+        }
+      }, 100);
     } catch (error) {
       console.error('Error in fetchProfile:', error);
     } finally {
