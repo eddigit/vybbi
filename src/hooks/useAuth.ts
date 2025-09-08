@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { User, Session } from '@supabase/supabase-js';
+import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile, UserRole, AppRole } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
@@ -11,6 +12,7 @@ export function useAuth() {
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const fetchProfile = async (userId: string) => {
     try {

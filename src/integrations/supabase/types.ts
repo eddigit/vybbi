@@ -14,6 +14,27 @@ export type Database = {
   }
   public: {
     Tables: {
+      agent_artists: {
+        Row: {
+          agent_profile_id: string
+          artist_profile_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          agent_profile_id: string
+          artist_profile_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          agent_profile_id?: string
+          artist_profile_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       annonces: {
         Row: {
           budget_max: number | null
@@ -65,6 +86,151 @@ export type Database = {
         }
         Relationships: []
       }
+      applications: {
+        Row: {
+          annonce_id: string
+          applicant_id: string
+          created_at: string
+          id: string
+          message: string | null
+          status: Database["public"]["Enums"]["application_status"]
+          updated_at: string
+        }
+        Insert: {
+          annonce_id: string
+          applicant_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Update: {
+          annonce_id?: string
+          applicant_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          status?: Database["public"]["Enums"]["application_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "applications_annonce_id_fkey"
+            columns: ["annonce_id"]
+            isOneToOne: false
+            referencedRelation: "annonces"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      availability_slots: {
+        Row: {
+          artist_profile_id: string
+          created_at: string
+          description: string | null
+          end_date: string
+          id: string
+          start_date: string
+          status: Database["public"]["Enums"]["availability_status"]
+          updated_at: string
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string
+          description?: string | null
+          end_date: string
+          id?: string
+          start_date: string
+          status?: Database["public"]["Enums"]["availability_status"]
+          updated_at?: string
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string
+          description?: string | null
+          end_date?: string
+          id?: string
+          start_date?: string
+          status?: Database["public"]["Enums"]["availability_status"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      conversation_participants: {
+        Row: {
+          conversation_id: string
+          id: string
+          joined_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          id?: string
+          joined_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          id?: string
+          joined_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversations: {
+        Row: {
+          created_at: string
+          id: string
+          title: string | null
+          type: Database["public"]["Enums"]["conversation_type"]
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          type?: Database["public"]["Enums"]["conversation_type"]
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          title?: string | null
+          type?: Database["public"]["Enums"]["conversation_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      manager_artists: {
+        Row: {
+          artist_profile_id: string
+          created_at: string
+          id: string
+          manager_profile_id: string
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string
+          id?: string
+          manager_profile_id: string
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string
+          id?: string
+          manager_profile_id?: string
+        }
+        Relationships: []
+      }
       media_assets: {
         Row: {
           created_at: string
@@ -99,6 +265,38 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      messages: {
+        Row: {
+          content: string
+          conversation_id: string
+          created_at: string
+          id: string
+          sender_id: string
+        }
+        Insert: {
+          content: string
+          conversation_id: string
+          created_at?: string
+          id?: string
+          sender_id: string
+        }
+        Update: {
+          content?: string
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "messages_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
         ]

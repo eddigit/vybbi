@@ -17,6 +17,9 @@ import Artists from "./pages/Artists";
 import Lieux from "./pages/Lieux";
 import ArtistProfile from "./pages/ArtistProfile";
 import ArtistProfileEdit from "./pages/ArtistProfileEdit";
+import { AgentProfileEdit } from "./pages/AgentProfileEdit";
+import { ManagerProfileEdit } from "./pages/ManagerProfileEdit";
+import { AnnonceManager } from "./pages/AnnonceManager";
 import Landing from "./pages/Landing";
 
 const queryClient = new QueryClient();
@@ -40,6 +43,9 @@ const App = () => (
             <Route path="/artists" element={<Artists />} />
             <Route path="/artists/:id" element={<ArtistProfile />} />
             <Route path="/artists/:id/edit" element={<ArtistProfileEdit />} />
+            <Route path="/agents/:id/edit" element={<AgentProfileEdit />} />
+            <Route path="/managers/:id/edit" element={<ManagerProfileEdit />} />
+            <Route path="/annonces" element={<AnnonceManager />} />
             <Route path="/lieux" element={<Lieux />} />
             <Route path="/" element={<Landing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

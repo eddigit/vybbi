@@ -3,7 +3,7 @@ export type ProfileType = 'artist' | 'agent' | 'lieu' | 'manager';
 export type EventStatus = 'draft' | 'published' | 'cancelled';
 export type BookingStatus = 'draft' | 'proposed' | 'confirmed' | 'cancelled' | 'completed';
 export type AvailabilityStatus = 'available' | 'unavailable' | 'tentative';
-export type AnnonceStatus = 'draft' | 'open' | 'closed';
+export type AnnonceStatus = 'draft' | 'published' | 'closed' | 'cancelled';
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
 export type MediaType = 'image' | 'video' | 'audio' | 'doc';
 export type ConversationType = 'direct' | 'group';
@@ -38,35 +38,37 @@ export interface UserRole {
 
 export interface Annonce {
   id: string;
-  posted_by: string;
+  user_id: string;
   title: string;
-  description?: string;
+  description: string;
   location?: string;
   event_date?: string;
+  deadline?: string;
   status: AnnonceStatus;
-  budget_min_cents?: number;
-  budget_max_cents?: number;
+  budget_min?: number;
+  budget_max?: number;
+  requirements?: string;
+  genres?: string[];
   created_at: string;
   updated_at: string;
-  poster?: Profile;
 }
 
 export interface Application {
   id: string;
-  annonce_id: string;
   applicant_id: string;
-  message?: string;
+  annonce_id: string;
   status: ApplicationStatus;
+  message?: string;
   created_at: string;
-  applicant?: Profile;
-  annonce?: Annonce;
+  updated_at: string;
 }
 
 export interface Conversation {
   id: string;
   type: ConversationType;
-  created_by: string;
+  title?: string;
   created_at: string;
+  updated_at: string;
 }
 
 export interface Message {
@@ -90,22 +92,16 @@ export interface Review {
 
 export interface AgentArtist {
   id: string;
-  agent_id: string;
-  artist_id: string;
-  status: string;
+  agent_profile_id: string;
+  artist_profile_id: string;
   created_at: string;
-  agent?: Profile;
-  artist?: Profile;
 }
 
 export interface ManagerArtist {
   id: string;
-  manager_id: string;
-  artist_id: string;
-  status: string;
+  manager_profile_id: string;
+  artist_profile_id: string;
   created_at: string;
-  manager?: Profile;
-  artist?: Profile;
 }
 
 export interface Event {
@@ -152,11 +148,11 @@ export interface MediaAsset {
 
 export interface AvailabilitySlot {
   id: string;
-  artist_id: string;
-  start_at: string;
-  end_at: string;
+  artist_profile_id: string;
+  start_date: string;
+  end_date: string;
   status: AvailabilityStatus;
-  is_public: boolean;
-  note?: string;
+  description?: string;
   created_at: string;
+  updated_at: string;
 }
