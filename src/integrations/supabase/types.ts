@@ -312,6 +312,7 @@ export type Database = {
           id: string
           instagram_url: string | null
           is_public: boolean
+          languages: string[] | null
           location: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url: string | null
@@ -332,6 +333,7 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           is_public?: boolean
+          languages?: string[] | null
           location?: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
@@ -352,6 +354,7 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           is_public?: boolean
+          languages?: string[] | null
           location?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null

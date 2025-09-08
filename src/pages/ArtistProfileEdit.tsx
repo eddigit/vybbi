@@ -81,7 +81,7 @@ export default function ArtistProfileEdit() {
         website: data.website || '',
         genres: data.genres || [],
         genresString: (data.genres || []).join(', '),
-        languages: data.languages || [],
+        languages: (data as any).languages || [], // Cast to any to handle new column
         experience: data.experience || '',
         spotify_url: data.spotify_url || '',
         soundcloud_url: data.soundcloud_url || '',

@@ -153,12 +153,43 @@ export default function ArtistProfile() {
               )}
               
               {artist.genres && artist.genres.length > 0 && (
-                <div>
+                <div className="mb-4">
                   <h4 className="font-semibold mb-2">Genres</h4>
                   <div className="flex flex-wrap gap-2">
                     {artist.genres.map((genre) => (
                       <Badge key={genre} variant="secondary">{genre}</Badge>
                     ))}
+                  </div>
+                </div>
+              )}
+
+              {(artist as any).languages && (artist as any).languages.length > 0 && (
+                <div>
+                  <h4 className="font-semibold mb-2">Langues parlées</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {(artist as any).languages.map((langCode: string) => {
+                      const languageMap: { [key: string]: { name: string; flag: string } } = {
+                        'fr': { name: 'Français', flag: '🇫🇷' },
+                        'en': { name: 'English', flag: '🇬🇧' },
+                        'es': { name: 'Español', flag: '🇪🇸' },
+                        'de': { name: 'Deutsch', flag: '🇩🇪' },
+                        'it': { name: 'Italiano', flag: '🇮🇹' },
+                        'pt': { name: 'Português', flag: '🇵🇹' },
+                        'ar': { name: 'العربية', flag: '🇸🇦' },
+                        'ja': { name: '日本語', flag: '🇯🇵' },
+                        'ko': { name: '한국어', flag: '🇰🇷' },
+                        'zh': { name: '中文', flag: '🇨🇳' },
+                        'ru': { name: 'Русский', flag: '🇷🇺' },
+                        'nl': { name: 'Nederlands', flag: '🇳🇱' }
+                      };
+                      const lang = languageMap[langCode];
+                      return lang ? (
+                        <Badge key={langCode} variant="outline" className="gap-1">
+                          <span>{lang.flag}</span>
+                          {lang.name}
+                        </Badge>
+                      ) : null;
+                    })}
                   </div>
                 </div>
               )}
