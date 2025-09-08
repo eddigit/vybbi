@@ -94,9 +94,9 @@ export default function Artists() {
                     </div>
                   )}
                   
-                  {artist.years_experience && (
+                  {artist.experience && (
                     <p className="text-sm text-muted-foreground mb-3">
-                      {artist.years_experience} years experience
+                      {artist.experience}
                     </p>
                   )}
                   

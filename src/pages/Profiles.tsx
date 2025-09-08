@@ -165,9 +165,9 @@ export default function Profiles() {
                 </div>
               )}
               
-              {profile.years_experience && (
+              {profile.experience && (
                 <p className="text-xs text-muted-foreground mb-3">
-                  {profile.years_experience} years of experience
+                  {profile.experience}
                 </p>
               )}
               

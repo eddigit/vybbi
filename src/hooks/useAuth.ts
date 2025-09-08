@@ -50,8 +50,9 @@ export function useAuth() {
       setProfile(profileData);
       setRoles(rolesData?.map(r => r.role) || []);
       
-      // Auto-redirect artists to their edit page
-      if (profileData?.profile_type === 'artist' && window.location.pathname === '/') {
+      // Auto-redirect artists to their edit page from certain routes
+      const redirectPaths = ['/', '/auth', '/dashboard'];
+      if (profileData?.profile_type === 'artist' && redirectPaths.includes(window.location.pathname)) {
         window.location.href = `/artists/${profileData.id}/edit`;
       }
     } catch (error) {

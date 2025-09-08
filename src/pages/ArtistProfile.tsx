@@ -1,22 +1,18 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Calendar, Star, Users, ExternalLink, Music2 } from 'lucide-react';
+import { MapPin, Star, ExternalLink, Music2, Instagram, Music } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Separator } from "@/components/ui/separator";
 import { supabase } from '@/integrations/supabase/client';
-import { Profile, MediaAsset, Review, ManagerArtist, AgentArtist, Booking } from '@/lib/types';
+import { Profile, MediaAsset, Review } from '@/lib/types';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
   const [artist, setArtist] = useState<Profile | null>(null);
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
-  const [manager, setManager] = useState<ManagerArtist | null>(null);
-  const [agents, setAgents] = useState<AgentArtist[]>([]);
-  const [upcomingBookings, setUpcomingBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,7 +24,7 @@ export default function ArtistProfile() {
   const fetchArtistData = async () => {
     try {
       // Fetch artist profile
-      const { data: artistData, error: artistError } = await (supabase as any)
+      const { data: artistData, error: artistError } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', id)
@@ -39,7 +35,7 @@ export default function ArtistProfile() {
       setArtist(artistData);
 
       // Fetch media assets
-      const { data: mediaData } = await (supabase as any)
+      const { data: mediaData } = await supabase
         .from('media_assets')
         .select('*')
         .eq('profile_id', id)
@@ -48,60 +44,14 @@ export default function ArtistProfile() {
       setMedia(mediaData || []);
 
       // Fetch reviews
-      const { data: reviewsData } = await (supabase as any)
+      const { data: reviewsData } = await supabase
         .from('reviews')
-        .select(`
-          *,
-          author:profiles!reviews_author_id_fkey(*)
-        `)
-        .eq('subject_id', id)
+        .select('*')
+        .eq('reviewed_profile_id', id)
         .order('created_at', { ascending: false })
         .limit(10);
       
       setReviews(reviewsData || []);
-
-      // Fetch active manager
-      const { data: managerData } = await (supabase as any)
-        .from('manager_artists')
-        .select(`
-          *,
-          manager:profiles!manager_artists_manager_id_fkey(*)
-        `)
-        .eq('artist_id', id)
-        .eq('status', 'active')
-        .maybeSingle();
-      
-      setManager(managerData);
-
-      // Fetch active agents
-      const { data: agentsData } = await (supabase as any)
-        .from('agent_artists')
-        .select(`
-          *,
-          agent:profiles!agent_artists_agent_id_fkey(*)
-        `)
-        .eq('artist_id', id)
-        .eq('status', 'active');
-      
-      setAgents(agentsData || []);
-
-      // Fetch upcoming bookings
-      const { data: bookingsData } = await (supabase as any)
-        .from('bookings')
-        .select(`
-          *,
-          event:events(
-            *,
-            host_lieu:profiles!events_host_lieu_id_fkey(*)
-          )
-        `)
-        .eq('artist_id', id)
-        .in('status', ['confirmed', 'proposed'])
-        .gte('start_at', new Date().toISOString())
-        .order('start_at', { ascending: true })
-        .limit(5);
-      
-      setUpcomingBookings(bookingsData || []);
 
     } catch (error) {
       console.error('Error fetching artist data:', error);
@@ -113,6 +63,24 @@ export default function ArtistProfile() {
   const averageRating = reviews.length > 0 
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
     : 0;
+
+  const getSocialIcon = (platform: string) => {
+    switch (platform) {
+      case 'instagram': return <Instagram className="h-4 w-4" />;
+      case 'spotify': return <Music className="h-4 w-4" />;
+      case 'soundcloud': return <Music2 className="h-4 w-4" />;
+      case 'youtube': return <Music className="h-4 w-4" />;
+      case 'tiktok': return <Music2 className="h-4 w-4" />;
+      default: return <ExternalLink className="h-4 w-4" />;
+    }
+  };
+
+  const getSpotifyEmbedUrl = (url: string) => {
+    if (url.includes('open.spotify.com')) {
+      return url.replace('open.spotify.com', 'open.spotify.com/embed');
+    }
+    return null;
+  };
 
   if (loading) {
     return (
@@ -130,6 +98,14 @@ export default function ArtistProfile() {
       </div>
     );
   }
+
+  const socialLinks = [
+    { platform: 'instagram', url: artist.instagram_url, label: 'Instagram' },
+    { platform: 'spotify', url: artist.spotify_url, label: 'Spotify' },
+    { platform: 'soundcloud', url: artist.soundcloud_url, label: 'SoundCloud' },
+    { platform: 'youtube', url: artist.youtube_url, label: 'YouTube' },
+    { platform: 'tiktok', url: artist.tiktok_url, label: 'TikTok' },
+  ].filter(link => link.url);
 
   return (
     <div className="container mx-auto p-6">
@@ -152,8 +128,8 @@ export default function ArtistProfile() {
                   {artist.location}
                 </div>
               )}
-              {artist.years_experience && (
-                <span>{artist.years_experience} years experience</span>
+              {artist.experience && (
+                <span>{artist.experience}</span>
               )}
             </div>
           </div>
@@ -186,6 +162,26 @@ export default function ArtistProfile() {
               )}
             </CardContent>
           </Card>
+
+          {/* Social Media Embeds */}
+          {artist.spotify_url && getSpotifyEmbedUrl(artist.spotify_url) && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Featured Music</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <iframe
+                  src={getSpotifyEmbedUrl(artist.spotify_url) || ''}
+                  width="100%"
+                  height="352"
+                  frameBorder="0"
+                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                  loading="lazy"
+                  className="rounded-lg"
+                ></iframe>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Media Gallery */}
           {media.length > 0 && (
@@ -221,38 +217,6 @@ export default function ArtistProfile() {
             </Card>
           )}
 
-          {/* Upcoming Events */}
-          {upcomingBookings.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  Upcoming Events
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {upcomingBookings.map((booking) => (
-                    <div key={booking.id} className="flex items-center justify-between p-4 bg-muted/50 rounded-lg">
-                      <div className="flex-1">
-                        <h4 className="font-semibold">{booking.event?.title}</h4>
-                        <p className="text-sm text-muted-foreground">
-                          {booking.event?.host_lieu?.display_name}
-                        </p>
-                        <p className="text-sm text-muted-foreground">
-                          {new Date(booking.start_at || booking.event?.start_at || '').toLocaleDateString()}
-                        </p>
-                      </div>
-                      <Badge variant={booking.status === 'confirmed' ? 'default' : 'secondary'}>
-                        {booking.status}
-                      </Badge>
-                    </div>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
           {/* Reviews */}
           {reviews.length > 0 && (
             <Card>
@@ -273,13 +237,6 @@ export default function ArtistProfile() {
                   {reviews.slice(0, 3).map((review) => (
                     <div key={review.id} className="border-l-2 border-primary/20 pl-4">
                       <div className="flex items-center gap-2 mb-2">
-                        <Avatar className="h-6 w-6">
-                          <AvatarImage src={review.author?.avatar_url || ''} />
-                          <AvatarFallback className="text-xs">
-                            {review.author?.display_name?.slice(0, 2)}
-                          </AvatarFallback>
-                        </Avatar>
-                        <span className="font-medium text-sm">{review.author?.display_name}</span>
                         <div className="flex">
                           {[...Array(5)].map((_, i) => (
                             <Star
@@ -311,9 +268,9 @@ export default function ArtistProfile() {
           <Card>
             <CardContent className="p-6">
               <Button className="w-full mb-4">Contact Artist</Button>
-              {artist.website_url && (
+              {artist.website && (
                 <Button variant="outline" className="w-full" asChild>
-                  <a href={artist.website_url} target="_blank" rel="noopener noreferrer">
+                  <a href={artist.website} target="_blank" rel="noopener noreferrer">
                     <ExternalLink className="h-4 w-4 mr-2" />
                     Visit Website
                   </a>
@@ -322,57 +279,26 @@ export default function ArtistProfile() {
             </CardContent>
           </Card>
 
-          {/* Manager */}
-          {manager && manager.manager && (
+          {/* Social Links */}
+          {socialLinks.length > 0 && (
             <Card>
               <CardHeader>
-                <CardTitle className="text-lg">Manager</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <Link to={`/managers/${manager.manager.id}`} className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors">
-                  <Avatar className="h-10 w-10">
-                    <AvatarImage src={manager.manager.avatar_url || ''} />
-                    <AvatarFallback>
-                      {manager.manager.display_name.slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1 min-w-0">
-                    <p className="font-medium truncate">{manager.manager.display_name}</p>
-                    <p className="text-sm text-muted-foreground">Manager</p>
-                  </div>
-                </Link>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Agents */}
-          {agents.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg flex items-center gap-2">
-                  <Users className="h-5 w-5" />
-                  Agents ({agents.length})
-                </CardTitle>
+                <CardTitle className="text-lg">Social Media</CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-3">
-                  {agents.map((agentRel) => (
-                    <Link 
-                      key={agentRel.id} 
-                      to={`/agents/${agentRel.agent?.id}`}
-                      className="flex items-center gap-3 p-3 rounded-lg hover:bg-muted/50 transition-colors"
+                  {socialLinks.map((link) => (
+                    <Button 
+                      key={link.platform}
+                      variant="outline" 
+                      className="w-full justify-start" 
+                      asChild
                     >
-                      <Avatar className="h-10 w-10">
-                        <AvatarImage src={agentRel.agent?.avatar_url || ''} />
-                        <AvatarFallback>
-                          {agentRel.agent?.display_name?.slice(0, 2)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{agentRel.agent?.display_name}</p>
-                        <p className="text-sm text-muted-foreground">Agent</p>
-                      </div>
-                    </Link>
+                      <a href={link.url} target="_blank" rel="noopener noreferrer">
+                        {getSocialIcon(link.platform)}
+                        <span className="ml-2">{link.label}</span>
+                      </a>
+                    </Button>
                   ))}
                 </div>
               </CardContent>

@@ -10,14 +10,20 @@ export type ConversationType = 'direct' | 'group';
 
 export interface Profile {
   id: string;
+  user_id: string;
   display_name: string;
   profile_type: ProfileType;
   bio?: string;
   avatar_url?: string;
   location?: string;
   genres?: string[];
-  years_experience?: number;
-  website_url?: string;
+  experience?: string;
+  website?: string;
+  instagram_url?: string;
+  tiktok_url?: string;
+  spotify_url?: string;
+  soundcloud_url?: string;
+  youtube_url?: string;
   is_public: boolean;
   created_at: string;
   updated_at: string;
@@ -74,8 +80,8 @@ export interface Message {
 
 export interface Review {
   id: string;
-  author_id: string;
-  subject_id: string;
+  reviewer_id: string;
+  reviewed_profile_id: string;
   rating: number;
   comment?: string;
   created_at: string;
