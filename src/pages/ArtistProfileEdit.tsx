@@ -161,7 +161,19 @@ export default function ArtistProfileEdit() {
     setUploadingHeader(true);
     try {
       const fileExt = file.name.split('.').pop();
-      const fileName = `${user.id}/header.${fileExt}`;
+      const timestamp = Date.now();
+      const fileName = `${user.id}/header_${timestamp}.${fileExt}`;
+      
+      // Delete old header file if it exists
+      if ((profile as any).header_url) {
+        try {
+          const oldFileName = (profile as any).header_url.split('/').pop();
+          const oldPath = `${user.id}/${oldFileName}`;
+          await supabase.storage.from('media').remove([oldPath]);
+        } catch (error) {
+          console.log('Could not delete old header file:', error);
+        }
+      }
       
       const { error: uploadError } = await supabase.storage
         .from('media')
@@ -173,13 +185,21 @@ export default function ArtistProfileEdit() {
         .from('media')
         .getPublicUrl(fileName);
 
-      await supabase
+      // Add timestamp to prevent caching issues
+      const urlWithTimestamp = `${publicUrl}?t=${timestamp}`;
+
+      const { error: updateError } = await supabase
         .from('profiles')
-        .update({ header_url: publicUrl } as any)
+        .update({ header_url: urlWithTimestamp } as any)
         .eq('id', id);
 
-      setProfile(prev => prev ? { ...prev, header_url: publicUrl } as any : null);
+      if (updateError) throw updateError;
+
+      setProfile(prev => prev ? { ...prev, header_url: urlWithTimestamp } as any : null);
       toast({ title: "Image de header mise à jour" });
+      
+      // Force page refresh to clear cache
+      window.location.reload();
     } catch (error) {
       console.error('Error uploading header:', error);
       toast({ title: "Erreur", description: "Impossible de télécharger l'image de header", variant: "destructive" });

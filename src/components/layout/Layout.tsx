@@ -11,9 +11,22 @@ export function Layout({ children }: LayoutProps) {
   const location = useLocation();
   const isLandingPage = location.pathname === '/';
   const isAuthPage = location.pathname === '/auth';
+  const isArtistProfilePage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
 
   if (isLandingPage || isAuthPage) {
     return <>{children}</>;
+  }
+
+  // For artist profile pages, use a simpler layout without sidebar
+  if (isArtistProfilePage) {
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main className="flex-1">
+          {children}
+        </main>
+      </div>
+    );
   }
 
   return (
