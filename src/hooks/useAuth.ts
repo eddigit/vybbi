@@ -55,7 +55,7 @@ export function useAuth() {
       // Auto-redirect artists to their edit page from certain routes
       const redirectPaths = ['/', '/auth', '/dashboard'];
       if (profileData?.profile_type === 'artist' && redirectPaths.includes(window.location.pathname)) {
-        window.location.href = `/artists/${profileData.id}/edit`;
+        navigate(`/artists/${profileData.id}/edit`, { replace: true });
       }
     } catch (error) {
       console.error('Error in fetchProfile:', error);
