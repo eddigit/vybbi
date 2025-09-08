@@ -11,6 +11,7 @@ import {
   BarChart3,
   FileText,
   Music,
+  UserSearch,
 } from "lucide-react";
 
 import {
@@ -27,11 +28,13 @@ import {
 } from "@/components/ui/sidebar";
 
 const mainItems = [
-  { title: "Tableau de bord", url: "/", icon: LayoutDashboard },
-  { title: "Partenaires", url: "/partners", icon: Users },
-  { title: "Campagnes", url: "/campaigns", icon: Target },
+  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+  { title: "Directory", url: "/profiles", icon: UserSearch },
+  { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Partners", url: "/partners", icon: Users },
+  { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
-  { title: "Reporting", url: "/reports", icon: BarChart3 },
+  { title: "Reports", url: "/reports", icon: BarChart3 },
 ];
 
 const musicItems = [
@@ -71,49 +74,13 @@ export function AppSidebar() {
         </div>
 
         <SidebarGroup>
-          <SidebarGroupLabel>Principal</SidebarGroupLabel>
+          <SidebarGroupLabel>Navigation</SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {mainItems.map((item) => (
                 <SidebarMenuItem key={item.title}>
                   <SidebarMenuButton asChild>
                     <NavLink to={item.url} end className={getNavCls}>
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {open && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Musique</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {musicItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
-                      <item.icon className="mr-2 h-4 w-4" />
-                      {open && <span>{item.title}</span>}
-                    </NavLink>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
-            </SidebarMenu>
-          </SidebarGroupContent>
-        </SidebarGroup>
-
-        <SidebarGroup>
-          <SidebarGroupLabel>Support</SidebarGroupLabel>
-          <SidebarGroupContent>
-            <SidebarMenu>
-              {supportItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild>
-                    <NavLink to={item.url} className={getNavCls}>
                       <item.icon className="mr-2 h-4 w-4" />
                       {open && <span>{item.title}</span>}
                     </NavLink>

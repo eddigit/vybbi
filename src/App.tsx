@@ -10,6 +10,9 @@ import Campaigns from "./pages/Campaigns";
 import Commissions from "./pages/Commissions";
 import Reports from "./pages/Reports";
 import NotFound from "./pages/NotFound";
+import Auth from "./pages/Auth";
+import Profiles from "./pages/Profiles";
+import Messages from "./pages/Messages";
 
 const queryClient = new QueryClient();
 
@@ -26,6 +29,9 @@ const App = () => (
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/commissions" element={<Commissions />} />
             <Route path="/reports" element={<Reports />} />
+            <Route path="/auth" element={<Auth />} />
+            <Route path="/profiles" element={<Profiles />} />
+            <Route path="/messages" element={<Messages />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />
           </Routes>
