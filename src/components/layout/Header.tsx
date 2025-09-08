@@ -1,15 +1,24 @@
-import { Bell, Search, RefreshCw, User } from "lucide-react";
+import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useLocation } from "react-router-dom";
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator 
+} from "@/components/ui/dropdown-menu";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 
 export function Header() {
   const location = useLocation();
-  const { user, profile } = useAuth();
+  const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
   
   // Determine page context
   const getPageTitle = () => {
@@ -42,6 +51,11 @@ export function Header() {
 
   const isArtistPage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
   const showAdminControls = !isArtistPage && location.pathname !== '/';
+
+  const handleLogout = async () => {
+    await signOut();
+    navigate('/auth');
+  };
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -89,12 +103,57 @@ export function Header() {
           )}
 
           {profile && (
-            <Avatar className="h-8 w-8">
-              <AvatarImage src={profile.avatar_url || ''} />
-              <AvatarFallback className="bg-gradient-primary text-white text-sm">
-                {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
-              </AvatarFallback>
-            </Avatar>
+            <DropdownMenu>
+              <DropdownMenuTrigger asChild>
+                <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 cursor-pointer">
+                  <Avatar className="h-8 w-8">
+                    <AvatarImage src={profile.avatar_url || ''} />
+                    <AvatarFallback className="bg-gradient-primary text-white text-sm">
+                      {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                    </AvatarFallback>
+                  </Avatar>
+                </button>
+              </DropdownMenuTrigger>
+              <DropdownMenuContent align="end" className="w-56">
+                <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={`/artists/${profile.id}`} className="flex items-center">
+                    <User className="mr-2 h-4 w-4" />
+                    Mon profil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={`/artists/${profile.id}/edit`} className="flex items-center">
+                    <Pencil className="mr-2 h-4 w-4" />
+                    Modifier mon profil
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/messages" className="flex items-center">
+                    <MessageSquare className="mr-2 h-4 w-4" />
+                    Messages
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/artists" className="flex items-center">
+                    <Search className="mr-2 h-4 w-4" />
+                    Rechercher des artistes
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/profiles" className="flex items-center">
+                    <Users className="mr-2 h-4 w-4" />
+                    Annuaire (agents et autres)
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem onClick={handleLogout} className="flex items-center">
+                  <LogOut className="mr-2 h-4 w-4" />
+                  Se déconnecter
+                </DropdownMenuItem>
+              </DropdownMenuContent>
+            </DropdownMenu>
           )}
         </div>
       </div>
