@@ -73,7 +73,7 @@ export function Header() {
               alt="Vybbi Logo" 
               className="w-8 h-8"
             />
-            <span className="font-bold text-lg text-primary">Vybbi</span>
+            <span className="font-bold text-lg text-white">Vybbi</span>
           </div>
         </div>
 
