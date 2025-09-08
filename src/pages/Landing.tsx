@@ -67,8 +67,8 @@ export default function Landing() {
         <div className="container mx-auto px-6 py-4">
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Artis.io Logo" className="w-10 h-10" />
-                <span className="font-bold text-xl text-foreground">Artis.io</span>
+                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-10 h-10" />
+                <span className="font-bold text-xl text-foreground">Vybbi</span>
               </div>
             
             <div className="hidden md:flex items-center gap-8">
@@ -101,21 +101,21 @@ export default function Landing() {
           <div className="max-w-4xl mx-auto">
             <Badge className="mb-6 text-sm px-4 py-2">
               <Zap className="w-4 h-4 mr-2" />
-              La plateforme #1 pour l'industrie musicale
+              THE HYPE OF THE NIGHT
             </Badge>
             
             <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Connectez votre
+                Le loup des nuits
               </span>
               <br />
-              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
-              <span className="text-foreground"> au monde</span>
+              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">déniche</span> 
+              <span className="text-foreground"> les talents</span>
             </h1>
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
-              La première plateforme qui réunit artistes, agents et lieux d'événements. 
-              Créez des connexions, négociez des contrats et développez votre carrière dans l'industrie musicale.
+              Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
+              Découvrez, connectez et développez l'écosystème musical et nocturne.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -347,11 +347,11 @@ export default function Landing() {
                 <div className="w-8 h-8 bg-gradient-primary rounded-lg flex items-center justify-center shadow-glow">
                   <Music className="w-4 h-4 text-primary-foreground" />
                 </div>
-                <span className="font-bold text-xl text-foreground">Artis.io</span>
-              </div>
-              <p className="text-muted-foreground">
-                La plateforme qui connecte l'industrie musicale et nocturne.
-              </p>
+                 <span className="font-bold text-xl text-foreground">Vybbi</span>
+               </div>
+               <p className="text-muted-foreground">
+                 Le loup des nuits qui déniche les talents et connecte l'écosystème musical.
+               </p>
             </div>
             
             <div>
@@ -384,7 +384,7 @@ export default function Landing() {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>&copy; 2024 Artis.io. Tous droits réservés.</p>
+            <p>&copy; 2024 Vybbi. Tous droits réservés.</p>
           </div>
         </div>
       </footer>
