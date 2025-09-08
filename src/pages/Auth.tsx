@@ -121,8 +121,9 @@ export default function Auth() {
                     </SelectTrigger>
                     <SelectContent>
                       <SelectItem value="artist">Artist (DJ, Musician, Performer)</SelectItem>
-                      <SelectItem value="agent">Agent / Manager</SelectItem>
-                      <SelectItem value="venue">Venue (Club, Festival, Bar)</SelectItem>
+                      <SelectItem value="agent">Agent</SelectItem>
+                      <SelectItem value="manager">Manager</SelectItem>
+                      <SelectItem value="lieu">Lieu (Club, Festival, Bar, Restaurant)</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>

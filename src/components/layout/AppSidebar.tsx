@@ -12,6 +12,7 @@ import {
   FileText,
   Music,
   UserSearch,
+  Building2,
 } from "lucide-react";
 
 import {
@@ -29,23 +30,17 @@ import {
 
 const mainItems = [
   { title: "Dashboard", url: "/", icon: LayoutDashboard },
-  { title: "Directory", url: "/profiles", icon: UserSearch },
+  { title: "Artists", url: "/artists", icon: Music },
+  { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Directory", url: "/profiles", icon: UserSearch },
+];
+
+const adminItems = [
   { title: "Partners", url: "/partners", icon: Users },
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Reports", url: "/reports", icon: BarChart3 },
-];
-
-const musicItems = [
-  { title: "Artistes DJ", url: "/dj-artists", icon: Music },
-  { title: "Venues", url: "/venues", icon: FileText },
-  { title: "Événements", url: "/events", icon: Target },
-];
-
-const supportItems = [
-  { title: "Messagerie", url: "/messages", icon: MessageSquare },
-  { title: "Paramètres", url: "/settings", icon: Settings },
 ];
 
 export function AppSidebar() {

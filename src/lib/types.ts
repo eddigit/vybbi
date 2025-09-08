@@ -1,5 +1,8 @@
-export type AppRole = 'admin' | 'artist' | 'agent' | 'venue';
-export type ProfileType = 'artist' | 'agent' | 'venue';
+export type AppRole = 'admin' | 'artist' | 'agent' | 'lieu' | 'manager';
+export type ProfileType = 'artist' | 'agent' | 'lieu' | 'manager';
+export type EventStatus = 'draft' | 'published' | 'cancelled';
+export type BookingStatus = 'draft' | 'proposed' | 'confirmed' | 'cancelled' | 'completed';
+export type AvailabilityStatus = 'available' | 'unavailable' | 'tentative';
 export type AnnonceStatus = 'draft' | 'open' | 'closed';
 export type ApplicationStatus = 'pending' | 'accepted' | 'rejected' | 'withdrawn';
 export type MediaType = 'image' | 'video' | 'audio' | 'doc';
@@ -87,4 +90,66 @@ export interface AgentArtist {
   created_at: string;
   agent?: Profile;
   artist?: Profile;
+}
+
+export interface ManagerArtist {
+  id: string;
+  manager_id: string;
+  artist_id: string;
+  status: string;
+  created_at: string;
+  manager?: Profile;
+  artist?: Profile;
+}
+
+export interface Event {
+  id: string;
+  host_lieu_id: string;
+  title: string;
+  description?: string;
+  start_at: string;
+  end_at?: string;
+  status: EventStatus;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+  host_lieu?: Profile;
+  creator?: Profile;
+}
+
+export interface Booking {
+  id: string;
+  event_id: string;
+  artist_id: string;
+  facilitated_by?: string;
+  status: BookingStatus;
+  fee_cents?: number;
+  currency: string;
+  start_at?: string;
+  end_at?: string;
+  created_by: string;
+  created_at: string;
+  event?: Event;
+  artist?: Profile;
+  facilitator?: Profile;
+}
+
+export interface MediaAsset {
+  id: string;
+  profile_id: string;
+  type: MediaType;
+  url: string;
+  title?: string;
+  created_at: string;
+}
+
+export interface AvailabilitySlot {
+  id: string;
+  artist_id: string;
+  start_at: string;
+  end_at: string;
+  status: AvailabilityStatus;
+  is_public: boolean;
+  note?: string;
+  created_at: string;
 }
