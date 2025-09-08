@@ -57,8 +57,9 @@ export default function ArtistProfileEdit() {
       
       // Check if user owns this profile
       if (data.user_id !== user?.id) {
+        console.log('Access denied - Profile user_id:', data.user_id, 'Current user id:', user?.id);
         toast({ title: "Accès refusé", variant: "destructive" });
-        navigate('/');
+        navigate('/', { replace: true });
         return;
       }
 
