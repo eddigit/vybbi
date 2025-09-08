@@ -8,7 +8,6 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Loader2, Music, Users, MapPin, Briefcase } from 'lucide-react';
-import logo from '@/assets/logo.png';
 
 export default function Auth() {
   const { user, loading, signUp, signIn } = useAuth();
@@ -65,22 +64,13 @@ export default function Auth() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center p-4">
       <div className="w-full max-w-md space-y-8">
-        <div className="text-center space-y-4">
-          <div className="flex items-center justify-center">
-            <img 
-              src={logo} 
-              alt="Artis.io Logo" 
-              className="h-20 w-20"
-            />
-          </div>
-          <div>
-            <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
-              Artis.io
-            </h1>
-            <p className="text-muted-foreground mt-2">
-              Gestion d'Affiliés Musicaux
-            </p>
-          </div>
+        <div className="text-center">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/70 bg-clip-text text-transparent">
+            Vybbi
+          </h1>
+          <p className="text-muted-foreground mt-2">
+            La plateforme qui connecte les talents
+          </p>
         </div>
 
         <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95">
