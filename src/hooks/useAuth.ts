@@ -18,7 +18,7 @@ export function useAuth() {
         .from('profiles')
         .select('*')
         .eq('user_id', userId)
-        .maybeSingle();
+        .single();
       
       if (profileData) {
         setProfile(profileData);
@@ -37,45 +37,9 @@ export function useAuth() {
     }
   };
 
-  const createProfile = async (userId: string, displayName: string, profileType: string) => {
-    try {
-      const { error: profileError } = await (supabase as any)
-        .from('profiles')
-        .insert({
-          user_id: userId,
-          display_name: displayName,
-          profile_type: profileType,
-        });
-
-      if (profileError) throw profileError;
-
-      const { error: roleError } = await (supabase as any)
-        .from('user_roles')
-        .insert({
-          user_id: userId,
-          role: profileType as AppRole,
-        });
-
-      if (roleError) throw roleError;
-
-      await fetchProfile(userId);
-      toast({
-        title: "Profile created",
-        description: "Welcome to Artisio!",
-      });
-    } catch (error: any) {
-      console.error('Error creating profile:', error);
-      toast({
-        title: "Error creating profile",
-        description: error.message,
-        variant: "destructive",
-      });
-    }
-  };
-
   const signUp = async (email: string, password: string, displayName: string, profileType: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/`;
+      const redirectUrl = `${window.location.origin}/dashboard`;
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -91,12 +55,13 @@ export function useAuth() {
 
       if (error) throw error;
       
-      if (data.user) {
-        await createProfile(data.user.id, displayName, profileType);
-      }
+      toast({
+        title: "Compte créé avec succès !",
+        description: "Vérifiez votre email pour confirmer votre compte.",
+      });
     } catch (error: any) {
       toast({
-        title: "Error signing up",
+        title: "Erreur lors de l'inscription",
         description: error.message,
         variant: "destructive",
       });
@@ -114,7 +79,7 @@ export function useAuth() {
       if (error) throw error;
     } catch (error: any) {
       toast({
-        title: "Error signing in",
+        title: "Erreur de connexion",
         description: error.message,
         variant: "destructive",
       });
