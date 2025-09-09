@@ -14,6 +14,7 @@ import {
   MapPin,
   User,
   ChevronDown,
+  Megaphone,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -28,6 +29,7 @@ import { Button } from "@/components/ui/button";
 const artistItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artists", url: "/artists", icon: Music },
+  { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Directory", url: "/profiles", icon: UserSearch },
@@ -36,6 +38,7 @@ const artistItems = [
 const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
+  { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Mes Artistes", url: `/agents/${profileId}/artists`, icon: Star },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Mon Profil", url: `/agents/${profileId}/edit`, icon: User },
@@ -44,6 +47,7 @@ const getAgentItems = (profileId: string) => [
 const getManagerItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Partenaires", url: "/partners", icon: Users },
+  { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Mes Artistes", url: `/managers/${profileId}/artists`, icon: Star },
   { title: "Campagnes", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
@@ -55,6 +59,7 @@ const getManagerItems = (profileId: string) => [
 const getLieuItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Lieux", url: "/lieux", icon: MapPin },
+  { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Événements", url: "/events", icon: Calendar },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Mon Profil", url: `/lieux/${profileId}`, icon: User },

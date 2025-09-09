@@ -1,5 +1,16 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, MessageCircle, Users, MapPin, User } from "lucide-react";
+import {
+  LayoutDashboard,
+  Music,
+  MessageSquare,
+  Building2,
+  UserSearch,
+  Star,
+  Users,
+  MapPin,
+  User,
+  Megaphone,
+} from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 
@@ -8,33 +19,43 @@ export function MobileTabBar() {
   const { profile } = useAuth();
 
   const getMainTabs = () => {
-    const commonTabs = [
-      { name: "Accueil", href: "/dashboard", icon: Home },
-      { name: "Messages", href: "/messages", icon: MessageCircle },
-    ];
-
-    if (profile?.profile_type === 'artist') {
-      return [
-        ...commonTabs,
-        { name: "Agents", href: "/profiles?type=agent", icon: Users },
-        { name: "Profil", href: `/artists/${profile.id}`, icon: User },
-      ];
+    switch (profile?.profile_type) {
+      case 'artist':
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Artists", href: "/artists", icon: Music },
+          { name: "Annonces", href: "/annonces", icon: Megaphone },
+          { name: "Messages", href: "/messages", icon: MessageSquare },
+        ];
+      case 'agent':
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Artists", href: "/artists", icon: Music },
+          { name: "Annonces", href: "/annonces", icon: Megaphone },
+          { name: "Messages", href: "/messages", icon: MessageSquare },
+        ];
+      case 'manager':
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Partners", href: "/partners", icon: Users },
+          { name: "Annonces", href: "/annonces", icon: Megaphone },
+          { name: "Messages", href: "/messages", icon: MessageSquare },
+        ];
+      case 'lieu':
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Lieux", href: "/lieux", icon: MapPin },
+          { name: "Annonces", href: "/annonces", icon: Megaphone },
+          { name: "Messages", href: "/messages", icon: MessageSquare },
+        ];
+      default:
+        return [
+          { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Artists", href: "/artists", icon: Music },
+          { name: "Annonces", href: "/annonces", icon: Megaphone },
+          { name: "Messages", href: "/messages", icon: MessageSquare },
+        ];
     }
-
-    if (['agent', 'manager', 'lieu'].includes(profile?.profile_type || '')) {
-      return [
-        ...commonTabs,
-        { name: "Artistes", href: "/artists", icon: Users },
-        { name: "Lieux", href: "/lieux", icon: MapPin },
-        { name: "Profil", href: `/partners/${profile.id}`, icon: User },
-      ];
-    }
-
-    return [
-      ...commonTabs,
-      { name: "Artistes", href: "/artists", icon: Users },
-      { name: "Profil", href: "/profiles", icon: User },
-    ];
   };
 
   const tabs = getMainTabs();

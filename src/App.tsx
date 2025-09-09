@@ -20,6 +20,7 @@ import ArtistProfileEdit from "./pages/ArtistProfileEdit";
 import { AgentProfileEdit } from "./pages/AgentProfileEdit";
 import { ManagerProfileEdit } from "./pages/ManagerProfileEdit";
 import { AnnonceManager } from "./pages/AnnonceManager";
+import { AnnoncesWall } from "./pages/AnnoncesWall";
 import Landing from "./pages/Landing";
 import Promotion from "./pages/Promotion";
 import VenueProfile from "./pages/VenueProfile";
@@ -55,7 +56,8 @@ const App = () => (
             <Route path="/managers/:id/edit" element={<ManagerProfileEdit />} />
             <Route path="/managers/:id/artists" element={<MyArtists />} />
             <Route path="/partners/:id" element={<PartnerProfile />} />
-            <Route path="/annonces" element={<AnnonceManager />} />
+            <Route path="/annonces" element={<AnnoncesWall />} />
+            <Route path="/annonces/manager" element={<AnnonceManager />} />
             <Route path="/lieux" element={<Lieux />} />
             <Route path="/lieux/:id" element={<VenueProfile />} />
             <Route path="/promotion" element={<Promotion />} />
