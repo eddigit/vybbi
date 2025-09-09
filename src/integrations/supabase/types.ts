@@ -486,6 +486,23 @@ export type Database = {
         }
         Returns: string
       }
+      get_conversations_with_peers: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          conversation_id: string
+          conversation_title: string
+          conversation_type: Database["public"]["Enums"]["conversation_type"]
+          is_blocked: boolean
+          last_message_at: string
+          last_message_content: string
+          last_message_created_at: string
+          peer_avatar_url: string
+          peer_display_name: string
+          peer_profile_type: Database["public"]["Enums"]["profile_type"]
+          peer_user_id: string
+          reply_received: boolean
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

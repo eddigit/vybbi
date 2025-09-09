@@ -13,8 +13,17 @@ import { Conversation, Message, Profile } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 
 interface ConversationWithDetails extends Conversation {
-  other_participant?: Profile;
-  last_message?: Message;
+  other_participant?: {
+    user_id: string;
+    display_name: string;
+    avatar_url?: string;
+    profile_type?: string;
+  };
+  last_message?: {
+    content: string;
+    created_at: string;
+    sender_id?: string;
+  };
   last_message_at?: string;
   reply_received?: boolean;
   is_blocked?: boolean;
@@ -145,98 +154,49 @@ export default function Messages() {
     if (!user) return;
     
     try {
-      // Get conversations where user is a participant
-      const { data: conversationsData, error: conversationsError } = await supabase
-        .from('conversation_participants')
-        .select(`
-          conversation_id,
-          conversations!inner(
-            id,
-            type,
-            title,
-            created_at,
-            last_message_at,
-            reply_received
-          )
-        `)
-        .eq('user_id', user.id);
+      const { data: conversationsData, error } = await supabase.rpc('get_conversations_with_peers');
 
-      if (conversationsError) {
-        console.error('Error fetching conversations:', conversationsError);
+      if (error) {
+        console.error('Error fetching conversations:', error);
         return;
       }
       
       if (conversationsData) {
-        const conversationsWithDetails = await Promise.all(
-          conversationsData.map(async (item: any) => {
-            const conversation = item.conversations;
-            
-            // Get other participant for this conversation
-            const { data: otherParticipants, error: participantsError } = await supabase
-              .from('conversation_participants')
-              .select('user_id')
-              .eq('conversation_id', conversation.id)
-              .neq('user_id', user.id);
-            
-            if (participantsError) {
-              console.error('Error fetching participants:', participantsError);
-            }
-            
-            // Get profile for the other participant
-            let otherParticipant = null;
-            if (otherParticipants && otherParticipants.length > 0) {
-              const { data: profileData, error: profileError } = await supabase
-                .from('profiles')
-                .select('display_name, avatar_url, user_id')
-                .eq('user_id', otherParticipants[0].user_id)
-                .maybeSingle();
-              
-              if (profileError) {
-                console.error('Error fetching profile:', profileError);
-              }
-              
-              console.log('Profile data for conversation', conversation.id, ':', profileData);
-              otherParticipant = profileData;
-            }
+        const conversationsWithDetails = conversationsData.map((conv: any) => {
+          const otherParticipant = conv.peer_user_id ? {
+            user_id: conv.peer_user_id,
+            display_name: conv.peer_display_name || 'Utilisateur inconnu',
+            avatar_url: conv.peer_avatar_url,
+            profile_type: conv.peer_profile_type
+          } : null;
 
-            // Get last message
-            const { data: lastMessage } = await supabase
-              .from('messages')
-              .select('*')
-              .eq('conversation_id', conversation.id)
-              .order('created_at', { ascending: false })
-              .limit(1)
-              .maybeSingle();
-            
-            // Check if blocked (only if we have an other participant)
-            let blockData = null;
-            if (otherParticipant) {
-              const { data: blockResult } = await supabase
-                .from('blocked_users')
-                .select('*')
-                .or(`and(blocker_user_id.eq.${user.id},blocked_user_id.eq.${otherParticipant.user_id}),and(blocker_user_id.eq.${otherParticipant.user_id},blocked_user_id.eq.${user.id})`)
-                .maybeSingle();
-              blockData = blockResult;
-            }
-            
-            // Determine if user can send message
-            const canSendMessage = !blockData && (
-              conversation.reply_received || 
-              !lastMessage || 
-              lastMessage.sender_id !== user.id
-            );
-            
-            return {
-              ...conversation,
-              other_participant: otherParticipant,
-              last_message: lastMessage,
-              is_blocked: !!blockData,
-              can_send_message: canSendMessage
-            };
-          })
-        );
+          const lastMessage = conv.last_message_content ? {
+            content: conv.last_message_content,
+            created_at: conv.last_message_created_at,
+            sender_id: null // We don't need this for display in conversation list
+          } : null;
+
+          // Determine if user can send message
+          const canSendMessage = !conv.is_blocked && (
+            conv.reply_received || 
+            !lastMessage
+          );
+          
+          return {
+            id: conv.conversation_id,
+            type: conv.conversation_type,
+            title: conv.conversation_title,
+            created_at: new Date().toISOString(), // We can use a default since we order by last_message_at
+            updated_at: new Date().toISOString(), // Add required field
+            last_message_at: conv.last_message_at,
+            reply_received: conv.reply_received,
+            other_participant: otherParticipant,
+            last_message: lastMessage,
+            is_blocked: conv.is_blocked,
+            can_send_message: canSendMessage
+          };
+        });
         
-        console.log('Final conversations with details:', conversationsWithDetails);
         setConversations(conversationsWithDetails);
       }
     } catch (error) {
@@ -460,6 +420,11 @@ export default function Messages() {
                             <p className="font-medium truncate xl:text-lg">
                               {conversation.other_participant?.display_name || 'Utilisateur inconnu'}
                             </p>
+                            {conversation.other_participant?.profile_type && (
+                              <span className="text-xs xl:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize">
+                                {conversation.other_participant.profile_type}
+                              </span>
+                            )}
                             {conversation.is_blocked && <Ban className="w-3 h-3 xl:w-4 xl:h-4 text-destructive" />}
                           </div>
                           <p className="text-sm xl:text-base text-muted-foreground truncate">
@@ -498,8 +463,15 @@ export default function Messages() {
                     {selectedConversationDetails.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
-                  {selectedConversationDetails.other_participant?.display_name || 'Utilisateur inconnu'}
+                <div className="flex items-center gap-2">
+                  <span>{selectedConversationDetails.other_participant?.display_name || 'Utilisateur inconnu'}</span>
+                  {selectedConversationDetails.other_participant?.profile_type && (
+                    <span className="text-xs xl:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize">
+                      {selectedConversationDetails.other_participant.profile_type}
+                    </span>
+                  )}
                   {selectedConversationDetails.is_blocked && <Ban className="w-4 h-4 xl:w-5 xl:h-5 text-destructive" />}
+                </div>
                 </CardTitle>
                 {selectedConversationDetails.other_participant && !selectedConversationDetails.is_blocked && (
                   <AlertDialog>
