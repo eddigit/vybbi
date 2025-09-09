@@ -5,8 +5,6 @@ import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover
 import { Send, Paperclip, Smile } from 'lucide-react';
 import { useTypingPresence } from '@/hooks/useTypingPresence';
 import { supabase } from '@/integrations/supabase/client';
-import data from '@emoji-mart/data';
-import Picker from '@emoji-mart/react';
 
 interface ComposerProps {
   conversationId: string | null;
@@ -73,20 +71,20 @@ export default function Composer({
     setSelectedFiles(prev => prev.filter((_, i) => i !== index));
   };
 
-  const handleEmojiSelect = (emoji: any) => {
+  const handleEmojiSelect = (emoji: string) => {
     const textarea = textareaRef.current;
     if (!textarea) return;
 
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
-    const newMessage = message.substring(0, start) + emoji.native + message.substring(end);
+    const newMessage = message.substring(0, start) + emoji + message.substring(end);
     
     setMessage(newMessage);
     
     // Set cursor position after emoji
     setTimeout(() => {
       textarea.focus();
-      textarea.setSelectionRange(start + emoji.native.length, start + emoji.native.length);
+      textarea.setSelectionRange(start + emoji.length, start + emoji.length);
     }, 0);
   };
 
@@ -196,13 +194,18 @@ export default function Composer({
                 <Smile className="h-4 w-4" />
               </Button>
             </PopoverTrigger>
-            <PopoverContent className="w-auto p-0" align="end">
-              <Picker
-                data={data}
-                onEmojiSelect={handleEmojiSelect}
-                theme="light"
-                locale="fr"
-              />
+            <PopoverContent className="w-auto p-2" align="end">
+              <div className="grid grid-cols-8 gap-1 max-w-64">
+                {['😊', '😂', '❤️', '👍', '👎', '😢', '😮', '😡', '🎉', '🔥', '✨', '👏', '🤔', '😴', '🤩', '😎', '🥰', '😘', '🤗', '🙄', '😬', '🤐', '🤯', '🥳', '😇', '🤤', '🤫', '🤭', '🙃', '😉', '😋', '🤪'].map((emoji) => (
+                  <button
+                    key={emoji}
+                    onClick={() => handleEmojiSelect(emoji)}
+                    className="p-2 hover:bg-muted rounded-md text-lg"
+                  >
+                    {emoji}
+                  </button>
+                ))}
+              </div>
             </PopoverContent>
           </Popover>
 
