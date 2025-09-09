@@ -623,6 +623,42 @@ export type Database = {
         }
         Relationships: []
       }
+      venue_artist_history: {
+        Row: {
+          artist_profile_id: string
+          created_at: string
+          description: string | null
+          event_title: string | null
+          id: string
+          is_visible: boolean
+          performance_date: string | null
+          updated_at: string
+          venue_profile_id: string
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string
+          description?: string | null
+          event_title?: string | null
+          id?: string
+          is_visible?: boolean
+          performance_date?: string | null
+          updated_at?: string
+          venue_profile_id: string
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string
+          description?: string | null
+          event_title?: string | null
+          id?: string
+          is_visible?: boolean
+          performance_date?: string | null
+          updated_at?: string
+          venue_profile_id?: string
+        }
+        Relationships: []
+      }
       venue_gallery: {
         Row: {
           created_at: string
@@ -649,6 +685,42 @@ export type Database = {
           id?: string
           image_position_y?: number | null
           image_url?: string
+          venue_profile_id?: string
+        }
+        Relationships: []
+      }
+      venue_partners: {
+        Row: {
+          allow_direct_contact: boolean
+          created_at: string
+          description: string | null
+          id: string
+          is_visible: boolean
+          partner_profile_id: string
+          partnership_type: string
+          updated_at: string
+          venue_profile_id: string
+        }
+        Insert: {
+          allow_direct_contact?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_visible?: boolean
+          partner_profile_id: string
+          partnership_type: string
+          updated_at?: string
+          venue_profile_id: string
+        }
+        Update: {
+          allow_direct_contact?: boolean
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_visible?: boolean
+          partner_profile_id?: string
+          partnership_type?: string
+          updated_at?: string
           venue_profile_id?: string
         }
         Relationships: []

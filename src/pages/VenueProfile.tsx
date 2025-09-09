@@ -11,6 +11,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { VenueAgenda } from '@/components/VenueAgenda';
 import { VenueGallery } from '@/components/VenueGallery';
 import { VenueCalendar } from '@/components/VenueCalendar';
+import { VenuePartners } from '@/components/VenuePartners';
+import { VenueTalentHistory } from '@/components/VenueTalentHistory';
 
 export default function VenueProfile() {
   const { id } = useParams<{ id: string }>();
@@ -171,7 +173,7 @@ export default function VenueProfile() {
         {/* Contenu principal */}
         <div className="lg:col-span-2 space-y-8">
           <Tabs defaultValue="about" className="w-full">
-            <TabsList className="grid w-full grid-cols-3">
+            <TabsList className="grid w-full grid-cols-5">
               <TabsTrigger value="about">À propos</TabsTrigger>
               <TabsTrigger value="events">
                 <Calendar className="h-4 w-4 mr-2" />
@@ -181,6 +183,8 @@ export default function VenueProfile() {
                 <Users className="h-4 w-4 mr-2" />
                 Galerie
               </TabsTrigger>
+              <TabsTrigger value="partners">Partenaires</TabsTrigger>
+              <TabsTrigger value="talents">Talents</TabsTrigger>
             </TabsList>
             
             <TabsContent value="about" className="space-y-6">
@@ -272,6 +276,14 @@ export default function VenueProfile() {
                 venueProfileId={venue.id} 
                 isOwner={!!user && profile?.id === venue.id}
               />
+            </TabsContent>
+
+            <TabsContent value="partners">
+              <VenuePartners venueProfileId={venue.id} />
+            </TabsContent>
+
+            <TabsContent value="talents">
+              <VenueTalentHistory venueProfileId={venue.id} />
             </TabsContent>
           </Tabs>
         </div>
