@@ -30,6 +30,9 @@ export default function VenueProfileEdit() {
     display_name: '',
     bio: '',
     location: '',
+    city: '',
+    venue_category: '',
+    venue_capacity: '',
     website: '',
     email: '',
     phone: '',
@@ -46,6 +49,9 @@ export default function VenueProfileEdit() {
         display_name: profile.display_name || '',
         bio: profile.bio || '',
         location: profile.location || '',
+        city: (profile as any).city || '',
+        venue_category: (profile as any).venue_category || '',
+        venue_capacity: (profile as any).venue_capacity?.toString() || '',
         website: profile.website || '',
         email: profile.email || '',
         phone: profile.phone || '',
@@ -70,6 +76,9 @@ export default function VenueProfileEdit() {
           display_name: formData.display_name,
           bio: formData.bio,
           location: formData.location,
+          city: formData.city,
+          venue_category: formData.venue_category,
+          venue_capacity: formData.venue_capacity ? parseInt(formData.venue_capacity) : null,
           website: formData.website,
           email: formData.email,
           phone: formData.phone,
@@ -197,6 +206,40 @@ export default function VenueProfileEdit() {
               />
             </div>
 
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="venue_category">Catégorie d'établissement</Label>
+                <select
+                  id="venue_category"
+                  value={formData.venue_category}
+                  onChange={(e) => setFormData({ ...formData, venue_category: e.target.value })}
+                  className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50"
+                >
+                  <option value="">Sélectionner une catégorie</option>
+                  <option value="bar">Bar</option>
+                  <option value="club">Club</option>
+                  <option value="salle_concert">Salle de concert</option>
+                  <option value="restaurant">Restaurant</option>
+                  <option value="cafe_concert">Café-concert</option>
+                  <option value="festival">Festival</option>
+                  <option value="theatre">Théâtre</option>
+                  <option value="centre_culturel">Centre culturel</option>
+                  <option value="autre">Autre</option>
+                </select>
+              </div>
+
+              <div>
+                <Label htmlFor="venue_capacity">Capacité d'accueil</Label>
+                <Input
+                  id="venue_capacity"
+                  type="number"
+                  value={formData.venue_capacity}
+                  onChange={(e) => setFormData({ ...formData, venue_capacity: e.target.value })}
+                  placeholder="Nombre de personnes"
+                />
+              </div>
+            </div>
+
             <div>
               <Label htmlFor="bio">Description</Label>
               <Textarea
@@ -208,14 +251,25 @@ export default function VenueProfileEdit() {
               />
             </div>
 
-            <div>
-              <Label htmlFor="location">Adresse</Label>
-              <Input
-                id="location"
-                value={formData.location}
-                onChange={(e) => setFormData({ ...formData, location: e.target.value })}
-                placeholder="Adresse complète de votre établissement"
-              />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="city">Ville</Label>
+                <Input
+                  id="city"
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  placeholder="Paris, Lyon, Marseille..."
+                />
+              </div>
+              <div>
+                <Label htmlFor="location">Adresse complète</Label>
+                <Input
+                  id="location"
+                  value={formData.location}
+                  onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                  placeholder="Adresse complète de votre établissement"
+                />
+              </div>
             </div>
 
             <div>

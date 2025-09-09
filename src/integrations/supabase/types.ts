@@ -468,6 +468,7 @@ export type Database = {
           accepts_direct_contact: boolean | null
           avatar_url: string | null
           bio: string | null
+          city: string | null
           created_at: string
           display_name: string
           email: string | null
@@ -489,6 +490,8 @@ export type Database = {
           tiktok_url: string | null
           updated_at: string
           user_id: string
+          venue_capacity: number | null
+          venue_category: string | null
           website: string | null
           youtube_url: string | null
         }
@@ -496,6 +499,7 @@ export type Database = {
           accepts_direct_contact?: boolean | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           created_at?: string
           display_name: string
           email?: string | null
@@ -517,6 +521,8 @@ export type Database = {
           tiktok_url?: string | null
           updated_at?: string
           user_id: string
+          venue_capacity?: number | null
+          venue_category?: string | null
           website?: string | null
           youtube_url?: string | null
         }
@@ -524,6 +530,7 @@ export type Database = {
           accepts_direct_contact?: boolean | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
           created_at?: string
           display_name?: string
           email?: string | null
@@ -545,6 +552,8 @@ export type Database = {
           tiktok_url?: string | null
           updated_at?: string
           user_id?: string
+          venue_capacity?: number | null
+          venue_category?: string | null
           website?: string | null
           youtube_url?: string | null
         }
@@ -611,6 +620,36 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      venue_gallery: {
+        Row: {
+          created_at: string
+          description: string | null
+          display_order: number | null
+          id: string
+          image_position_y: number | null
+          image_url: string
+          venue_profile_id: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          image_position_y?: number | null
+          image_url: string
+          venue_profile_id: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          display_order?: number | null
+          id?: string
+          image_position_y?: number | null
+          image_url?: string
+          venue_profile_id?: string
         }
         Relationships: []
       }

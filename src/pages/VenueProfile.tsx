@@ -5,16 +5,16 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { MapPin, MessageSquare, ExternalLink, Calendar, Users, Music } from 'lucide-react';
+import { MapPin, MessageSquare, ExternalLink, Calendar, Users, Music, Building2, UserCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
-import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { VenueAgenda } from '@/components/VenueAgenda';
+import { VenueGallery } from '@/components/VenueGallery';
 
 export default function VenueProfile() {
   const { id } = useParams<{ id: string }>();
   const { user, profile } = useAuth();
-  const [venue, setVenue] = useState<Profile | null>(null);
+  const [venue, setVenue] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +30,7 @@ export default function VenueProfile() {
         .select('*')
         .eq('id', id)
         .eq('profile_type', 'lieu')
-        .single();
+        .maybeSingle();
       
       if (data) {
         setVenue(data);
@@ -40,6 +40,21 @@ export default function VenueProfile() {
     } finally {
       setLoading(false);
     }
+  };
+
+  const getCategoryLabel = (category: string) => {
+    const categories = {
+      'bar': 'Bar',
+      'club': 'Club',
+      'salle_concert': 'Salle de concert',
+      'restaurant': 'Restaurant',
+      'cafe_concert': 'Café-concert',
+      'festival': 'Festival',
+      'theatre': 'Théâtre',
+      'centre_culturel': 'Centre culturel',
+      'autre': 'Autre'
+    };
+    return categories[category as keyof typeof categories] || category;
   };
 
   if (loading) {
@@ -78,17 +93,30 @@ export default function VenueProfile() {
             
             <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-4">
               <Badge variant="outline" className="bg-orange-500/10 text-orange-500 border-orange-500/20">
-                <Calendar className="w-4 h-4 mr-1" />
-                Lieu
+                <Building2 className="w-4 h-4 mr-1" />
+                {venue.venue_category ? getCategoryLabel(venue.venue_category) : 'Lieu'}
               </Badge>
+              {venue.venue_capacity && (
+                <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
+                  <UserCheck className="w-4 h-4 mr-1" />
+                  {venue.venue_capacity} personnes
+                </Badge>
+              )}
             </div>
             
-            {venue.location && (
-              <div className="flex items-center gap-2 justify-center lg:justify-start text-muted-foreground mb-4">
-                <MapPin className="w-4 h-4" />
-                <span>{venue.location}</span>
-              </div>
-            )}
+            <div className="space-y-2">
+              {venue.city && (
+                <div className="flex items-center gap-2 justify-center lg:justify-start text-muted-foreground">
+                  <MapPin className="w-4 h-4" />
+                  <span className="font-medium">{venue.city}</span>
+                </div>
+              )}
+              {venue.location && (
+                <div className="flex items-center gap-2 justify-center lg:justify-start text-muted-foreground text-sm">
+                  <span className="ml-6">{venue.location}</span>
+                </div>
+              )}
+            </div>
           </div>
           
           <div className="flex flex-col gap-2 w-full lg:w-auto">
@@ -126,15 +154,42 @@ export default function VenueProfile() {
         {/* Contenu principal */}
         <div className="lg:col-span-2 space-y-8">
           <Tabs defaultValue="about" className="w-full">
-            <TabsList className="grid w-full grid-cols-2">
+            <TabsList className="grid w-full grid-cols-3">
               <TabsTrigger value="about">À propos</TabsTrigger>
               <TabsTrigger value="events">
                 <Calendar className="h-4 w-4 mr-2" />
                 Événements
               </TabsTrigger>
+              <TabsTrigger value="gallery">
+                <Users className="h-4 w-4 mr-2" />
+                Galerie
+              </TabsTrigger>
             </TabsList>
             
             <TabsContent value="about" className="space-y-6">
+              {/* Informations principales */}
+              <Card>
+                <CardHeader>
+                  <CardTitle>Informations principales</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {venue.venue_category && (
+                      <div>
+                        <h4 className="font-medium mb-1">Type d'établissement</h4>
+                        <p className="text-sm text-muted-foreground">{getCategoryLabel(venue.venue_category)}</p>
+                      </div>
+                    )}
+                    {venue.venue_capacity && (
+                      <div>
+                        <h4 className="font-medium mb-1">Capacité d'accueil</h4>
+                        <p className="text-sm text-muted-foreground">{venue.venue_capacity} personnes</p>
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
               {/* À propos */}
               {venue.bio && (
                 <Card>
@@ -194,6 +249,13 @@ export default function VenueProfile() {
                 </CardContent>
               </Card>
             </TabsContent>
+
+            <TabsContent value="gallery">
+              <VenueGallery 
+                venueProfileId={venue.id} 
+                isOwner={!!user && profile?.id === venue.id}
+              />
+            </TabsContent>
           </Tabs>
         </div>
 
@@ -207,6 +269,13 @@ export default function VenueProfile() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
+              {venue.city && (
+                <div>
+                  <h4 className="font-medium mb-1">Ville</h4>
+                  <p className="text-sm text-muted-foreground">{venue.city}</p>
+                </div>
+              )}
+              
               {venue.location && (
                 <div>
                   <h4 className="font-medium mb-1">Adresse</h4>
