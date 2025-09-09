@@ -1,4 +1,4 @@
-import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star } from "lucide-react";
+import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -243,6 +243,18 @@ export function Header() {
                   <Link to="/messages" className="flex items-center">
                     <MessageSquare className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="text-sm">Messages</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="flex items-center">
+                    <LayoutDashboard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Tableau de bord</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/annonces" className="flex items-center">
+                    <Megaphone className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Annonces</span>
                   </Link>
                 </DropdownMenuItem>
 
