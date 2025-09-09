@@ -27,6 +27,7 @@ import PartnerProfile from "./pages/PartnerProfile";
 import PourArtistes from "./pages/PourArtistes";
 import PourAgentsManagers from "./pages/PourAgentsManagers";
 import PourLieuxEvenements from "./pages/PourLieuxEvenements";
+import MyArtists from "./pages/MyArtists";
 
 const queryClient = new QueryClient();
 
@@ -50,7 +51,9 @@ const App = () => (
             <Route path="/artists/:id" element={<ArtistProfile />} />
             <Route path="/artists/:id/edit" element={<ArtistProfileEdit />} />
             <Route path="/agents/:id/edit" element={<AgentProfileEdit />} />
+            <Route path="/agents/:id/artists" element={<MyArtists />} />
             <Route path="/managers/:id/edit" element={<ManagerProfileEdit />} />
+            <Route path="/managers/:id/artists" element={<MyArtists />} />
             <Route path="/partners/:id" element={<PartnerProfile />} />
             <Route path="/annonces" element={<AnnonceManager />} />
             <Route path="/lieux" element={<Lieux />} />

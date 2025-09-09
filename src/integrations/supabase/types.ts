@@ -18,6 +18,7 @@ export type Database = {
         Row: {
           agent_profile_id: string
           artist_profile_id: string
+          contract_notes: string | null
           created_at: string
           id: string
           representation_status:
@@ -29,6 +30,7 @@ export type Database = {
         Insert: {
           agent_profile_id: string
           artist_profile_id: string
+          contract_notes?: string | null
           created_at?: string
           id?: string
           representation_status?:
@@ -40,6 +42,7 @@ export type Database = {
         Update: {
           agent_profile_id?: string
           artist_profile_id?: string
+          contract_notes?: string | null
           created_at?: string
           id?: string
           representation_status?:
@@ -255,6 +258,7 @@ export type Database = {
       manager_artists: {
         Row: {
           artist_profile_id: string
+          contract_notes: string | null
           created_at: string
           id: string
           manager_profile_id: string
@@ -266,6 +270,7 @@ export type Database = {
         }
         Insert: {
           artist_profile_id: string
+          contract_notes?: string | null
           created_at?: string
           id?: string
           manager_profile_id: string
@@ -277,6 +282,7 @@ export type Database = {
         }
         Update: {
           artist_profile_id?: string
+          contract_notes?: string | null
           created_at?: string
           id?: string
           manager_profile_id?: string
