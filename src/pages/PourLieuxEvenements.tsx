@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Building2, Search, Calendar, Users, Star, TrendingUp, CheckCircle, MapPin } from 'lucide-react';
+import { ArrowLeft, Building2, Search, Calendar, Users, Star, TrendingUp, CheckCircle, MapPin, Shield } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,39 +8,39 @@ import RoleSignupForm from "@/components/RoleSignupForm";
 export default function PourLieuxEvenements() {
   const benefits = [
     {
-      icon: Search,
-      title: "Découverte d'Artistes",
-      description: "Trouvez les artistes parfaits pour vos événements grâce à notre système de recherche avancé",
+      icon: Users,
+      title: "Catalogue Multi-Profils",
+      description: "Vybbi est la seule plateforme qui centralise l'ensemble de l'écosystème artistique en un seul point d'entrée",
       gradient: "from-blue-500 to-cyan-500"
     },
     {
-      icon: Calendar,
-      title: "Gestion d'Événements",
-      description: "Planifiez, organisez et gérez tous vos événements depuis une interface unique et intuitive",
+      icon: Search,
+      title: "Moteur de Matching IA",
+      description: "Gagnez du temps et trouvez des talents adaptés à vos besoins en quelques clics avec recommandations personnalisées",
       gradient: "from-purple-500 to-pink-500"
     },
     {
-      icon: Users,
-      title: "Base d'Artistes Qualifiés",
-      description: "Accédez à plus de 10,000 artistes vérifiés et qualifiés dans tous les styles musicaux",
+      icon: Calendar,
+      title: "Calendrier Synchronisé",
+      description: "Fini les doubles réservations et les allers-retours interminables avec disponibilités en temps réel",
       gradient: "from-green-500 to-emerald-500"
     },
     {
-      icon: Star,
-      title: "Système de Reviews",
-      description: "Consultez les avis et notes pour choisir les meilleurs artistes pour votre audience",
+      icon: Shield,
+      title: "Espace Collaboratif",
+      description: "Simplifiez la gestion de vos événements comme si vous aviez une équipe dédiée pour chaque projet",
       gradient: "from-orange-500 to-red-500"
     },
     {
-      icon: TrendingUp,
-      title: "Analytics & Insights",
-      description: "Analysez les performances de vos événements et optimisez votre programmation",
+      icon: MapPin,
+      title: "Marketplace Services",
+      description: "Un écosystème complet sans chercher ailleurs : accès rapide à techniciens, assureurs, graphistes",
       gradient: "from-indigo-500 to-purple-500"
     },
     {
-      icon: MapPin,
-      title: "Visibilité Locale",
-      description: "Augmentez votre visibilité auprès des artistes et du public de votre région",
+      icon: TrendingUp,
+      title: "Services Clé en Main",
+      description: "Vybbi va au-delà du booking : assurance, gestion juridique, communication - une solution complète",
       gradient: "from-yellow-500 to-orange-500"
     }
   ];
@@ -312,11 +312,15 @@ export default function PourLieuxEvenements() {
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Accès immédiat à tous les artistes</span>
+                  <span>Gestion financière intégrée sécurisée</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Support dédié aux professionnels</span>
+                  <span>Analytics pour optimiser vos événements</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Évaluations certifiées pour choix éclairés</span>
                 </div>
               </div>
             </div>

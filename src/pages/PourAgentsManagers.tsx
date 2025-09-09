@@ -9,38 +9,38 @@ export default function PourAgentsManagers() {
   const benefits = [
     {
       icon: Users,
-      title: "Gestion de Roster",
-      description: "Gérez tous vos artistes depuis une interface unique. Suivez leurs performances et optimisez leurs carrières",
+      title: "Catalogue Multi-Profils",
+      description: "Vybbi est la seule plateforme qui centralise l'ensemble de l'écosystème artistique pour vos prospections",
       gradient: "from-blue-500 to-cyan-500"
     },
     {
-      icon: BarChart3,
-      title: "Analytics Avancées",
-      description: "Analysez les performances de vos artistes, identifiez les tendances et prenez les bonnes décisions",
+      icon: Calendar,
+      title: "Calendrier Synchronisé",
+      description: "Fini les allers-retours interminables ! Disponibilités en temps réel avec synchronisation Google, Outlook, Apple",
       gradient: "from-purple-500 to-pink-500"
     },
     {
-      icon: DollarSign,
-      title: "Suivi des Commissions",
-      description: "Calculez automatiquement vos commissions, suivez les paiements et générez vos rapports financiers",
+      icon: Shield,
+      title: "Espace Collaboratif",
+      description: "Simplifiez la gestion de vos événements comme si vous aviez une équipe dédiée : communication, contrats, riders centralisés",
       gradient: "from-green-500 to-emerald-500"
     },
     {
-      icon: Calendar,
-      title: "Planning Centralisé",
-      description: "Visualisez tous les événements de vos artistes, évitez les conflits et optimisez les plannings",
+      icon: DollarSign,
+      title: "Gestion Financière Intégrée",
+      description: "Sécurisez vos paiements et gagnez en transparence financière avec suivi des commissions automatique",
       gradient: "from-orange-500 to-red-500"
     },
     {
-      icon: Shield,
-      title: "Contrats Sécurisés",
-      description: "Créez, négociez et signez des contrats numériques avec traçabilité complète",
+      icon: BarChart3,
+      title: "Outils Agents/Bookers",
+      description: "Un cockpit de pilotage pour vos talents : gestion multi-artistes, suivi cachets, tournées",
       gradient: "from-indigo-500 to-purple-500"
     },
     {
       icon: TrendingUp,
-      title: "Développement Carrière",
-      description: "Identifiez de nouvelles opportunités, négociez de meilleurs tarifs et développez votre réseau",
+      title: "Module Promotion",
+      description: "Boostez votre visibilité auprès des bonnes audiences avec mise en avant de vos profils et artistes",
       gradient: "from-yellow-500 to-orange-500"
     }
   ];
@@ -264,11 +264,15 @@ export default function PourAgentsManagers() {
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Formation personnalisée incluse</span>
+                  <span>Analytics avancés pour décisions éclairées</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Support prioritaire 7j/7</span>
+                  <span>Évaluations et scoring transparent</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Services additionnels intégrés</span>
                 </div>
               </div>
             </div>

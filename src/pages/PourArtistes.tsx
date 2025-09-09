@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -8,39 +8,39 @@ import RoleSignupForm from "@/components/RoleSignupForm";
 export default function PourArtistes() {
   const benefits = [
     {
-      icon: Music,
-      title: "Portfolio Professionnel",
-      description: "Créez un profil complet avec vos mixes, photos, vidéos et références pour vous démarquer",
+      icon: Users,
+      title: "Catalogue Multi-Profils",
+      description: "Vybbi est la seule plateforme qui centralise l'ensemble de l'écosystème artistique - artistes, lieux, agents, organisateurs",
       gradient: "from-purple-500 to-pink-500"
     },
     {
-      icon: Calendar,
-      title: "Gestion de Planning",
-      description: "Gérez votre agenda, vos disponibilités et acceptez les bookings directement sur la plateforme",
+      icon: Search,
+      title: "Moteur de Matching IA",
+      description: "Gagnez du temps et trouvez des opportunités adaptées à votre style en quelques clics grâce à nos recommandations personnalisées",
       gradient: "from-blue-500 to-cyan-500"
     },
     {
-      icon: DollarSign,
-      title: "Négociation de Tarifs",
-      description: "Fixez vos tarifs, négociez vos contrats et recevez vos paiements de manière sécurisée",
+      icon: Calendar,
+      title: "Calendrier Synchronisé",
+      description: "Fini les doubles réservations ! Synchronisation Google, Outlook, Apple pour des disponibilités en temps réel",
       gradient: "from-green-500 to-emerald-500"
     },
     {
-      icon: TrendingUp,
-      title: "Analytics de Performance",
-      description: "Suivez vos performances, analysez vos statistiques et développez votre fan base",
+      icon: DollarSign,
+      title: "Gestion Financière Intégrée",
+      description: "Sécurisez vos paiements et gagnez en transparence financière avec devis, paiements sécurisés et factures automatiques",
       gradient: "from-orange-500 to-red-500"
     },
     {
-      icon: Users,
-      title: "Réseau Professionnel",
-      description: "Connectez-vous avec des agents, managers et promoteurs pour développer votre carrière",
+      icon: TrendingUp,
+      title: "Analytics Avancés",
+      description: "Prenez des décisions basées sur des données fiables : suivi performances, audience, bookings, ROI",
       gradient: "from-indigo-500 to-purple-500"
     },
     {
       icon: Star,
-      title: "Visibilité Maximale",
-      description: "Apparaissez dans les recherches des organisateurs d'événements de votre région",
+      title: "Évaluations et Scoring",
+      description: "Faites vos choix en confiance grâce aux avis certifiés et construisez votre réputation transparente",
       gradient: "from-yellow-500 to-orange-500"
     }
   ];
@@ -199,11 +199,15 @@ export default function PourArtistes() {
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Profil vérifié en moins de 24h</span>
+                  <span>Espace collaboratif pour chaque événement</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Premier booking garanti sous 30 jours*</span>
+                  <span>Module promotion pour booster votre visibilité</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Services additionnels : assurance, gestion juridique</span>
                 </div>
               </div>
             </div>
