@@ -157,6 +157,27 @@ export type Database = {
         }
         Relationships: []
       }
+      blocked_users: {
+        Row: {
+          blocked_user_id: string
+          blocker_user_id: string
+          created_at: string
+          id: string
+        }
+        Insert: {
+          blocked_user_id: string
+          blocker_user_id: string
+          created_at?: string
+          id?: string
+        }
+        Update: {
+          blocked_user_id?: string
+          blocker_user_id?: string
+          created_at?: string
+          id?: string
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -190,6 +211,8 @@ export type Database = {
         Row: {
           created_at: string
           id: string
+          last_message_at: string | null
+          reply_received: boolean | null
           title: string | null
           type: Database["public"]["Enums"]["conversation_type"]
           updated_at: string
@@ -197,6 +220,8 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
+          last_message_at?: string | null
+          reply_received?: boolean | null
           title?: string | null
           type?: Database["public"]["Enums"]["conversation_type"]
           updated_at?: string
@@ -204,6 +229,8 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
+          last_message_at?: string | null
+          reply_received?: boolean | null
           title?: string | null
           type?: Database["public"]["Enums"]["conversation_type"]
           updated_at?: string
@@ -451,6 +478,10 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      start_direct_conversation: {
+        Args: { target_user_id: string }
+        Returns: string
       }
     }
     Enums: {

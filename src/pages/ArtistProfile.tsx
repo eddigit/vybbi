@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit } from 'lucide-react';
+import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit, MessageCircle } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -347,7 +347,12 @@ export default function ArtistProfile() {
                   </Link>
                 </Button>
               ) : (
-                <Button className="w-full mb-4">Contact Artist</Button>
+                <Button className="w-full mb-4" asChild>
+                  <Link to={`/messages?contact=${artist.user_id}`}>
+                    <MessageCircle className="h-4 w-4 mr-2" />
+                    Contacter l'artiste
+                  </Link>
+                </Button>
               )}
               {artist.website && (
                 <Button variant="outline" className="w-full" asChild>

@@ -213,7 +213,7 @@ export default function Profiles() {
                 </Button>
                 {user && user.id !== profile.user_id && (
                   <Button size="sm" variant="outline" asChild>
-                    <Link to={`/messages?contact=${profile.id}`}>
+                    <Link to={`/messages?contact=${profile.user_id}`}>
                       Message
                     </Link>
                   </Button>

@@ -90,9 +90,9 @@ export default function VenueProfile() {
           </div>
           
           <div className="flex flex-col gap-2 w-full lg:w-auto">
-            {user && user.id !== venue.id && (
+            {user && user.id !== venue.user_id && (
               <Button asChild className="w-full">
-                <Link to="/messages" className="flex items-center justify-center gap-2">
+                <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
                   <MessageSquare className="w-4 h-4" />
                   Contacter
                 </Link>
@@ -192,7 +192,7 @@ export default function VenueProfile() {
               )}
               
               <Button asChild className="w-full" size="sm">
-                <Link to="/messages" className="flex items-center justify-center gap-2">
+                <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
                   <MessageSquare className="w-4 h-4" />
                   Envoyer un message
                 </Link>
