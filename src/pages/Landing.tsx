@@ -64,7 +64,7 @@ export default function Landing() {
   return <div className="min-h-screen bg-background">
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
-        <div className="container mx-auto px-6 py-4">
+        <div className="container mx-auto px-2 sm:px-6 py-4">
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-12 h-12" />
@@ -96,7 +96,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-6">
+      <section className="pt-24 pb-16 px-2 sm:px-6">
         <div className="container mx-auto text-center">
           <div className="max-w-4xl mx-auto">
             <Badge className="mb-6 text-sm px-4 py-2">
@@ -104,7 +104,7 @@ export default function Landing() {
               THE HYPE OF THE NIGHT
             </Badge>
             
-            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Connectez votre
               </span>
@@ -113,7 +113,7 @@ export default function Landing() {
               <span className="text-foreground"> au monde</span>
             </h1>
             
-            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
               Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
               Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
             </p>
@@ -143,7 +143,7 @@ export default function Landing() {
       </section>
 
       {/* Audiences Section */}
-      <section className="py-16 px-6 bg-muted/30">
+      <section className="py-16 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Pour tous les acteurs de la scène</h2>
@@ -271,7 +271,7 @@ export default function Landing() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="py-16 px-6">
+      <section id="features" className="py-16 px-2 sm:px-6">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Fonctionnalités puissantes</h2>
@@ -315,7 +315,7 @@ export default function Landing() {
       </section>
 
       {/* Testimonials */}
-      <section id="testimonials" className="py-16 px-6 bg-muted/30">
+      <section id="testimonials" className="py-16 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Ils nous font confiance</h2>
@@ -350,7 +350,7 @@ export default function Landing() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-16 px-6">
+      <section className="py-16 px-2 sm:px-6">
         <div className="container mx-auto">
           <Card className="bg-gradient-primary border-border shadow-glow">
             <CardContent className="p-12 text-center">
