@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { getLanguageByCode } from '@/lib/languages';
 import { getTalentById } from '@/lib/talents';
 import ReviewForm from '@/components/ReviewForm';
+import { ImageGallerySlider } from '@/components/ImageGallerySlider';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
@@ -22,6 +23,8 @@ export default function ArtistProfile() {
   const [userHasReview, setUserHasReview] = useState(false);
   const [preferredContact, setPreferredContact] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
+  const [isSliderOpen, setIsSliderOpen] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
     if (id) {
@@ -117,6 +120,19 @@ export default function ArtistProfile() {
   const canLeaveReview = profile && 
     ['agent', 'manager', 'lieu'].includes(profile.profile_type) &&
     artist?.user_id !== user?.id;
+
+  const handleImageClick = (index: number) => {
+    setSelectedImageIndex(index);
+    setIsSliderOpen(true);
+  };
+
+  const imageMedia = media.filter(item => item.media_type === 'image');
+  const sliderImages = imageMedia.map(item => ({
+    id: item.id,
+    url: item.file_url,
+    description: item.description || item.file_name || null,
+    position_y: undefined
+  }));
 
   const getSocialIcon = (platform: string) => {
     switch (platform) {
@@ -314,13 +330,14 @@ export default function ArtistProfile() {
               </CardHeader>
               <CardContent>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {media.slice(0, 6).map((item) => (
+                  {media.slice(0, 6).map((item, index) => (
                     <div key={item.id} className="aspect-square bg-muted rounded-lg overflow-hidden group cursor-pointer">
                        {item.media_type === 'image' ? (
                          <img 
                            src={item.file_url} 
                            alt={item.file_name || 'Portfolio item'}
                            className="w-full h-full object-cover group-hover:scale-105 transition-transform"
+                           onClick={() => handleImageClick(imageMedia.findIndex(img => img.id === item.id))}
                          />
                        ) : (
                          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
@@ -529,6 +546,13 @@ export default function ArtistProfile() {
         </div>
       </div>
     </div>
+
+    <ImageGallerySlider 
+      images={sliderImages}
+      selectedIndex={selectedImageIndex}
+      isOpen={isSliderOpen}
+      onClose={() => setIsSliderOpen(false)}
+    />
     </>
   );
 }
