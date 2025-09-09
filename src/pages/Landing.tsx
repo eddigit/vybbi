@@ -314,6 +314,65 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Verified Reviews Section */}
+      <section className="py-16 px-2 sm:px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-6 text-sm px-4 py-2">
+              <Shield className="w-4 h-4 mr-2" />
+              TRANSPARENCE & PROFESSIONNALISME
+            </Badge>
+            <h2 className="text-4xl font-bold mb-4">Avis vérifiés et transparents</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Vybbi promeut la transparence et le professionnalisme en permettant aux lieux, agents et managers 
+              de laisser des avis vérifiés sur les artistes. Cette exigence de qualité distingue notre plateforme 
+              et garantit le sérieux de tous nos talents.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                  <CheckCircle className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">Avis certifiés</h3>
+                <p className="text-muted-foreground">
+                  Seuls les professionnels ayant travaillé avec les artistes peuvent laisser des avis, 
+                  garantissant leur authenticité et leur pertinence.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                  <Star className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">Évaluation 5 étoiles</h3>
+                <p className="text-muted-foreground">
+                  Système de notation transparent qui aide les organisateurs d'événements 
+                  à prendre des décisions éclairées sur leurs bookings.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                  <TrendingUp className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">Excellence renforcée</h3>
+                <p className="text-muted-foreground">
+                  Cette exigence de transparence pousse tous les artistes vers l'excellence 
+                  et renforce la qualité globale de l'écosystème Vybbi.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
       <section id="testimonials" className="py-16 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">

@@ -11,13 +11,16 @@ import { useAuth } from '@/hooks/useAuth';
 import { getLanguageByCode } from '@/lib/languages';
 import { getTalentById } from '@/lib/talents';
 import FeaturedArtistsStrip from '@/components/FeaturedArtistsStrip';
+import ReviewForm from '@/components/ReviewForm';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [artist, setArtist] = useState<Profile | null>(null);
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [reviewers, setReviewers] = useState<{ [key: string]: Profile }>({});
+  const [userHasReview, setUserHasReview] = useState(false);
   const [preferredContact, setPreferredContact] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -70,6 +73,33 @@ export default function ArtistProfile() {
       
       setReviews(reviewsData || []);
 
+      // Fetch reviewer profiles if there are reviews
+      if (reviewsData && reviewsData.length > 0) {
+        const reviewerIds = [...new Set(reviewsData.map(review => review.reviewer_id))];
+        const { data: reviewerProfiles } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('user_id', reviewerIds);
+        
+        const reviewerMap: { [key: string]: Profile } = {};
+        reviewerProfiles?.forEach(reviewer => {
+          reviewerMap[reviewer.user_id] = reviewer;
+        });
+        setReviewers(reviewerMap);
+      }
+
+      // Check if current user has already reviewed this artist
+      if (user) {
+        const { data: existingReview } = await supabase
+          .from('reviews')
+          .select('id')
+          .eq('reviewer_id', user.id)
+          .eq('reviewed_profile_id', id)
+          .single();
+        
+        setUserHasReview(!!existingReview);
+      }
+
     } catch (error) {
       console.error('Error fetching artist data:', error);
     } finally {
@@ -80,6 +110,14 @@ export default function ArtistProfile() {
   const averageRating = reviews.length > 0 
     ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
     : 0;
+
+  const handleReviewSubmitted = () => {
+    fetchArtistData();
+  };
+
+  const canLeaveReview = profile && 
+    ['agent', 'manager', 'lieu'].includes(profile.profile_type) &&
+    artist?.user_id !== user?.id;
 
   const getSocialIcon = (platform: string) => {
     switch (platform) {
@@ -307,44 +345,102 @@ export default function ArtistProfile() {
           )}
 
           {/* Reviews */}
-          {reviews.length > 0 && (
+          {(reviews.length > 0 || canLeaveReview) && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <Star className="h-5 w-5" />
-                  Reviews ({reviews.length})
+                  Avis {reviews.length > 0 && `(${reviews.length})`}
                 </CardTitle>
                 {averageRating > 0 && (
                   <div className="flex items-center gap-1">
                     <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
                     <span className="font-medium">{averageRating.toFixed(1)}</span>
+                    <span className="text-muted-foreground text-sm">
+                      sur {reviews.length} avis
+                    </span>
                   </div>
                 )}
               </CardHeader>
-              <CardContent>
-                <div className="space-y-4">
-                  {reviews.slice(0, 3).map((review) => (
-                    <div key={review.id} className="border-l-2 border-primary/20 pl-4">
-                      <div className="flex items-center gap-2 mb-2">
-                        <div className="flex">
-                          {[...Array(5)].map((_, i) => (
-                            <Star
-                              key={i}
-                              className={`h-3 w-3 ${
-                                i < review.rating
-                                  ? 'fill-yellow-400 text-yellow-400'
-                                  : 'text-muted-foreground'
-                              }`}
-                            />
-                          ))}
+              <CardContent className="space-y-6">
+                {/* Review Form for eligible users */}
+                {canLeaveReview && (
+                  <ReviewForm 
+                    artistId={id!} 
+                    onReviewSubmitted={handleReviewSubmitted}
+                    existingReview={userHasReview}
+                  />
+                )}
+
+                {/* Reviews Display */}
+                {reviews.length > 0 ? (
+                  <div className="space-y-4">
+                    {reviews.slice(0, 5).map((review) => {
+                      const reviewer = reviewers[review.reviewer_id];
+                      return (
+                        <div key={review.id} className="border-l-2 border-primary/20 pl-4 py-3">
+                          <div className="flex items-start gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={reviewer?.avatar_url || ''} />
+                              <AvatarFallback className="text-xs">
+                                {reviewer?.display_name 
+                                  ? reviewer.display_name.split(' ').map(n => n[0]).join('').slice(0, 2)
+                                  : '?'
+                                }
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2 mb-1">
+                                <span className="font-medium text-sm">
+                                  {reviewer?.display_name || 'Utilisateur'}
+                                </span>
+                                <Badge variant="outline" className="text-xs">
+                                  {reviewer?.profile_type === 'lieu' ? 'Lieu' : 
+                                   reviewer?.profile_type === 'agent' ? 'Agent' : 
+                                   reviewer?.profile_type === 'manager' ? 'Manager' : 
+                                   reviewer?.profile_type}
+                                </Badge>
+                              </div>
+                              <div className="flex items-center gap-2 mb-2">
+                                <div className="flex">
+                                  {[...Array(5)].map((_, i) => (
+                                    <Star
+                                      key={i}
+                                      className={`h-3 w-3 ${
+                                        i < review.rating
+                                          ? 'fill-yellow-400 text-yellow-400'
+                                          : 'text-muted-foreground'
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(review.created_at).toLocaleDateString('fr-FR')}
+                                </span>
+                              </div>
+                              {review.comment && (
+                                <p className="text-sm text-muted-foreground">{review.comment}</p>
+                              )}
+                            </div>
+                          </div>
                         </div>
-                      </div>
-                      {review.comment && (
-                        <p className="text-sm text-muted-foreground">{review.comment}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
+                      );
+                    })}
+                    {reviews.length > 5 && (
+                      <p className="text-sm text-muted-foreground text-center">
+                        +{reviews.length - 5} autres avis
+                      </p>
+                    )}
+                  </div>
+                ) : canLeaveReview ? (
+                  <p className="text-center text-muted-foreground py-4">
+                    Soyez le premier à laisser un avis pour cet artiste.
+                  </p>
+                ) : (
+                  <p className="text-center text-muted-foreground py-4">
+                    Aucun avis pour le moment.
+                  </p>
+                )}
               </CardContent>
             </Card>
           )}
