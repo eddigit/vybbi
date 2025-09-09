@@ -150,8 +150,8 @@ export default function VenueDashboard() {
               Mettez à jour les informations de votre lieu
             </p>
             <Button className="w-full" variant="outline" asChild>
-              <Link to={`/lieux/${profile?.id}`}>
-                Voir/Modifier le profil
+              <Link to={`/lieux/${profile?.id}/edit`}>
+                Modifier le profil
               </Link>
             </Button>
           </CardContent>

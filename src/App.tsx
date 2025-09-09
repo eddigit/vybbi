@@ -32,6 +32,7 @@ import MyArtists from "./pages/MyArtists";
 import NosArtistes from "./pages/NosArtistes";
 import AccesComplet from "./pages/AccesComplet";
 import EventsManager from "./pages/EventsManager";
+import VenueProfileEdit from "./pages/VenueProfileEdit";
 
 const queryClient = new QueryClient();
 
@@ -71,6 +72,7 @@ const App = () => (
             <Route path="/voir-plus" element={<AccesComplet />} />
             <Route path="/" element={<Landing />} />
         <Route path="/events" element={<EventsManager />} />
+        <Route path="/lieux/:id/edit" element={<VenueProfileEdit />} />
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

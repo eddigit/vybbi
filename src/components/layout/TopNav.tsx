@@ -63,7 +63,7 @@ const getLieuItems = (profileId: string) => [
   { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Événements", url: "/events", icon: Calendar },
   { title: "Messages", url: "/messages", icon: MessageSquare },
-  { title: "Mon Profil", url: `/lieux/${profileId}`, icon: User },
+  { title: "Mon Profil", url: `/lieux/${profileId}/edit`, icon: User },
 ];
 
 const adminItems = [
