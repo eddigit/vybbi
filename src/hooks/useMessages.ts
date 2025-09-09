@@ -30,6 +30,8 @@ export function useMessages(conversationId: string | null) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  console.log('useMessages - conversationId:', conversationId, 'user:', user);
+
   const fetchMessages = async () => {
     if (!conversationId) return;
 

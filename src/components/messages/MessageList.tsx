@@ -10,6 +10,8 @@ interface MessageListProps {
 }
 
 export default function MessageList({ messages, loading }: MessageListProps) {
+  console.log('MessageList rendering:', { messagesCount: messages?.length || 0, loading });
+  
   const { user } = useAuth();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
@@ -22,14 +24,14 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   }, [messages]);
 
   // Group messages by date
-  const groupedMessages = messages.reduce((groups, message) => {
+  const groupedMessages = messages?.reduce((groups, message) => {
     const date = new Date(message.created_at).toDateString();
     if (!groups[date]) {
       groups[date] = [];
     }
     groups[date].push(message);
     return groups;
-  }, {} as Record<string, MessageWithSender[]>);
+  }, {} as Record<string, MessageWithSender[]>) || {};
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
@@ -52,6 +54,7 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   };
 
   if (loading) {
+    console.log('MessageList - Loading messages...');
     return (
       <div className="flex-1 flex items-center justify-center">
         <p className="text-muted-foreground">Chargement des messages...</p>
@@ -59,7 +62,8 @@ export default function MessageList({ messages, loading }: MessageListProps) {
     );
   }
 
-  if (messages.length === 0) {
+  if (!messages || messages.length === 0) {
+    console.log('MessageList - No messages to display');
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
@@ -71,6 +75,8 @@ export default function MessageList({ messages, loading }: MessageListProps) {
       </div>
     );
   }
+
+  console.log('MessageList - Rendering messages:', messages.length);
 
   return (
     <div className="flex-1 flex flex-col">

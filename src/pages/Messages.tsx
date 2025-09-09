@@ -21,14 +21,22 @@ export default function Messages() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
+  console.log('Messages component loaded, user:', user);
+  
   // State
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showConversationList, setShowConversationList] = useState(true);
   
   // Test if hooks are working properly
+  console.log('Loading conversations...');
   const conversationsResult = useConversations();
+  console.log('Conversations result:', conversationsResult);
+  
+  console.log('Loading messages for conversation:', selectedConversationId);
   const messagesResult = useMessages(selectedConversationId);
+  console.log('Messages result:', messagesResult);
+  
   const typingResult = useTypingPresence(selectedConversationId);
 
   // Safe destructuring
@@ -222,6 +230,7 @@ export default function Messages() {
   };
 
   if (!user) {
+    console.log('Messages - No user found');
     return (
       <div className="container mx-auto px-6 py-8 text-center">
         <p>Connectez-vous pour accéder aux messages.</p>
@@ -229,7 +238,10 @@ export default function Messages() {
     );
   }
 
+  console.log('Messages - User found:', user.id);
+
   if (conversationsLoading) {
+    console.log('Messages - Loading conversations...');
     return (
       <div className="container mx-auto px-6 py-8">
         <div className="animate-pulse">Chargement des conversations...</div>
@@ -239,6 +251,7 @@ export default function Messages() {
 
   // Show error state if there are hook errors
   if (conversationsError || messagesError) {
+    console.log('Messages - Error:', conversationsError || messagesError);
     return (
       <div className="container mx-auto px-6 py-8 text-center">
         <p className="text-red-500">
@@ -247,6 +260,8 @@ export default function Messages() {
       </div>
     );
   }
+
+  console.log('Messages - Rendering main UI');
 
   const canSendMessage = selectedConversation && !selectedConversation.is_blocked;
 

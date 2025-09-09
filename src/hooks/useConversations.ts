@@ -26,12 +26,21 @@ export function useConversations() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const fetchConversations = async () => {
-    if (!user) return;
+  console.log('useConversations - user:', user);
 
+  const fetchConversations = async () => {
+    if (!user) {
+      console.log('useConversations - no user, skipping fetch');
+      setLoading(false);
+      return;
+    }
+
+    console.log('useConversations - fetching conversations...');
     try {
       setError(null);
       const { data, error: fetchError } = await supabase.rpc('get_conversations_with_details');
+
+      console.log('useConversations - RPC result:', { data, fetchError });
 
       if (fetchError) {
         console.error('Error fetching conversations:', fetchError);
