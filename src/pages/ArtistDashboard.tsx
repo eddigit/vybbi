@@ -109,7 +109,8 @@ export default function ArtistDashboard() {
                 <span className={
                   metric.changeType === "positive" ? "text-green-600" :
                   metric.changeType === "negative" ? "text-red-600" :
-                  "text-yellow-600"
+                  metric.changeType === "neutral" ? "text-yellow-600" :
+                  "text-gray-600"
                 }>
                   {metric.change}
                 </span>

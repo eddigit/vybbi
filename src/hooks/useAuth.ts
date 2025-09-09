@@ -56,25 +56,25 @@ export function useAuth() {
       setProfile(profileData);
       setRoles(rolesData?.map(r => r.role) || []);
       
-      // Only redirect after everything is set and we're sure user is available
-      setTimeout(() => {
-        // Auto-redirect based on profile type from certain routes
-        const redirectPaths = ['/', '/auth'];
-        if (redirectPaths.includes(window.location.pathname)) {
-          if (profileData?.profile_type === 'artist') {
-            navigate(`/artists/${profileData.id}/edit`, { replace: true });
-          } else if (profileData?.profile_type === 'agent') {
-            navigate(`/agents/${profileData.id}/edit`, { replace: true });
-          } else if (profileData?.profile_type === 'manager') {
-            navigate(`/managers/${profileData.id}/edit`, { replace: true });
-          } else if (profileData?.profile_type === 'lieu') {
-            navigate(`/lieux/${profileData.id}`, { replace: true });
-          } else {
-            // Default to dashboard for other profile types
-            navigate('/dashboard', { replace: true });
-          }
-        }
-      }, 100);
+            // Only redirect after everything is set and we're sure user is available
+            setTimeout(() => {
+              // Auto-redirect based on profile type from certain routes
+              const redirectPaths = ['/', '/auth'];
+              if (redirectPaths.includes(window.location.pathname)) {
+                if (profileData?.profile_type === 'artist') {
+                  navigate(`/artists/${profileData.id}/edit`, { replace: true });
+                } else if (profileData?.profile_type === 'agent') {
+                  navigate(`/agents/${profileData.id}/edit`, { replace: true });
+                } else if (profileData?.profile_type === 'manager') {
+                  navigate(`/managers/${profileData.id}/edit`, { replace: true });
+                } else if (profileData?.profile_type === 'lieu') {
+                  navigate(`/lieux/${profileData.id}`, { replace: true });
+                } else {
+                  // Default to dashboard for other profile types
+                  navigate('/dashboard', { replace: true });
+                }
+              }
+            }, 100);
     } catch (error) {
       console.error('Error in fetchProfile:', error);
     } finally {

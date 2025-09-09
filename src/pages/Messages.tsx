@@ -398,13 +398,13 @@ export default function Messages() {
                         selectedConversation === conversation.id ? 'bg-muted' : ''
                       } ${conversation.is_blocked ? 'opacity-50' : ''}`}
                     >
-                      <div className="flex items-center gap-3">
-                        <Avatar className="w-10 h-10">
-                          <AvatarImage src={conversation.other_participant?.avatar_url} />
-                          <AvatarFallback>
-                            {conversation.other_participant?.display_name?.charAt(0).toUpperCase() || <MessageCircle className="w-4 h-4" />}
-                          </AvatarFallback>
-                        </Avatar>
+        <div className="flex items-center gap-3">
+          <Avatar className="w-10 h-10">
+            <AvatarImage src={conversation.other_participant?.avatar_url || undefined} />
+            <AvatarFallback>
+              {conversation.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
+            </AvatarFallback>
+          </Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
                             <p className="font-medium truncate">
@@ -442,12 +442,12 @@ export default function Messages() {
             <>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle className="flex items-center gap-2">
-                  <Avatar className="w-8 h-8">
-                    <AvatarImage src={selectedConversationDetails.other_participant?.avatar_url} />
-                    <AvatarFallback>
-                      {selectedConversationDetails.other_participant?.display_name?.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
+                <Avatar className="w-8 h-8">
+                  <AvatarImage src={selectedConversationDetails.other_participant?.avatar_url || undefined} />
+                  <AvatarFallback>
+                    {selectedConversationDetails.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
+                  </AvatarFallback>
+                </Avatar>
                   {selectedConversationDetails.other_participant?.display_name || 'Utilisateur inconnu'}
                   {selectedConversationDetails.is_blocked && <Ban className="w-4 h-4 text-destructive" />}
                 </CardTitle>

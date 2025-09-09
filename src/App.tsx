@@ -21,8 +21,6 @@ import { AgentProfileEdit } from "./pages/AgentProfileEdit";
 import { ManagerProfileEdit } from "./pages/ManagerProfileEdit";
 import { AnnonceManager } from "./pages/AnnonceManager";
 import Landing from "./pages/Landing";
-import ArtistDashboard from "./pages/ArtistDashboard";
-import PartnerDashboard from "./pages/PartnerDashboard";
 import Promotion from "./pages/Promotion";
 import VenueProfile from "./pages/VenueProfile";
 import PartnerProfile from "./pages/PartnerProfile";
@@ -41,8 +39,6 @@ const App = () => (
         <Layout>
           <Routes>
             <Route path="/dashboard" element={<Dashboard />} />
-            <Route path="/artist-dashboard" element={<ArtistDashboard />} />
-            <Route path="/partner-dashboard" element={<PartnerDashboard />} />
             <Route path="/partners" element={<Partners />} />
             <Route path="/campaigns" element={<Campaigns />} />
             <Route path="/commissions" element={<Commissions />} />
