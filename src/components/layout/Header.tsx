@@ -25,37 +25,6 @@ export function Header() {
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const [searchQuery, setSearchQuery] = useState("");
   
-  // Determine page context
-  const getPageTitle = () => {
-    if (location.pathname.includes('/artists/') && location.pathname.includes('/edit')) {
-      return "Modifier mon profil";
-    }
-    if (location.pathname.includes('/artists/')) {
-      return "Profil d'artiste";
-    }
-    if (location.pathname === '/dashboard') {
-      return "Tableau de Bord";
-    }
-    if (location.pathname === '/artists') {
-      return "Artistes";
-    }
-    if (location.pathname === '/lieux') {
-      return "Lieux";
-    }
-    if (location.pathname === '/messages') {
-      return "Messages";
-    }
-    if (location.pathname === '/campaigns') {
-      return "Campagnes";
-    }
-    if (location.pathname === '/reports') {
-      return "Rapports";
-    }
-    if (location.pathname === '/promotion') {
-      return "Se mettre en avant";
-    }
-    return "Vybbi";
-  };
 
   const isArtistPage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
   const showAdminControls = !isArtistPage && location.pathname !== '/';
@@ -105,18 +74,13 @@ export function Header() {
           <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
         </div>
 
-        {/* Centered Title - Hidden on small mobile, visible on larger screens */}
+        {/* Centered Date Badge */}
         <div className="hidden xs:flex flex-1 justify-center">
-          <div className="flex items-center gap-2 sm:gap-4">
-            <h1 className="text-base sm:text-xl font-semibold text-foreground text-center truncate max-w-[200px] sm:max-w-none">
-              {getPageTitle()}
-            </h1>
-            {showAdminControls && (
-              <Badge variant="secondary" className="hidden sm:block text-xs whitespace-nowrap">
-                lundi 8 septembre 2025 à 16:39
-              </Badge>
-            )}
-          </div>
+          {showAdminControls && (
+            <Badge variant="secondary" className="hidden sm:block text-xs whitespace-nowrap">
+              lundi 8 septembre 2025 à 16:39
+            </Badge>
+          )}
         </div>
 
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
