@@ -10,7 +10,6 @@ import { Profile, MediaAsset, Review } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { getLanguageByCode } from '@/lib/languages';
 import { getTalentById } from '@/lib/talents';
-import FeaturedArtistsStrip from '@/components/FeaturedArtistsStrip';
 import ReviewForm from '@/components/ReviewForm';
 
 export default function ArtistProfile() {
@@ -164,9 +163,6 @@ export default function ArtistProfile() {
 
   return (
     <>
-      {/* Featured Artists Strip */}
-      <FeaturedArtistsStrip />
-      
       <div className="container mx-auto p-6">
       {/* Header Section with Cover Image */}
       <div 
