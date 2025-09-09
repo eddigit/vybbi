@@ -13,6 +13,11 @@ import {
   Music,
   UserSearch,
   Building2,
+  Star,
+  Calendar,
+  Briefcase,
+  MapPin,
+  User,
 } from "lucide-react";
 
 import {
@@ -27,13 +32,41 @@ import {
   SidebarTrigger,
   useSidebar,
 } from "@/components/ui/sidebar";
+import { useAuth } from "@/hooks/useAuth";
 
-const mainItems = [
-  { title: "Dashboard", url: "/", icon: LayoutDashboard },
+// Navigation items for different user types
+const artistItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artists", url: "/artists", icon: Music },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Directory", url: "/profiles", icon: UserSearch },
+];
+
+const agentItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Artistes", url: "/artists", icon: Music },
+  { title: "Mes Artistes", url: "/agents", icon: Star },
+  { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Mon Profil", url: "/profiles", icon: User },
+];
+
+const managerItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Partenaires", url: "/partners", icon: Users },
+  { title: "Campagnes", url: "/campaigns", icon: Target },
+  { title: "Commissions", url: "/commissions", icon: Euro },
+  { title: "Rapports", url: "/reports", icon: BarChart3 },
+  { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Mon Profil", url: "/profiles", icon: User },
+];
+
+const lieuItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Lieux", url: "/lieux", icon: MapPin },
+  { title: "Événements", url: "/events", icon: Calendar },
+  { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Mon Profil", url: "/profiles", icon: User },
 ];
 
 const adminItems = [
@@ -45,8 +78,28 @@ const adminItems = [
 
 export function AppSidebar() {
   const { open } = useSidebar();
+  const { profile, hasRole } = useAuth();
   const location = useLocation();
   const currentPath = location.pathname;
+
+  // Get navigation items based on profile type
+  const getNavigationItems = () => {
+    if (!profile) return artistItems; // Default fallback
+    
+    switch (profile.profile_type) {
+      case 'agent':
+        return agentItems;
+      case 'manager':
+        return managerItems;
+      case 'lieu':
+        return lieuItems;
+      case 'artist':
+      default:
+        return artistItems;
+    }
+  };
+
+  const mainItems = getNavigationItems();
 
   const isActive = (path: string) => currentPath === path;
   const getNavCls = ({ isActive }: { isActive: boolean }) =>
@@ -83,6 +136,26 @@ export function AppSidebar() {
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
+
+        {hasRole('admin') && (
+          <SidebarGroup>
+            <SidebarGroupLabel>Administration</SidebarGroupLabel>
+            <SidebarGroupContent>
+              <SidebarMenu>
+                {adminItems.map((item) => (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton asChild>
+                      <NavLink to={item.url} end className={getNavCls}>
+                        <item.icon className="mr-2 h-4 w-4" />
+                        {open && <span>{item.title}</span>}
+                      </NavLink>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                ))}
+              </SidebarMenu>
+            </SidebarGroupContent>
+          </SidebarGroup>
+        )}
       </SidebarContent>
     </Sidebar>
   );

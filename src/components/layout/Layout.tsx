@@ -29,6 +29,7 @@ export function Layout({ children }: LayoutProps) {
     );
   }
 
+  // For all other pages (dashboard, agent pages, etc.), use sidebar layout
   return (
     <SidebarProvider>
       <div className="min-h-screen flex w-full bg-background">
