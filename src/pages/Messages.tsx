@@ -60,11 +60,13 @@ export default function Messages() {
   useEffect(() => {
     if (selectedConversation) {
       fetchMessages(selectedConversation);
-      subscribeToMessages(selectedConversation);
+      const cleanup = subscribeToMessages(selectedConversation);
       
       // Find conversation details
       const convDetails = conversations.find(c => c.id === selectedConversation);
       setSelectedConversationDetails(convDetails || null);
+      
+      return cleanup;
     }
   }, [selectedConversation, conversations]);
 
@@ -197,7 +199,36 @@ export default function Messages() {
           };
         });
         
-        setConversations(conversationsWithDetails);
+        // Deduplication: For direct conversations, keep only one per peer user
+        const conversationMap = new Map();
+        conversationsWithDetails.forEach(conv => {
+          const key = conv.type === 'direct' && conv.other_participant?.user_id 
+            ? conv.other_participant.user_id 
+            : conv.id;
+          
+          if (!conversationMap.has(key)) {
+            conversationMap.set(key, conv);
+          } else {
+            const existing = conversationMap.get(key);
+            // Keep the one with the most recent last_message_at or created_at
+            const existingTime = new Date(existing.last_message_at || existing.created_at);
+            const currentTime = new Date(conv.last_message_at || conv.created_at);
+            
+            if (currentTime > existingTime) {
+              conversationMap.set(key, conv);
+            }
+          }
+        });
+        
+        // Convert back to array and sort
+        const dedupedConversations = Array.from(conversationMap.values())
+          .sort((a, b) => {
+            const timeA = new Date(a.last_message_at || a.created_at);
+            const timeB = new Date(b.last_message_at || b.created_at);
+            return timeB.getTime() - timeA.getTime();
+          });
+        
+        setConversations(dedupedConversations);
       }
     } catch (error) {
       console.error('Error fetching conversations:', error);
@@ -243,7 +274,7 @@ export default function Messages() {
 
   const subscribeToMessages = (conversationId: string) => {
     const channel = supabase
-      .channel('messages')
+      .channel(`messages-${conversationId}`)
       .on(
         'postgres_changes',
         {
@@ -419,26 +450,26 @@ export default function Messages() {
                           selectedConversation === conversation.id ? 'bg-muted' : ''
                         } ${conversation.is_blocked ? 'opacity-50' : ''}`}
                       >
-                        <div className="flex items-center gap-3 sm:gap-4">
-                          <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
+                        <div className="flex items-start gap-3 sm:gap-4">
+                          <Avatar className="w-10 h-10 sm:w-12 sm:h-12 shrink-0">
                             <AvatarImage src={conversation.other_participant?.avatar_url || undefined} />
                             <AvatarFallback className="text-sm sm:text-base xl:text-lg">
                               {conversation.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
                             </AvatarFallback>
                           </Avatar>
-                          <div className="flex-1 min-w-0">
+                          <div className="flex-1 min-w-0 text-left">
                             <div className="flex items-center gap-2">
                               <p className="font-medium truncate text-sm sm:text-base xl:text-lg">
                                 {conversation.other_participant?.display_name || 'Utilisateur inconnu'}
                               </p>
                               {conversation.other_participant?.profile_type && (
-                                <span className="text-xs sm:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize">
+                                <span className="text-xs sm:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize shrink-0">
                                   {conversation.other_participant.profile_type}
                                 </span>
                               )}
-                              {conversation.is_blocked && <Ban className="w-3 h-3 sm:w-4 sm:h-4 text-destructive" />}
+                              {conversation.is_blocked && <Ban className="w-3 h-3 sm:w-4 sm:h-4 text-destructive shrink-0" />}
                             </div>
-                            <p className="text-xs sm:text-sm xl:text-base text-muted-foreground truncate">
+                            <p className="text-xs sm:text-sm xl:text-base text-muted-foreground truncate text-left">
                               {conversation.last_message?.content || 'Aucun message'}
                             </p>
                             <div className="flex items-center gap-2 mt-1">
