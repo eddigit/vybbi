@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, ExternalLink, MessageSquare, Star, Users, Briefcase } from "lucide-react";
+import { MapPin, ExternalLink, MessageSquare, Star, Users, Briefcase, Mail, Phone } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
@@ -228,7 +228,61 @@ export default function PartnerProfile() {
             <CardHeader>
               <CardTitle>Contact & Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-3">
+            <CardContent className="space-y-4">
+              {/* Email Contact */}
+              {partner.email && (
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Mail className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">{partner.email}</p>
+                      <p className="text-xs text-muted-foreground">Email</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" asChild>
+                      <Link to={`/messages?partner=${partner.id}`}>
+                        Écrire dans l'app
+                      </Link>
+                    </Button>
+                    <Button size="sm" variant="outline" asChild>
+                      <a href={`mailto:${partner.email}`}>
+                        Email
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              {/* Phone Contact */}
+              {partner.phone && (
+                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <Phone className="w-4 h-4 text-muted-foreground" />
+                    <div>
+                      <p className="text-sm font-medium">{partner.phone}</p>
+                      <p className="text-xs text-muted-foreground">Téléphone</p>
+                    </div>
+                  </div>
+                  <div className="flex gap-2">
+                    <Button size="sm" asChild>
+                      <a 
+                        href={`https://wa.me/${partner.phone.replace(/[^0-9]/g, '')}`} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                      >
+                        WhatsApp
+                      </a>
+                    </Button>
+                    <Button size="sm" variant="outline" asChild>
+                      <a href={`tel:${partner.phone}`}>
+                        Appeler
+                      </a>
+                    </Button>
+                  </div>
+                </div>
+              )}
+
               {user && user.id !== partner.user_id && (
                 <Button className="w-full" asChild>
                   <Link to={`/messages?partner=${partner.id}`}>
