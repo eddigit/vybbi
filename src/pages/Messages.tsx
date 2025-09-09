@@ -126,7 +126,8 @@ export default function Messages() {
     if (!user) return;
     
     try {
-      const { data: conversationsData } = await supabase
+      // Get conversations where user is a participant
+      const { data: conversationsData, error: conversationsError } = await supabase
         .from('conversation_participants')
         .select(`
           conversation_id,
@@ -140,32 +141,45 @@ export default function Messages() {
           )
         `)
         .eq('user_id', user.id);
+
+      if (conversationsError) {
+        console.error('Error fetching conversations:', conversationsError);
+        return;
+      }
       
       if (conversationsData) {
         const conversationsWithDetails = await Promise.all(
           conversationsData.map(async (item: any) => {
             const conversation = item.conversations;
             
-            // Get other participant
-            const { data: participantData } = await supabase
+            // Get other participant for this conversation
+            const { data: otherParticipants, error: participantsError } = await supabase
               .from('conversation_participants')
               .select('user_id')
               .eq('conversation_id', conversation.id)
-              .neq('user_id', user.id)
-              .maybeSingle();
+              .neq('user_id', user.id);
             
-            let otherParticipantProfile = null;
-            if (participantData) {
-              console.log('Fetching profile for user_id:', participantData.user_id);
-              const { data: profileData } = await supabase
-                .from('profiles')
-                .select('*')
-                .eq('user_id', participantData.user_id)
-                .maybeSingle();
-              console.log('Profile data retrieved:', profileData);
-              otherParticipantProfile = profileData;
+            if (participantsError) {
+              console.error('Error fetching participants:', participantsError);
             }
             
+            // Get profile for the other participant
+            let otherParticipant = null;
+            if (otherParticipants && otherParticipants.length > 0) {
+              const { data: profileData, error: profileError } = await supabase
+                .from('profiles')
+                .select('display_name, avatar_url, user_id')
+                .eq('user_id', otherParticipants[0].user_id)
+                .maybeSingle();
+              
+              if (profileError) {
+                console.error('Error fetching profile:', profileError);
+              }
+              
+              console.log('Profile data for conversation', conversation.id, ':', profileData);
+              otherParticipant = profileData;
+            }
+
             // Get last message
             const { data: lastMessage } = await supabase
               .from('messages')
@@ -175,13 +189,13 @@ export default function Messages() {
               .limit(1)
               .maybeSingle();
             
-            // Check if blocked
+            // Check if blocked (only if we have an other participant)
             let blockData = null;
-            if (participantData) {
+            if (otherParticipant) {
               const { data: blockResult } = await supabase
                 .from('blocked_users')
                 .select('*')
-                .or(`and(blocker_user_id.eq.${user.id},blocked_user_id.eq.${participantData.user_id}),and(blocker_user_id.eq.${participantData.user_id},blocked_user_id.eq.${user.id})`)
+                .or(`and(blocker_user_id.eq.${user.id},blocked_user_id.eq.${otherParticipant.user_id}),and(blocker_user_id.eq.${otherParticipant.user_id},blocked_user_id.eq.${user.id})`)
                 .maybeSingle();
               blockData = blockResult;
             }
@@ -195,7 +209,7 @@ export default function Messages() {
             
             return {
               ...conversation,
-              other_participant: otherParticipantProfile,
+              other_participant: otherParticipant,
               last_message: lastMessage,
               is_blocked: !!blockData,
               can_send_message: canSendMessage
@@ -203,6 +217,7 @@ export default function Messages() {
           })
         );
         
+        console.log('Final conversations with details:', conversationsWithDetails);
         setConversations(conversationsWithDetails);
       }
     } catch (error) {
