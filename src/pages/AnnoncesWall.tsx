@@ -83,6 +83,12 @@ export function AnnoncesWall() {
 
       // Fetch profiles for each announcement
       const userIds = data.map(annonce => annonce.user_id);
+      
+      if (userIds.length === 0) {
+        setAnnonces([]);
+        return;
+      }
+
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
         .select("id, display_name, avatar_url, profile_type, user_id")
