@@ -29,6 +29,9 @@ export interface Profile {
   is_public: boolean;
   accepts_direct_contact?: boolean;
   preferred_contact_profile_id?: string;
+  // Optional featured artist fields for future use
+  is_featured?: boolean;
+  featured_rank?: number;
   created_at: string;
   updated_at: string;
 }

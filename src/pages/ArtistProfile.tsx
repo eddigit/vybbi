@@ -10,6 +10,7 @@ import { Profile, MediaAsset, Review } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { getLanguageByCode } from '@/lib/languages';
 import { getTalentById } from '@/lib/talents';
+import FeaturedArtistsStrip from '@/components/FeaturedArtistsStrip';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
@@ -124,7 +125,11 @@ export default function ArtistProfile() {
   ].filter(link => link.url);
 
   return (
-    <div className="container mx-auto p-6">
+    <>
+      {/* Featured Artists Strip */}
+      <FeaturedArtistsStrip />
+      
+      <div className="container mx-auto p-6">
       {/* Header Section with Cover Image */}
       <div 
         className="relative h-64 md:h-80 rounded-xl mb-8 overflow-hidden"
@@ -432,5 +437,6 @@ export default function ArtistProfile() {
         </div>
       </div>
     </div>
+    </>
   );
 }
