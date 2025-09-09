@@ -42,8 +42,8 @@ export function AnnoncesWall() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [locationFilter, setLocationFilter] = useState("");
-  const [budgetFilter, setBudgetFilter] = useState("");
-  const [typeFilter, setTypeFilter] = useState("");
+  const [budgetFilter, setBudgetFilter] = useState("all");
+  const [typeFilter, setTypeFilter] = useState("all");
   const [showApplicationDialog, setShowApplicationDialog] = useState(false);
   const [selectedAnnonce, setSelectedAnnonce] = useState<string | null>(null);
   const [applicationMessage, setApplicationMessage] = useState("");
@@ -146,12 +146,12 @@ export function AnnoncesWall() {
     const matchesLocation = !locationFilter || 
       (annonce.location && annonce.location.toLowerCase().includes(locationFilter.toLowerCase()));
     
-    const matchesBudget = !budgetFilter || 
+    const matchesBudget = budgetFilter === "all" || 
       (budgetFilter === "low" && annonce.budget_max && annonce.budget_max <= 1000) ||
       (budgetFilter === "medium" && annonce.budget_min && annonce.budget_min > 1000 && annonce.budget_max && annonce.budget_max <= 5000) ||
       (budgetFilter === "high" && annonce.budget_min && annonce.budget_min > 5000);
     
-    const matchesType = !typeFilter || annonce.profiles.profile_type === typeFilter;
+    const matchesType = typeFilter === "all" || annonce.profiles.profile_type === typeFilter;
 
     return matchesSearch && matchesLocation && matchesBudget && matchesType;
   });
@@ -249,7 +249,7 @@ export function AnnoncesWall() {
                 <SelectValue placeholder="Budget" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tout budget</SelectItem>
+                <SelectItem value="all">Tout budget</SelectItem>
                 <SelectItem value="low">Jusqu'à 1000€</SelectItem>
                 <SelectItem value="medium">1000€ - 5000€</SelectItem>
                 <SelectItem value="high">Plus de 5000€</SelectItem>
@@ -261,7 +261,7 @@ export function AnnoncesWall() {
                 <SelectValue placeholder="Type" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="">Tous types</SelectItem>
+                <SelectItem value="all">Tous types</SelectItem>
                 <SelectItem value="artist">Artistes</SelectItem>
                 <SelectItem value="agent">Agents</SelectItem>
                 <SelectItem value="manager">Managers</SelectItem>
