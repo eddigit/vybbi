@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
+import { requestNotificationPermission, showNotification } from '@/utils/notificationPermissions';
 
 interface Notification {
   id: string;
@@ -23,6 +24,11 @@ export function useNotifications() {
       setLoading(false);
       return;
     }
+
+    // Demander la permission pour les notifications
+    requestNotificationPermission().then(granted => {
+      console.log('Notification permission granted:', granted);
+    });
 
     fetchNotifications();
     const cleanup = subscribeToNotifications();
@@ -167,13 +173,16 @@ export function useNotifications() {
             console.log('Adding new notification:', newNotification);
             setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
             
-            // Optional: Show browser notification if supported
-            if ('Notification' in window && Notification.permission === 'granted') {
-              new Notification(newNotification.title, {
-                body: newNotification.description,
-                icon: sender?.avatar_url || '/favicon.ico'
-              });
-            }
+            // Show browser notification
+            showNotification(newNotification.title, {
+              body: newNotification.description,
+              icon: sender?.avatar_url || '/favicon.ico',
+              tag: 'message-' + messageId,
+              data: {
+                conversationId: payload.new.conversation_id,
+                messageId: messageId
+              }
+            });
           } catch (error) {
             console.error('Error processing new message notification:', error);
           }
