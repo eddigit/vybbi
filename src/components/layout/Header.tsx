@@ -232,36 +232,70 @@ export function Header() {
                     Messages
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/artists" className="flex items-center">
-                    <Search className="mr-2 h-4 w-4" />
-                    Rechercher des artistes
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/lieux" className="flex items-center">
-                    <MapPin className="mr-2 h-4 w-4" />
-                    Trouver une prestation
-                  </Link>
-                </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/profiles?type=agent" className="flex items-center">
-                    <Users className="mr-2 h-4 w-4" />
-                    Rechercher un agent
-                  </Link>
-                </DropdownMenuItem>
+                {/* Menu items based on profile type and role logic */}
+                {(profile.profile_type === 'agent' || profile.profile_type === 'manager' || profile.profile_type === 'lieu') && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/artists" className="flex items-center">
+                      <Search className="mr-2 h-4 w-4" />
+                      Rechercher des artistes
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                
+                {(profile.profile_type === 'agent' || profile.profile_type === 'manager') && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/lieux" className="flex items-center">
+                      <MapPin className="mr-2 h-4 w-4" />
+                      Trouver une prestation
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+
+                {/* Only managers can search for agents (to manage commissions for their artists) */}
+                {profile.profile_type === 'manager' && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/profiles?type=agent" className="flex items-center">
+                      <Users className="mr-2 h-4 w-4" />
+                      Rechercher un agent
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+
+                {/* Artists can search for agents and managers */}
+                {profile.profile_type === 'artist' && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profiles?type=agent" className="flex items-center">
+                        <Users className="mr-2 h-4 w-4" />
+                        Rechercher un agent
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profiles?type=manager" className="flex items-center">
+                        <Users className="mr-2 h-4 w-4" />
+                        Rechercher un manager
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+
+                {/* General directory for all profile types */}
                 <DropdownMenuItem asChild>
                   <Link to="/profiles" className="flex items-center">
                     <Users className="mr-2 h-4 w-4" />
-                    Annuaire (agents et autres)
+                    Annuaire
                   </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link to="/promotion" className="flex items-center">
-                    <Star className="mr-2 h-4 w-4" />
-                    Se mettre en avant
-                  </Link>
-                </DropdownMenuItem>
+                
+                {/* Promotion available for artists and agents/managers */}
+                {(profile.profile_type === 'artist' || profile.profile_type === 'agent' || profile.profile_type === 'manager') && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/promotion" className="flex items-center">
+                      <Star className="mr-2 h-4 w-4" />
+                      Se mettre en avant
+                    </Link>
+                  </DropdownMenuItem>
+                )}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="flex items-center">
                   <LogOut className="mr-2 h-4 w-4" />
