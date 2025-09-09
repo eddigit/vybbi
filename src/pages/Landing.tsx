@@ -166,7 +166,7 @@ export default function Landing() {
                 <p className="text-muted-foreground mb-6">
                   DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings.
                 </p>
-                <ul className="text-left space-y-2 text-sm">
+                <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Portfolio multimédia</span>
@@ -180,6 +180,14 @@ export default function Landing() {
                     <span className="text-card-foreground">Gestion des contrats</span>
                   </li>
                 </ul>
+                <div className="flex flex-col gap-2">
+                  <Button asChild className="w-full">
+                    <Link to="/pour-artistes">En savoir plus</Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/pour-artistes">S'inscrire</Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -196,7 +204,7 @@ export default function Landing() {
                 <p className="text-muted-foreground mb-6">
                   Gérez vos artistes, développez leurs carrières et maximisez leurs opportunités de bookings.
                 </p>
-                <ul className="text-left space-y-2 text-sm">
+                <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Gestion de roster</span>
@@ -210,6 +218,14 @@ export default function Landing() {
                     <span className="text-card-foreground">Analytics de performance</span>
                   </li>
                 </ul>
+                <div className="flex flex-col gap-2">
+                  <Button asChild className="w-full">
+                    <Link to="/pour-agents-managers">En savoir plus</Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/pour-agents-managers">S'inscrire</Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
 
@@ -226,7 +242,7 @@ export default function Landing() {
                 <p className="text-muted-foreground mb-6">
                   Clubs, festivals, bars, restaurants. Trouvez les talents parfaits pour vos événements.
                 </p>
-                <ul className="text-left space-y-2 text-sm">
+                <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Recherche d'artistes</span>
@@ -240,6 +256,14 @@ export default function Landing() {
                     <span className="text-card-foreground">Planning automatisé</span>
                   </li>
                 </ul>
+                <div className="flex flex-col gap-2">
+                  <Button asChild className="w-full">
+                    <Link to="/pour-lieux-evenements">En savoir plus</Link>
+                  </Button>
+                  <Button variant="outline" asChild className="w-full">
+                    <Link to="/pour-lieux-evenements">S'inscrire</Link>
+                  </Button>
+                </div>
               </CardContent>
             </Card>
           </div>

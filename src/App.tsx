@@ -23,6 +23,9 @@ import { AnnonceManager } from "./pages/AnnonceManager";
 import Landing from "./pages/Landing";
 import Promotion from "./pages/Promotion";
 import VenueProfile from "./pages/VenueProfile";
+import PourArtistes from "./pages/PourArtistes";
+import PourAgentsManagers from "./pages/PourAgentsManagers";
+import PourLieuxEvenements from "./pages/PourLieuxEvenements";
 
 const queryClient = new QueryClient();
 
@@ -51,6 +54,9 @@ const App = () => (
             <Route path="/lieux" element={<Lieux />} />
             <Route path="/lieux/:id" element={<VenueProfile />} />
             <Route path="/promotion" element={<Promotion />} />
+            <Route path="/pour-artistes" element={<PourArtistes />} />
+            <Route path="/pour-agents-managers" element={<PourAgentsManagers />} />
+            <Route path="/pour-lieux-evenements" element={<PourLieuxEvenements />} />
             <Route path="/" element={<Landing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

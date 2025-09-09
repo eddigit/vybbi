@@ -1,0 +1,286 @@
+import { Link } from 'react-router-dom';
+import { ArrowLeft, Users, BarChart3, DollarSign, Calendar, Shield, TrendingUp, CheckCircle, Star } from 'lucide-react';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import RoleSignupForm from "@/components/RoleSignupForm";
+
+export default function PourAgentsManagers() {
+  const benefits = [
+    {
+      icon: Users,
+      title: "Gestion de Roster",
+      description: "Gérez tous vos artistes depuis une interface unique. Suivez leurs performances et optimisez leurs carrières",
+      gradient: "from-blue-500 to-cyan-500"
+    },
+    {
+      icon: BarChart3,
+      title: "Analytics Avancées",
+      description: "Analysez les performances de vos artistes, identifiez les tendances et prenez les bonnes décisions",
+      gradient: "from-purple-500 to-pink-500"
+    },
+    {
+      icon: DollarSign,
+      title: "Suivi des Commissions",
+      description: "Calculez automatiquement vos commissions, suivez les paiements et générez vos rapports financiers",
+      gradient: "from-green-500 to-emerald-500"
+    },
+    {
+      icon: Calendar,
+      title: "Planning Centralisé",
+      description: "Visualisez tous les événements de vos artistes, évitez les conflits et optimisez les plannings",
+      gradient: "from-orange-500 to-red-500"
+    },
+    {
+      icon: Shield,
+      title: "Contrats Sécurisés",
+      description: "Créez, négociez et signez des contrats numériques avec traçabilité complète",
+      gradient: "from-indigo-500 to-purple-500"
+    },
+    {
+      icon: TrendingUp,
+      title: "Développement Carrière",
+      description: "Identifiez de nouvelles opportunités, négociez de meilleurs tarifs et développez votre réseau",
+      gradient: "from-yellow-500 to-orange-500"
+    }
+  ];
+
+  const testimonials = [
+    {
+      name: "Marc Dubois",
+      role: "Manager @ TechnoVibes",
+      quote: "Vybbi m'a permis de doubler mon chiffre d'affaires en un an. La gestion centralisée est un game-changer.",
+      stats: "15 artistes gérés"
+    },
+    {
+      name: "Sophie Laurent",
+      role: "Agent @ NightLife Music",
+      quote: "Enfin un outil qui comprend les besoins des agents. Suivi des commissions automatique = gain de temps énorme.",
+      stats: "200+ événements organisés"
+    },
+    {
+      name: "Alex Martin",
+      role: "Manager Indépendant",
+      quote: "Les analytics me permettent de prendre des décisions éclairées pour mes artistes. Résultats impressionnants.",
+      stats: "50% d'augmentation des bookings"
+    }
+  ];
+
+  const features = [
+    "Dashboard complet avec métriques de performance",
+    "Suivi des revenus et commissions en temps réel",
+    "Outils de prospection et de networking",
+    "Système de notation et reviews clients",
+    "API pour connecter vos outils existants",
+    "Support prioritaire et formation dédiée"
+  ];
+
+  return (
+    <div className="min-h-screen bg-background">
+      {/* Header */}
+      <header className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-50">
+        <div className="container mx-auto px-6 py-4">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/">
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Retour
+                </Link>
+              </Button>
+              <div className="flex items-center gap-2">
+                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-8 h-8" />
+                <span className="font-bold text-lg">Vybbi</span>
+              </div>
+            </div>
+            <Button asChild>
+              <Link to="/auth">Se connecter</Link>
+            </Button>
+          </div>
+        </div>
+      </header>
+
+      {/* Hero Section */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto text-center max-w-4xl">
+          <Badge className="mb-6 text-sm px-4 py-2">
+            <Users className="w-4 h-4 mr-2" />
+            POUR LES AGENTS & MANAGERS
+          </Badge>
+          
+          <h1 className="text-5xl md:text-6xl font-bold mb-6">
+            <span className="bg-gradient-primary bg-clip-text text-transparent">
+              Développez vos artistes
+            </span>
+            <br />
+            <span className="text-foreground">comme jamais auparavant</span>
+          </h1>
+          
+          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+            Vybbi vous donne tous les outils pour gérer, développer et monétiser le talent de vos artistes avec une efficacité maximale.
+          </p>
+
+          <div className="grid grid-cols-3 gap-8 max-w-md mx-auto mb-12">
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">2K+</div>
+              <div className="text-sm text-muted-foreground">Agents actifs</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">€2M+</div>
+              <div className="text-sm text-muted-foreground">Chiffre d'affaires géré</div>
+            </div>
+            <div className="text-center">
+              <div className="text-2xl font-bold text-primary">40%</div>
+              <div className="text-sm text-muted-foreground">Augmentation moyenne</div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-16 px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Gérez comme un pro</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Des outils professionnels conçus spécifiquement pour les agents et managers
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {benefits.map((benefit, index) => (
+              <Card key={index} className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+                <CardContent className="p-6">
+                  <div className={`w-12 h-12 rounded-lg bg-gradient-to-r ${benefit.gradient} flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow`}>
+                    <benefit.icon className="w-6 h-6 text-white" />
+                  </div>
+                  <h3 className="text-xl font-semibold mb-2 text-foreground">{benefit.title}</h3>
+                  <p className="text-muted-foreground">{benefit.description}</p>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Features List */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6">Tout ce dont vous avez besoin</h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                Une suite complète d'outils professionnels pour optimiser votre activité
+              </p>
+              
+              <div className="grid md:grid-cols-2 gap-4">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <CheckCircle className="w-5 h-5 text-success flex-shrink-0" />
+                    <span className="text-sm">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            <div className="relative">
+              <Card className="bg-gradient-card border-border shadow-glow">
+                <CardContent className="p-8">
+                  <div className="text-center mb-6">
+                    <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4 shadow-glow">
+                      <BarChart3 className="w-8 h-8 text-primary-foreground" />
+                    </div>
+                    <h3 className="text-2xl font-bold text-foreground">Dashboard Analytics</h3>
+                    <p className="text-muted-foreground">Suivez les performances en temps réel</p>
+                  </div>
+                  
+                  <div className="space-y-4">
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Revenus ce mois</span>
+                      <span className="font-semibold text-success">+32%</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Nouveaux bookings</span>
+                      <span className="font-semibold text-primary">47</span>
+                    </div>
+                    <div className="flex justify-between items-center">
+                      <span className="text-sm text-muted-foreground">Artistes actifs</span>
+                      <span className="font-semibold text-foreground">12/15</span>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Testimonials */}
+      <section className="py-16 px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Ils nous font confiance</h2>
+            <p className="text-xl text-muted-foreground">
+              Des professionnels qui ont transformé leur business
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {testimonials.map((testimonial, index) => (
+              <Card key={index} className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
+                <CardContent className="p-6">
+                  <div className="flex items-center mb-4">
+                    {[...Array(5)].map((_, i) => (
+                      <Star key={i} className="w-4 h-4 fill-warning text-warning" />
+                    ))}
+                  </div>
+                  <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
+                  <div className="border-t pt-4">
+                    <div className="font-semibold text-foreground">{testimonial.name}</div>
+                    <div className="text-sm text-muted-foreground">{testimonial.role}</div>
+                    <div className="text-sm text-primary mt-1">{testimonial.stats}</div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Signup Section */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto">
+          <div className="grid lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <h2 className="text-4xl font-bold mb-6">Prêt à révolutionner votre business ?</h2>
+              <p className="text-xl text-muted-foreground mb-8">
+                Rejoignez les agents et managers qui font déjà confiance à Vybbi pour développer leurs artistes
+              </p>
+              
+              <div className="space-y-4">
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Essai gratuit de 30 jours</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Formation personnalisée incluse</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Support prioritaire 7j/7</span>
+                </div>
+              </div>
+            </div>
+            
+            <RoleSignupForm 
+              profileType="agent"
+              title="Créez votre compte professionnel"
+              description="Accédez aux outils réservés aux agents et managers"
+            />
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}
