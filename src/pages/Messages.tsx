@@ -38,7 +38,7 @@ interface MessageWithSender extends Omit<Message, 'sender'> {
 }
 
 export default function Messages() {
-  const { user, profile } = useAuth();
+  const { user, profile, hasRole } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
   const { toast } = useToast();
@@ -165,6 +165,14 @@ export default function Messages() {
       
       if (conversationsData) {
         const conversationsWithDetails = conversationsData.map((conv: any) => {
+          console.log('Processing conversation:', {
+            id: conv.conversation_id,
+            peer_profile_type: conv.peer_profile_type,
+            reply_received: conv.reply_received,
+            is_blocked: conv.is_blocked,
+            current_user_profile_type: profile?.profile_type
+          });
+          
           const otherParticipant = conv.peer_user_id ? {
             user_id: conv.peer_user_id,
             display_name: conv.peer_display_name || 'Utilisateur inconnu',
@@ -178,11 +186,54 @@ export default function Messages() {
             sender_id: null // We don't need this for display in conversation list
           } : null;
 
-          // Determine if user can send message
-          const canSendMessage = !conv.is_blocked && (
-            conv.reply_received || 
-            !lastMessage
-          );
+          // Determine if user can send message based on messaging policy
+          let canSendMessage = !conv.is_blocked;
+          
+          if (canSendMessage && profile) {
+            // Admins can always send messages (bypass all restrictions)
+            const isAdmin = user && hasRole && hasRole('admin');
+            
+            if (isAdmin) {
+              canSendMessage = true;
+            }
+            // If no messages yet, anyone can start the conversation
+            else if (!lastMessage) {
+              canSendMessage = true;
+            }
+            // If reply has been received, anyone can send
+            else if (conv.reply_received) {
+              canSendMessage = true;
+            }
+            // If current user is artist, they can always reply
+            else if (profile.profile_type === 'artist') {
+              canSendMessage = true;
+            }
+            // If current user is agent/manager/venue and recipient is artist
+            else if (
+              ['agent', 'manager', 'lieu'].includes(profile.profile_type) && 
+              conv.peer_profile_type === 'artist'
+            ) {
+              // We need to check if the current user sent the last message
+              // Since we don't have sender info here, we'll fetch it or be conservative
+              // For now, block if no reply received (server will handle the detailed logic)
+              canSendMessage = false;
+            }
+            // Default case: allow message
+            else {
+              canSendMessage = true;
+            }
+            
+            console.log('Final canSendMessage decision:', {
+              conversation_id: conv.conversation_id,
+              canSendMessage,
+              is_blocked: conv.is_blocked,
+              isAdmin,
+              current_profile_type: profile.profile_type,
+              peer_profile_type: conv.peer_profile_type,
+              reply_received: conv.reply_received,
+              has_last_message: !!lastMessage
+            });
+          }
           
           return {
             id: conv.conversation_id,
@@ -337,10 +388,17 @@ export default function Messages() {
             description: "Vous ne pouvez pas envoyer de message à cet utilisateur.",
             variant: "destructive",
           });
+        } else if (error.message.includes('exclusive manager')) {
+          toast({
+            title: "Message non envoyé",
+            description: "Cet artiste ne peut être contacté que par son manager exclusif.",
+            variant: "destructive",
+          });
         } else {
+          console.error('Send message error:', error.message);
           toast({
             title: "Erreur",
-            description: "Impossible d'envoyer le message.",
+            description: `Impossible d'envoyer le message: ${error.message}`,
             variant: "destructive",
           });
         }
@@ -612,7 +670,10 @@ export default function Messages() {
                 ) : !selectedConversationDetails.can_send_message ? (
                   <div className="p-3 sm:p-6 border-t bg-warning/10">
                     <p className="text-center text-sm text-warning-foreground">
-                      Vous devez attendre une réponse avant d'envoyer un autre message
+                      {profile?.profile_type === 'artist' 
+                        ? "Impossible d'envoyer un message pour le moment"
+                        : "Vous devez attendre une réponse avant d'envoyer un autre message"
+                      }
                     </p>
                   </div>
                 ) : (
