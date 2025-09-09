@@ -330,6 +330,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          accepts_direct_contact: boolean | null
           avatar_url: string | null
           bio: string | null
           created_at: string
@@ -343,6 +344,7 @@ export type Database = {
           is_public: boolean
           languages: string[] | null
           location: string | null
+          preferred_contact_profile_id: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url: string | null
           spotify_url: string | null
@@ -354,6 +356,7 @@ export type Database = {
           youtube_url: string | null
         }
         Insert: {
+          accepts_direct_contact?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -367,6 +370,7 @@ export type Database = {
           is_public?: boolean
           languages?: string[] | null
           location?: string | null
+          preferred_contact_profile_id?: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
           spotify_url?: string | null
@@ -378,6 +382,7 @@ export type Database = {
           youtube_url?: string | null
         }
         Update: {
+          accepts_direct_contact?: boolean | null
           avatar_url?: string | null
           bio?: string | null
           created_at?: string
@@ -391,6 +396,7 @@ export type Database = {
           is_public?: boolean
           languages?: string[] | null
           location?: string | null
+          preferred_contact_profile_id?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
           spotify_url?: string | null
@@ -401,7 +407,15 @@ export type Database = {
           website?: string | null
           youtube_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_preferred_contact_profile"
+            columns: ["preferred_contact_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       reviews: {
         Row: {

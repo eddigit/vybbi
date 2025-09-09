@@ -62,35 +62,53 @@ export default function Messages() {
   const handleContactParameter = async () => {
     const searchParams = new URLSearchParams(location.search);
     const contactUserId = searchParams.get('contact');
+    const partnerProfileId = searchParams.get('partner');
     
-    if (contactUserId && user) {
+    if ((contactUserId || partnerProfileId) && user) {
       try {
-        const { data: conversationId, error } = await supabase.rpc('start_direct_conversation', {
-          target_user_id: contactUserId
-        });
+        let targetUserId = contactUserId;
         
-        if (error) {
-          if (error.message.includes('blocked user')) {
-            toast({
-              title: "Impossible de contacter",
-              description: "Vous ne pouvez pas contacter cet utilisateur.",
-              variant: "destructive",
-            });
-          } else {
-            toast({
-              title: "Erreur",
-              description: "Impossible de démarrer la conversation.",
-              variant: "destructive",
-            });
+        // If partner profile ID is provided, get the user_id for that profile
+        if (partnerProfileId) {
+          const { data: partnerProfile } = await supabase
+            .from('profiles')
+            .select('user_id')
+            .eq('id', partnerProfileId)
+            .single();
+          
+          if (partnerProfile) {
+            targetUserId = partnerProfile.user_id;
           }
-          navigate('/messages', { replace: true });
-          return;
         }
         
-        if (conversationId) {
-          setSelectedConversation(conversationId);
-          await fetchConversations();
-          navigate('/messages', { replace: true });
+        if (targetUserId) {
+          const { data: conversationId, error } = await supabase.rpc('start_direct_conversation', {
+            target_user_id: targetUserId
+          });
+          
+          if (error) {
+            if (error.message.includes('blocked user')) {
+              toast({
+                title: "Impossible de contacter",
+                description: "Vous ne pouvez pas contacter cet utilisateur.",
+                variant: "destructive",
+              });
+            } else {
+              toast({
+                title: "Erreur",
+                description: "Impossible de démarrer la conversation.",
+                variant: "destructive",
+              });
+            }
+            navigate('/messages', { replace: true });
+            return;
+          }
+          
+          if (conversationId) {
+            setSelectedConversation(conversationId);
+            await fetchConversations();
+            navigate('/messages', { replace: true });
+          }
         }
       } catch (error) {
         console.error('Error starting conversation:', error);

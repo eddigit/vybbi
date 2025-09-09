@@ -25,6 +25,8 @@ export interface Profile {
   soundcloud_url?: string;
   youtube_url?: string;
   is_public: boolean;
+  accepts_direct_contact?: boolean;
+  preferred_contact_profile_id?: string;
   created_at: string;
   updated_at: string;
 }

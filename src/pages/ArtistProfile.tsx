@@ -17,6 +17,7 @@ export default function ArtistProfile() {
   const [artist, setArtist] = useState<Profile | null>(null);
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
+  const [preferredContact, setPreferredContact] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -37,6 +38,17 @@ export default function ArtistProfile() {
 
       if (artistError) throw artistError;
       setArtist(artistData);
+
+      // Fetch preferred contact if exists
+      if (artistData.preferred_contact_profile_id) {
+        const { data: contactData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', artistData.preferred_contact_profile_id)
+          .single();
+        
+        setPreferredContact(contactData);
+      }
 
       // Fetch media assets
       const { data: mediaData } = await supabase
@@ -347,12 +359,28 @@ export default function ArtistProfile() {
                   </Link>
                 </Button>
               ) : (
-                <Button className="w-full mb-4" asChild>
-                  <Link to={`/messages?contact=${artist.user_id}`}>
-                    <MessageCircle className="h-4 w-4 mr-2" />
-                    Contacter l'artiste
-                  </Link>
-                </Button>
+                <>
+                  {artist.accepts_direct_contact !== false ? (
+                    <Button className="w-full mb-4" asChild>
+                      <Link to={`/messages?contact=${artist.user_id}`}>
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Contacter l'artiste
+                      </Link>
+                    </Button>
+                  ) : preferredContact ? (
+                    <Button className="w-full mb-4" asChild>
+                      <Link to={`/messages?partner=${preferredContact.id}`}>
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Contacter {preferredContact.profile_type === 'agent' ? "l'agent" : "le manager"}
+                      </Link>
+                    </Button>
+                  ) : (
+                    <Button className="w-full mb-4" disabled>
+                      <MessageCircle className="h-4 w-4 mr-2" />
+                      Contact non disponible
+                    </Button>
+                  )}
+                </>
               )}
               {artist.website && (
                 <Button variant="outline" className="w-full" asChild>

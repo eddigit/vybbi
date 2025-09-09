@@ -15,6 +15,7 @@ export default function Profiles() {
   const { user } = useAuth();
   const [searchParams, setSearchParams] = useSearchParams();
   const [profiles, setProfiles] = useState<Profile[]>([]);
+  const [preferredContacts, setPreferredContacts] = useState<{[key: string]: Profile}>({});
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState('');
   const [typeFilter, setTypeFilter] = useState<string>('all');
@@ -38,6 +39,30 @@ export default function Profiles() {
       
       if (data) {
         setProfiles(data);
+        
+        // Fetch preferred contacts for artists who don't accept direct contact
+        const artistsWithPreferredContact = data.filter((p: Profile) => 
+          p.profile_type === 'artist' && 
+          p.accepts_direct_contact === false && 
+          p.preferred_contact_profile_id
+        );
+        
+        if (artistsWithPreferredContact.length > 0) {
+          const contactIds = artistsWithPreferredContact.map((a: Profile) => a.preferred_contact_profile_id).filter(Boolean);
+          const { data: contactsData } = await supabase
+            .from('profiles')
+            .select('*')
+            .in('id', contactIds);
+          
+          const contactsMap: {[key: string]: Profile} = {};
+          contactsData?.forEach((contact: Profile) => {
+            const artist = artistsWithPreferredContact.find((a: Profile) => a.preferred_contact_profile_id === contact.id);
+            if (artist) {
+              contactsMap[artist.id] = contact;
+            }
+          });
+          setPreferredContacts(contactsMap);
+        }
       }
     } catch (error) {
       console.error('Error fetching profiles:', error);
@@ -212,11 +237,27 @@ export default function Profiles() {
                   </Link>
                 </Button>
                 {user && user.id !== profile.user_id && (
-                  <Button size="sm" variant="outline" asChild>
-                    <Link to={`/messages?contact=${profile.user_id}`}>
-                      Message
-                    </Link>
-                  </Button>
+                  <>
+                    {profile.profile_type === 'artist' && profile.accepts_direct_contact === false ? (
+                      preferredContacts[profile.id] ? (
+                        <Button size="sm" variant="outline" asChild>
+                          <Link to={`/messages?partner=${preferredContacts[profile.id].id}`}>
+                            Contacter {preferredContacts[profile.id].profile_type === 'agent' ? "l'agent" : "le manager"}
+                          </Link>
+                        </Button>
+                      ) : (
+                        <Button size="sm" variant="outline" disabled>
+                          Contact non disponible
+                        </Button>
+                      )
+                    ) : (
+                      <Button size="sm" variant="outline" asChild>
+                        <Link to={`/messages?contact=${profile.user_id}`}>
+                          Message
+                        </Link>
+                      </Button>
+                    )}
+                  </>
                 )}
               </div>
             </CardContent>

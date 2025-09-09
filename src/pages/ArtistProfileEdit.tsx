@@ -9,6 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Switch } from '@/components/ui/switch';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Upload, Trash2, Music, Instagram, Youtube } from 'lucide-react';
 import { Profile, MediaAsset, MediaType } from '@/lib/types';
 import { LANGUAGES } from '@/lib/languages';
@@ -23,6 +25,7 @@ export default function ArtistProfileEdit() {
   
   const [profile, setProfile] = useState<Profile | null>(null);
   const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([]);
+  const [agentsManagers, setAgentsManagers] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -43,13 +46,16 @@ export default function ArtistProfileEdit() {
     instagram_url: '',
     tiktok_url: '',
     header_position_y: 50,
-    talents: [] as string[]
+    talents: [] as string[],
+    accepts_direct_contact: true,
+    preferred_contact_profile_id: ''
   });
 
   useEffect(() => {
     if (user) {
       fetchProfile();
       fetchMediaAssets();
+      fetchAgentsManagers();
     }
   }, [id, user]);
 
@@ -95,7 +101,9 @@ export default function ArtistProfileEdit() {
         instagram_url: data.instagram_url || '',
         tiktok_url: data.tiktok_url || '',
         header_position_y: (data as any).header_position_y || 50,
-        talents: (data as any).talents || []
+        talents: (data as any).talents || [],
+        accepts_direct_contact: (data as any).accepts_direct_contact ?? true,
+        preferred_contact_profile_id: (data as any).preferred_contact_profile_id || ''
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -122,7 +130,42 @@ export default function ArtistProfileEdit() {
     }
   };
 
-  const handleInputChange = (field: keyof typeof formData, value: string | string[] | number) => {
+  const fetchAgentsManagers = async () => {
+    if (!user) return;
+    
+    try {
+      // Fetch agents linked to this artist
+      const { data: agentData } = await supabase
+        .from('agent_artists')
+        .select('agent_profile_id')
+        .eq('artist_profile_id', id);
+
+      // Fetch managers linked to this artist
+      const { data: managerData } = await supabase
+        .from('manager_artists')
+        .select('manager_profile_id')
+        .eq('artist_profile_id', id);
+
+      const agentIds = agentData?.map(item => item.agent_profile_id) || [];
+      const managerIds = managerData?.map(item => item.manager_profile_id) || [];
+      const allIds = [...agentIds, ...managerIds];
+
+      if (allIds.length > 0) {
+        const { data: profilesData } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('id', allIds);
+        
+        setAgentsManagers(profilesData || []);
+      } else {
+        setAgentsManagers([]);
+      }
+    } catch (error) {
+      console.error('Error fetching agents/managers:', error);
+    }
+  };
+
+  const handleInputChange = (field: keyof typeof formData, value: string | string[] | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
 
@@ -299,7 +342,9 @@ export default function ArtistProfileEdit() {
           instagram_url: formData.instagram_url || null,
           tiktok_url: formData.tiktok_url || null,
           header_position_y: formData.header_position_y,
-          talents: formData.talents.length > 0 ? formData.talents : null
+          talents: formData.talents.length > 0 ? formData.talents : null,
+          accepts_direct_contact: formData.accepts_direct_contact,
+          preferred_contact_profile_id: formData.preferred_contact_profile_id || null
         })
         .eq('id', id);
 
@@ -554,6 +599,57 @@ export default function ArtistProfileEdit() {
                   placeholder="https://tiktok.com/@..."
                 />
               </div>
+            </div>
+          </div>
+
+          {/* Contact Preferences */}
+          <div>
+            <Label className="text-base font-semibold">Préférences de contact</Label>
+            <p className="text-sm text-muted-foreground mb-4">
+              Configurez comment les personnes peuvent vous contacter
+            </p>
+            
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <Label htmlFor="accepts_direct_contact">Contact direct</Label>
+                  <p className="text-sm text-muted-foreground">
+                    Permettre aux autres utilisateurs de me contacter directement
+                  </p>
+                </div>
+                <Switch
+                  id="accepts_direct_contact"
+                  checked={formData.accepts_direct_contact}
+                  onCheckedChange={(checked) => handleInputChange('accepts_direct_contact', checked)}
+                />
+              </div>
+              
+              {!formData.accepts_direct_contact && agentsManagers.length > 0 && (
+                <div>
+                  <Label htmlFor="preferred_contact">Contact via</Label>
+                  <Select
+                    value={formData.preferred_contact_profile_id}
+                    onValueChange={(value) => handleInputChange('preferred_contact_profile_id', value)}
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="Sélectionner un agent ou manager" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {agentsManagers.map((contact) => (
+                        <SelectItem key={contact.id} value={contact.id}>
+                          {contact.display_name} ({contact.profile_type === 'agent' ? 'Agent' : 'Manager'})
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+              
+              {!formData.accepts_direct_contact && agentsManagers.length === 0 && (
+                <div className="text-sm text-muted-foreground bg-muted p-3 rounded-md">
+                  Pour utiliser le contact indirect, vous devez d'abord être lié à un agent ou un manager.
+                </div>
+              )}
             </div>
           </div>
 
