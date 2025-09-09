@@ -421,22 +421,22 @@ export default function Messages() {
   return (
     <div className="container mx-auto px-6 py-8">
       <div className="mb-6">
-        <h1 className="text-3xl font-bold mb-2">Messages</h1>
-        <p className="text-muted-foreground">Connect with artists, agents, and venues</p>
+        <h1 className="text-3xl xl:text-4xl font-bold mb-2">Messages</h1>
+        <p className="text-muted-foreground xl:text-lg">Connect with artists, agents, and venues</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6 h-[calc(100vh-12rem)]">
         {/* Conversations List */}
-        <Card className="lg:col-span-1">
-          <CardHeader>
-            <CardTitle>Conversations</CardTitle>
+        <Card className="lg:col-span-1 xl:col-span-2">
+          <CardHeader className="xl:pb-6">
+            <CardTitle className="xl:text-xl">Conversations</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            <ScrollArea className="h-[500px]">
+            <ScrollArea className="h-[calc(100vh-18rem)]">
               {conversations.length === 0 ? (
-                <div className="p-4 text-center text-muted-foreground">
-                  <MessageCircle className="w-8 h-8 mx-auto mb-2" />
-                  <p>Aucune conversation</p>
+                <div className="p-4 xl:p-6 text-center text-muted-foreground">
+                  <MessageCircle className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-2" />
+                  <p className="xl:text-lg">Aucune conversation</p>
                 </div>
               ) : (
                 <div className="space-y-1">
@@ -444,36 +444,36 @@ export default function Messages() {
                     <button
                       key={conversation.id}
                       onClick={() => setSelectedConversation(conversation.id)}
-                      className={`w-full p-3 text-left hover:bg-muted/50 transition-colors ${
+                      className={`w-full p-3 xl:p-4 text-left hover:bg-muted/50 transition-colors ${
                         selectedConversation === conversation.id ? 'bg-muted' : ''
                       } ${conversation.is_blocked ? 'opacity-50' : ''}`}
                     >
-        <div className="flex items-center gap-3">
-          <Avatar className="w-10 h-10">
+        <div className="flex items-center gap-3 xl:gap-4">
+          <Avatar className="w-10 h-10 xl:w-12 xl:h-12">
             <AvatarImage src={conversation.other_participant?.avatar_url || undefined} />
-            <AvatarFallback>
+            <AvatarFallback className="xl:text-lg">
               {conversation.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
             </AvatarFallback>
           </Avatar>
                         <div className="flex-1 min-w-0">
                           <div className="flex items-center gap-2">
-                            <p className="font-medium truncate">
+                            <p className="font-medium truncate xl:text-lg">
                               {conversation.other_participant?.display_name || 'Utilisateur inconnu'}
                             </p>
-                            {conversation.is_blocked && <Ban className="w-3 h-3 text-destructive" />}
+                            {conversation.is_blocked && <Ban className="w-3 h-3 xl:w-4 xl:h-4 text-destructive" />}
                           </div>
-                          <p className="text-sm text-muted-foreground truncate">
+                          <p className="text-sm xl:text-base text-muted-foreground truncate">
                             {conversation.last_message?.content || 'Aucun message'}
                           </p>
                           <div className="flex items-center gap-2 mt-1">
-                            <p className="text-xs text-muted-foreground">
+                            <p className="text-xs xl:text-sm text-muted-foreground">
                               {conversation.last_message_at ? 
                                 new Date(conversation.last_message_at).toLocaleDateString() :
                                 new Date(conversation.created_at).toLocaleDateString()
                               }
                             </p>
                             {!conversation.reply_received && conversation.last_message?.sender_id === user?.id && (
-                              <span className="text-xs text-amber-600 bg-amber-100 px-1 rounded">En attente</span>
+                              <span className="text-xs xl:text-sm text-amber-600 bg-amber-100 px-1 xl:px-2 rounded">En attente</span>
                             )}
                           </div>
                         </div>
@@ -487,39 +487,39 @@ export default function Messages() {
         </Card>
 
         {/* Messages */}
-        <Card className="lg:col-span-2">
+        <Card className="lg:col-span-3 xl:col-span-3">
           {selectedConversation && selectedConversationDetails ? (
             <>
-              <CardHeader className="flex flex-row items-center justify-between">
-                <CardTitle className="flex items-center gap-2">
-                <Avatar className="w-8 h-8">
+              <CardHeader className="flex flex-row items-center justify-between xl:py-6">
+                <CardTitle className="flex items-center gap-2 xl:gap-3 xl:text-xl">
+                <Avatar className="w-8 h-8 xl:w-10 xl:h-10">
                   <AvatarImage src={selectedConversationDetails.other_participant?.avatar_url || undefined} />
-                  <AvatarFallback>
+                  <AvatarFallback className="xl:text-lg">
                     {selectedConversationDetails.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
                   </AvatarFallback>
                 </Avatar>
                   {selectedConversationDetails.other_participant?.display_name || 'Utilisateur inconnu'}
-                  {selectedConversationDetails.is_blocked && <Ban className="w-4 h-4 text-destructive" />}
+                  {selectedConversationDetails.is_blocked && <Ban className="w-4 h-4 xl:w-5 xl:h-5 text-destructive" />}
                 </CardTitle>
                 {selectedConversationDetails.other_participant && !selectedConversationDetails.is_blocked && (
                   <AlertDialog>
                     <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <Ban className="w-4 h-4" />
+                      <Button variant="ghost" size="sm" className="xl:h-10 xl:w-10">
+                        <Ban className="w-4 h-4 xl:w-5 xl:h-5" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent>
                       <AlertDialogHeader>
-                        <AlertDialogTitle>Bloquer cet utilisateur ?</AlertDialogTitle>
-                        <AlertDialogDescription>
+                        <AlertDialogTitle className="xl:text-lg">Bloquer cet utilisateur ?</AlertDialogTitle>
+                        <AlertDialogDescription className="xl:text-base">
                           Vous ne pourrez plus recevoir de messages de cet utilisateur et ne pourrez plus lui en envoyer.
                         </AlertDialogDescription>
                       </AlertDialogHeader>
                       <AlertDialogFooter>
-                        <AlertDialogCancel>Annuler</AlertDialogCancel>
+                        <AlertDialogCancel className="xl:text-base">Annuler</AlertDialogCancel>
                         <AlertDialogAction 
                           onClick={() => blockUser(selectedConversationDetails.other_participant!.user_id)}
-                          className="bg-destructive hover:bg-destructive/90"
+                          className="bg-destructive hover:bg-destructive/90 xl:text-base"
                         >
                           Bloquer
                         </AlertDialogAction>
@@ -528,18 +528,18 @@ export default function Messages() {
                   </AlertDialog>
                 )}
               </CardHeader>
-              <CardContent className="flex flex-col h-[500px]">
+              <CardContent className="flex flex-col h-[calc(100vh-22rem)]">
                 {selectedConversationDetails.is_blocked ? (
                   <div className="flex-1 flex items-center justify-center">
                     <div className="text-center text-muted-foreground">
-                      <Ban className="w-12 h-12 mx-auto mb-4 text-destructive" />
-                      <p>Cette conversation est bloquée</p>
+                      <Ban className="w-12 h-12 xl:w-16 xl:h-16 mx-auto mb-4 text-destructive" />
+                      <p className="xl:text-lg">Cette conversation est bloquée</p>
                     </div>
                   </div>
                 ) : (
                   <>
-                    <ScrollArea className="flex-1 mb-4">
-                      <div className="space-y-4">
+                    <ScrollArea className="flex-1 mb-4 xl:mb-6">
+                      <div className="space-y-4 xl:space-y-6 pr-4">
                         {messages.map((message) => (
                           <div
                             key={message.id}
@@ -547,22 +547,22 @@ export default function Messages() {
                               message.sender_id === user?.id ? 'justify-end' : 'justify-start'
                             }`}
                           >
-                            <div className={`flex items-start gap-2 max-w-[70%] ${
+                            <div className={`flex items-start gap-2 xl:gap-3 max-w-[70%] ${
                               message.sender_id === user?.id ? 'flex-row-reverse' : 'flex-row'
                             }`}>
-                              <Avatar className="w-8 h-8">
+                              <Avatar className="w-8 h-8 xl:w-10 xl:h-10">
                                 <AvatarImage src={message.sender?.avatar_url} />
-                                <AvatarFallback>
+                                <AvatarFallback className="xl:text-lg">
                                   {message.sender?.display_name?.charAt(0).toUpperCase()}
                                 </AvatarFallback>
                               </Avatar>
-                              <div className={`rounded-lg p-3 ${
+                              <div className={`rounded-lg p-3 xl:p-4 ${
                                 message.sender_id === user?.id
                                   ? 'bg-primary text-primary-foreground'
                                   : 'bg-muted'
                               }`}>
-                                <p className="text-sm">{message.content}</p>
-                                <p className={`text-xs mt-1 ${
+                                <p className="text-sm xl:text-base leading-relaxed">{message.content}</p>
+                                <p className={`text-xs xl:text-sm mt-1 xl:mt-2 ${
                                   message.sender_id === user?.id
                                     ? 'text-primary-foreground/70'
                                     : 'text-muted-foreground'
@@ -577,9 +577,9 @@ export default function Messages() {
                     </ScrollArea>
                     
                     {!selectedConversationDetails.can_send_message ? (
-                      <div className="p-3 bg-amber-50 border border-amber-200 rounded-lg text-center">
-                        <AlertTriangle className="w-4 h-4 text-amber-600 mx-auto mb-1" />
-                        <p className="text-sm text-amber-800">
+                      <div className="p-3 xl:p-4 bg-amber-50 border border-amber-200 rounded-lg text-center">
+                        <AlertTriangle className="w-4 h-4 xl:w-5 xl:h-5 text-amber-600 mx-auto mb-1 xl:mb-2" />
+                        <p className="text-sm xl:text-base text-amber-800">
                           {!selectedConversationDetails.reply_received && selectedConversationDetails.last_message?.sender_id === user?.id
                             ? "Vous devez attendre une réponse avant d'envoyer un autre message"
                             : "Vous ne pouvez plus envoyer de messages dans cette conversation"
@@ -587,20 +587,21 @@ export default function Messages() {
                         </p>
                       </div>
                     ) : (
-                      <form onSubmit={sendMessage} className="flex gap-2">
+                      <form onSubmit={sendMessage} className="flex gap-2 xl:gap-3">
                         <Input
                           value={newMessage}
                           onChange={(e) => setNewMessage(e.target.value)}
                           placeholder="Tapez votre message..."
-                          className="flex-1"
+                          className="flex-1 xl:text-base xl:h-12"
                           disabled={sendingMessage}
                         />
                         <Button 
                           type="submit" 
                           size="sm" 
+                          className="xl:h-12 xl:w-12"
                           disabled={!newMessage.trim() || sendingMessage}
                         >
-                          <Send className="w-4 h-4" />
+                          <Send className="w-4 h-4 xl:w-5 xl:h-5" />
                         </Button>
                       </form>
                     )}
@@ -609,10 +610,10 @@ export default function Messages() {
               </CardContent>
             </>
           ) : (
-            <CardContent className="flex items-center justify-center h-[500px]">
+            <CardContent className="flex items-center justify-center h-[calc(100vh-22rem)]">
               <div className="text-center text-muted-foreground">
-                <MessageCircle className="w-12 h-12 mx-auto mb-4" />
-                <p>Sélectionnez une conversation pour commencer</p>
+                <MessageCircle className="w-12 h-12 xl:w-16 xl:h-16 mx-auto mb-4" />
+                <p className="xl:text-lg">Sélectionnez une conversation pour commencer</p>
               </div>
             </CardContent>
           )}
