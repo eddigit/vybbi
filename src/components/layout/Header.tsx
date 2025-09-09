@@ -14,6 +14,7 @@ import {
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/useNotifications";
 import { useState } from "react";
 
 export function Header() {
@@ -21,6 +22,7 @@ export function Header() {
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
   const { toast } = useToast();
+  const { notifications, unreadCount, markAsRead } = useNotifications();
   const [searchQuery, setSearchQuery] = useState("");
   
   // Determine page context
@@ -83,30 +85,12 @@ export function Header() {
     navigate('/auth');
   };
 
-  // Données de notification fictives
-  const notifications = [
-    {
-      id: 1,
-      title: "Nouveau message",
-      description: "Vous avez reçu un message de Marie Dupont",
-      time: "Il y a 5 minutes",
-      unread: true
-    },
-    {
-      id: 2,
-      title: "Demande de collaboration",
-      description: "Un artiste souhaite collaborer avec vous",
-      time: "Il y a 1 heure",
-      unread: true
-    },
-    {
-      id: 3,
-      title: "Réservation confirmée",
-      description: "Votre événement du 15 octobre est confirmé",
-      time: "Il y a 2 heures",
-      unread: false
+  const handleNotificationClick = (notification: any) => {
+    markAsRead(notification.id);
+    if (notification.conversationId) {
+      navigate('/messages', { state: { selectedConversationId: notification.conversationId } });
     }
-  ];
+  };
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -166,9 +150,11 @@ export function Header() {
                 <DropdownMenuTrigger asChild>
                   <Button variant="ghost" size="icon" className="relative">
                     <Bell className="h-5 w-5" />
-                    <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-primary">
-                      {notifications.filter(n => n.unread).length}
-                    </Badge>
+                    {unreadCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-primary text-primary-foreground flex items-center justify-center rounded-full min-w-[20px]">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </Badge>
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-80">
@@ -180,14 +166,18 @@ export function Header() {
                     </DropdownMenuItem>
                   ) : (
                     notifications.map((notification) => (
-                      <DropdownMenuItem key={notification.id} className="flex flex-col items-start p-3 cursor-pointer">
-                        <div className={`flex items-center gap-2 ${notification.unread ? 'font-semibold' : ''}`}>
-                          <span className="text-sm">{notification.title}</span>
+                      <DropdownMenuItem 
+                        key={notification.id} 
+                        className="flex flex-col items-start p-3 cursor-pointer hover:bg-accent"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div className={`flex items-center gap-2 w-full ${notification.unread ? 'font-semibold' : ''}`}>
+                          <span className="text-sm flex-1">{notification.title}</span>
                           {notification.unread && (
-                            <Badge variant="secondary" className="h-2 w-2 p-0 bg-primary"></Badge>
+                            <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0"></div>
                           )}
                         </div>
-                        <span className="text-xs text-muted-foreground mt-1">{notification.description}</span>
+                        <span className="text-xs text-muted-foreground mt-1 line-clamp-2">{notification.description}</span>
                         <span className="text-xs text-muted-foreground mt-1">{notification.time}</span>
                       </DropdownMenuItem>
                     ))

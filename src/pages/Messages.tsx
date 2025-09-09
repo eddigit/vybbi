@@ -64,6 +64,25 @@ export default function Messages() {
     const contactUserId = searchParams.get('contact');
     const partnerProfileId = searchParams.get('partner');
     
+    // Handle navigation from notification with specific conversation ID
+    if (location.state?.selectedConversationId) {
+      const selectedConversationId = location.state.selectedConversationId;
+      
+      // Wait for conversations to be loaded if not already
+      if (conversations.length === 0) {
+        await fetchConversations();
+      }
+      
+      // Find and select the conversation
+      const conversation = conversations.find(c => c.id === selectedConversationId);
+      if (conversation) {
+        setSelectedConversation(selectedConversationId);
+        // Clear the state to prevent re-navigation
+        navigate('/messages', { replace: true });
+        return;
+      }
+    }
+    
     if ((contactUserId || partnerProfileId) && user) {
       try {
         let targetUserId = contactUserId;
