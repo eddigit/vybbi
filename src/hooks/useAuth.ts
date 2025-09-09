@@ -4,6 +4,10 @@ import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile, UserRole, AppRole } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
+import { sendWelcomeEmail, sendAdminNotification } from '@/lib/emailService';
+
+// Email de l'administrateur - à configurer selon vos besoins
+const ADMIN_EMAIL = 'admin@vybbi.app';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -105,6 +109,24 @@ export function useAuth() {
       });
 
       if (error) throw error;
+      
+      // Envoyer l'email de bienvenue
+      setTimeout(async () => {
+        try {
+          await sendWelcomeEmail(email, displayName, profileType);
+          console.log('Email de bienvenue envoyé');
+        } catch (emailError) {
+          console.error('Erreur lors de l\'envoi de l\'email de bienvenue:', emailError);
+        }
+
+        // Notifier l'administrateur
+        try {
+          await sendAdminNotification(ADMIN_EMAIL, displayName, email, profileType);
+          console.log('Notification admin envoyée');
+        } catch (adminEmailError) {
+          console.error('Erreur lors de l\'envoi de la notification admin:', adminEmailError);
+        }
+      }, 2000); // Délai pour laisser le temps à l'utilisateur de se créer
       
       toast({
         title: "Compte créé avec succès !",

@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from '@/integrations/supabase/client';
+import { sendReviewNotification } from '@/lib/emailService';
 
 interface ReviewFormProps {
   artistId: string;
@@ -47,6 +48,38 @@ export default function ReviewForm({ artistId, onReviewSubmitted, existingReview
 
       if (error) {
         throw error;
+      }
+
+      // Récupérer les informations de l'artiste et du reviewer pour l'email
+      const { data: artistProfile } = await supabase
+        .from('profiles')
+        .select('display_name, email')
+        .eq('id', artistId)
+        .single();
+
+      const { data: reviewerProfile } = await supabase
+        .from('profiles')
+        .select('display_name')
+        .eq('id', profile?.id)
+        .single();
+
+      // Envoyer la notification email à l'artiste (si il a un email)
+      if (artistProfile?.email && reviewerProfile?.display_name) {
+        setTimeout(async () => {
+          try {
+            await sendReviewNotification(
+              artistProfile.email,
+              artistProfile.display_name,
+              artistId,
+              reviewerProfile.display_name,
+              rating,
+              comment.trim() || undefined
+            );
+            console.log('Notification email envoyée à l\'artiste');
+          } catch (emailError) {
+            console.error('Erreur lors de l\'envoi de la notification email:', emailError);
+          }
+        }, 1000);
       }
 
       toast({
