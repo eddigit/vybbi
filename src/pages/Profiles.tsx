@@ -80,6 +80,10 @@ export default function Profiles() {
       matchesType = true;
     } else if (typeFilter === 'partner') {
       matchesType = profile.profile_type === 'agent' || profile.profile_type === 'manager';
+    } else if (typeFilter === 'agent') {
+      matchesType = profile.profile_type === 'agent';
+    } else if (typeFilter === 'manager') {
+      matchesType = profile.profile_type === 'manager';
     } else {
       matchesType = profile.profile_type === typeFilter;
     }
@@ -154,9 +158,11 @@ export default function Profiles() {
             <SelectValue placeholder="Filter by type" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Types</SelectItem>
+            <SelectItem value="all">Tous les profils</SelectItem>
             <SelectItem value="artist">Artistes</SelectItem>
-            <SelectItem value="partner">Partenaires</SelectItem>
+            <SelectItem value="agent">Agents</SelectItem>
+            <SelectItem value="manager">Managers</SelectItem>
+            <SelectItem value="partner">Agents & Managers</SelectItem>
             <SelectItem value="lieu">Lieux & Établissements</SelectItem>
           </SelectContent>
         </Select>

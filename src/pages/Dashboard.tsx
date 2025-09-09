@@ -1,3 +1,6 @@
+import { useAuth } from "@/hooks/useAuth";
+import ArtistDashboard from "./ArtistDashboard";
+import PartnerDashboard from "./PartnerDashboard";
 import { useState } from "react";
 import { Users, Target, Euro, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
@@ -6,6 +9,7 @@ import { AcquisitionChart } from "@/components/dashboard/AcquisitionChart";
 import { CommissionDistribution } from "@/components/dashboard/CommissionDistribution";
 
 export default function Dashboard() {
+  const { profile, loading } = useAuth();
   const [activeFilter, setActiveFilter] = useState("30d");
 
   const metrics = [
@@ -39,6 +43,24 @@ export default function Dashboard() {
     },
   ];
 
+  if (loading) {
+    return (
+      <div className="container mx-auto px-6 py-8">
+        <div className="animate-pulse">Chargement...</div>
+      </div>
+    );
+  }
+
+  // Redirect to appropriate dashboard based on profile type
+  if (profile?.profile_type === 'artist') {
+    return <ArtistDashboard />;
+  }
+  
+  if (['agent', 'manager', 'lieu'].includes(profile?.profile_type || '')) {
+    return <PartnerDashboard />;
+  }
+
+  // Default admin dashboard for unknown profile types or admins
   return (
     <div className="space-y-6">
       {/* Time Filter */}
