@@ -458,8 +458,8 @@ export default function Messages() {
                             </AvatarFallback>
                           </Avatar>
                           <div className="flex-1 min-w-0 text-left">
-                            <div className="flex items-center gap-2">
-                              <p className="font-medium truncate text-sm sm:text-base xl:text-lg">
+                            <div className="flex items-start gap-2">
+                              <p className="font-medium truncate text-sm sm:text-base xl:text-lg text-left">
                                 {conversation.other_participant?.display_name || 'Utilisateur inconnu'}
                               </p>
                               {conversation.other_participant?.profile_type && (
