@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
+import FeaturedArtistsStrip from '@/components/FeaturedArtistsStrip';
 
 export default function Artists() {
   const [artists, setArtists] = useState<Profile[]>([]);
@@ -52,14 +53,17 @@ export default function Artists() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Artists Directory</h1>
-        <p className="text-muted-foreground mb-6">
-          Discover talented artists, DJs, musicians, and performers
-        </p>
-        
-        <div className="relative max-w-md">
+    <div>
+      <FeaturedArtistsStrip />
+      
+      <div className="container mx-auto p-6">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-4">Artists Directory</h1>
+          <p className="text-muted-foreground mb-6">
+            Discover talented artists, DJs, musicians, and performers
+          </p>
+          
+          <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
             placeholder="Search artists, genres, or locations..."
@@ -130,6 +134,7 @@ export default function Artists() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }
