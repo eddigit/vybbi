@@ -155,7 +155,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-3 gap-8">
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
+                <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
                   <img 
                     src="/lovable-uploads/ffb981ca-4640-4145-8e4a-6436a01f2401.png" 
                     alt="DJ Wolf Artist" 
