@@ -60,7 +60,7 @@ export default function ArtistDashboard() {
       title: "En attente", 
       value: stats.pendingApplications.toString(),
       change: "+5%",
-      changeType: "neutral" as const,
+      changeType: "positive" as const,
       icon: Calendar,
     },
     {

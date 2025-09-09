@@ -74,7 +74,7 @@ export default function Messages() {
             .from('profiles')
             .select('user_id')
             .eq('id', partnerProfileId)
-            .single();
+            .maybeSingle();
           
           if (partnerProfile) {
             targetUserId = partnerProfile.user_id;
@@ -155,7 +155,7 @@ export default function Messages() {
               `)
               .eq('conversation_id', conversation.id)
               .neq('user_id', user.id)
-              .single();
+              .maybeSingle();
             
             // Get last message
             const { data: lastMessage } = await supabase
@@ -164,14 +164,14 @@ export default function Messages() {
               .eq('conversation_id', conversation.id)
               .order('created_at', { ascending: false })
               .limit(1)
-              .single();
+              .maybeSingle();
             
             // Check if blocked
             const { data: blockData } = await supabase
               .from('blocked_users')
               .select('*')
               .or(`and(blocker_user_id.eq.${user.id},blocked_user_id.eq.${otherParticipant?.user_id}),and(blocker_user_id.eq.${otherParticipant?.user_id},blocked_user_id.eq.${user.id})`)
-              .single();
+              .maybeSingle();
             
             // Determine if user can send message
             const canSendMessage = !blockData && (
@@ -215,11 +215,11 @@ export default function Messages() {
               .from('profiles')
               .select('display_name, avatar_url')
               .eq('user_id', message.sender_id)
-              .single();
+              .maybeSingle();
             
             return {
               ...message,
-              sender: senderData
+              sender: senderData || { display_name: 'Utilisateur inconnu', avatar_url: null }
             };
           })
         );
@@ -249,11 +249,11 @@ export default function Messages() {
               .from('profiles')
               .select('display_name, avatar_url')
               .eq('user_id', payload.new.sender_id)
-              .single();
+              .maybeSingle();
             
             const messageWithSender = {
               ...payload.new,
-              sender: senderData
+              sender: senderData || { display_name: 'Utilisateur inconnu', avatar_url: null }
             } as MessageWithSender;
             
             setMessages(prev => [...prev, messageWithSender]);
