@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
-import ArtistDashboard from "./ArtistDashboard";
-import PartnerDashboard from "./PartnerDashboard";
+import ArtistDashboard from "@/pages/ArtistDashboard";
+import PartnerDashboard from "@/pages/PartnerDashboard";
 import { useState } from "react";
 import { Users, Target, Euro, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
