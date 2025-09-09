@@ -383,6 +383,15 @@ export default function Messages() {
       <div className="mb-6">
         <h1 className="text-3xl xl:text-4xl font-bold mb-2">Messages</h1>
         <p className="text-muted-foreground xl:text-lg">Connect with artists, agents, and venues</p>
+        
+        {/* Legal disclaimer */}
+        <div className="mt-4 p-4 bg-muted/50 rounded-lg border">
+          <p className="text-sm text-muted-foreground">
+            <strong>Information importante :</strong> Cette messagerie conserve toutes les conversations de manière sécurisée et chiffrée. 
+            En cas de litige contractuel ou de problème lié à une prestation, ces conversations peuvent être utilisées 
+            comme preuves et consultées par les parties concernées et les autorités compétentes si nécessaire.
+          </p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6 h-[calc(100vh-12rem)]">

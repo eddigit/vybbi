@@ -20,18 +20,33 @@ export type Database = {
           artist_profile_id: string
           created_at: string
           id: string
+          representation_status:
+            | Database["public"]["Enums"]["representation_status"]
+            | null
+          requested_at: string | null
+          responded_at: string | null
         }
         Insert: {
           agent_profile_id: string
           artist_profile_id: string
           created_at?: string
           id?: string
+          representation_status?:
+            | Database["public"]["Enums"]["representation_status"]
+            | null
+          requested_at?: string | null
+          responded_at?: string | null
         }
         Update: {
           agent_profile_id?: string
           artist_profile_id?: string
           created_at?: string
           id?: string
+          representation_status?:
+            | Database["public"]["Enums"]["representation_status"]
+            | null
+          requested_at?: string | null
+          responded_at?: string | null
         }
         Relationships: []
       }
@@ -243,18 +258,33 @@ export type Database = {
           created_at: string
           id: string
           manager_profile_id: string
+          representation_status:
+            | Database["public"]["Enums"]["representation_status"]
+            | null
+          requested_at: string | null
+          responded_at: string | null
         }
         Insert: {
           artist_profile_id: string
           created_at?: string
           id?: string
           manager_profile_id: string
+          representation_status?:
+            | Database["public"]["Enums"]["representation_status"]
+            | null
+          requested_at?: string | null
+          responded_at?: string | null
         }
         Update: {
           artist_profile_id?: string
           created_at?: string
           id?: string
           manager_profile_id?: string
+          representation_status?:
+            | Database["public"]["Enums"]["representation_status"]
+            | null
+          requested_at?: string | null
+          responded_at?: string | null
         }
         Relationships: []
       }
@@ -335,6 +365,7 @@ export type Database = {
           bio: string | null
           created_at: string
           display_name: string
+          email: string | null
           experience: string | null
           genres: string[] | null
           header_position_y: number | null
@@ -344,6 +375,7 @@ export type Database = {
           is_public: boolean
           languages: string[] | null
           location: string | null
+          phone: string | null
           preferred_contact_profile_id: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url: string | null
@@ -361,6 +393,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name: string
+          email?: string | null
           experience?: string | null
           genres?: string[] | null
           header_position_y?: number | null
@@ -370,6 +403,7 @@ export type Database = {
           is_public?: boolean
           languages?: string[] | null
           location?: string | null
+          phone?: string | null
           preferred_contact_profile_id?: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
@@ -387,6 +421,7 @@ export type Database = {
           bio?: string | null
           created_at?: string
           display_name?: string
+          email?: string | null
           experience?: string | null
           genres?: string[] | null
           header_position_y?: number | null
@@ -396,6 +431,7 @@ export type Database = {
           is_public?: boolean
           languages?: string[] | null
           location?: string | null
+          phone?: string | null
           preferred_contact_profile_id?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
           soundcloud_url?: string | null
@@ -525,6 +561,7 @@ export type Database = {
       event_status: "draft" | "published" | "cancelled" | "completed"
       media_type: "image" | "video" | "audio"
       profile_type: "artist" | "agent" | "manager" | "lieu"
+      representation_status: "pending" | "accepted" | "rejected" | "revoked"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -661,6 +698,7 @@ export const Constants = {
       event_status: ["draft", "published", "cancelled", "completed"],
       media_type: ["image", "video", "audio"],
       profile_type: ["artist", "agent", "manager", "lieu"],
+      representation_status: ["pending", "accepted", "rejected", "revoked"],
     },
   },
 } as const

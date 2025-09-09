@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { ArtistRepresentationRequests } from "@/components/ArtistRepresentationRequests";
 
 export default function ArtistDashboard() {
   const { profile } = useAuth();
@@ -120,6 +121,9 @@ export default function ArtistDashboard() {
           </Card>
         ))}
       </div>
+
+      {/* Representation Requests */}
+      <ArtistRepresentationRequests />
 
       {/* Quick Actions */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

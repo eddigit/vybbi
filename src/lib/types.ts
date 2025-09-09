@@ -24,6 +24,8 @@ export interface Profile {
   spotify_url?: string;
   soundcloud_url?: string;
   youtube_url?: string;
+  email?: string;
+  phone?: string;
   is_public: boolean;
   accepts_direct_contact?: boolean;
   preferred_contact_profile_id?: string;

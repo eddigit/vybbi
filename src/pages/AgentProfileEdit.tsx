@@ -29,9 +29,12 @@ export function AgentProfileEdit() {
     tiktok_url: "",
     youtube_url: "",
     avatar_url: "",
+    email: "",
+    phone: "",
   });
 
-  const [artists, setArtists] = useState<Profile[]>([]);
+  const [confirmedArtists, setConfirmedArtists] = useState<Profile[]>([]);
+  const [pendingArtists, setPendingArtists] = useState<Profile[]>([]);
   const [availableArtists, setAvailableArtists] = useState<Profile[]>([]);
 
   useEffect(() => {
@@ -70,21 +73,39 @@ export function AgentProfileEdit() {
     try {
       const { data, error } = await supabase
         .from("agent_artists")
-        .select("artist_profile_id")
+        .select("artist_profile_id, representation_status")
         .eq("agent_profile_id", id);
 
       if (error) throw error;
       if (data) {
-        // Fetch artist profiles separately
-        const artistIds = data.map(aa => aa.artist_profile_id);
-        if (artistIds.length > 0) {
-          const { data: profileData, error: profileError } = await supabase
+        // Separate by status
+        const confirmedIds = data.filter(aa => aa.representation_status === 'accepted').map(aa => aa.artist_profile_id);
+        const pendingIds = data.filter(aa => aa.representation_status === 'pending').map(aa => aa.artist_profile_id);
+        
+        // Fetch confirmed artists
+        if (confirmedIds.length > 0) {
+          const { data: confirmedProfiles, error: confirmedError } = await supabase
             .from("profiles")
             .select("*")
-            .in("id", artistIds);
+            .in("id", confirmedIds);
           
-          if (profileError) throw profileError;
-          setArtists(profileData || []);
+          if (confirmedError) throw confirmedError;
+          setConfirmedArtists(confirmedProfiles || []);
+        } else {
+          setConfirmedArtists([]);
+        }
+        
+        // Fetch pending artists
+        if (pendingIds.length > 0) {
+          const { data: pendingProfiles, error: pendingError } = await supabase
+            .from("profiles")
+            .select("*")
+            .in("id", pendingIds);
+          
+          if (pendingError) throw pendingError;
+          setPendingArtists(pendingProfiles || []);
+        } else {
+          setPendingArtists([]);
         }
       }
     } catch (error) {
@@ -94,11 +115,20 @@ export function AgentProfileEdit() {
 
   const fetchAvailableArtists = async () => {
     try {
+      // Get current artist IDs to exclude them
+      const { data: existingData } = await supabase
+        .from("agent_artists")
+        .select("artist_profile_id")
+        .eq("agent_profile_id", id);
+      
+      const existingIds = existingData?.map(aa => aa.artist_profile_id) || [];
+      
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("profile_type", "artist")
-        .eq("is_public", true);
+        .eq("is_public", true)
+        .not("id", "in", `(${existingIds.length > 0 ? existingIds.join(",") : "null"})`);
 
       if (error) throw error;
       if (data) setAvailableArtists(data);
@@ -176,15 +206,17 @@ export function AgentProfileEdit() {
         .from("agent_artists")
         .insert([{
           agent_profile_id: id,
-          artist_profile_id: artistId
+          artist_profile_id: artistId,
+          representation_status: 'pending'
         }]);
 
       if (error) throw error;
-      toast.success("Artist added to roster");
+      toast.success("Representation request sent to artist");
       fetchArtistRoster();
+      fetchAvailableArtists();
     } catch (error) {
-      console.error("Error adding artist:", error);
-      toast.error("Failed to add artist");
+      console.error("Error sending representation request:", error);
+      toast.error("Failed to send representation request");
     }
   };
 
@@ -291,6 +323,32 @@ export function AgentProfileEdit() {
             />
           </div>
 
+          <div>
+            <label htmlFor="email" className="block text-sm font-medium mb-2">
+              Email de contact
+            </label>
+            <Input
+              id="email"
+              type="email"
+              value={profileData.email || ""}
+              onChange={(e) => handleInputChange("email", e.target.value)}
+              placeholder="contact@example.com"
+            />
+          </div>
+
+          <div>
+            <label htmlFor="phone" className="block text-sm font-medium mb-2">
+              Téléphone de contact
+            </label>
+            <Input
+              id="phone"
+              type="tel"
+              value={profileData.phone || ""}
+              onChange={(e) => handleInputChange("phone", e.target.value)}
+              placeholder="+33 1 23 45 67 89"
+            />
+          </div>
+
           <div className="flex gap-4">
             <Button onClick={handleSave} disabled={saving}>
               {saving ? "Saving..." : "Save Profile"}
@@ -306,48 +364,87 @@ export function AgentProfileEdit() {
         <CardHeader>
           <CardTitle>Artist Roster</CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="space-y-4">
-            {artists.map((artist) => (
-              <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg">
-                <div>
-                  <h4 className="font-medium">{artist.display_name}</h4>
-                  <p className="text-sm text-muted-foreground">{artist.location}</p>
+        <CardContent className="space-y-6">
+          {/* Confirmed Artists */}
+          <div>
+            <h4 className="font-medium mb-4">Confirmed Artists</h4>
+            <div className="space-y-4">
+              {confirmedArtists.map((artist) => (
+                <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg bg-green-50">
+                  <div>
+                    <h5 className="font-medium">{artist.display_name}</h5>
+                    <p className="text-sm text-muted-foreground">{artist.location}</p>
+                    <span className="inline-block mt-1 text-xs bg-green-100 text-green-800 px-2 py-1 rounded">
+                      Confirmed
+                    </span>
+                  </div>
+                  <Button 
+                    variant="destructive" 
+                    size="sm"
+                    onClick={() => handleRemoveArtist(artist.id)}
+                  >
+                    Remove
+                  </Button>
                 </div>
-                <Button 
-                  variant="destructive" 
-                  size="sm"
-                  onClick={() => handleRemoveArtist(artist.id)}
-                >
-                  Remove
-                </Button>
-              </div>
-            ))}
-            
-            {artists.length === 0 && (
-              <p className="text-muted-foreground">No artists in your roster yet.</p>
-            )}
+              ))}
+              
+              {confirmedArtists.length === 0 && (
+                <p className="text-muted-foreground">No confirmed artists yet.</p>
+              )}
+            </div>
           </div>
 
-          <div className="mt-6">
-            <h4 className="font-medium mb-4">Add Artists</h4>
-            <div className="space-y-2">
-              {availableArtists
-                .filter(artist => !artists.some(a => a.id === artist.id))
-                .map((artist) => (
-                  <div key={artist.id} className="flex items-center justify-between p-3 border rounded">
-                    <div>
-                      <span className="font-medium">{artist.display_name}</span>
-                      <span className="text-sm text-muted-foreground ml-2">{artist.location}</span>
-                    </div>
-                    <Button 
-                      size="sm" 
-                      onClick={() => handleAddArtist(artist.id)}
-                    >
-                      Add
-                    </Button>
+          {/* Pending Artists */}
+          <div>
+            <h4 className="font-medium mb-4">Pending Requests</h4>
+            <div className="space-y-4">
+              {pendingArtists.map((artist) => (
+                <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg bg-amber-50">
+                  <div>
+                    <h5 className="font-medium">{artist.display_name}</h5>
+                    <p className="text-sm text-muted-foreground">{artist.location}</p>
+                    <span className="inline-block mt-1 text-xs bg-amber-100 text-amber-800 px-2 py-1 rounded">
+                      Awaiting Response
+                    </span>
                   </div>
-                ))}
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => handleRemoveArtist(artist.id)}
+                  >
+                    Cancel Request
+                  </Button>
+                </div>
+              ))}
+              
+              {pendingArtists.length === 0 && (
+                <p className="text-muted-foreground">No pending requests.</p>
+              )}
+            </div>
+          </div>
+
+          {/* Add Artists */}
+          <div>
+            <h4 className="font-medium mb-4">Send Representation Request</h4>
+            <div className="space-y-2">
+              {availableArtists.map((artist) => (
+                <div key={artist.id} className="flex items-center justify-between p-3 border rounded">
+                  <div>
+                    <span className="font-medium">{artist.display_name}</span>
+                    <span className="text-sm text-muted-foreground ml-2">{artist.location}</span>
+                  </div>
+                  <Button 
+                    size="sm" 
+                    onClick={() => handleAddArtist(artist.id)}
+                  >
+                    Send Request
+                  </Button>
+                </div>
+              ))}
+              
+              {availableArtists.length === 0 && (
+                <p className="text-muted-foreground">No available artists to add.</p>
+              )}
             </div>
           </div>
         </CardContent>
