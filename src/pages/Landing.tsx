@@ -104,7 +104,7 @@ export default function Landing() {
               THE HYPE OF THE NIGHT
             </Badge>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-6 leading-tight">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Connectez votre
               </span>
