@@ -77,6 +77,12 @@ export function TopNav() {
   const location = useLocation();
   const currentPath = location.pathname;
 
+  // Public navigation items (always visible)
+  const publicItems = [
+    { title: "Annonces", url: "/annonces" },
+    { title: "Nos Artistes", url: "/nos-artistes" },
+  ];
+
   // Get navigation items based on profile type
   const getNavigationItems = () => {
     if (!profile) return artistItems; // Default fallback
@@ -108,7 +114,20 @@ export function TopNav() {
     <nav className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="flex items-center px-4 overflow-x-auto">
         <div className="flex items-center gap-1 min-w-max">
-          {mainItems.map((item) => (
+          {/* Public Navigation Items */}
+          {publicItems.map((item) => (
+            <NavLink
+              key={item.title}
+              to={item.url}
+              end
+              className={getNavCls}
+            >
+              <span>{item.title}</span>
+            </NavLink>
+          ))}
+          
+          {/* Profile-based Navigation Items (only for logged in users) */}
+          {profile && mainItems.map((item) => (
             <NavLink
               key={item.title}
               to={item.url}

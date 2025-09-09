@@ -29,6 +29,8 @@ import PourArtistes from "./pages/PourArtistes";
 import PourAgentsManagers from "./pages/PourAgentsManagers";
 import PourLieuxEvenements from "./pages/PourLieuxEvenements";
 import MyArtists from "./pages/MyArtists";
+import NosArtistes from "./pages/NosArtistes";
+import AccesComplet from "./pages/AccesComplet";
 
 const queryClient = new QueryClient();
 
@@ -64,6 +66,8 @@ const App = () => (
             <Route path="/pour-artistes" element={<PourArtistes />} />
             <Route path="/pour-agents-managers" element={<PourAgentsManagers />} />
             <Route path="/pour-lieux-evenements" element={<PourLieuxEvenements />} />
+            <Route path="/nos-artistes" element={<NosArtistes />} />
+            <Route path="/voir-plus" element={<AccesComplet />} />
             <Route path="/" element={<Landing />} />
             {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
             <Route path="*" element={<NotFound />} />

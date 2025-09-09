@@ -18,6 +18,12 @@ export function MobileTabBar() {
   const location = useLocation();
   const { profile } = useAuth();
 
+  // Public tabs (always visible)
+  const publicTabs = [
+    { name: "Annonces", href: "/annonces", icon: Megaphone },
+    { name: "Artistes", href: "/nos-artistes", icon: Users },
+  ];
+
   const getMainTabs = () => {
     switch (profile?.profile_type) {
       case 'artist':
@@ -58,7 +64,7 @@ export function MobileTabBar() {
     }
   };
 
-  const tabs = getMainTabs();
+  const tabs = profile ? getMainTabs() : publicTabs;
 
   const isActive = (href: string) => {
     if (href === "/dashboard") {

@@ -360,24 +360,35 @@ export default function ArtistProfile() {
                 </Button>
               ) : (
                 <>
-                  {artist.accepts_direct_contact !== false ? (
-                    <Button className="w-full mb-4" asChild>
-                      <Link to={`/messages?contact=${artist.user_id}`}>
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Contacter l'artiste
-                      </Link>
-                    </Button>
-                  ) : preferredContact ? (
-                    <Button className="w-full mb-4" asChild>
-                      <Link to={`/messages?partner=${preferredContact.id}`}>
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Contacter {preferredContact.profile_type === 'agent' ? "l'agent" : "le manager"}
-                      </Link>
-                    </Button>
+                  {user ? (
+                    <>
+                      {artist.accepts_direct_contact !== false ? (
+                        <Button className="w-full mb-4" asChild>
+                          <Link to={`/messages?contact=${artist.user_id}`}>
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Contacter l'artiste
+                          </Link>
+                        </Button>
+                      ) : preferredContact ? (
+                        <Button className="w-full mb-4" asChild>
+                          <Link to={`/messages?partner=${preferredContact.id}`}>
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Contacter {preferredContact.profile_type === 'agent' ? "l'agent" : "le manager"}
+                          </Link>
+                        </Button>
+                      ) : (
+                        <Button className="w-full mb-4" disabled>
+                          <MessageCircle className="h-4 w-4 mr-2" />
+                          Contact non disponible
+                        </Button>
+                      )}
+                    </>
                   ) : (
-                    <Button className="w-full mb-4" disabled>
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Contact non disponible
+                    <Button className="w-full mb-4" asChild>
+                      <Link to="/auth">
+                        <MessageCircle className="h-4 w-4 mr-2" />
+                        Créer un compte pour contacter
+                      </Link>
                     </Button>
                   )}
                 </>

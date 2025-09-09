@@ -90,11 +90,20 @@ export default function VenueProfile() {
           </div>
           
           <div className="flex flex-col gap-2 w-full lg:w-auto">
-            {user && user.id !== venue.user_id && (
+            {user ? (
+              user.id !== venue.user_id && (
+                <Button asChild className="w-full">
+                  <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Contacter
+                  </Link>
+                </Button>
+              )
+            ) : (
               <Button asChild className="w-full">
-                <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
+                <Link to="/auth" className="flex items-center justify-center gap-2">
                   <MessageSquare className="w-4 h-4" />
-                  Contacter
+                  Créer un compte pour contacter
                 </Link>
               </Button>
             )}
@@ -192,10 +201,17 @@ export default function VenueProfile() {
               )}
               
               <Button asChild className="w-full" size="sm">
-                <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
-                  <MessageSquare className="w-4 h-4" />
-                  Envoyer un message
-                </Link>
+                {user ? (
+                  <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Envoyer un message
+                  </Link>
+                ) : (
+                  <Link to="/auth" className="flex items-center justify-center gap-2">
+                    <MessageSquare className="w-4 h-4" />
+                    Créer un compte pour contacter
+                  </Link>
+                )}
               </Button>
             </CardContent>
           </Card>

@@ -145,11 +145,20 @@ export default function PartnerProfile() {
               </div>
               
               <div className="flex gap-2">
-                {user && user.id !== partner.user_id && (
+                {user ? (
+                  user.id !== partner.user_id && (
+                    <Button asChild>
+                      <Link to={`/messages?partner=${partner.id}`}>
+                        <MessageSquare className="w-4 h-4 mr-2" />
+                        Contacter
+                      </Link>
+                    </Button>
+                  )
+                ) : (
                   <Button asChild>
-                    <Link to={`/messages?partner=${partner.id}`}>
+                    <Link to="/auth">
                       <MessageSquare className="w-4 h-4 mr-2" />
-                      Contacter
+                      Créer un compte pour contacter
                     </Link>
                   </Button>
                 )}
@@ -246,10 +255,17 @@ export default function PartnerProfile() {
                           </div>
                           <div className="flex flex-col xs:flex-row gap-2 flex-shrink-0">
                             <Button size="sm" className="text-xs font-medium" asChild>
-                              <Link to={`/messages?partner=${partner.id}`}>
-                                <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
-                                Message
-                              </Link>
+                              {user ? (
+                                <Link to={`/messages?partner=${partner.id}`}>
+                                  <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                                  Message
+                                </Link>
+                              ) : (
+                                <Link to="/auth">
+                                  <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                                  Créer un compte
+                                </Link>
+                              )}
                             </Button>
                             <Button size="sm" variant="outline" className="text-xs" asChild>
                               <a href={`mailto:${partner.email}`}>
@@ -304,11 +320,20 @@ export default function PartnerProfile() {
 
               {/* Main Actions */}
               <div className="space-y-3 pt-2 border-t border-border/30">
-                {user && user.id !== partner.user_id && (
+                {user ? (
+                  user.id !== partner.user_id && (
+                    <Button className="w-full h-12 text-sm font-semibold rounded-xl" asChild>
+                      <Link to={`/messages?partner=${partner.id}`}>
+                        <MessageSquare className="w-5 h-5 mr-2" />
+                        Contacter le {partnerType.toLowerCase()}
+                      </Link>
+                    </Button>
+                  )
+                ) : (
                   <Button className="w-full h-12 text-sm font-semibold rounded-xl" asChild>
-                    <Link to={`/messages?partner=${partner.id}`}>
+                    <Link to="/auth">
                       <MessageSquare className="w-5 h-5 mr-2" />
-                      Contacter le {partnerType.toLowerCase()}
+                      Créer un compte pour contacter
                     </Link>
                   </Button>
                 )}
