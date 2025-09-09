@@ -78,75 +78,91 @@ export default function VenueProfile() {
 
   return (
     <div className="container mx-auto px-6 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <div className="flex flex-col lg:flex-row lg:items-start gap-6">
-          <Avatar className="w-32 h-32 mx-auto lg:mx-0">
+      {/* Header Section with Cover Image */}
+      <div 
+        className="relative h-64 md:h-80 rounded-xl mb-8 overflow-hidden"
+        style={{
+          backgroundImage: (venue as any).header_url 
+            ? `url(${(venue as any).header_url})` 
+            : 'linear-gradient(to right, rgba(var(--primary) / 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))',
+          backgroundSize: 'cover',
+          backgroundPosition: (venue as any).header_url 
+            ? `center ${(venue as any).header_position_y || 50}%`
+            : 'center'
+        }}
+      >
+        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute bottom-6 left-6 flex items-end gap-6">
+          <Avatar className="h-24 w-24 md:h-32 md:w-32 ring-4 ring-white/20">
             <AvatarImage src={venue.avatar_url || ''} />
-            <AvatarFallback className="text-4xl bg-gradient-primary text-white">
-              {venue.display_name ? venue.display_name.charAt(0).toUpperCase() : <Calendar className="h-16 w-16" />}
+            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-foreground text-white text-2xl font-bold">
+              {venue.display_name ? venue.display_name.charAt(0).toUpperCase() : <Building2 className="h-16 w-16" />}
             </AvatarFallback>
           </Avatar>
-          
-          <div className="flex-1 text-center lg:text-left">
-            <h1 className="text-4xl font-bold mb-2">{venue.display_name}</h1>
-            
-            <div className="flex flex-wrap gap-2 justify-center lg:justify-start mb-4">
-              <Badge variant="outline" className="bg-orange-500/10 text-orange-500 border-orange-500/20">
-                <Building2 className="w-4 h-4 mr-1" />
-                {venue.venue_category ? getCategoryLabel(venue.venue_category) : 'Lieu'}
-              </Badge>
-              {venue.venue_capacity && (
-                <Badge variant="outline" className="bg-blue-500/10 text-blue-500 border-blue-500/20">
-                  <UserCheck className="w-4 h-4 mr-1" />
-                  {venue.venue_capacity} personnes
-                </Badge>
-              )}
-            </div>
-            
-            <div className="space-y-2">
+          <div className="text-white">
+            <h1 className="text-3xl md:text-4xl font-bold mb-2">{venue.display_name}</h1>
+            <div className="flex items-center gap-4 text-white/80">
               {venue.city && (
-                <div className="flex items-center gap-2 justify-center lg:justify-start text-muted-foreground">
-                  <MapPin className="w-4 h-4" />
-                  <span className="font-medium">{venue.city}</span>
+                <div className="flex items-center gap-1">
+                  <MapPin className="h-4 w-4" />
+                  {venue.city}
                 </div>
               )}
               {venue.location && (
-                <div className="flex items-center gap-2 justify-center lg:justify-start text-muted-foreground text-sm">
-                  <span className="ml-6">{venue.location}</span>
+                <span className="text-sm">{venue.location}</span>
+              )}
+            </div>
+            
+            {/* Venue info badges */}
+            <div className="flex flex-wrap gap-2 mt-3">
+              <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium">
+                <Building2 className="w-4 h-4" />
+                <span>{venue.venue_category ? getCategoryLabel(venue.venue_category) : 'Lieu'}</span>
+              </div>
+              {venue.venue_capacity && (
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium">
+                  <UserCheck className="w-4 h-4" />
+                  <span>{venue.venue_capacity} personnes</span>
+                </div>
+              )}
+              {venue.genres && venue.genres.length > 0 && (
+                <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium">
+                  <Music className="w-4 h-4" />
+                  <span>{venue.genres.slice(0, 2).join(', ')}{venue.genres.length > 2 ? '...' : ''}</span>
                 </div>
               )}
             </div>
           </div>
-          
-          <div className="flex flex-col gap-2 w-full lg:w-auto">
-            {user ? (
-              user.id !== venue.user_id && (
-                <Button asChild className="w-full">
-                  <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center justify-center gap-2">
-                    <MessageSquare className="w-4 h-4" />
-                    Contacter
-                  </Link>
-                </Button>
-              )
-            ) : (
-              <Button asChild className="w-full">
-                <Link to="/auth" className="flex items-center justify-center gap-2">
+        </div>
+        
+        {/* Action buttons in header */}
+        <div className="absolute top-6 right-6 flex gap-2">
+          {user ? (
+            user.id !== venue.user_id && (
+              <Button asChild>
+                <Link to={`/messages?contact=${venue.user_id}`} className="flex items-center gap-2">
                   <MessageSquare className="w-4 h-4" />
-                  Créer un compte pour contacter
+                  Contacter
                 </Link>
               </Button>
-            )}
-            
-            {venue.website && (
-              <Button variant="outline" asChild className="w-full">
-                <a href={venue.website} target="_blank" rel="noopener noreferrer" className="flex items-center justify-center gap-2">
-                  <ExternalLink className="w-4 h-4" />
-                  Site web
-                </a>
-              </Button>
-            )}
-          </div>
+            )
+          ) : (
+            <Button asChild>
+              <Link to="/auth" className="flex items-center gap-2">
+                <MessageSquare className="w-4 h-4" />
+                Créer un compte
+              </Link>
+            </Button>
+          )}
+          
+          {venue.website && (
+            <Button variant="outline" asChild className="bg-white/10 border-white/20 text-white hover:bg-white/20">
+              <a href={venue.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-2">
+                <ExternalLink className="w-4 h-4" />
+                Site web
+              </a>
+            </Button>
+          )}
         </div>
       </div>
 
