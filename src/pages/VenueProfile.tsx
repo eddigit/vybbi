@@ -10,6 +10,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { VenueAgenda } from '@/components/VenueAgenda';
 import { VenueGallery } from '@/components/VenueGallery';
+import { VenueCalendar } from '@/components/VenueCalendar';
 
 export default function VenueProfile() {
   const { id } = useParams<{ id: string }>();
@@ -328,6 +329,12 @@ export default function VenueProfile() {
               </Button>
             </CardContent>
           </Card>
+
+          {/* Calendar Widget */}
+          <VenueCalendar 
+            venueProfileId={venue.id} 
+            showBookingButton={!!user && profile?.profile_type === 'artist'}
+          />
         </div>
       </div>
     </div>
