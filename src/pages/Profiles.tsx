@@ -23,7 +23,7 @@ export default function Profiles() {
     fetchProfiles();
     // Initialize filter from URL params
     const typeParam = searchParams.get('type');
-    if (typeParam && ['artist', 'agent', 'venue'].includes(typeParam)) {
+    if (typeParam && ['artist', 'partner', 'lieu'].includes(typeParam)) {
       setTypeFilter(typeParam);
     }
   }, [searchParams]);
@@ -49,7 +49,15 @@ export default function Profiles() {
   const filteredProfiles = profiles.filter(profile => {
     const matchesSearch = profile.display_name.toLowerCase().includes(search.toLowerCase()) ||
                          profile.location?.toLowerCase().includes(search.toLowerCase());
-    const matchesType = typeFilter === 'all' || profile.profile_type === typeFilter;
+    
+    let matchesType = false;
+    if (typeFilter === 'all') {
+      matchesType = true;
+    } else if (typeFilter === 'partner') {
+      matchesType = profile.profile_type === 'agent' || profile.profile_type === 'manager';
+    } else {
+      matchesType = profile.profile_type === typeFilter;
+    }
     
     return matchesSearch && matchesType;
   });
@@ -59,8 +67,9 @@ export default function Profiles() {
       case 'artist':
         return <Music className="w-4 h-4" />;
       case 'agent':
+      case 'manager':
         return <Users className="w-4 h-4" />;
-      case 'venue':
+      case 'lieu':
         return <Calendar className="w-4 h-4" />;
       default:
         return null;
@@ -72,8 +81,9 @@ export default function Profiles() {
       case 'artist':
         return 'bg-primary/10 text-primary border-primary/20';
       case 'agent':
+      case 'manager':
         return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
-      case 'venue':
+      case 'lieu':
         return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default:
         return 'bg-muted';
@@ -120,9 +130,9 @@ export default function Profiles() {
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">All Types</SelectItem>
-            <SelectItem value="artist">Artists</SelectItem>
-            <SelectItem value="agent">Agents</SelectItem>
-            <SelectItem value="venue">Venues</SelectItem>
+            <SelectItem value="artist">Artistes</SelectItem>
+            <SelectItem value="partner">Partenaires</SelectItem>
+            <SelectItem value="lieu">Lieux & Établissements</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -141,10 +151,15 @@ export default function Profiles() {
                 <div className="flex-1 min-w-0">
                   <CardTitle className="text-lg truncate">{profile.display_name}</CardTitle>
                   <div className="flex items-center gap-2 mt-1">
-                    <Badge variant="outline" className={getProfileColor(profile.profile_type)}>
-                      {getProfileIcon(profile.profile_type)}
-                      <span className="ml-1 capitalize">{profile.profile_type}</span>
-                    </Badge>
+                     <Badge variant="outline" className={getProfileColor(profile.profile_type)}>
+                       {getProfileIcon(profile.profile_type)}
+                       <span className="ml-1 capitalize">
+                         {profile.profile_type === 'lieu' ? 'Lieu' : 
+                          profile.profile_type === 'agent' ? 'Agent' :
+                          profile.profile_type === 'manager' ? 'Manager' :
+                          profile.profile_type}
+                       </span>
+                     </Badge>
                   </div>
                 </div>
               </div>

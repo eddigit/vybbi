@@ -164,19 +164,19 @@ export default function Auth() {
                         <SelectItem value="agent">
                           <div className="flex items-center space-x-2">
                             {getProfileIcon('agent')}
-                            <span>Agent</span>
+                            <span>Partenaire (Agent)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="manager">
                           <div className="flex items-center space-x-2">
                             {getProfileIcon('manager')}
-                            <span>Manager</span>
+                            <span>Partenaire (Manager)</span>
                           </div>
                         </SelectItem>
                         <SelectItem value="lieu">
                           <div className="flex items-center space-x-2">
                             {getProfileIcon('lieu')}
-                            <span>Lieu</span>
+                            <span>Lieu & Établissement</span>
                           </div>
                         </SelectItem>
                       </SelectContent>

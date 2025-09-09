@@ -27,7 +27,7 @@ export default function VenueProfile() {
         .from('profiles')
         .select('*')
         .eq('id', id)
-        .eq('profile_type', 'venue')
+        .eq('profile_type', 'lieu')
         .single();
       
       if (data) {
