@@ -82,6 +82,12 @@ export function useAuth() {
     }
   };
 
+  const refreshProfile = async () => {
+    if (user) {
+      await fetchProfile(user.id);
+    }
+  };
+
   const signUp = async (email: string, password: string, displayName: string, profileType: string) => {
     try {
       const redirectUrl = `${window.location.origin}/dashboard`;
@@ -184,5 +190,6 @@ export function useAuth() {
     signIn,
     signOut,
     hasRole,
+    refreshProfile,
   };
 }

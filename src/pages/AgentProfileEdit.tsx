@@ -15,7 +15,7 @@ import { Profile, AgentArtist } from "@/lib/types";
 export function AgentProfileEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, profile } = useAuth();
+  const { user, profile, refreshProfile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -142,6 +142,8 @@ export function AgentProfileEdit() {
 
       setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
       toast.success("Avatar updated successfully");
+      // Refresh the profile in useAuth to update header avatar
+      await refreshProfile();
     } catch (error) {
       console.error("Error uploading avatar:", error);
       toast.error("Failed to upload avatar");

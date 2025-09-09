@@ -147,15 +147,24 @@ export default function Messages() {
             const conversation = item.conversations;
             
             // Get other participant
-            const { data: otherParticipant } = await supabase
+            const { data: participantData } = await supabase
               .from('conversation_participants')
-              .select(`
-                user_id,
-                profiles!inner(*)
-              `)
+              .select('user_id')
               .eq('conversation_id', conversation.id)
               .neq('user_id', user.id)
               .maybeSingle();
+            
+            let otherParticipantProfile = null;
+            if (participantData) {
+              console.log('Fetching profile for user_id:', participantData.user_id);
+              const { data: profileData } = await supabase
+                .from('profiles')
+                .select('*')
+                .eq('user_id', participantData.user_id)
+                .maybeSingle();
+              console.log('Profile data retrieved:', profileData);
+              otherParticipantProfile = profileData;
+            }
             
             // Get last message
             const { data: lastMessage } = await supabase
@@ -167,11 +176,15 @@ export default function Messages() {
               .maybeSingle();
             
             // Check if blocked
-            const { data: blockData } = await supabase
-              .from('blocked_users')
-              .select('*')
-              .or(`and(blocker_user_id.eq.${user.id},blocked_user_id.eq.${otherParticipant?.user_id}),and(blocker_user_id.eq.${otherParticipant?.user_id},blocked_user_id.eq.${user.id})`)
-              .maybeSingle();
+            let blockData = null;
+            if (participantData) {
+              const { data: blockResult } = await supabase
+                .from('blocked_users')
+                .select('*')
+                .or(`and(blocker_user_id.eq.${user.id},blocked_user_id.eq.${participantData.user_id}),and(blocker_user_id.eq.${participantData.user_id},blocked_user_id.eq.${user.id})`)
+                .maybeSingle();
+              blockData = blockResult;
+            }
             
             // Determine if user can send message
             const canSendMessage = !blockData && (
@@ -182,7 +195,7 @@ export default function Messages() {
             
             return {
               ...conversation,
-              other_participant: otherParticipant?.profiles,
+              other_participant: otherParticipantProfile,
               last_message: lastMessage,
               is_blocked: !!blockData,
               can_send_message: canSendMessage
@@ -211,11 +224,14 @@ export default function Messages() {
         // Fetch sender details separately to avoid relation issues
         const messagesWithSenders = await Promise.all(
           data.map(async (message) => {
+            console.log('Fetching sender for message from user_id:', message.sender_id);
             const { data: senderData } = await supabase
               .from('profiles')
               .select('display_name, avatar_url')
               .eq('user_id', message.sender_id)
               .maybeSingle();
+            
+            console.log('Sender data retrieved:', senderData);
             
             return {
               ...message,
