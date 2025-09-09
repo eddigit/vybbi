@@ -61,6 +61,7 @@ export type Database = {
           deadline: string | null
           description: string
           event_date: string | null
+          event_id: string | null
           genres: string[] | null
           id: string
           image_position_y: number | null
@@ -79,6 +80,7 @@ export type Database = {
           deadline?: string | null
           description: string
           event_date?: string | null
+          event_id?: string | null
           genres?: string[] | null
           id?: string
           image_position_y?: number | null
@@ -97,6 +99,7 @@ export type Database = {
           deadline?: string | null
           description?: string
           event_date?: string | null
+          event_id?: string | null
           genres?: string[] | null
           id?: string
           image_position_y?: number | null
@@ -202,6 +205,42 @@ export type Database = {
         }
         Relationships: []
       }
+      bookings: {
+        Row: {
+          artist_profile_id: string
+          created_at: string
+          event_id: string
+          id: string
+          message: string | null
+          proposed_fee: number | null
+          status: Database["public"]["Enums"]["booking_status"]
+          updated_at: string
+          venue_profile_id: string
+        }
+        Insert: {
+          artist_profile_id: string
+          created_at?: string
+          event_id: string
+          id?: string
+          message?: string | null
+          proposed_fee?: number | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+          venue_profile_id: string
+        }
+        Update: {
+          artist_profile_id?: string
+          created_at?: string
+          event_id?: string
+          id?: string
+          message?: string | null
+          proposed_fee?: number | null
+          status?: Database["public"]["Enums"]["booking_status"]
+          updated_at?: string
+          venue_profile_id?: string
+        }
+        Relationships: []
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -258,6 +297,60 @@ export type Database = {
           title?: string | null
           type?: Database["public"]["Enums"]["conversation_type"]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      events: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string
+          description: string | null
+          event_date: string
+          event_time: string | null
+          genres: string[] | null
+          id: string
+          image_position_y: number | null
+          image_url: string | null
+          location: string | null
+          status: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at: string
+          venue_profile_id: string
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          description?: string | null
+          event_date: string
+          event_time?: string | null
+          genres?: string[] | null
+          id?: string
+          image_position_y?: number | null
+          image_url?: string | null
+          location?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          title: string
+          updated_at?: string
+          venue_profile_id: string
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          description?: string | null
+          event_date?: string
+          event_time?: string | null
+          genres?: string[] | null
+          id?: string
+          image_position_y?: number | null
+          image_url?: string | null
+          location?: string | null
+          status?: Database["public"]["Enums"]["event_status"]
+          title?: string
+          updated_at?: string
+          venue_profile_id?: string
         }
         Relationships: []
       }

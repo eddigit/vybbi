@@ -8,8 +8,13 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-interface NotificationEmailRequest {
-  type: 'user_registration' | 'admin_notification' | 'review_notification' | 'contact_message';
+export type EmailNotificationType = 
+  | 'user_registration' 
+  | 'admin_notification' 
+  | 'review_notification' 
+  | 'contact_message'
+  | 'booking_proposed'
+  | 'booking_status_changed';
   to: string;
   data: {
     userName?: string;

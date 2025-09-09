@@ -31,6 +31,7 @@ import PourLieuxEvenements from "./pages/PourLieuxEvenements";
 import MyArtists from "./pages/MyArtists";
 import NosArtistes from "./pages/NosArtistes";
 import AccesComplet from "./pages/AccesComplet";
+import EventsManager from "./pages/EventsManager";
 
 const queryClient = new QueryClient();
 
@@ -69,8 +70,8 @@ const App = () => (
             <Route path="/nos-artistes" element={<NosArtistes />} />
             <Route path="/voir-plus" element={<AccesComplet />} />
             <Route path="/" element={<Landing />} />
-            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-            <Route path="*" element={<NotFound />} />
+        <Route path="/events" element={<EventsManager />} />
+        <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
       </BrowserRouter>
