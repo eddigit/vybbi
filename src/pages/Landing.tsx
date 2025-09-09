@@ -185,8 +185,12 @@ export default function Landing() {
 
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
-                <div className="w-16 h-16 bg-gradient-primary rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
-                  <Users className="w-8 h-8 text-primary-foreground" />
+                <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
+                  <img 
+                    src="/lovable-uploads/019274cb-5be3-4748-891a-56febf29aa09.png" 
+                    alt="Wolf Agent Manager" 
+                    className="w-full h-full object-cover"
+                  />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
