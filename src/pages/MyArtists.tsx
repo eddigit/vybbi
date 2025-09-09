@@ -27,22 +27,6 @@ interface ArtistRelationship {
   artist: ArtistProfile;
 }
 
-type RelationshipData = {
-  id: string;
-  artist_profile_id: string;
-  representation_status: string;
-  requested_at: string;
-  responded_at: string | null;
-  contract_notes: string | null;
-};
-
-type ProfileData = {
-  id: string;
-  display_name: string;
-  avatar_url: string | null;
-  user_id: string;
-};
-
 export default function MyArtists() {
   const { id: profileId } = useParams();
   const navigate = useNavigate();
@@ -76,36 +60,66 @@ export default function MyArtists() {
       const tableName = isAgent ? "agent_artists" : "manager_artists";
       const profileColumn = isAgent ? "agent_profile_id" : "manager_profile_id";
 
-      // Use raw SQL-like query to avoid type inference issues
-      const { data: relationships, error: relError }: { data: any; error: any } = await supabase
+      // Use basic query and cast result to avoid type inference
+      const relationshipQuery = (supabase as any)
         .from(tableName)
         .select('id, artist_profile_id, representation_status, requested_at, responded_at, contract_notes')
         .eq(profileColumn, profileId)
         .order("requested_at", { ascending: false });
 
-      if (relError) throw relError;
+      const relationshipResult = await relationshipQuery;
+      
+      if (relationshipResult.error) {
+        throw relationshipResult.error;
+      }
+      
+      const relationships: any[] = relationshipResult.data || [];
 
-      if (!relationships || relationships.length === 0) {
+      if (relationships.length === 0) {
         setArtists([]);
         return;
       }
 
-      // Get artist profiles
-      const artistIds = relationships.map((r: any) => r.artist_profile_id);
+      // Get artist profiles separately
+      const artistIds = relationships.map(r => r.artist_profile_id);
       
-      const { data: artistProfiles, error: profileError }: { data: any; error: any } = await supabase
+      const profileQuery = (supabase as any)
         .from('profiles')
         .select('id, display_name, avatar_url, user_id')
         .in('id', artistIds);
 
-      if (profileError) throw profileError;
+      const profileResult = await profileQuery;
 
-      // Combine the data
-      const combinedData: ArtistRelationship[] = relationships.map((rel: any) => {
-        const artist = (artistProfiles || []).find((p: any) => p.id === rel.artist_profile_id);
+      if (profileResult.error) {
+        throw profileResult.error;
+      }
+      
+      const artistProfiles: any[] = profileResult.data || [];
+
+      // Manually combine the data with explicit type construction
+      const combinedData: ArtistRelationship[] = relationships.map(rel => {
+        const foundArtist = artistProfiles.find(p => p.id === rel.artist_profile_id);
+        
+        const artistData: ArtistProfile = foundArtist ? {
+          id: foundArtist.id,
+          display_name: foundArtist.display_name,
+          avatar_url: foundArtist.avatar_url,
+          user_id: foundArtist.user_id
+        } : {
+          id: rel.artist_profile_id,
+          display_name: 'Unknown Artist',
+          avatar_url: null,
+          user_id: ''
+        };
+
         return {
-          ...rel,
-          artist: artist || { id: rel.artist_profile_id, display_name: 'Unknown', avatar_url: null, user_id: '' }
+          id: rel.id,
+          artist_profile_id: rel.artist_profile_id,
+          representation_status: rel.representation_status,
+          requested_at: rel.requested_at,
+          responded_at: rel.responded_at,
+          contract_notes: rel.contract_notes,
+          artist: artistData
         };
       });
 
@@ -126,12 +140,12 @@ export default function MyArtists() {
     try {
       const tableName = isAgent ? "agent_artists" : "manager_artists";
       
-      const { error } = await supabase
+      const updateResult = await (supabase as any)
         .from(tableName)
         .update({ contract_notes: tempNotes })
         .eq("id", relationshipId);
 
-      if (error) throw error;
+      if (updateResult.error) throw updateResult.error;
 
       setArtists(prev => prev.map(artist => 
         artist.id === relationshipId 
@@ -158,13 +172,13 @@ export default function MyArtists() {
 
   const startDirectConversation = async (artistUserId: string) => {
     try {
-      const { data, error } = await supabase.rpc('start_direct_conversation', {
+      const conversationResult = await (supabase as any).rpc('start_direct_conversation', {
         target_user_id: artistUserId
       });
 
-      if (error) throw error;
+      if (conversationResult.error) throw conversationResult.error;
       
-      navigate(`/messages?conversation=${data}`);
+      navigate(`/messages?conversation=${conversationResult.data}`);
     } catch (error) {
       console.error("Error starting conversation:", error);
       toast({
