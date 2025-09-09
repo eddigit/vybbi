@@ -91,13 +91,6 @@ export function ImageGallerySlider({ images, selectedIndex, isOpen, onClose }: I
           <div className="absolute bottom-6 left-1/2 -translate-x-1/2 bg-black/50 text-white px-4 py-2 rounded-full text-sm">
             {currentIndex + 1} / {images.length}
           </div>
-
-          {/* Image description */}
-          {images[currentIndex]?.description && (
-            <div className="absolute bottom-16 left-1/2 -translate-x-1/2 bg-black/70 text-white px-4 py-2 rounded-lg max-w-md text-center text-sm">
-              {images[currentIndex].description}
-            </div>
-          )}
         </div>
       </DialogContent>
     </Dialog>
