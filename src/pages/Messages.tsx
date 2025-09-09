@@ -26,18 +26,30 @@ export default function Messages() {
   const [showInfo, setShowInfo] = useState(false);
   const [showConversationList, setShowConversationList] = useState(true);
   
-  // Hooks
-  const { 
-    conversations, 
-    loading: conversationsLoading, 
-    archiveConversation, 
-    unarchiveConversation, 
-    pinConversation, 
-    unpinConversation 
-  } = useConversations();
-  
-  const { messages, loading: messagesLoading, markAsRead } = useMessages(selectedConversationId);
-  const { typingUsers } = useTypingPresence(selectedConversationId);
+  // Test if hooks are working properly
+  const conversationsResult = useConversations();
+  const messagesResult = useMessages(selectedConversationId);
+  const typingResult = useTypingPresence(selectedConversationId);
+
+  // Safe destructuring
+  const {
+    conversations = [],
+    loading: conversationsLoading = false,
+    error: conversationsError = null,
+    archiveConversation,
+    unarchiveConversation,
+    pinConversation,
+    unpinConversation
+  } = conversationsResult || {};
+
+  const {
+    messages = [],
+    loading: messagesLoading = false,
+    error: messagesError = null,
+    markAsRead
+  } = messagesResult || {};
+
+  const { typingUsers = [] } = typingResult || {};
 
   // Selected conversation details
   const selectedConversation = selectedConversationId 
@@ -230,6 +242,17 @@ export default function Messages() {
     );
   }
 
+  // Show error state if there are hook errors
+  if (conversationsError || messagesError) {
+    return (
+      <div className="container mx-auto px-6 py-8 text-center">
+        <p className="text-red-500">
+          Erreur: {conversationsError || messagesError}
+        </p>
+      </div>
+    );
+  }
+
   const canSendMessage = selectedConversation && !selectedConversation.is_blocked;
 
   // Desktop layout (lg and above)
@@ -242,10 +265,10 @@ export default function Messages() {
             conversations={conversations}
             selectedConversationId={selectedConversationId}
             onSelectConversation={handleSelectConversation}
-            onArchiveConversation={archiveConversation}
-            onUnarchiveConversation={unarchiveConversation}
-            onPinConversation={pinConversation}
-            onUnpinConversation={unpinConversation}
+            onArchiveConversation={archiveConversation || (() => {})}
+            onUnarchiveConversation={unarchiveConversation || (() => {})}
+            onPinConversation={pinConversation || (() => {})}
+            onUnpinConversation={unpinConversation || (() => {})}
           />
         </div>
 
@@ -280,10 +303,10 @@ export default function Messages() {
             isOpen={showInfo}
             onClose={() => setShowInfo(false)}
             onBlockUser={handleBlockUser}
-            onPinConversation={() => selectedConversationId && pinConversation(selectedConversationId)}
-            onUnpinConversation={() => selectedConversationId && unpinConversation(selectedConversationId)}
-            onArchiveConversation={() => selectedConversationId && archiveConversation(selectedConversationId)}
-            onUnarchiveConversation={() => selectedConversationId && unarchiveConversation(selectedConversationId)}
+            onPinConversation={() => selectedConversationId && pinConversation && pinConversation(selectedConversationId)}
+            onUnpinConversation={() => selectedConversationId && unpinConversation && unpinConversation(selectedConversationId)}
+            onArchiveConversation={() => selectedConversationId && archiveConversation && archiveConversation(selectedConversationId)}
+            onUnarchiveConversation={() => selectedConversationId && unarchiveConversation && unarchiveConversation(selectedConversationId)}
           />
         )}
       </div>
@@ -299,10 +322,10 @@ export default function Messages() {
           conversations={conversations}
           selectedConversationId={selectedConversationId}
           onSelectConversation={handleSelectConversation}
-          onArchiveConversation={archiveConversation}
-          onUnarchiveConversation={unarchiveConversation}
-          onPinConversation={pinConversation}
-          onUnpinConversation={unpinConversation}
+          onArchiveConversation={archiveConversation || (() => {})}
+          onUnarchiveConversation={unarchiveConversation || (() => {})}
+          onPinConversation={pinConversation || (() => {})}
+          onUnpinConversation={unpinConversation || (() => {})}
         />
       ) : (
         <div className="flex flex-col h-full">
@@ -338,10 +361,10 @@ export default function Messages() {
             isOpen={showInfo}
             onClose={() => setShowInfo(false)}
             onBlockUser={handleBlockUser}
-            onPinConversation={() => selectedConversationId && pinConversation(selectedConversationId)}
-            onUnpinConversation={() => selectedConversationId && unpinConversation(selectedConversationId)}
-            onArchiveConversation={() => selectedConversationId && archiveConversation(selectedConversationId)}
-            onUnarchiveConversation={() => selectedConversationId && unarchiveConversation(selectedConversationId)}
+            onPinConversation={() => selectedConversationId && pinConversation && pinConversation(selectedConversationId)}
+            onUnpinConversation={() => selectedConversationId && unpinConversation && unpinConversation(selectedConversationId)}
+            onArchiveConversation={() => selectedConversationId && archiveConversation && archiveConversation(selectedConversationId)}
+            onUnarchiveConversation={() => selectedConversationId && unarchiveConversation && unarchiveConversation(selectedConversationId)}
           />
         </DrawerContent>
       </Drawer>
