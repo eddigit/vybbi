@@ -8,7 +8,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
-import { Search, MapPin, Calendar, Euro, MessageCircle, FileText, Plus, Filter } from "lucide-react";
+import { Search, MapPin, Calendar, Euro, MessageCircle, FileText, Plus, Filter, LayoutGrid, List } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
@@ -26,6 +26,8 @@ interface AnnonceWithProfile {
   genres: string[] | null;
   status: string;
   created_at: string;
+  image_url: string | null;
+  image_position_y: number | null;
   profiles: {
     id: string;
     display_name: string;
@@ -44,6 +46,7 @@ export function AnnoncesWall() {
   const [locationFilter, setLocationFilter] = useState("");
   const [budgetFilter, setBudgetFilter] = useState("all");
   const [typeFilter, setTypeFilter] = useState("all");
+  const [viewMode, setViewMode] = useState<"cards" | "list">("cards");
   const [showApplicationDialog, setShowApplicationDialog] = useState(false);
   const [selectedAnnonce, setSelectedAnnonce] = useState<string | null>(null);
   const [applicationMessage, setApplicationMessage] = useState("");
@@ -69,7 +72,9 @@ export function AnnoncesWall() {
           genres,
           status,
           created_at,
-          user_id
+          user_id,
+          image_url,
+          image_position_y
         `)
         .eq("status", "published")
         .order("created_at", { ascending: false });
@@ -169,7 +174,7 @@ export function AnnoncesWall() {
       (budgetFilter === "medium" && annonce.budget_min && annonce.budget_min > 1000 && annonce.budget_max && annonce.budget_max <= 5000) ||
       (budgetFilter === "high" && annonce.budget_min && annonce.budget_min > 5000);
     
-    const matchesType = typeFilter === "all" || annonce.profiles.profile_type === typeFilter;
+    const matchesType = typeFilter === "all" || annonce.profiles?.profile_type === typeFilter;
 
     return matchesSearch && matchesLocation && matchesBudget && matchesType;
   });
@@ -290,139 +295,293 @@ export function AnnoncesWall() {
         </div>
       </div>
 
+      {/* View Mode Selector */}
+      <div className="flex justify-end">
+        <div className="flex items-center gap-2 p-1 bg-muted rounded-lg">
+          <Button
+            size="sm"
+            variant={viewMode === "cards" ? "default" : "ghost"}
+            onClick={() => setViewMode("cards")}
+            className="h-8 px-3"
+          >
+            <LayoutGrid className="h-4 w-4 mr-1" />
+            Cards
+          </Button>
+          <Button
+            size="sm"
+            variant={viewMode === "list" ? "default" : "ghost"}
+            onClick={() => setViewMode("list")}
+            className="h-8 px-3"
+          >
+            <List className="h-4 w-4 mr-1" />
+            Liste
+          </Button>
+        </div>
+      </div>
+
       {/* Results count */}
       <div className="text-sm text-muted-foreground">
         {filteredAnnonces.length} annonce{filteredAnnonces.length !== 1 ? 's' : ''} trouvée{filteredAnnonces.length !== 1 ? 's' : ''}
       </div>
 
-      {/* Announcements Grid */}
-      <div className="grid gap-4 md:gap-6">
-        {filteredAnnonces.map((annonce) => (
-          <Card key={annonce.id} className="hover:shadow-md transition-shadow">
-            <CardHeader className="pb-3">
-              <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-3">
-                <div className="flex-1">
-                  <CardTitle className="text-lg sm:text-xl mb-2">{annonce.title}</CardTitle>
-                  <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
-                  <div className="flex items-center gap-1">
-                    <img
-                      src={annonce.profiles?.avatar_url || "/placeholder.svg"}
-                      alt={annonce.profiles?.display_name || "User"}
-                      className="w-5 h-5 rounded-full"
-                    />
-                    <span className="font-medium">{annonce.profiles?.display_name || "Utilisateur"}</span>
-                  </div>
-                  <Badge variant="outline" className="text-xs">
-                    {getProfileTypeLabel(annonce.profiles?.profile_type || "artist")}
-                  </Badge>
-                  </div>
-                </div>
-              </div>
-            </CardHeader>
-            
-            <CardContent className="space-y-4">
-              <p className="text-sm sm:text-base text-muted-foreground line-clamp-3">
-                {annonce.description}
-              </p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
-                {annonce.location && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <MapPin className="h-4 w-4 flex-shrink-0" />
-                    <span className="truncate">{annonce.location}</span>
-                  </div>
-                )}
-                
-                {annonce.event_date && (
-                  <div className="flex items-center gap-2 text-muted-foreground">
-                    <Calendar className="h-4 w-4 flex-shrink-0" />
-                    <span>{new Date(annonce.event_date).toLocaleDateString()}</span>
-                  </div>
-                )}
-                
-                <div className="flex items-center gap-2 text-muted-foreground">
-                  <Euro className="h-4 w-4 flex-shrink-0" />
-                  <span className="truncate">{formatBudget(annonce.budget_min, annonce.budget_max)}</span>
-                </div>
-                
-                <div className="text-xs text-muted-foreground">
-                  Publié le {new Date(annonce.created_at).toLocaleDateString()}
-                </div>
-              </div>
-              
-              {annonce.genres && annonce.genres.length > 0 && (
-                <div className="flex flex-wrap gap-1">
-                  {annonce.genres.slice(0, 3).map((genre, index) => (
-                    <Badge key={index} variant="secondary" className="text-xs">
-                      {genre}
-                    </Badge>
-                  ))}
-                  {annonce.genres.length > 3 && (
-                    <Badge variant="secondary" className="text-xs">
-                      +{annonce.genres.length - 3}
-                    </Badge>
-                  )}
+      {/* Announcements Display */}
+      {viewMode === "cards" ? (
+        // Cards view with grid layout
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {filteredAnnonces.map((annonce) => (
+            <Card key={annonce.id} className="hover:shadow-lg transition-all duration-300 overflow-hidden">
+              {/* Image */}
+              {annonce.image_url && (
+                <div className="relative h-48 bg-muted overflow-hidden">
+                  <img
+                    src={annonce.image_url}
+                    alt={annonce.title}
+                    className="w-full h-full object-cover"
+                    style={{
+                      objectPosition: `center ${annonce.image_position_y || 50}%`
+                    }}
+                  />
                 </div>
               )}
               
-              <div className="flex flex-col sm:flex-row gap-2 pt-2">
-                {profile && (
-                  <>
-                    <Button
-                      size="sm"
-                      variant="outline"
-                      className="flex-1 sm:flex-none"
-                      onClick={() => annonce.profiles?.id && handleStartConversation(annonce.profiles.id)}
-                      disabled={!annonce.profiles?.id}
-                    >
-                      <MessageCircle className="h-4 w-4 mr-2" />
-                      Écrire dans l'app
-                    </Button>
-                    
-                    <Button
-                      size="sm"
-                      className="flex-1 sm:flex-none"
-                      onClick={() => {
-                        setSelectedAnnonce(annonce.id);
-                        setShowApplicationDialog(true);
-                      }}
-                    >
-                      <FileText className="h-4 w-4 mr-2" />
-                      Postuler/Proposer
-                    </Button>
-                  </>
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg mb-2 line-clamp-2">{annonce.title}</CardTitle>
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <img
+                    src={annonce.profiles?.avatar_url || "/placeholder.svg"}
+                    alt={annonce.profiles?.display_name || "User"}
+                    className="w-5 h-5 rounded-full"
+                  />
+                  <span className="font-medium">{annonce.profiles?.display_name || "Utilisateur"}</span>
+                  <Badge variant="outline" className="text-xs">
+                    {getProfileTypeLabel(annonce.profiles?.profile_type || "artist")}
+                  </Badge>
+                </div>
+              </CardHeader>
+              
+              <CardContent className="space-y-4">
+                <p className="text-sm text-muted-foreground line-clamp-3">
+                  {annonce.description}
+                </p>
+                
+                <div className="space-y-2 text-sm">
+                  {annonce.location && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <MapPin className="h-4 w-4 flex-shrink-0" />
+                      <span className="truncate">{annonce.location}</span>
+                    </div>
+                  )}
+                  
+                  {annonce.event_date && (
+                    <div className="flex items-center gap-2 text-muted-foreground">
+                      <Calendar className="h-4 w-4 flex-shrink-0" />
+                      <span>{new Date(annonce.event_date).toLocaleDateString()}</span>
+                    </div>
+                  )}
+                  
+                  <div className="flex items-center gap-2 text-muted-foreground">
+                    <Euro className="h-4 w-4 flex-shrink-0" />
+                    <span className="truncate">{formatBudget(annonce.budget_min, annonce.budget_max)}</span>
+                  </div>
+                </div>
+                
+                {annonce.genres && annonce.genres.length > 0 && (
+                  <div className="flex flex-wrap gap-1">
+                    {annonce.genres.slice(0, 2).map((genre, index) => (
+                      <Badge key={index} variant="secondary" className="text-xs">
+                        {genre}
+                      </Badge>
+                    ))}
+                    {annonce.genres.length > 2 && (
+                      <Badge variant="secondary" className="text-xs">
+                        +{annonce.genres.length - 2}
+                      </Badge>
+                    )}
+                  </div>
                 )}
                 
-                {!profile && (
-                  <Button asChild size="sm" className="w-full sm:w-auto">
-                    <Link to="/auth">
-                      Se connecter pour postuler
-                    </Link>
-                  </Button>
+                <div className="flex gap-2 pt-2">
+                  {profile && (
+                    <>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="flex-1"
+                        onClick={() => annonce.profiles?.id && handleStartConversation(annonce.profiles.id)}
+                        disabled={!annonce.profiles?.id}
+                      >
+                        <MessageCircle className="h-4 w-4 mr-1" />
+                        Message
+                      </Button>
+                      <Button
+                        size="sm"
+                        className="flex-1"
+                        onClick={() => {
+                          setSelectedAnnonce(annonce.id);
+                          setShowApplicationDialog(true);
+                        }}
+                      >
+                        Postuler
+                      </Button>
+                    </>
+                  )}
+                  
+                  {!profile && (
+                    <Button asChild size="sm" className="w-full">
+                      <Link to="/auth">
+                        Se connecter pour postuler
+                      </Link>
+                    </Button>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      ) : (
+        // List view with horizontal layout
+        <div className="space-y-4">
+          {filteredAnnonces.map((annonce) => (
+            <Card key={annonce.id} className="hover:shadow-md transition-shadow">
+              <div className="flex">
+                {/* Image */}
+                {annonce.image_url && (
+                  <div className="relative w-48 h-32 bg-muted flex-shrink-0 overflow-hidden">
+                    <img
+                      src={annonce.image_url}
+                      alt={annonce.title}
+                      className="w-full h-full object-cover"
+                      style={{
+                        objectPosition: `center ${annonce.image_position_y || 50}%`
+                      }}
+                    />
+                  </div>
                 )}
+                
+                <div className="flex-1 p-6">
+                  <CardHeader className="p-0">
+                    <CardTitle className="text-lg sm:text-xl mb-2">{annonce.title}</CardTitle>
+                    <div className="flex flex-wrap items-center gap-2 text-sm text-muted-foreground">
+                      <div className="flex items-center gap-1">
+                        <img
+                          src={annonce.profiles?.avatar_url || "/placeholder.svg"}
+                          alt={annonce.profiles?.display_name || "User"}
+                          className="w-5 h-5 rounded-full"
+                        />
+                        <span className="font-medium">{annonce.profiles?.display_name || "Utilisateur"}</span>
+                      </div>
+                      <Badge variant="outline" className="text-xs">
+                        {getProfileTypeLabel(annonce.profiles?.profile_type || "artist")}
+                      </Badge>
+                    </div>
+                  </CardHeader>
+                  
+                  <CardContent className="p-0 mt-4 space-y-4">
+                    <p className="text-sm sm:text-base text-muted-foreground line-clamp-2">
+                      {annonce.description}
+                    </p>
+                    
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 text-sm">
+                      {annonce.location && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <MapPin className="h-4 w-4 flex-shrink-0" />
+                          <span className="truncate">{annonce.location}</span>
+                        </div>
+                      )}
+                      
+                      {annonce.event_date && (
+                        <div className="flex items-center gap-2 text-muted-foreground">
+                          <Calendar className="h-4 w-4 flex-shrink-0" />
+                          <span>{new Date(annonce.event_date).toLocaleDateString()}</span>
+                        </div>
+                      )}
+                      
+                      <div className="flex items-center gap-2 text-muted-foreground">
+                        <Euro className="h-4 w-4 flex-shrink-0" />
+                        <span className="truncate">{formatBudget(annonce.budget_min, annonce.budget_max)}</span>
+                      </div>
+                      
+                      <div className="text-xs text-muted-foreground">
+                        Publié le {new Date(annonce.created_at).toLocaleDateString()}
+                      </div>
+                    </div>
+                    
+                    {annonce.genres && annonce.genres.length > 0 && (
+                      <div className="flex flex-wrap gap-1">
+                        {annonce.genres.slice(0, 3).map((genre, index) => (
+                          <Badge key={index} variant="secondary" className="text-xs">
+                            {genre}
+                          </Badge>
+                        ))}
+                        {annonce.genres.length > 3 && (
+                          <Badge variant="secondary" className="text-xs">
+                            +{annonce.genres.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                    
+                    <div className="flex flex-col sm:flex-row gap-2 pt-2">
+                      {profile && (
+                        <>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="flex-1 sm:flex-none"
+                            onClick={() => annonce.profiles?.id && handleStartConversation(annonce.profiles.id)}
+                            disabled={!annonce.profiles?.id}
+                          >
+                            <MessageCircle className="h-4 w-4 mr-2" />
+                            Écrire dans l'app
+                          </Button>
+                          
+                          <Button
+                            size="sm"
+                            className="flex-1 sm:flex-none"
+                            onClick={() => {
+                              setSelectedAnnonce(annonce.id);
+                              setShowApplicationDialog(true);
+                            }}
+                          >
+                            <FileText className="h-4 w-4 mr-2" />
+                            Postuler/Proposer
+                          </Button>
+                        </>
+                      )}
+                      
+                      {!profile && (
+                        <Button asChild size="sm" className="w-full sm:w-auto">
+                          <Link to="/auth">
+                            Se connecter pour postuler
+                          </Link>
+                        </Button>
+                      )}
+                    </div>
+                  </CardContent>
+                </div>
               </div>
-            </CardContent>
-          </Card>
-        ))}
-        
-        {filteredAnnonces.length === 0 && !loading && (
-          <Card>
-            <CardContent className="text-center py-12">
-              <p className="text-muted-foreground mb-4">
-                Aucune annonce ne correspond à vos critères
-              </p>
-              <Button variant="outline" onClick={() => {
-                setSearchTerm("");
-                setLocationFilter("");
-                setBudgetFilter("");
-                setTypeFilter("");
-              }}>
-                Réinitialiser les filtres
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      </div>
+            </Card>
+          ))}
+        </div>
+      )}
+      
+      {filteredAnnonces.length === 0 && !loading && (
+        <Card>
+          <CardContent className="text-center py-12">
+            <p className="text-muted-foreground mb-4">
+              Aucune annonce ne correspond à vos critères
+            </p>
+            <Button variant="outline" onClick={() => {
+              setSearchTerm("");
+              setLocationFilter("");
+              setBudgetFilter("all");
+              setTypeFilter("all");
+            }}>
+              Réinitialiser les filtres
+            </Button>
+          </CardContent>
+        </Card>
+      )}
 
       {/* Application Dialog */}
       <Dialog open={showApplicationDialog} onOpenChange={setShowApplicationDialog}>
@@ -443,11 +602,11 @@ export function AnnoncesWall() {
               />
             </div>
             <div className="flex gap-3">
-              <Button onClick={handleApplication} className="flex-1">
-                Envoyer la candidature
-              </Button>
               <Button variant="outline" onClick={() => setShowApplicationDialog(false)}>
                 Annuler
+              </Button>
+              <Button onClick={handleApplication}>
+                Envoyer la candidature
               </Button>
             </div>
           </div>
