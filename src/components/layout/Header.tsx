@@ -269,12 +269,20 @@ export function Header() {
                 )}
                 
                 {(profile.profile_type === 'agent' || profile.profile_type === 'manager') && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/lieux" className="flex items-center sm:hidden">
-                      <MapPin className="mr-2 h-3 w-3" />
-                      <span className="text-sm">Lieux</span>
-                    </Link>
-                  </DropdownMenuItem>
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/lieux" className="flex items-center sm:hidden">
+                        <MapPin className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Lieux</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/events" className="flex items-center sm:hidden">
+                        <Star className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Événements</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
                 )}
 
                 {profile.profile_type === 'artist' && (
