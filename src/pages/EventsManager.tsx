@@ -84,7 +84,7 @@ export default function EventsManager() {
   }, [profile]);
 
   const fetchAllPublishedEvents = async () => {
-    const { data, error } = await supabase
+    let query = supabase
       .from('events')
       .select(`
         *,
@@ -93,9 +93,16 @@ export default function EventsManager() {
           location,
           avatar_url
         )
-      `)
-      .eq('status', 'published')
-      .order('event_date', { ascending: true });
+      `);
+
+    // If user is a venue, include their events regardless of status, otherwise only published events
+    if (profile?.profile_type === 'lieu') {
+      query = query.or(`status.eq.published,venue_profile_id.eq.${profile.id}`);
+    } else {
+      query = query.eq('status', 'published');
+    }
+
+    const { data, error } = await query.order('event_date', { ascending: true });
 
     if (error) {
       console.error('Error fetching published events:', error);
