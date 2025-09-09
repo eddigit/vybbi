@@ -241,6 +241,32 @@ export type Database = {
         }
         Relationships: []
       }
+      conversation_archives: {
+        Row: {
+          archived_at: string
+          conversation_id: string
+          user_id: string
+        }
+        Insert: {
+          archived_at?: string
+          conversation_id: string
+          user_id: string
+        }
+        Update: {
+          archived_at?: string
+          conversation_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_archives_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       conversation_participants: {
         Row: {
           conversation_id: string
@@ -263,6 +289,32 @@ export type Database = {
         Relationships: [
           {
             foreignKeyName: "conversation_participants_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      conversation_pins: {
+        Row: {
+          conversation_id: string
+          pinned_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          pinned_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          pinned_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversation_pins_conversation_id_fkey"
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
@@ -427,6 +479,38 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      message_receipts: {
+        Row: {
+          conversation_id: string
+          created_at: string
+          id: string
+          last_read_at: string
+          user_id: string
+        }
+        Insert: {
+          conversation_id: string
+          created_at?: string
+          id?: string
+          last_read_at?: string
+          user_id: string
+        }
+        Update: {
+          conversation_id?: string
+          created_at?: string
+          id?: string
+          last_read_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "message_receipts_conversation_id_fkey"
+            columns: ["conversation_id"]
+            isOneToOne: false
+            referencedRelation: "conversations"
             referencedColumns: ["id"]
           },
         ]
@@ -737,6 +821,26 @@ export type Database = {
           _user_id: string
         }
         Returns: string
+      }
+      get_conversations_with_details: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          conversation_id: string
+          conversation_title: string
+          conversation_type: Database["public"]["Enums"]["conversation_type"]
+          is_archived: boolean
+          is_blocked: boolean
+          is_pinned: boolean
+          last_message_at: string
+          last_message_content: string
+          last_message_created_at: string
+          peer_avatar_url: string
+          peer_display_name: string
+          peer_profile_type: Database["public"]["Enums"]["profile_type"]
+          peer_user_id: string
+          reply_received: boolean
+          unread_count: number
+        }[]
       }
       get_conversations_with_peers: {
         Args: Record<PropertyKey, never>

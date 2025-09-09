@@ -1,0 +1,139 @@
+import { useState } from 'react';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
+import { Pin, Archive, MoreVertical, PinOff, ArchiveRestore } from 'lucide-react';
+import { ConversationWithDetails } from '@/hooks/useConversations';
+import { formatTime } from '@/utils/formatTime';
+
+interface ConversationListItemProps {
+  conversation: ConversationWithDetails;
+  isSelected: boolean;
+  onSelect: () => void;
+  onPin: () => void;
+  onArchive: () => void;
+  isPinned: boolean;
+  isArchived?: boolean;
+}
+
+export default function ConversationListItem({
+  conversation,
+  isSelected,
+  onSelect,
+  onPin,
+  onArchive,
+  isPinned,
+  isArchived = false,
+}: ConversationListItemProps) {
+  const [showMenu, setShowMenu] = useState(false);
+
+  const displayName = conversation.peer_display_name || 'Utilisateur inconnu';
+  const lastMessage = conversation.last_message_content || 'Pas de message';
+  const unreadCount = conversation.unread_count;
+  const hasUnread = unreadCount > 0;
+
+  return (
+    <div
+      className={`
+        flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors
+        ${isSelected ? 'bg-muted' : ''}
+        ${hasUnread ? 'bg-accent/10' : ''}
+      `}
+      onClick={onSelect}
+    >
+      {/* Avatar */}
+      <Avatar className="h-12 w-12 flex-shrink-0">
+        <AvatarImage src={conversation.peer_avatar_url || ''} alt={displayName} />
+        <AvatarFallback>
+          {displayName.split(' ').map(n => n[0]).join('').toUpperCase()}
+        </AvatarFallback>
+      </Avatar>
+
+      {/* Content */}
+      <div className="flex-1 min-w-0">
+        <div className="flex items-center justify-between mb-1">
+          <div className="flex items-center gap-2">
+            {isPinned && <Pin className="h-3 w-3 text-muted-foreground" />}
+            <h3 className={`text-sm truncate ${hasUnread ? 'font-semibold' : 'font-medium'}`}>
+              {displayName}
+            </h3>
+          </div>
+          <div className="flex items-center gap-2">
+            {hasUnread && (
+              <Badge variant="default" className="h-5 w-5 p-0 text-xs rounded-full flex items-center justify-center">
+                {unreadCount > 99 ? '99+' : unreadCount}
+              </Badge>
+            )}
+            {conversation.last_message_at && (
+              <span className="text-xs text-muted-foreground whitespace-nowrap">
+                {formatTime(conversation.last_message_at)}
+              </span>
+            )}
+          </div>
+        </div>
+        
+        <p className={`text-sm truncate ${hasUnread ? 'text-foreground' : 'text-muted-foreground'}`}>
+          {lastMessage}
+        </p>
+      </div>
+
+      {/* Actions */}
+      <DropdownMenu open={showMenu} onOpenChange={setShowMenu}>
+        <DropdownMenuTrigger asChild>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            onClick={(e) => {
+              e.stopPropagation();
+              setShowMenu(!showMenu);
+            }}
+          >
+            <MoreVertical className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              onPin();
+              setShowMenu(false);
+            }}
+          >
+            {isPinned ? (
+              <>
+                <PinOff className="mr-2 h-4 w-4" />
+                Désépingler
+              </>
+            ) : (
+              <>
+                <Pin className="mr-2 h-4 w-4" />
+                Épingler
+              </>
+            )}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              onArchive();
+              setShowMenu(false);
+            }}
+          >
+            {isArchived ? (
+              <>
+                <ArchiveRestore className="mr-2 h-4 w-4" />
+                Désarchiver
+              </>
+            ) : (
+              <>
+                <Archive className="mr-2 h-4 w-4" />
+                Archiver
+              </>
+            )}
+          </DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+    </div>
+  );
+}
