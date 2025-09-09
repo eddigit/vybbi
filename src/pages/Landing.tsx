@@ -10,23 +10,23 @@ export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
   const features = [{
     icon: Users,
-    title: "Réseau Professionnel",
-    description: "Connectez-vous avec des artistes, agents et lieux d'événements dans votre région",
+    title: "Marketplace Unifiée",
+    description: "Trouvez DJ, groupes, danseurs et lieux sur une seule plateforme. Centralisez tout votre écosystème artistique",
     gradient: "from-blue-500 to-cyan-500"
   }, {
     icon: MessageCircle,
-    title: "Messagerie Temps Réel",
-    description: "Échangez instantanément avec vos contacts et négociez vos contrats",
+    title: "Outils Collaboratifs",
+    description: "Espace de travail partagé pour chaque événement : communication, contrats, riders et plannings centralisés",
     gradient: "from-purple-500 to-pink-500"
   }, {
     icon: FileCheck,
-    title: "Contrats Numériques",
-    description: "Créez, signez et gérez vos contrats d'événements en toute sécurité",
+    title: "Matching IA Avancé",
+    description: "Notre IA analyse besoins (ambiance, budget, style) et profils pour proposer les meilleures correspondances, même inattendues",
     gradient: "from-green-500 to-emerald-500"
   }, {
     icon: CreditCard,
-    title: "Paiements Sécurisés",
-    description: "Système de paiement intégré avec gestion automatique des commissions",
+    title: "Calendriers Synchronisés",
+    description: "Artistes, lieux et agents synchronisent leurs disponibilités, rendant la planification simple et transparente",
     gradient: "from-orange-500 to-red-500"
   }];
   const testimonials = [{
@@ -115,7 +115,7 @@ export default function Landing() {
             
             <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
               Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
-              Découvrez, connectez et développez l'écosystème musical et nocturne.
+              Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -164,7 +164,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
                 <p className="text-muted-foreground mb-6">
-                  DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings.
+                  DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings grâce à notre moteur de matching IA.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -202,7 +202,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
-                  Gérez vos artistes, développez leurs carrières et maximisez leurs opportunités de bookings.
+                  Gérez vos artistes, développez leurs carrières avec des outils dédiés pour organiser des tournées et maximiser leurs opportunités de bookings.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -240,7 +240,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
-                  Clubs, festivals, bars, restaurants. Trouvez les talents parfaits pour vos événements.
+                  Clubs, festivals, bars, restaurants. Bénéficiez de calendriers synchronisés et trouvez les talents parfaits pour vos événements sur une marketplace unifiée.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -276,7 +276,7 @@ export default function Landing() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Fonctionnalités puissantes</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Tout ce dont vous avez besoin pour développer votre activité dans l'industrie musicale
+              Tout ce dont vous avez besoin pour développer votre activité dans l'industrie musicale. Les agents et bookers bénéficient d'outils dédiés pour gérer leurs artistes, trouver de nouveaux talents et organiser des tournées.
             </p>
           </div>
 
