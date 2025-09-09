@@ -1,6 +1,7 @@
 import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
 import PartnerDashboard from "@/pages/PartnerDashboard";
+import VenueDashboard from "@/pages/VenueDashboard";
 import { useState } from "react";
 import { Users, Target, Euro, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
@@ -56,7 +57,11 @@ export default function Dashboard() {
     return <ArtistDashboard />;
   }
   
-  if (['agent', 'manager', 'lieu'].includes(profile?.profile_type || '')) {
+  if (profile?.profile_type === 'lieu') {
+    return <VenueDashboard />;
+  }
+  
+  if (['agent', 'manager'].includes(profile?.profile_type || '')) {
     return <PartnerDashboard />;
   }
 
