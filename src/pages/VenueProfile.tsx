@@ -1,17 +1,19 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { MapPin, MessageSquare, ExternalLink, Calendar, Users, Music } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { MapPin, MessageSquare, ExternalLink, Calendar, Users, Music } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+import { VenueAgenda } from '@/components/VenueAgenda';
 
 export default function VenueProfile() {
   const { id } = useParams<{ id: string }>();
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const [venue, setVenue] = useState<Profile | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -121,52 +123,78 @@ export default function VenueProfile() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-6">
-          {/* About */}
-          {venue.bio && (
-            <Card>
-              <CardHeader>
-                <CardTitle>À propos</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground whitespace-pre-wrap">{venue.bio}</p>
-              </CardContent>
-            </Card>
-          )}
+        {/* Contenu principal */}
+        <div className="lg:col-span-2 space-y-8">
+          <Tabs defaultValue="about" className="w-full">
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="about">À propos</TabsTrigger>
+              <TabsTrigger value="events">
+                <Calendar className="h-4 w-4 mr-2" />
+                Événements
+              </TabsTrigger>
+            </TabsList>
+            
+            <TabsContent value="about" className="space-y-6">
+              {/* À propos */}
+              {venue.bio && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>À propos</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground whitespace-pre-wrap">{venue.bio}</p>
+                  </CardContent>
+                </Card>
+              )}
 
-          {/* Genres */}
-          {venue.genres && venue.genres.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Music className="w-5 h-5" />
-                  Styles musicaux accueillis
-                </CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="flex flex-wrap gap-2">
-                  {venue.genres.map((genre) => (
-                    <Badge key={genre} variant="secondary">
-                      {genre}
-                    </Badge>
-                  ))}
-                </div>
-              </CardContent>
-            </Card>
-          )}
+              {/* Styles musicaux */}
+              {venue.genres && venue.genres.length > 0 && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2">
+                      <Music className="w-5 h-5" />
+                      Styles musicaux accueillis
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="flex flex-wrap gap-2">
+                      {venue.genres.map((genre, index) => (
+                        <Badge key={index} variant="secondary">
+                          {genre}
+                        </Badge>
+                      ))}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
 
-          {/* Experience */}
-          {venue.experience && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Informations complémentaires</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground whitespace-pre-wrap">{venue.experience}</p>
-              </CardContent>
-            </Card>
-          )}
+              {/* Informations complémentaires */}
+              {venue.experience && (
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Informations complémentaires</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground whitespace-pre-wrap">{venue.experience}</p>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+            
+            <TabsContent value="events">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Événements à venir</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <VenueAgenda 
+                    venueProfileId={venue.id} 
+                    showBookingButton={!!user && profile?.profile_type === 'artist'}
+                  />
+                </CardContent>
+              </Card>
+            </TabsContent>
+          </Tabs>
         </div>
 
         {/* Sidebar */}

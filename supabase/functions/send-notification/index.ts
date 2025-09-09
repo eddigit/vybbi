@@ -8,13 +8,8 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-export type EmailNotificationType = 
-  | 'user_registration' 
-  | 'admin_notification' 
-  | 'review_notification' 
-  | 'contact_message'
-  | 'booking_proposed'
-  | 'booking_status_changed';
+interface NotificationEmailRequest {
+  type: 'user_registration' | 'admin_notification' | 'review_notification' | 'contact_message' | 'booking_proposed' | 'booking_status_changed';
   to: string;
   data: {
     userName?: string;
@@ -26,6 +21,11 @@ export type EmailNotificationType =
     message?: string;
     senderName?: string;
     senderEmail?: string;
+    eventTitle?: string;
+    eventDate?: string;
+    venueName?: string;
+    bookingStatus?: string;
+    proposedFee?: number;
     [key: string]: any;
   };
 }
@@ -172,6 +172,80 @@ const getEmailTemplate = (type: string, data: any) => {
               <div style="background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 3px;">
                 <p style="margin: 0; white-space: pre-line;">${data.message}</p>
               </div>
+            </div>
+          </div>
+        </div>
+      `
+    },
+
+    booking_proposed: {
+      subject: `Nouvelle demande de booking pour ${data.eventTitle}`,
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Nouvelle demande de booking !</h1>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0;">
+            <h2 style="color: #333; margin-bottom: 20px;">Bonjour,</h2>
+            
+            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+              L'artiste <strong>${data.artistName}</strong> souhaite être booké pour votre événement :
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+              <p><strong>Événement:</strong> ${data.eventTitle}</p>
+              <p><strong>Date:</strong> ${data.eventDate}</p>
+              ${data.proposedFee ? `<p><strong>Cachet proposé:</strong> ${data.proposedFee}€</p>` : ''}
+              ${data.message ? `<p><strong>Message:</strong></p><p>${data.message}</p>` : ''}
+            </div>
+            
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/events" 
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        color: white; 
+                        padding: 12px 25px; 
+                        text-decoration: none; 
+                        border-radius: 5px; 
+                        font-weight: bold;">
+                Gérer les demandes
+              </a>
+            </div>
+          </div>
+        </div>
+      `
+    },
+
+    booking_status_changed: {
+      subject: `Votre demande de booking a été ${data.bookingStatus === 'confirmed' ? 'confirmée' : 'annulée'}`,
+      html: `
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+          <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <h1 style="color: white; margin: 0; font-size: 24px;">Mise à jour de votre demande</h1>
+          </div>
+          
+          <div style="background: white; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0;">
+            <h2 style="color: #333; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
+            
+            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+              Votre demande de booking pour l'événement <strong>${data.eventTitle}</strong> a été <strong>${data.bookingStatus === 'confirmed' ? 'confirmée' : 'annulée'}</strong>.
+            </p>
+            
+            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+              <p><strong>Lieu:</strong> ${data.venueName}</p>
+              <p><strong>Date:</strong> ${data.eventDate}</p>
+            </div>
+            
+            <div style="text-align: center; margin: 25px 0;">
+              <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/dashboard" 
+                 style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                        color: white; 
+                        padding: 12px 25px; 
+                        text-decoration: none; 
+                        border-radius: 5px; 
+                        font-weight: bold;">
+                Voir mes bookings
+              </a>
             </div>
           </div>
         </div>

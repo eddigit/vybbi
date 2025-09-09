@@ -33,6 +33,7 @@ interface Booking {
   id: string;
   event_id: string;
   artist_profile_id: string;
+  venue_profile_id: string;
   status: 'pending' | 'confirmed' | 'completed' | 'cancelled';
   message: string | null;
   proposed_fee: number | null;
@@ -96,20 +97,59 @@ export default function EventsManager() {
   const fetchBookings = async () => {
     if (!profile) return;
 
-    const { data, error } = await supabase
+    // First fetch bookings, then fetch profiles separately
+    const { data: bookingsData, error: bookingsError } = await supabase
       .from('bookings')
-      .select(`
-        *,
-        artist:profiles!bookings_artist_profile_id_fkey(display_name, avatar_url)
-      `)
+      .select('*')
       .eq('venue_profile_id', profile.id)
       .order('created_at', { ascending: false });
 
-    if (error) {
-      console.error('Error fetching bookings:', error);
-    } else {
-      setBookings(data || []);
+    if (bookingsError) {
+      console.error('Error fetching bookings:', bookingsError);
+      return;
     }
+
+    if (!bookingsData || bookingsData.length === 0) {
+      setBookings([]);
+      return;
+    }
+
+    // Get unique artist profile IDs
+    const artistProfileIds = [...new Set(bookingsData.map(b => b.artist_profile_id))];
+    
+    // Fetch artist profiles
+    const { data: profilesData, error: profilesError } = await supabase
+      .from('profiles')
+      .select('id, display_name, avatar_url')
+      .in('id', artistProfileIds);
+
+    if (profilesError) {
+      console.error('Error fetching profiles:', profilesError);
+      return;
+    }
+
+    // Create a map of profile ID to profile data
+    const profilesMap = new Map(
+      (profilesData || []).map(p => [p.id, p])
+    );
+
+    // Transform the data to match our interface
+    const transformedBookings = bookingsData.map(booking => ({
+      id: booking.id,
+      event_id: booking.event_id,
+      artist_profile_id: booking.artist_profile_id,
+      venue_profile_id: booking.venue_profile_id,
+      status: booking.status,
+      message: booking.message,
+      proposed_fee: booking.proposed_fee,
+      created_at: booking.created_at,
+      artist: profilesMap.get(booking.artist_profile_id) || { 
+        display_name: 'Artiste inconnu', 
+        avatar_url: null 
+      }
+    }));
+    
+    setBookings(transformedBookings);
   };
 
   const resetForm = () => {
@@ -303,10 +343,12 @@ export default function EventsManager() {
               <div>
                 <Label>Image de l'événement</Label>
                 <ImageUpload
-                  onUpload={(imageUrl) => setFormData({ ...formData, image_url: imageUrl })}
                   currentImageUrl={formData.image_url}
-                  onRemove={() => setFormData({ ...formData, image_url: '' })}
+                  currentImagePosition={formData.image_position_y}
+                  onImageChange={(imageUrl) => setFormData({ ...formData, image_url: imageUrl || '' })}
+                  onPositionChange={(position) => setFormData({ ...formData, image_position_y: position })}
                   bucket="media"
+                  folder="events"
                 />
               </div>
 
