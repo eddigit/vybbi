@@ -63,6 +63,7 @@ export type Database = {
           event_date: string | null
           genres: string[] | null
           id: string
+          image_position_y: number | null
           image_url: string | null
           location: string | null
           requirements: string | null
@@ -80,6 +81,7 @@ export type Database = {
           event_date?: string | null
           genres?: string[] | null
           id?: string
+          image_position_y?: number | null
           image_url?: string | null
           location?: string | null
           requirements?: string | null
@@ -97,6 +99,7 @@ export type Database = {
           event_date?: string | null
           genres?: string[] | null
           id?: string
+          image_position_y?: number | null
           image_url?: string | null
           location?: string | null
           requirements?: string | null

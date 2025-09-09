@@ -31,7 +31,8 @@ export function AnnonceManager() {
     requirements: "",
     genres: "",
     status: "draft" as AnnonceStatus,
-    image_url: ""
+    image_url: "",
+    image_position_y: 50
   });
 
   useEffect(() => {
@@ -98,6 +99,7 @@ export function AnnonceManager() {
         genres: formData.genres ? formData.genres.split(",").map(g => g.trim()) : null,
         status: formData.status,
         image_url: formData.image_url || null,
+        image_position_y: formData.image_position_y,
         user_id: profile?.user_id
       };
 
@@ -174,7 +176,8 @@ export function AnnonceManager() {
       requirements: "",
       genres: "",
       status: "draft",
-      image_url: ""
+      image_url: "",
+      image_position_y: 50
     });
   };
 
@@ -191,7 +194,8 @@ export function AnnonceManager() {
       requirements: annonce.requirements || "",
       genres: annonce.genres?.join(", ") || "",
       status: annonce.status,
-      image_url: annonce.image_url || ""
+      image_url: annonce.image_url || "",
+      image_position_y: annonce.image_position_y || 50
     });
     setShowCreateDialog(true);
   };
@@ -241,7 +245,9 @@ export function AnnonceManager() {
 
               <ImageUpload
                 currentImageUrl={formData.image_url}
+                currentImagePosition={formData.image_position_y}
                 onImageChange={(imageUrl) => setFormData(prev => ({ ...prev, image_url: imageUrl || "" }))}
+                onPositionChange={(position) => setFormData(prev => ({ ...prev, image_position_y: position }))}
                 bucket="annonces"
                 folder="images"
               />
@@ -315,13 +321,14 @@ export function AnnonceManager() {
         {annonces.map((annonce) => (
           <Card key={annonce.id} className="overflow-hidden">
             {annonce.image_url && (
-              <div className="aspect-video w-full overflow-hidden">
-                <img 
-                  src={annonce.image_url} 
-                  alt={annonce.title}
-                  className="w-full h-full object-cover"
-                />
-              </div>
+              <div 
+                className="aspect-video w-full overflow-hidden"
+                style={{
+                  backgroundImage: `url(${annonce.image_url})`,
+                  backgroundSize: 'cover',
+                  backgroundPosition: `center ${annonce.image_position_y || 50}%`
+                }}
+              />
             )}
             <CardHeader>
               <div className="flex justify-between items-start">

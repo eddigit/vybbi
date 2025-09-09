@@ -57,6 +57,7 @@ export interface Annonce {
   requirements?: string;
   genres?: string[];
   image_url?: string;
+  image_position_y?: number;
   created_at: string;
   updated_at: string;
 }

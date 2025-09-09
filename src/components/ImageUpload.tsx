@@ -1,13 +1,16 @@
 import { useState, useRef } from 'react';
 import { Upload, X, Image as ImageIcon } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Slider } from '@/components/ui/slider';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { toast } from 'sonner';
 
 interface ImageUploadProps {
   currentImageUrl?: string;
+  currentImagePosition?: number;
   onImageChange: (imageUrl: string | null) => void;
+  onPositionChange?: (position: number) => void;
   bucket: string;
   folder: string;
   className?: string;
@@ -15,7 +18,9 @@ interface ImageUploadProps {
 
 export default function ImageUpload({ 
   currentImageUrl, 
+  currentImagePosition = 50,
   onImageChange, 
+  onPositionChange,
   bucket, 
   folder, 
   className = "" 
@@ -94,21 +99,46 @@ export default function ImageUpload({
       </label>
       
       {currentImageUrl ? (
-        <div className="relative">
-          <img
-            src={currentImageUrl}
-            alt="Aperçu de l'annonce"
-            className="w-full h-48 object-cover rounded-lg border"
-          />
-          <Button
-            type="button"
-            variant="destructive"
-            size="sm"
-            className="absolute top-2 right-2"
-            onClick={handleRemoveImage}
+        <div className="relative space-y-4">
+          <div 
+            className="relative w-full h-48 overflow-hidden rounded-lg border"
+            style={{
+              backgroundImage: `url(${currentImageUrl})`,
+              backgroundSize: 'cover',
+              backgroundPosition: `center ${currentImagePosition}%`
+            }}
           >
-            <X className="h-4 w-4" />
-          </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              size="sm"
+              className="absolute top-2 right-2"
+              onClick={handleRemoveImage}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+          </div>
+          
+          {onPositionChange && (
+            <div className="space-y-2">
+              <label className="text-sm font-medium">
+                Position verticale de l'image
+              </label>
+              <Slider
+                value={[currentImagePosition]}
+                onValueChange={(value) => onPositionChange(value[0])}
+                max={100}
+                min={0}
+                step={5}
+                className="w-full"
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>Haut</span>
+                <span>Centre</span>
+                <span>Bas</span>
+              </div>
+            </div>
+          )}
         </div>
       ) : (
         <div className="border-2 border-dashed border-muted-foreground/25 rounded-lg p-8 text-center">
