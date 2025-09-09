@@ -28,6 +28,12 @@ interface Event {
   image_url: string | null;
   image_position_y: number | null;
   created_at: string;
+  venue_profile_id: string;
+  profiles?: {
+    display_name: string;
+    location: string | null;
+    avatar_url: string | null;
+  } | null;
 }
 
 interface Booking {
@@ -57,6 +63,8 @@ export default function EventsManager() {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
   const [searchTerm, setSearchTerm] = useState('');
+  const [dateFilter, setDateFilter] = useState('all'); // all, upcoming, past
+  const [statusFilter, setStatusFilter] = useState('all'); // all, available, booked
 
   // Form state
   const [formData, setFormData] = useState({
@@ -84,32 +92,59 @@ export default function EventsManager() {
   }, [profile]);
 
   const fetchAllPublishedEvents = async () => {
-    let query = supabase
+    // Get all published events
+    const { data: publishedData, error: publishedError } = await supabase
       .from('events')
-      .select(`
-        *,
-        profiles:venue_profile_id (
-          display_name,
-          location,
-          avatar_url
-        )
-      `);
+      .select('*')
+      .eq('status', 'published')
+      .order('event_date', { ascending: true });
 
-    // If user is a venue, include their events regardless of status, otherwise only published events
+    if (publishedError) {
+      console.error('Error fetching published events:', publishedError);
+      toast({ title: "Erreur", description: "Impossible de charger les événements publiés", variant: "destructive" });
+      setLoading(false);
+      return;
+    }
+
+    // If user is a venue, also get their own events (regardless of status)
+    let allEvents = publishedData || [];
     if (profile?.profile_type === 'lieu') {
-      query = query.or(`status.eq.published,venue_profile_id.eq.${profile.id}`);
-    } else {
-      query = query.eq('status', 'published');
+      const { data: myEventsData, error: myEventsError } = await supabase
+        .from('events')
+        .select('*')
+        .eq('venue_profile_id', profile.id)
+        .order('event_date', { ascending: true });
+
+      if (myEventsError) {
+        console.error('Error fetching my events:', myEventsError);
+      } else if (myEventsData) {
+        // Merge events, avoiding duplicates
+        const publishedIds = new Set((publishedData || []).map(e => e.id));
+        const uniqueMyEvents = myEventsData.filter(e => !publishedIds.has(e.id));
+        allEvents = [...(publishedData || []), ...uniqueMyEvents].sort((a, b) => 
+          new Date(a.event_date).getTime() - new Date(b.event_date).getTime()
+        );
+      }
     }
 
-    const { data, error } = await query.order('event_date', { ascending: true });
+    // Get venue profiles for all events
+    if (allEvents.length > 0) {
+      const venueProfileIds = [...new Set(allEvents.map(e => e.venue_profile_id))];
+      const { data: profilesData, error: profilesError } = await supabase
+        .from('profiles')
+        .select('id, display_name, location, avatar_url')
+        .in('id', venueProfileIds);
 
-    if (error) {
-      console.error('Error fetching published events:', error);
-      toast({ title: "Erreur", description: "Impossible de charger les événements", variant: "destructive" });
-    } else {
-      setAllPublishedEvents(data || []);
+      if (!profilesError && profilesData) {
+        const profilesMap = new Map(profilesData.map(p => [p.id, p]));
+        allEvents = allEvents.map(event => ({
+          ...event,
+          profiles: profilesMap.get(event.venue_profile_id) || null
+        }));
+      }
     }
+
+    setAllPublishedEvents(allEvents);
     setLoading(false);
   };
 
@@ -272,13 +307,36 @@ export default function EventsManager() {
     return <Badge variant={variants[status]}>{labels[status]}</Badge>;
   };
 
-  const filteredPublishedEvents = allPublishedEvents.filter(event =>
-    event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    event.location?.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredPublishedEvents = allPublishedEvents.filter(event => {
+    // Search filter
+    const matchesSearch = event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      event.profiles?.display_name?.toLowerCase().includes(searchTerm.toLowerCase());
 
-  const EventCard = ({ event, isOwner = false }: { event: Event & { profiles?: any }, isOwner?: boolean }) => (
+    // Date filter
+    const eventDate = new Date(event.event_date);
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    
+    let matchesDate = true;
+    if (dateFilter === 'upcoming') {
+      matchesDate = eventDate >= today;
+    } else if (dateFilter === 'past') {
+      matchesDate = eventDate < today;
+    }
+
+    // Status filter (for now, we'll assume all published events are "available")
+    let matchesStatus = true;
+    if (statusFilter === 'available') {
+      matchesStatus = event.status === 'published';
+    }
+    // TODO: Add logic for 'booked' status when booking system is fully implemented
+
+    return matchesSearch && matchesDate && matchesStatus;
+  });
+
+  const EventCard = ({ event, isOwner = false }: { event: Event, isOwner?: boolean }) => (
     <Card className="overflow-hidden">
       {event.image_url && (
         <div className="aspect-video relative overflow-hidden">
@@ -351,7 +409,7 @@ export default function EventsManager() {
     </Card>
   );
 
-  const EventListItem = ({ event, isOwner = false }: { event: Event & { profiles?: any }, isOwner?: boolean }) => (
+  const EventListItem = ({ event, isOwner = false }: { event: Event, isOwner?: boolean }) => (
     <Card>
       <CardContent className="p-4">
         <div className="flex justify-between items-start">
@@ -550,32 +608,73 @@ export default function EventsManager() {
         </div>
       </div>
 
-      {/* Search and View Toggle */}
-      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            placeholder="Rechercher des événements..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
+      {/* Search and Filters */}
+      <div className="space-y-4">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              placeholder="Rechercher des événements, clubs, lieux..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className="pl-10"
+            />
+          </div>
+          <div className="flex gap-2">
+            <Button
+              variant={viewMode === 'card' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('card')}
+            >
+              <Grid className="h-4 w-4" />
+            </Button>
+            <Button
+              variant={viewMode === 'list' ? 'default' : 'outline'}
+              size="sm"
+              onClick={() => setViewMode('list')}
+            >
+              <List className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-        <div className="flex gap-2">
-          <Button
-            variant={viewMode === 'card' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('card')}
-          >
-            <Grid className="h-4 w-4" />
-          </Button>
-          <Button
-            variant={viewMode === 'list' ? 'default' : 'outline'}
-            size="sm"
-            onClick={() => setViewMode('list')}
-          >
-            <List className="h-4 w-4" />
-          </Button>
+
+        {/* Additional Filters */}
+        <div className="flex flex-wrap gap-3">
+          <Select value={dateFilter} onValueChange={setDateFilter}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Date" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Toutes dates</SelectItem>
+              <SelectItem value="upcoming">À venir</SelectItem>
+              <SelectItem value="past">Passés</SelectItem>
+            </SelectContent>
+          </Select>
+
+          <Select value={statusFilter} onValueChange={setStatusFilter}>
+            <SelectTrigger className="w-[140px]">
+              <SelectValue placeholder="Statut" />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">Tous statuts</SelectItem>
+              <SelectItem value="available">Disponibles</SelectItem>
+              <SelectItem value="booked">Réservés</SelectItem>
+            </SelectContent>
+          </Select>
+
+          {(searchTerm || dateFilter !== 'all' || statusFilter !== 'all') && (
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={() => {
+                setSearchTerm('');
+                setDateFilter('all');
+                setStatusFilter('all');
+              }}
+            >
+              Réinitialiser
+            </Button>
+          )}
         </div>
       </div>
 
@@ -592,7 +691,9 @@ export default function EventsManager() {
             <Card>
               <CardContent className="p-8 text-center">
                 <p className="text-muted-foreground">
-                  {searchTerm ? 'Aucun événement trouvé pour cette recherche.' : 'Aucun événement publié pour le moment.'}
+                  {searchTerm || dateFilter !== 'all' || statusFilter !== 'all' 
+                    ? 'Aucun événement trouvé avec ces critères de recherche.' 
+                    : 'Aucun événement publié pour le moment.'}
                 </p>
               </CardContent>
             </Card>
