@@ -6,6 +6,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Label } from "@/components/ui/label";
+import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Profile, AgentArtist } from "@/lib/types";
 
@@ -15,6 +18,7 @@ export function AgentProfileEdit() {
   const { user, profile } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
+  const [uploading, setUploading] = useState(false);
   
   const [profileData, setProfileData] = useState<Partial<Profile>>({
     display_name: "",
@@ -109,6 +113,42 @@ export function AgentProfileEdit() {
     }));
   };
 
+  const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file || !user) return;
+
+    setUploading(true);
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/avatar.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, { upsert: true });
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', id);
+
+      if (updateError) throw updateError;
+
+      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+      toast.success('Avatar updated successfully');
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      toast.error('Failed to upload avatar');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const handleSave = async () => {
     setSaving(true);
     try {
@@ -119,7 +159,7 @@ export function AgentProfileEdit() {
 
       if (error) throw error;
       toast.success("Profile updated successfully");
-      navigate(`/agents/${id}`);
+      // Stay on edit page instead of navigating to non-existent route
     } catch (error) {
       console.error("Error saving profile:", error);
       toast.error("Failed to save profile");
@@ -175,6 +215,39 @@ export function AgentProfileEdit() {
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
+            <Label className="block text-sm font-medium mb-2">Avatar</Label>
+            <div className="flex items-center gap-4">
+              <Avatar className="h-20 w-20">
+                <AvatarImage src={profileData.avatar_url || ""} alt="Profile picture" />
+                <AvatarFallback>
+                  {profileData.display_name?.charAt(0)?.toUpperCase() || "A"}
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleAvatarUpload}
+                  className="hidden"
+                  id="avatar-upload"
+                  disabled={uploading}
+                />
+                <Button
+                  variant="outline"
+                  size="sm"
+                  asChild
+                  disabled={uploading}
+                >
+                  <label htmlFor="avatar-upload" className="cursor-pointer">
+                    <Upload className="h-4 w-4 mr-2" />
+                    {uploading ? "Uploading..." : "Change Avatar"}
+                  </label>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div>
             <label htmlFor="display_name" className="block text-sm font-medium mb-2">
               Display Name
             </label>
@@ -227,7 +300,7 @@ export function AgentProfileEdit() {
             <Button onClick={handleSave} disabled={saving}>
               {saving ? "Saving..." : "Save Profile"}
             </Button>
-            <Button variant="outline" onClick={() => navigate(`/agents/${id}`)}>
+            <Button variant="outline" onClick={() => navigate("/dashboard")}>
               Cancel
             </Button>
           </div>
