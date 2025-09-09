@@ -56,6 +56,7 @@ export interface Annonce {
   budget_max?: number;
   requirements?: string;
   genres?: string[];
+  image_url?: string;
   created_at: string;
   updated_at: string;
 }

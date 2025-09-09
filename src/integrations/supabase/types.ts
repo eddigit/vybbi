@@ -63,6 +63,7 @@ export type Database = {
           event_date: string | null
           genres: string[] | null
           id: string
+          image_url: string | null
           location: string | null
           requirements: string | null
           status: Database["public"]["Enums"]["annonce_status"]
@@ -79,6 +80,7 @@ export type Database = {
           event_date?: string | null
           genres?: string[] | null
           id?: string
+          image_url?: string | null
           location?: string | null
           requirements?: string | null
           status?: Database["public"]["Enums"]["annonce_status"]
@@ -95,6 +97,7 @@ export type Database = {
           event_date?: string | null
           genres?: string[] | null
           id?: string
+          image_url?: string | null
           location?: string | null
           requirements?: string | null
           status?: Database["public"]["Enums"]["annonce_status"]

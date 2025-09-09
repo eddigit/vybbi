@@ -10,6 +10,7 @@ import { toast } from "sonner";
 import { Plus, Edit, Trash2, Eye } from "lucide-react";
 import { Annonce, Application, AnnonceStatus } from "@/lib/types";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import ImageUpload from "@/components/ImageUpload";
 
 export function AnnonceManager() {
   const { profile } = useAuth();
@@ -29,7 +30,8 @@ export function AnnonceManager() {
     budget_max: "",
     requirements: "",
     genres: "",
-    status: "draft" as AnnonceStatus
+    status: "draft" as AnnonceStatus,
+    image_url: ""
   });
 
   useEffect(() => {
@@ -95,6 +97,7 @@ export function AnnonceManager() {
         requirements: formData.requirements || null,
         genres: formData.genres ? formData.genres.split(",").map(g => g.trim()) : null,
         status: formData.status,
+        image_url: formData.image_url || null,
         user_id: profile?.user_id
       };
 
@@ -170,7 +173,8 @@ export function AnnonceManager() {
       budget_max: "",
       requirements: "",
       genres: "",
-      status: "draft"
+      status: "draft",
+      image_url: ""
     });
   };
 
@@ -186,7 +190,8 @@ export function AnnonceManager() {
       budget_max: annonce.budget_max?.toString() || "",
       requirements: annonce.requirements || "",
       genres: annonce.genres?.join(", ") || "",
-      status: annonce.status
+      status: annonce.status,
+      image_url: annonce.image_url || ""
     });
     setShowCreateDialog(true);
   };
@@ -233,6 +238,13 @@ export function AnnonceManager() {
                   required
                 />
               </div>
+
+              <ImageUpload
+                currentImageUrl={formData.image_url}
+                onImageChange={(imageUrl) => setFormData(prev => ({ ...prev, image_url: imageUrl || "" }))}
+                bucket="annonces"
+                folder="images"
+              />
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -301,7 +313,16 @@ export function AnnonceManager() {
 
       <div className="grid gap-6">
         {annonces.map((annonce) => (
-          <Card key={annonce.id}>
+          <Card key={annonce.id} className="overflow-hidden">
+            {annonce.image_url && (
+              <div className="aspect-video w-full overflow-hidden">
+                <img 
+                  src={annonce.image_url} 
+                  alt={annonce.title}
+                  className="w-full h-full object-cover"
+                />
+              </div>
+            )}
             <CardHeader>
               <div className="flex justify-between items-start">
                 <div>
