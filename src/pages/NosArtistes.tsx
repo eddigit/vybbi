@@ -17,14 +17,14 @@ export default function NosArtistes() {
   const [venues, setVenues] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Redirect authenticated users to dashboard
-  if (!authLoading && user) {
-    return <Navigate to="/dashboard" replace />;
-  }
-
   useEffect(() => {
     fetchProfiles();
   }, []);
+
+  // Redirect authenticated users to dashboard (after all hooks are called)
+  if (!authLoading && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   const fetchProfiles = async () => {
     try {
