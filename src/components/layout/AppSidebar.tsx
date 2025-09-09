@@ -61,12 +61,12 @@ const getManagerItems = (profileId: string) => [
   { title: "Mon Profil", url: `/managers/${profileId}/edit`, icon: User },
 ];
 
-const lieuItems = [
+const getLieuItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Lieux", url: "/lieux", icon: MapPin },
   { title: "Événements", url: "/events", icon: Calendar },
   { title: "Messages", url: "/messages", icon: MessageSquare },
-  { title: "Mon Profil", url: "/profiles", icon: User },
+  { title: "Mon Profil", url: `/lieux/${profileId}`, icon: User },
 ];
 
 const adminItems = [
@@ -92,7 +92,7 @@ export function AppSidebar() {
       case 'manager':
         return getManagerItems(profile.id);
       case 'lieu':
-        return lieuItems;
+        return getLieuItems(profile.id);
       case 'artist':
       default:
         return artistItems;

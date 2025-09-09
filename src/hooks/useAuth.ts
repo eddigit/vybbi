@@ -68,7 +68,7 @@ export function useAuth() {
           } else if (profileData?.profile_type === 'manager') {
             navigate(`/managers/${profileData.id}/edit`, { replace: true });
           } else if (profileData?.profile_type === 'lieu') {
-            navigate('/lieux', { replace: true });
+            navigate(`/lieux/${profileData.id}`, { replace: true });
           } else {
             // Default to dashboard for other profile types
             navigate('/dashboard', { replace: true });

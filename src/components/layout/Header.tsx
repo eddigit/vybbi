@@ -135,9 +135,9 @@ export function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
-                           profile.profile_type === 'agent' ? `/agents/${profile.id}` :
-                           profile.profile_type === 'manager' ? `/managers/${profile.id}` :
-                           profile.profile_type === 'lieu' ? `/venues/${profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
+                           profile.profile_type === 'agent' ? `/partners/${profile.id}` :
+                           profile.profile_type === 'manager' ? `/partners/${profile.id}` :
+                           profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
                     <User className="mr-2 h-4 w-4" />
                     Mon profil
                   </Link>
@@ -146,7 +146,7 @@ export function Header() {
                   <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}/edit` : 
                            profile.profile_type === 'agent' ? `/agents/${profile.id}/edit` :
                            profile.profile_type === 'manager' ? `/managers/${profile.id}/edit` :
-                           profile.profile_type === 'lieu' ? `/venues/${profile.id}/edit` : `/profiles/${profile.id}/edit`} className="flex items-center">
+                           profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}/edit`} className="flex items-center">
                     <Pencil className="mr-2 h-4 w-4" />
                     Modifier mon profil
                   </Link>

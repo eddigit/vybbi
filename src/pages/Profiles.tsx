@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
@@ -201,12 +201,21 @@ export default function Profiles() {
               )}
               
               <div className="flex gap-2">
-                <Button size="sm" className="flex-1">
-                  View Profile
+                <Button size="sm" className="flex-1" asChild>
+                  <Link to={
+                    profile.profile_type === 'artist' ? `/artists/${profile.id}` :
+                    profile.profile_type === 'agent' || profile.profile_type === 'manager' ? `/partners/${profile.id}` :
+                    profile.profile_type === 'lieu' ? `/lieux/${profile.id}` :
+                    `/profiles/${profile.id}`
+                  }>
+                    Voir le profil
+                  </Link>
                 </Button>
-                {user && user.id !== profile.id && (
-                  <Button size="sm" variant="outline">
-                    Message
+                {user && user.id !== profile.user_id && (
+                  <Button size="sm" variant="outline" asChild>
+                    <Link to={`/messages?contact=${profile.id}`}>
+                      Message
+                    </Link>
                   </Button>
                 )}
               </div>
@@ -217,7 +226,7 @@ export default function Profiles() {
       
       {filteredProfiles.length === 0 && (
         <div className="text-center py-12">
-          <p className="text-muted-foreground">No profiles found matching your criteria.</p>
+          <p className="text-muted-foreground">Aucun profil ne correspond à vos critères.</p>
         </div>
       )}
     </div>
