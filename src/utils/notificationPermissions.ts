@@ -1,3 +1,5 @@
+import { playNotificationSound } from './notificationSound';
+
 export const requestNotificationPermission = async (): Promise<boolean> => {
   if (!('Notification' in window)) {
     console.warn('Ce navigateur ne supporte pas les notifications');
@@ -34,6 +36,10 @@ export const showNotification = (title: string, options?: NotificationOptions): 
       tag: 'message-notification',
       ...options
     });
+    
+    // Jouer le son de notification
+    playNotificationSound();
+    
     return true;
   } catch (error) {
     console.error('Erreur lors de l\'affichage de la notification:', error);
