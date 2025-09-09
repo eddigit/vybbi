@@ -1,7 +1,6 @@
 import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { 
@@ -64,8 +63,6 @@ export function Header() {
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="flex h-full items-center justify-between px-4">
         <div className="flex items-center gap-4 min-w-0 flex-1">
-          {!isArtistPage && <SidebarTrigger />}
-          
           {/* Logo and App Name */}
           <div className="flex items-center gap-3">
             <img 
