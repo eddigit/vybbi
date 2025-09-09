@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
+import { MobileTabBar } from "./MobileTabBar";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -37,15 +38,23 @@ export function Layout({ children }: LayoutProps) {
     );
   }
 
-  // For all other pages (dashboard, agent pages, etc.), use horizontal nav layout
+  // For all other pages (dashboard, agent pages, etc.), use responsive navigation
   return (
     <div className="min-h-screen flex flex-col w-full bg-background">
       <Header />
-      <TopNav />
-      <main className="flex-1 p-6 pb-16">
+      {/* Desktop horizontal nav, hidden on mobile */}
+      <div className="hidden md:block">
+        <TopNav />
+      </div>
+      <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-16">
         {children}
       </main>
-      <Footer />
+      {/* Mobile tab bar, hidden on desktop */}
+      <MobileTabBar />
+      {/* Footer hidden on mobile for better UX */}
+      <div className="hidden md:block">
+        <Footer />
+      </div>
     </div>
   );
 }

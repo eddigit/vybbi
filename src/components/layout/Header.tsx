@@ -93,37 +93,48 @@ export function Header() {
   };
 
   return (
-    <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="flex h-full items-center justify-between px-4">
-        <div className="flex items-center gap-4 min-w-0 flex-1">
-          {/* Logo and App Name */}
-          <div className="flex items-center gap-3">
-            <img 
-              src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
-              alt="Vybbi Logo" 
-              className="w-8 h-8"
-            />
-            <span className="font-bold text-lg text-white">Vybbi</span>
-          </div>
+    <header className="h-14 sm:h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
+      <div className="flex h-full items-center justify-between px-3 sm:px-4">
+        {/* Mobile: Logo only, Desktop: Logo + Name */}
+        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+          <img 
+            src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
+            alt="Vybbi Logo" 
+            className="w-7 h-7 sm:w-8 sm:h-8"
+          />
+          <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
         </div>
 
-        {/* Centered Title */}
-        <div className="flex-1 flex justify-center">
-          <div className="flex items-center gap-4">
-            <h1 className="text-xl font-semibold text-foreground text-center">
+        {/* Centered Title - Hidden on small mobile, visible on larger screens */}
+        <div className="hidden xs:flex flex-1 justify-center">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <h1 className="text-base sm:text-xl font-semibold text-foreground text-center truncate max-w-[200px] sm:max-w-none">
               {getPageTitle()}
             </h1>
             {showAdminControls && (
-              <Badge variant="secondary" className="text-xs whitespace-nowrap">
+              <Badge variant="secondary" className="hidden sm:block text-xs whitespace-nowrap">
                 lundi 8 septembre 2025 à 16:39
               </Badge>
             )}
           </div>
         </div>
 
-        <div className="flex items-center gap-4 min-w-0 flex-1 justify-end">
+        <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
           {showAdminControls && (
             <>
+              {/* Mobile: Only refresh button */}
+              <div className="sm:hidden">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9"
+                  onClick={handleRefresh}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Desktop: Full refresh button */}
               <div className="hidden sm:flex items-center gap-2">
                 <Button 
                   variant="outline" 
@@ -136,28 +147,30 @@ export function Header() {
                 </Button>
               </div>
 
-              <form onSubmit={handleSearch} className="hidden md:block relative">
+              {/* Search - Hidden on mobile, visible on tablet+ */}
+              <form onSubmit={handleSearch} className="hidden lg:block relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Recherche..."
-                  className="pl-10 w-64"
+                  className="pl-10 w-48 xl:w-64"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
               </form>
 
+              {/* Notifications */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="relative">
-                    <Bell className="h-5 w-5" />
+                  <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10">
+                    <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
                     {unreadCount > 0 && (
-                      <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-primary text-primary-foreground flex items-center justify-center rounded-full min-w-[20px]">
+                      <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 text-xs bg-primary text-primary-foreground flex items-center justify-center rounded-full min-w-[16px] sm:min-w-[20px]">
                         {unreadCount > 99 ? '99+' : unreadCount}
                       </Badge>
                     )}
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-80">
+                <DropdownMenuContent align="end" className="w-72 sm:w-80">
                   <DropdownMenuLabel>Notifications</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {notifications.length === 0 ? (
@@ -172,7 +185,7 @@ export function Header() {
                         onClick={() => handleNotificationClick(notification)}
                       >
                         <div className={`flex items-center gap-2 w-full ${notification.unread ? 'font-semibold' : ''}`}>
-                          <span className="text-sm flex-1">{notification.title}</span>
+                          <span className="text-sm flex-1 truncate">{notification.title}</span>
                           {notification.unread && (
                             <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0"></div>
                           )}
@@ -197,24 +210,24 @@ export function Header() {
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 cursor-pointer">
-                  <Avatar className="h-8 w-8">
+                  <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
                     <AvatarImage src={profile.avatar_url || ''} />
-                    <AvatarFallback className="bg-gradient-primary text-white text-sm">
-                      {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                    <AvatarFallback className="bg-gradient-primary text-white text-xs sm:text-sm">
+                      {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-3 w-3 sm:h-4 sm:w-4" />}
                     </AvatarFallback>
                   </Avatar>
                 </button>
               </DropdownMenuTrigger>
-              <DropdownMenuContent align="end" className="w-56">
-                <DropdownMenuLabel>Mon compte</DropdownMenuLabel>
+              <DropdownMenuContent align="end" className="w-48 sm:w-56">
+                <DropdownMenuLabel className="text-sm">Mon compte</DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
                            profile.profile_type === 'agent' ? `/partners/${profile.id}` :
                            profile.profile_type === 'manager' ? `/partners/${profile.id}` :
                            profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
-                    <User className="mr-2 h-4 w-4" />
-                    Mon profil
+                    <User className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Mon profil</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -222,84 +235,57 @@ export function Header() {
                            profile.profile_type === 'agent' ? `/agents/${profile.id}/edit` :
                            profile.profile_type === 'manager' ? `/managers/${profile.id}/edit` :
                            profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}/edit`} className="flex items-center">
-                    <Pencil className="mr-2 h-4 w-4" />
-                    Modifier mon profil
+                    <Pencil className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Modifier</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/messages" className="flex items-center">
-                    <MessageSquare className="mr-2 h-4 w-4" />
-                    Messages
+                    <MessageSquare className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Messages</span>
                   </Link>
                 </DropdownMenuItem>
-                {/* Menu items based on profile type and role logic */}
+
+                {/* Quick access menu items for mobile - condensed */}
                 {(profile.profile_type === 'agent' || profile.profile_type === 'manager' || profile.profile_type === 'lieu') && (
                   <DropdownMenuItem asChild>
-                    <Link to="/artists" className="flex items-center">
-                      <Search className="mr-2 h-4 w-4" />
-                      Rechercher des artistes
+                    <Link to="/artists" className="flex items-center sm:hidden">
+                      <Search className="mr-2 h-3 w-3" />
+                      <span className="text-sm">Artistes</span>
                     </Link>
                   </DropdownMenuItem>
                 )}
                 
                 {(profile.profile_type === 'agent' || profile.profile_type === 'manager') && (
                   <DropdownMenuItem asChild>
-                    <Link to="/lieux" className="flex items-center">
-                      <MapPin className="mr-2 h-4 w-4" />
-                      Trouver une prestation
+                    <Link to="/lieux" className="flex items-center sm:hidden">
+                      <MapPin className="mr-2 h-3 w-3" />
+                      <span className="text-sm">Lieux</span>
                     </Link>
                   </DropdownMenuItem>
                 )}
 
-                {/* Only managers can search for agents (to manage commissions for their artists) */}
-                {profile.profile_type === 'manager' && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/profiles?type=agent" className="flex items-center">
-                      <Users className="mr-2 h-4 w-4" />
-                      Rechercher un agent
-                    </Link>
-                  </DropdownMenuItem>
-                )}
-
-                {/* Artists can search for agents and managers */}
                 {profile.profile_type === 'artist' && (
                   <>
                     <DropdownMenuItem asChild>
-                      <Link to="/profiles?type=agent" className="flex items-center">
-                        <Users className="mr-2 h-4 w-4" />
-                        Rechercher un agent
+                      <Link to="/profiles?type=agent" className="flex items-center sm:hidden">
+                        <Users className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Agents</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/profiles?type=manager" className="flex items-center">
-                        <Users className="mr-2 h-4 w-4" />
-                        Rechercher un manager
+                      <Link to="/profiles?type=manager" className="flex items-center sm:hidden">
+                        <Users className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Managers</span>
                       </Link>
                     </DropdownMenuItem>
                   </>
                 )}
 
-                {/* General directory for all profile types */}
-                <DropdownMenuItem asChild>
-                  <Link to="/profiles" className="flex items-center">
-                    <Users className="mr-2 h-4 w-4" />
-                    Annuaire
-                  </Link>
-                </DropdownMenuItem>
-                
-                {/* Promotion available for artists and agents/managers */}
-                {(profile.profile_type === 'artist' || profile.profile_type === 'agent' || profile.profile_type === 'manager') && (
-                  <DropdownMenuItem asChild>
-                    <Link to="/promotion" className="flex items-center">
-                      <Star className="mr-2 h-4 w-4" />
-                      Se mettre en avant
-                    </Link>
-                  </DropdownMenuItem>
-                )}
                 <DropdownMenuSeparator />
-                <DropdownMenuItem onClick={handleLogout} className="flex items-center">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Se déconnecter
+                <DropdownMenuItem onClick={handleLogout} className="flex items-center text-destructive">
+                  <LogOut className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="text-sm">Déconnexion</span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

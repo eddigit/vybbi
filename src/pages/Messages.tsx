@@ -6,7 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { MessageCircle, Send, Plus, Ban, AlertTriangle } from "lucide-react";
+import { MessageCircle, Send, Plus, Ban, AlertTriangle, ArrowLeft } from "lucide-react";
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { Conversation, Message, Profile } from '@/lib/types';
@@ -379,14 +379,14 @@ export default function Messages() {
   }
 
   return (
-    <div className="container mx-auto px-6 py-8">
-      <div className="mb-6">
-        <h1 className="text-3xl xl:text-4xl font-bold mb-2">Messages</h1>
-        <p className="text-muted-foreground xl:text-lg">Connect with artists, agents, and venues</p>
+    <div className="container mx-auto px-3 sm:px-6 py-4 sm:py-8">
+      <div className="mb-4 sm:mb-6">
+        <h1 className="text-2xl sm:text-3xl xl:text-4xl font-bold mb-2">Messages</h1>
+        <p className="text-muted-foreground text-sm sm:text-base xl:text-lg">Connect with artists, agents, and venues</p>
         
         {/* Legal disclaimer */}
-        <div className="mt-4 p-4 bg-muted/50 rounded-lg border">
-          <p className="text-sm text-muted-foreground">
+        <div className="mt-3 sm:mt-4 p-3 sm:p-4 bg-muted/50 rounded-lg border">
+          <p className="text-xs sm:text-sm text-muted-foreground">
             <strong>Information importante :</strong> Cette messagerie conserve toutes les conversations de manière sécurisée et chiffrée. 
             En cas de litige contractuel ou de problème lié à une prestation, ces conversations peuvent être utilisées 
             comme preuves et consultées par les parties concernées et les autorités compétentes si nécessaire.
@@ -394,211 +394,231 @@ export default function Messages() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 xl:grid-cols-5 gap-6 h-[calc(100vh-12rem)]">
-        {/* Conversations List */}
-        <Card className="lg:col-span-1 xl:col-span-2">
-          <CardHeader className="xl:pb-6">
-            <CardTitle className="xl:text-xl">Conversations</CardTitle>
-          </CardHeader>
-          <CardContent className="p-0">
-            <ScrollArea className="h-[calc(100vh-18rem)]">
-              {conversations.length === 0 ? (
-                <div className="p-4 xl:p-6 text-center text-muted-foreground">
-                  <MessageCircle className="w-8 h-8 xl:w-10 xl:h-10 mx-auto mb-2" />
-                  <p className="xl:text-lg">Aucune conversation</p>
-                </div>
-              ) : (
-                <div className="space-y-1">
-                  {conversations.map((conversation) => (
-                    <button
-                      key={conversation.id}
-                      onClick={() => setSelectedConversation(conversation.id)}
-                      className={`w-full p-3 xl:p-4 text-left hover:bg-muted/50 transition-colors ${
-                        selectedConversation === conversation.id ? 'bg-muted' : ''
-                      } ${conversation.is_blocked ? 'opacity-50' : ''}`}
-                    >
-        <div className="flex items-center gap-3 xl:gap-4">
-          <Avatar className="w-10 h-10 xl:w-12 xl:h-12">
-            <AvatarImage src={conversation.other_participant?.avatar_url || undefined} />
-            <AvatarFallback className="xl:text-lg">
-              {conversation.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
-            </AvatarFallback>
-          </Avatar>
-                        <div className="flex-1 min-w-0">
-                          <div className="flex items-center gap-2">
-                            <p className="font-medium truncate xl:text-lg">
-                              {conversation.other_participant?.display_name || 'Utilisateur inconnu'}
-                            </p>
-                            {conversation.other_participant?.profile_type && (
-                              <span className="text-xs xl:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize">
-                                {conversation.other_participant.profile_type}
-                              </span>
-                            )}
-                            {conversation.is_blocked && <Ban className="w-3 h-3 xl:w-4 xl:h-4 text-destructive" />}
-                          </div>
-                          <p className="text-sm xl:text-base text-muted-foreground truncate">
-                            {conversation.last_message?.content || 'Aucun message'}
-                          </p>
-                          <div className="flex items-center gap-2 mt-1">
-                            <p className="text-xs xl:text-sm text-muted-foreground">
-                              {conversation.last_message_at ? 
-                                new Date(conversation.last_message_at).toLocaleDateString() :
-                                new Date(conversation.created_at).toLocaleDateString()
-                              }
-                            </p>
-                            {!conversation.reply_received && conversation.last_message?.sender_id === user?.id && (
-                              <span className="text-xs xl:text-sm text-amber-600 bg-amber-100 px-1 xl:px-2 rounded">En attente</span>
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                    </button>
-                  ))}
-                </div>
-              )}
-            </ScrollArea>
-          </CardContent>
-        </Card>
-
-        {/* Messages */}
-        <Card className="lg:col-span-3 xl:col-span-3">
-          {selectedConversation && selectedConversationDetails ? (
-            <>
-              <CardHeader className="flex flex-row items-center justify-between xl:py-6">
-                <CardTitle className="flex items-center gap-2 xl:gap-3 xl:text-xl">
-                <Avatar className="w-8 h-8 xl:w-10 xl:h-10">
-                  <AvatarImage src={selectedConversationDetails.other_participant?.avatar_url || undefined} />
-                  <AvatarFallback className="xl:text-lg">
-                    {selectedConversationDetails.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex items-center gap-2">
-                  <span>{selectedConversationDetails.other_participant?.display_name || 'Utilisateur inconnu'}</span>
-                  {selectedConversationDetails.other_participant?.profile_type && (
-                    <span className="text-xs xl:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize">
-                      {selectedConversationDetails.other_participant.profile_type}
-                    </span>
-                  )}
-                  {selectedConversationDetails.is_blocked && <Ban className="w-4 h-4 xl:w-5 xl:h-5 text-destructive" />}
-                </div>
-                </CardTitle>
-                {selectedConversationDetails.other_participant && !selectedConversationDetails.is_blocked && (
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button variant="ghost" size="sm" className="xl:h-10 xl:w-10">
-                        <Ban className="w-4 h-4 xl:w-5 xl:h-5" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent>
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="xl:text-lg">Bloquer cet utilisateur ?</AlertDialogTitle>
-                        <AlertDialogDescription className="xl:text-base">
-                          Vous ne pourrez plus recevoir de messages de cet utilisateur et ne pourrez plus lui en envoyer.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="xl:text-base">Annuler</AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => blockUser(selectedConversationDetails.other_participant!.user_id)}
-                          className="bg-destructive hover:bg-destructive/90 xl:text-base"
-                        >
-                          Bloquer
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                )}
-              </CardHeader>
-              <CardContent className="flex flex-col h-[calc(100vh-22rem)]">
-                {selectedConversationDetails.is_blocked ? (
-                  <div className="flex-1 flex items-center justify-center">
-                    <div className="text-center text-muted-foreground">
-                      <Ban className="w-12 h-12 xl:w-16 xl:h-16 mx-auto mb-4 text-destructive" />
-                      <p className="xl:text-lg">Cette conversation est bloquée</p>
-                    </div>
+      {/* Mobile-first layout: Single column on mobile, grid on larger screens */}
+      <div className="flex flex-col lg:grid lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-6 h-[calc(100vh-8rem)] sm:h-[calc(100vh-12rem)]">
+        {/* Conversations List - Full width on mobile, column on desktop */}
+        {(!selectedConversation || window.innerWidth >= 1024) && (
+          <Card className="lg:col-span-1 xl:col-span-2 mobile-card">
+            <CardHeader className="pb-3 sm:pb-6">
+              <CardTitle className="text-lg sm:text-xl">Conversations</CardTitle>
+            </CardHeader>
+            <CardContent className="p-0">
+              <ScrollArea className="h-[calc(100vh-12rem)] sm:h-[calc(100vh-18rem)]">
+                {conversations.length === 0 ? (
+                  <div className="p-4 sm:p-6 text-center text-muted-foreground">
+                    <MessageCircle className="w-6 h-6 sm:w-8 sm:h-8 xl:w-10 xl:h-10 mx-auto mb-2" />
+                    <p className="text-sm sm:text-base xl:text-lg">Aucune conversation</p>
                   </div>
                 ) : (
-                  <>
-                    <ScrollArea className="flex-1 mb-4 xl:mb-6">
-                      <div className="space-y-4 xl:space-y-6 pr-4">
-                        {messages.map((message) => (
-                          <div
-                            key={message.id}
-                            className={`flex ${
-                              message.sender_id === user?.id ? 'justify-end' : 'justify-start'
-                            }`}
-                          >
-                            <div className={`flex items-start gap-2 xl:gap-3 max-w-[70%] ${
-                              message.sender_id === user?.id ? 'flex-row-reverse' : 'flex-row'
-                            }`}>
-                              <Avatar className="w-8 h-8 xl:w-10 xl:h-10">
-                                <AvatarImage src={message.sender?.avatar_url} />
-                                <AvatarFallback className="xl:text-lg">
-                                  {message.sender?.display_name?.charAt(0).toUpperCase()}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className={`rounded-lg p-3 xl:p-4 ${
-                                message.sender_id === user?.id
-                                  ? 'bg-primary text-primary-foreground'
-                                  : 'bg-muted'
-                              }`}>
-                                <p className="text-sm xl:text-base leading-relaxed">{message.content}</p>
-                                <p className={`text-xs xl:text-sm mt-1 xl:mt-2 ${
-                                  message.sender_id === user?.id
-                                    ? 'text-primary-foreground/70'
-                                    : 'text-muted-foreground'
-                                }`}>
-                                  {new Date(message.created_at).toLocaleTimeString()}
-                                </p>
-                              </div>
+                  <div className="space-y-1">
+                    {conversations.map((conversation) => (
+                      <button
+                        key={conversation.id}
+                        onClick={() => setSelectedConversation(conversation.id)}
+                        className={`w-full p-3 sm:p-4 text-left hover:bg-muted/50 transition-colors touch-target ${
+                          selectedConversation === conversation.id ? 'bg-muted' : ''
+                        } ${conversation.is_blocked ? 'opacity-50' : ''}`}
+                      >
+                        <div className="flex items-center gap-3 sm:gap-4">
+                          <Avatar className="w-10 h-10 sm:w-12 sm:h-12">
+                            <AvatarImage src={conversation.other_participant?.avatar_url || undefined} />
+                            <AvatarFallback className="text-sm sm:text-base xl:text-lg">
+                              {conversation.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center gap-2">
+                              <p className="font-medium truncate text-sm sm:text-base xl:text-lg">
+                                {conversation.other_participant?.display_name || 'Utilisateur inconnu'}
+                              </p>
+                              {conversation.other_participant?.profile_type && (
+                                <span className="text-xs sm:text-sm px-2 py-1 rounded-full bg-primary/10 text-primary capitalize">
+                                  {conversation.other_participant.profile_type}
+                                </span>
+                              )}
+                              {conversation.is_blocked && <Ban className="w-3 h-3 sm:w-4 sm:h-4 text-destructive" />}
+                            </div>
+                            <p className="text-xs sm:text-sm xl:text-base text-muted-foreground truncate">
+                              {conversation.last_message?.content || 'Aucun message'}
+                            </p>
+                            <div className="flex items-center gap-2 mt-1">
+                              <p className="text-xs sm:text-sm text-muted-foreground">
+                                {conversation.last_message_at ? 
+                                  new Date(conversation.last_message_at).toLocaleDateString() :
+                                  new Date(conversation.created_at).toLocaleDateString()
+                                }
+                              </p>
+                              {!conversation.reply_received && conversation.last_message?.sender_id === user?.id && (
+                                <span className="text-xs sm:text-sm text-amber-600 bg-amber-100 px-1 sm:px-2 rounded">En attente</span>
+                              )}
                             </div>
                           </div>
-                        ))}
-                      </div>
-                    </ScrollArea>
-                    
-                    {!selectedConversationDetails.can_send_message ? (
-                      <div className="p-3 xl:p-4 bg-amber-50 border border-amber-200 rounded-lg text-center">
-                        <AlertTriangle className="w-4 h-4 xl:w-5 xl:h-5 text-amber-600 mx-auto mb-1 xl:mb-2" />
-                        <p className="text-sm xl:text-base text-amber-800">
-                          {!selectedConversationDetails.reply_received && selectedConversationDetails.last_message?.sender_id === user?.id
-                            ? "Vous devez attendre une réponse avant d'envoyer un autre message"
-                            : "Vous ne pouvez plus envoyer de messages dans cette conversation"
-                          }
-                        </p>
-                      </div>
-                    ) : (
-                      <form onSubmit={sendMessage} className="flex gap-2 xl:gap-3">
-                        <Input
-                          value={newMessage}
-                          onChange={(e) => setNewMessage(e.target.value)}
-                          placeholder="Tapez votre message..."
-                          className="flex-1 xl:text-base xl:h-12"
-                          disabled={sendingMessage}
-                        />
-                        <Button 
-                          type="submit" 
-                          size="sm" 
-                          className="xl:h-12 xl:w-12"
-                          disabled={!newMessage.trim() || sendingMessage}
-                        >
-                          <Send className="w-4 h-4 xl:w-5 xl:h-5" />
-                        </Button>
-                      </form>
-                    )}
-                  </>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
                 )}
-              </CardContent>
-            </>
-          ) : (
-            <CardContent className="flex items-center justify-center h-[calc(100vh-22rem)]">
-              <div className="text-center text-muted-foreground">
-                <MessageCircle className="w-12 h-12 xl:w-16 xl:h-16 mx-auto mb-4" />
-                <p className="xl:text-lg">Sélectionnez une conversation pour commencer</p>
-              </div>
+              </ScrollArea>
             </CardContent>
-          )}
-        </Card>
+          </Card>
+        )}
+
+        {/* Messages Panel - Full width on mobile when selected, column on desktop */}
+        {(selectedConversation || window.innerWidth >= 1024) && (
+          <Card className="lg:col-span-3 xl:col-span-3 mobile-card">
+            {selectedConversation && selectedConversationDetails ? (
+              <>
+                <CardHeader className="flex flex-row items-center justify-between py-3 sm:py-6">
+                  {/* Mobile back button */}
+                  <div className="lg:hidden">
+                    <Button
+                      variant="ghost"
+                      size="icon"
+                      onClick={() => setSelectedConversation(null)}
+                      className="mr-2 h-9 w-9"
+                    >
+                      <ArrowLeft className="h-4 w-4" />
+                    </Button>
+                  </div>
+                  
+                  <CardTitle className="flex items-center gap-2 sm:gap-3 text-base sm:text-xl">
+                    <Avatar className="w-7 h-7 sm:w-8 sm:h-8 xl:w-10 xl:h-10">
+                      <AvatarImage src={selectedConversationDetails.other_participant?.avatar_url || undefined} />
+                      <AvatarFallback className="text-sm sm:text-base xl:text-lg">
+                        {selectedConversationDetails.other_participant?.display_name?.charAt(0).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="truncate text-sm sm:text-base xl:text-lg">
+                        {selectedConversationDetails.other_participant?.display_name || 'Utilisateur inconnu'}
+                      </p>
+                      {selectedConversationDetails.other_participant?.profile_type && (
+                        <span className="text-xs sm:text-sm text-muted-foreground capitalize">
+                          {selectedConversationDetails.other_participant.profile_type}
+                        </span>
+                      )}
+                    </div>
+                  </CardTitle>
+
+                  {selectedConversationDetails.other_participant?.user_id && !selectedConversationDetails.is_blocked && (
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="outline" size="icon" className="h-8 w-8 sm:h-9 sm:w-9 text-destructive border-destructive/30 hover:bg-destructive/10">
+                          <Ban className="w-3 h-3 sm:w-4 sm:h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent className="mx-4 sm:mx-0">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle className="flex items-center gap-2">
+                            <AlertTriangle className="w-5 h-5 text-warning" />
+                            Bloquer cet utilisateur
+                          </AlertDialogTitle>
+                          <AlertDialogDescription className="text-sm">
+                            Êtes-vous sûr de vouloir bloquer {selectedConversationDetails.other_participant?.display_name} ? 
+                            Cette action empêchera cet utilisateur de vous envoyer des messages.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter className="flex-col sm:flex-row gap-2">
+                          <AlertDialogCancel className="mobile-button">Annuler</AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => blockUser(selectedConversationDetails.other_participant!.user_id)}
+                            className="mobile-button bg-destructive hover:bg-destructive/90"
+                          >
+                            Bloquer
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  )}
+                </CardHeader>
+
+                <ScrollArea className="flex-1 px-3 sm:px-6 h-[calc(100vh-16rem)] sm:h-[calc(100vh-20rem)]">
+                  <div className="space-y-3 sm:space-y-4 py-2">
+                    {messages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`flex gap-2 sm:gap-3 ${message.sender_id === user?.id ? 'justify-end' : 'justify-start'}`}
+                      >
+                        {message.sender_id !== user?.id && (
+                          <Avatar className="w-6 h-6 sm:w-8 sm:h-8 mt-1">
+                            <AvatarImage src={message.sender?.avatar_url || undefined} />
+                            <AvatarFallback className="text-xs sm:text-sm">
+                              {message.sender?.display_name?.charAt(0).toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                        <div
+                          className={`max-w-[80%] sm:max-w-[70%] rounded-xl px-3 py-2 sm:px-4 sm:py-3 ${
+                            message.sender_id === user?.id
+                              ? 'bg-primary text-primary-foreground ml-auto'
+                              : 'bg-muted'
+                          }`}
+                        >
+                          <p className="text-sm sm:text-base break-words">{message.content}</p>
+                          <p className="text-xs opacity-70 mt-1">
+                            {new Date(message.created_at).toLocaleTimeString()}
+                          </p>
+                        </div>
+                        {message.sender_id === user?.id && (
+                          <Avatar className="w-6 h-6 sm:w-8 sm:h-8 mt-1">
+                            <AvatarImage src={profile?.avatar_url || undefined} />
+                            <AvatarFallback className="text-xs sm:text-sm">
+                              {profile?.display_name?.charAt(0).toUpperCase() || "U"}
+                            </AvatarFallback>
+                          </Avatar>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </ScrollArea>
+
+                {selectedConversationDetails.is_blocked ? (
+                  <div className="p-3 sm:p-6 border-t bg-muted/50">
+                    <p className="text-center text-sm text-muted-foreground">
+                      Cette conversation est bloquée
+                    </p>
+                  </div>
+                ) : !selectedConversationDetails.can_send_message ? (
+                  <div className="p-3 sm:p-6 border-t bg-warning/10">
+                    <p className="text-center text-sm text-warning-foreground">
+                      Vous devez attendre une réponse avant d'envoyer un autre message
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={sendMessage} className="p-3 sm:p-6 border-t">
+                    <div className="flex gap-2 sm:gap-4">
+                      <Input
+                        value={newMessage}
+                        onChange={(e) => setNewMessage(e.target.value)}
+                        placeholder="Tapez votre message..."
+                        className="flex-1 mobile-input"
+                        disabled={sendingMessage}
+                      />
+                      <Button 
+                        type="submit" 
+                        disabled={!newMessage.trim() || sendingMessage}
+                        className="mobile-button h-12 w-12 p-0 sm:h-12 sm:w-auto sm:px-6"
+                      >
+                        <Send className="w-4 h-4 sm:mr-2" />
+                        <span className="hidden sm:inline">Envoyer</span>
+                      </Button>
+                    </div>
+                  </form>
+                )}
+              </>
+            ) : (
+              <div className="h-full flex items-center justify-center p-6">
+                <div className="text-center">
+                  <MessageCircle className="w-12 h-12 sm:w-16 sm:h-16 mx-auto mb-4 text-muted-foreground" />
+                  <h3 className="text-lg sm:text-xl font-medium mb-2">Sélectionnez une conversation</h3>
+                  <p className="text-sm sm:text-base text-muted-foreground">
+                    Choisissez une conversation dans la liste pour commencer à échanger
+                  </p>
+                </div>
+              </div>
+            )}
+          </Card>
+        )}
       </div>
     </div>
   );

@@ -73,5 +73,78 @@ All colors MUST be HSL.
 
   body {
     @apply bg-background text-foreground;
+    /* Mobile-first typography and interactions */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    text-size-adjust: 100%;
+    touch-action: manipulation;
+  }
+
+  /* Mobile-first touch targets */
+  button, 
+  [role="button"], 
+  input[type="button"], 
+  input[type="submit"], 
+  input[type="reset"] {
+    touch-action: manipulation;
+    min-height: 44px;
+    min-width: 44px;
+  }
+
+  /* Mobile-first form elements */
+  input, 
+  textarea, 
+  select {
+    font-size: 16px; /* Prevents zoom on iOS */
+  }
+
+  /* Mobile-first scrolling */
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
+}
+
+@layer components {
+  /* Mobile-first interactive elements */
+  .touch-target {
+    @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+  }
+
+  .mobile-card {
+    @apply p-4 sm:p-6 rounded-lg bg-card border border-border;
+  }
+
+  .mobile-input {
+    @apply h-12 text-base px-4 rounded-lg border border-input bg-background;
+  }
+
+  .mobile-button {
+    @apply h-12 px-6 rounded-lg font-medium transition-all duration-200;
+  }
+
+  .mobile-nav-item {
+    @apply h-12 px-4 flex items-center gap-3 rounded-lg transition-colors;
+  }
+
+  /* Responsive text utilities */
+  .text-responsive-xs { @apply text-xs sm:text-sm; }
+  .text-responsive-sm { @apply text-sm sm:text-base; }
+  .text-responsive-base { @apply text-base sm:text-lg; }
+  .text-responsive-lg { @apply text-lg sm:text-xl; }
+  .text-responsive-xl { @apply text-xl sm:text-2xl; }
+  .text-responsive-2xl { @apply text-2xl sm:text-3xl; }
+
+  /* Mobile-first spacing utilities */
+  .spacing-mobile { @apply space-y-4 sm:space-y-6; }
+  .padding-mobile { @apply p-4 sm:p-6; }
+  .margin-mobile { @apply m-4 sm:m-6; }
+
+  /* Hover effects that work well on touch */
+  .hover-lift {
+    @apply transition-transform duration-200 active:scale-95 sm:hover:scale-105;
+  }
+
+  .hover-glow {
+    @apply transition-all duration-200 active:shadow-md sm:hover:shadow-glow;
   }
 }
