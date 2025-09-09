@@ -46,7 +46,8 @@ export default function Messages() {
     messages = [],
     loading: messagesLoading = false,
     error: messagesError = null,
-    markAsRead
+    markAsRead,
+    sendMessage
   } = messagesResult || {};
 
   const { typingUsers = [] } = typingResult || {};
@@ -151,31 +152,25 @@ export default function Messages() {
     setShowInfo(false);
   };
 
-  const handleSendMessage = async (content: string) => {
+  const handleSendMessage = async (content: string, attachments?: File[]) => {
     if (!selectedConversationId || !user) return;
 
-    const { error } = await supabase
-      .from('messages')
-      .insert({
-        conversation_id: selectedConversationId,
-        sender_id: user.id,
-        content: content,
-      });
-
-    if (error) {
-      if (error.message.includes('Cannot send more messages until recipient replies')) {
+    try {
+      await sendMessage(content, attachments);
+    } catch (error: any) {
+      if (error.message?.includes('Cannot send more messages until recipient replies')) {
         toast({
           title: "Message non envoyé",
           description: "Vous devez attendre une réponse avant d'envoyer un autre message.",
           variant: "destructive",
         });
-      } else if (error.message.includes('blocked user')) {
+      } else if (error.message?.includes('blocked user')) {
         toast({
           title: "Message non envoyé",
           description: "Vous ne pouvez pas envoyer de message à cet utilisateur.",
           variant: "destructive",
         });
-      } else if (error.message.includes('exclusive manager')) {
+      } else if (error.message?.includes('exclusive manager')) {
         toast({
           title: "Message non envoyé",
           description: "Cet artiste ne peut être contacté que par son manager exclusif.",
