@@ -14,6 +14,7 @@ interface ImageUploadProps {
   bucket: string;
   folder: string;
   className?: string;
+  label?: string;
 }
 
 export default function ImageUpload({ 
@@ -23,7 +24,8 @@ export default function ImageUpload({
   onPositionChange,
   bucket, 
   folder, 
-  className = "" 
+  className = "",
+  label = "Image"
 }: ImageUploadProps) {
   const { user } = useAuth();
   const [uploading, setUploading] = useState(false);
@@ -95,7 +97,7 @@ export default function ImageUpload({
   return (
     <div className={`space-y-4 ${className}`}>
       <label className="block text-sm font-medium mb-2">
-        Image de l'annonce
+        {label}
       </label>
       
       {currentImageUrl ? (

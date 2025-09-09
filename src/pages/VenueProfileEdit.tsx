@@ -156,27 +156,27 @@ export default function VenueProfileEdit() {
           </CardHeader>
           <CardContent className="space-y-6">
             <div>
-              <Label className="text-base font-medium mb-4 block">Photo de profil</Label>
               <ImageUpload
                 currentImageUrl={formData.avatar_url}
                 onImageChange={(url) => setFormData({ ...formData, avatar_url: url || '' })}
                 bucket="avatars"
                 folder="venues"
+                label="Photo de profil"
               />
             </div>
 
-        {/* Header Image Section - Simplified version without HeaderImageEditor */}
-        <div>
-          <Label className="text-base font-medium mb-4 block">Image de couverture</Label>
-          <ImageUpload
-            currentImageUrl={formData.header_url}
-            currentImagePosition={formData.header_position_y}
-            onImageChange={(url) => setFormData({ ...formData, header_url: url || '' })}
-            onPositionChange={(position) => setFormData({ ...formData, header_position_y: position })}
-            bucket="media"
-            folder="headers"
-          />
-        </div>
+            {/* Header Image Section - Simplified version without HeaderImageEditor */}
+            <div>
+              <ImageUpload
+                currentImageUrl={formData.header_url}
+                currentImagePosition={formData.header_position_y}
+                onImageChange={(url) => setFormData({ ...formData, header_url: url || '' })}
+                onPositionChange={(position) => setFormData({ ...formData, header_position_y: position })}
+                bucket="media"
+                folder="headers"
+                label="Image de couverture"
+              />
+            </div>
           </CardContent>
         </Card>
 
