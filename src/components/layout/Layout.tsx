@@ -2,6 +2,7 @@ import { useLocation } from "react-router-dom";
 import { SidebarProvider } from "@/components/ui/sidebar";
 import { AppSidebar } from "./AppSidebar";
 import { Header } from "./Header";
+import { Footer } from "./Footer";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -14,7 +15,14 @@ export function Layout({ children }: LayoutProps) {
   const isArtistProfilePage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
 
   if (isLandingPage || isAuthPage) {
-    return <>{children}</>;
+    return (
+      <>
+        <div className="pb-10">
+          {children}
+        </div>
+        <Footer />
+      </>
+    );
   }
 
   // For artist profile pages, use a simpler layout without sidebar
@@ -22,9 +30,10 @@ export function Layout({ children }: LayoutProps) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
-        <main className="flex-1">
+        <main className="flex-1 pb-10">
           {children}
         </main>
+        <Footer />
       </div>
     );
   }
@@ -36,11 +45,12 @@ export function Layout({ children }: LayoutProps) {
         <AppSidebar />
         <div className="flex-1 flex flex-col">
           <Header />
-          <main className="flex-1 p-6">
+          <main className="flex-1 p-6 pb-16">
             {children}
           </main>
         </div>
       </div>
+      <Footer />
     </SidebarProvider>
   );
 }
