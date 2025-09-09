@@ -40,7 +40,6 @@ const getAgentItems = (profileId: string) => [
   { title: "Artistes", url: "/artists", icon: Music },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
-  { title: "Mes Artistes", url: `/agents/${profileId}/artists`, icon: Star },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Mon Profil", url: `/agents/${profileId}/edit`, icon: User },
 ];
@@ -49,7 +48,6 @@ const getManagerItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Partenaires", url: "/partners", icon: Users },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
-  { title: "Mes Artistes", url: `/managers/${profileId}/artists`, icon: Star },
   { title: "Campagnes", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Rapports", url: "/reports", icon: BarChart3 },
