@@ -225,81 +225,103 @@ export default function PartnerProfile() {
         <div className="space-y-6">
           {/* Contact Info */}
           <Card>
-            <CardHeader>
-              <CardTitle>Contact & Actions</CardTitle>
+            <CardHeader className="pb-4">
+              <CardTitle className="text-lg font-semibold">Contact & Actions</CardTitle>
             </CardHeader>
-            <CardContent className="space-y-4">
-              {/* Email Contact */}
-              {partner.email && (
-                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Mail className="w-4 h-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">{partner.email}</p>
-                      <p className="text-xs text-muted-foreground">Email</p>
+            <CardContent className="space-y-6">
+              {/* Contact Methods */}
+              <div className="space-y-4">
+                {/* Email Contact */}
+                {partner.email && (
+                  <div className="group border border-border/50 rounded-xl p-4 transition-all duration-200 hover:border-border hover:shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 bg-primary/10 rounded-lg flex items-center justify-center group-hover:bg-primary/15 transition-colors">
+                        <Mail className="w-5 h-5 text-primary" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-medium text-foreground truncate text-sm">{partner.email}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Adresse email</p>
+                          </div>
+                          <div className="flex flex-col xs:flex-row gap-2 flex-shrink-0">
+                            <Button size="sm" className="text-xs font-medium" asChild>
+                              <Link to={`/messages?partner=${partner.id}`}>
+                                <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                                Message
+                              </Link>
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-xs" asChild>
+                              <a href={`mailto:${partner.email}`}>
+                                <Mail className="w-3.5 h-3.5 mr-1.5" />
+                                Email
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" asChild>
-                      <Link to={`/messages?partner=${partner.id}`}>
-                        Écrire dans l'app
-                      </Link>
-                    </Button>
-                    <Button size="sm" variant="outline" asChild>
-                      <a href={`mailto:${partner.email}`}>
-                        Email
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              )}
+                )}
 
-              {/* Phone Contact */}
-              {partner.phone && (
-                <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-                  <div className="flex items-center gap-3">
-                    <Phone className="w-4 h-4 text-muted-foreground" />
-                    <div>
-                      <p className="text-sm font-medium">{partner.phone}</p>
-                      <p className="text-xs text-muted-foreground">Téléphone</p>
+                {/* Phone Contact */}
+                {partner.phone && (
+                  <div className="group border border-border/50 rounded-xl p-4 transition-all duration-200 hover:border-border hover:shadow-sm">
+                    <div className="flex items-start gap-3">
+                      <div className="flex-shrink-0 w-10 h-10 bg-green-500/10 rounded-lg flex items-center justify-center group-hover:bg-green-500/15 transition-colors">
+                        <Phone className="w-5 h-5 text-green-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+                          <div className="min-w-0">
+                            <p className="font-medium text-foreground text-sm">{partner.phone}</p>
+                            <p className="text-xs text-muted-foreground mt-0.5">Numéro de téléphone</p>
+                          </div>
+                          <div className="flex flex-col xs:flex-row gap-2 flex-shrink-0">
+                            <Button size="sm" className="bg-green-600 hover:bg-green-700 text-xs font-medium" asChild>
+                              <a 
+                                href={`https://wa.me/${partner.phone.replace(/[^0-9]/g, '')}`} 
+                                target="_blank" 
+                                rel="noopener noreferrer"
+                              >
+                                <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                                WhatsApp
+                              </a>
+                            </Button>
+                            <Button size="sm" variant="outline" className="text-xs" asChild>
+                              <a href={`tel:${partner.phone}`}>
+                                <Phone className="w-3.5 h-3.5 mr-1.5" />
+                                Appeler
+                              </a>
+                            </Button>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                  <div className="flex gap-2">
-                    <Button size="sm" asChild>
-                      <a 
-                        href={`https://wa.me/${partner.phone.replace(/[^0-9]/g, '')}`} 
-                        target="_blank" 
-                        rel="noopener noreferrer"
-                      >
-                        WhatsApp
-                      </a>
-                    </Button>
-                    <Button size="sm" variant="outline" asChild>
-                      <a href={`tel:${partner.phone}`}>
-                        Appeler
-                      </a>
-                    </Button>
-                  </div>
-                </div>
-              )}
+                )}
+              </div>
 
-              {user && user.id !== partner.user_id && (
-                <Button className="w-full" asChild>
-                  <Link to={`/messages?partner=${partner.id}`}>
-                    <MessageSquare className="w-4 h-4 mr-2" />
-                    Contacter le {partnerType.toLowerCase()}
-                  </Link>
-                </Button>
-              )}
-              
-              {partner.website && (
-                <Button variant="outline" className="w-full" asChild>
-                  <a href={partner.website} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Site web
-                  </a>
-                </Button>
-              )}
+              {/* Main Actions */}
+              <div className="space-y-3 pt-2 border-t border-border/30">
+                {user && user.id !== partner.user_id && (
+                  <Button className="w-full h-12 text-sm font-semibold rounded-xl" asChild>
+                    <Link to={`/messages?partner=${partner.id}`}>
+                      <MessageSquare className="w-5 h-5 mr-2" />
+                      Contacter le {partnerType.toLowerCase()}
+                    </Link>
+                  </Button>
+                )}
+                
+                {partner.website && (
+                  <Button variant="outline" className="w-full h-12 text-sm font-medium rounded-xl" asChild>
+                    <a href={partner.website} target="_blank" rel="noopener noreferrer">
+                      <ExternalLink className="w-5 h-5 mr-2" />
+                      Visiter le site web
+                    </a>
+                  </Button>
+                )}
+              </div>
             </CardContent>
           </Card>
 
