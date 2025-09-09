@@ -30,12 +30,33 @@ export const showNotification = (title: string, options?: NotificationOptions): 
   }
 
   try {
-    new Notification(title, {
+    const notification = new Notification(title, {
       icon: '/favicon.ico',
       badge: '/favicon.ico',
       tag: 'message-notification',
       ...options
     });
+    
+    // Ajouter un gestionnaire de clic pour ouvrir la conversation
+    notification.onclick = function(event) {
+      event.preventDefault();
+      
+      // Fermer la notification
+      notification.close();
+      
+      // Extraire l'ID de conversation depuis les données
+      const data = (options as any)?.data;
+      if (data && data.conversationId) {
+        // Rediriger vers la conversation spécifique
+        window.location.href = `/messages?conversation=${data.conversationId}`;
+      } else {
+        // Fallback vers la page messages générale
+        window.location.href = '/messages';
+      }
+      
+      // Mettre le focus sur la fenêtre
+      window.focus();
+    };
     
     // Jouer le son de notification
     playNotificationSound();
