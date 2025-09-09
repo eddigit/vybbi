@@ -13,11 +13,15 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useState } from "react";
 
 export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
+  const { toast } = useToast();
+  const [searchQuery, setSearchQuery] = useState("");
   
   // Determine page context
   const getPageTitle = () => {
@@ -54,10 +58,55 @@ export function Header() {
   const isArtistPage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
   const showAdminControls = !isArtistPage && location.pathname !== '/';
 
+  const handleRefresh = () => {
+    window.location.reload();
+    toast({
+      title: "Page actualisée",
+      description: "La page a été rechargée avec succès.",
+    });
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Pour l'instant, redirection vers la page artistes avec le terme de recherche
+      navigate(`/artists?search=${encodeURIComponent(searchQuery.trim())}`);
+      toast({
+        title: "Recherche effectuée",
+        description: `Recherche pour: "${searchQuery}"`,
+      });
+    }
+  };
+
   const handleLogout = async () => {
     await signOut();
     navigate('/auth');
   };
+
+  // Données de notification fictives
+  const notifications = [
+    {
+      id: 1,
+      title: "Nouveau message",
+      description: "Vous avez reçu un message de Marie Dupont",
+      time: "Il y a 5 minutes",
+      unread: true
+    },
+    {
+      id: 2,
+      title: "Demande de collaboration",
+      description: "Un artiste souhaite collaborer avec vous",
+      time: "Il y a 1 heure",
+      unread: true
+    },
+    {
+      id: 3,
+      title: "Réservation confirmée",
+      description: "Votre événement du 15 octobre est confirmé",
+      time: "Il y a 2 heures",
+      unread: false
+    }
+  ];
 
   return (
     <header className="h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -92,26 +141,65 @@ export function Header() {
           {showAdminControls && (
             <>
               <div className="hidden sm:flex items-center gap-2">
-                <Button variant="outline" size="sm" className="gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handleRefresh}
+                >
                   <RefreshCw className="h-4 w-4" />
                   Actualiser
                 </Button>
               </div>
 
-              <div className="hidden md:block relative">
+              <form onSubmit={handleSearch} className="hidden md:block relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
                   placeholder="Recherche..."
                   className="pl-10 w-64"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
                 />
-              </div>
+              </form>
 
-              <Button variant="ghost" size="icon" className="relative">
-                <Bell className="h-5 w-5" />
-                <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-primary">
-                  2
-                </Badge>
-              </Button>
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative">
+                    <Bell className="h-5 w-5" />
+                    <Badge className="absolute -top-1 -right-1 h-5 w-5 p-0 text-xs bg-primary">
+                      {notifications.filter(n => n.unread).length}
+                    </Badge>
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-80">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {notifications.length === 0 ? (
+                    <DropdownMenuItem disabled>
+                      Aucune notification
+                    </DropdownMenuItem>
+                  ) : (
+                    notifications.map((notification) => (
+                      <DropdownMenuItem key={notification.id} className="flex flex-col items-start p-3 cursor-pointer">
+                        <div className={`flex items-center gap-2 ${notification.unread ? 'font-semibold' : ''}`}>
+                          <span className="text-sm">{notification.title}</span>
+                          {notification.unread && (
+                            <Badge variant="secondary" className="h-2 w-2 p-0 bg-primary"></Badge>
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground mt-1">{notification.description}</span>
+                        <span className="text-xs text-muted-foreground mt-1">{notification.time}</span>
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/messages" className="w-full text-center">
+                      Voir tous les messages
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
             </>
           )}
 
