@@ -16,12 +16,16 @@ export function useAuth() {
 
   const fetchProfile = async (userId: string) => {
     try {
-      // First ensure profile exists
+      // Get user metadata to determine profile type
+      const { data: { user: currentUser } } = await supabase.auth.getUser();
+      const userProfileType = currentUser?.user_metadata?.profile_type || 'artist';
+      
+      // First ensure profile exists with correct profile type
       const { data: profileId } = await supabase
         .rpc('ensure_user_profile', { 
           _user_id: userId,
-          _display_name: 'Nouvel Utilisateur',
-          _profile_type: 'artist'
+          _display_name: currentUser?.user_metadata?.display_name || 'Nouvel Utilisateur',
+          _profile_type: userProfileType
         });
 
       // Fetch profile
@@ -60,9 +64,9 @@ export function useAuth() {
           if (profileData?.profile_type === 'artist') {
             navigate(`/artists/${profileData.id}/edit`, { replace: true });
           } else if (profileData?.profile_type === 'agent') {
-            navigate('/agents', { replace: true });
+            navigate(`/agents/${profileData.id}/edit`, { replace: true });
           } else if (profileData?.profile_type === 'manager') {
-            navigate('/managers', { replace: true });
+            navigate(`/managers/${profileData.id}/edit`, { replace: true });
           } else if (profileData?.profile_type === 'lieu') {
             navigate('/lieux', { replace: true });
           } else {

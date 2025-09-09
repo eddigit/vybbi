@@ -43,22 +43,22 @@ const artistItems = [
   { title: "Directory", url: "/profiles", icon: UserSearch },
 ];
 
-const agentItems = [
+const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
-  { title: "Mes Artistes", url: "/agents", icon: Star },
+  { title: "Mes Artistes", url: `/agents/${profileId}/edit`, icon: Star },
   { title: "Messages", url: "/messages", icon: MessageSquare },
-  { title: "Mon Profil", url: "/profiles", icon: User },
+  { title: "Mon Profil", url: `/agents/${profileId}/edit`, icon: User },
 ];
 
-const managerItems = [
+const getManagerItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Partenaires", url: "/partners", icon: Users },
   { title: "Campagnes", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Rapports", url: "/reports", icon: BarChart3 },
   { title: "Messages", url: "/messages", icon: MessageSquare },
-  { title: "Mon Profil", url: "/profiles", icon: User },
+  { title: "Mon Profil", url: `/managers/${profileId}/edit`, icon: User },
 ];
 
 const lieuItems = [
@@ -88,9 +88,9 @@ export function AppSidebar() {
     
     switch (profile.profile_type) {
       case 'agent':
-        return agentItems;
+        return getAgentItems(profile.id);
       case 'manager':
-        return managerItems;
+        return getManagerItems(profile.id);
       case 'lieu':
         return lieuItems;
       case 'artist':
