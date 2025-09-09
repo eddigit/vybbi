@@ -6,8 +6,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Label } from "@/components/ui/label";
+import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Profile, AgentArtist } from "@/lib/types";
@@ -28,6 +28,7 @@ export function AgentProfileEdit() {
     instagram_url: "",
     tiktok_url: "",
     youtube_url: "",
+    avatar_url: "",
   });
 
   const [artists, setArtists] = useState<Profile[]>([]);
@@ -140,10 +141,10 @@ export function AgentProfileEdit() {
       if (updateError) throw updateError;
 
       setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
-      toast.success('Avatar updated successfully');
+      toast.success("Avatar updated successfully");
     } catch (error) {
-      console.error('Error uploading avatar:', error);
-      toast.error('Failed to upload avatar');
+      console.error("Error uploading avatar:", error);
+      toast.error("Failed to upload avatar");
     } finally {
       setUploading(false);
     }
@@ -159,7 +160,6 @@ export function AgentProfileEdit() {
 
       if (error) throw error;
       toast.success("Profile updated successfully");
-      // Stay on edit page instead of navigating to non-existent route
     } catch (error) {
       console.error("Error saving profile:", error);
       toast.error("Failed to save profile");
@@ -214,36 +214,29 @@ export function AgentProfileEdit() {
           <CardTitle>Agent Profile Settings</CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div>
-            <Label className="block text-sm font-medium mb-2">Avatar</Label>
-            <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20">
-                <AvatarImage src={profileData.avatar_url || ""} alt="Profile picture" />
-                <AvatarFallback>
-                  {profileData.display_name?.charAt(0)?.toUpperCase() || "A"}
-                </AvatarFallback>
-              </Avatar>
-              <div>
-                <input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleAvatarUpload}
-                  className="hidden"
-                  id="avatar-upload"
-                  disabled={uploading}
-                />
-                <Button
-                  variant="outline"
-                  size="sm"
-                  asChild
-                  disabled={uploading}
-                >
-                  <label htmlFor="avatar-upload" className="cursor-pointer">
-                    <Upload className="h-4 w-4 mr-2" />
+          <div className="flex items-center space-x-4 mb-6">
+            <Avatar className="h-20 w-20">
+              <AvatarImage src={profileData.avatar_url} alt={profileData.display_name} />
+              <AvatarFallback className="text-lg">
+                {profileData.display_name?.charAt(0)?.toUpperCase() || "A"}
+              </AvatarFallback>
+            </Avatar>
+            <div>
+              <Label htmlFor="avatar-upload" className="cursor-pointer">
+                <Button variant="outline" size="sm" disabled={uploading} asChild>
+                  <span>
+                    <Upload className="w-4 h-4 mr-2" />
                     {uploading ? "Uploading..." : "Change Avatar"}
-                  </label>
+                  </span>
                 </Button>
-              </div>
+              </Label>
+              <input
+                id="avatar-upload"
+                type="file"
+                accept="image/*"
+                onChange={handleAvatarUpload}
+                className="hidden"
+              />
             </div>
           </div>
 
@@ -301,7 +294,7 @@ export function AgentProfileEdit() {
               {saving ? "Saving..." : "Save Profile"}
             </Button>
             <Button variant="outline" onClick={() => navigate("/dashboard")}>
-              Cancel
+              Back to Dashboard
             </Button>
           </div>
         </CardContent>
