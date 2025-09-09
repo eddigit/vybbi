@@ -18,11 +18,11 @@ export function MobileTabBar() {
   const location = useLocation();
   const { profile } = useAuth();
 
-  // Public tabs (always visible)
-  const publicTabs = [
+  // Public tabs (visible only for non-authenticated users)
+  const publicTabs = !profile ? [
     { name: "Annonces", href: "/annonces", icon: Megaphone },
     { name: "Artistes", href: "/nos-artistes", icon: Users },
-  ];
+  ] : [];
 
   const getMainTabs = () => {
     switch (profile?.profile_type) {

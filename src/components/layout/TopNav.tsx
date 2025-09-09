@@ -77,11 +77,11 @@ export function TopNav() {
   const location = useLocation();
   const currentPath = location.pathname;
 
-  // Public navigation items (always visible)
-  const publicItems = [
+  // Public navigation items (visible only for non-authenticated users)
+  const publicItems = !profile ? [
     { title: "Annonces", url: "/annonces" },
     { title: "Nos Artistes", url: "/nos-artistes" },
-  ];
+  ] : [];
 
   // Get navigation items based on profile type
   const getNavigationItems = () => {

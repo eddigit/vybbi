@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, Navigate } from 'react-router-dom';
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -11,11 +11,16 @@ import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 
 export default function NosArtistes() {
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [artists, setArtists] = useState<Profile[]>([]);
   const [agents, setAgents] = useState<Profile[]>([]);
   const [venues, setVenues] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Redirect authenticated users to dashboard
+  if (!authLoading && user) {
+    return <Navigate to="/dashboard" replace />;
+  }
 
   useEffect(() => {
     fetchProfiles();
@@ -142,19 +147,11 @@ export default function NosArtistes() {
               </Link>
             </Button>
             
-            {user ? (
-              <Button asChild size="sm" className="w-full">
-                <Link to={`/messages?contact=${profile.user_id}`}>
-                  Contacter
-                </Link>
-              </Button>
-            ) : (
-              <Button asChild size="sm" className="w-full">
-                <Link to="/auth">
-                  Créer un compte pour contacter
-                </Link>
-              </Button>
-            )}
+            <Button asChild size="sm" className="w-full">
+              <Link to="/auth">
+                Créer un compte pour contacter
+              </Link>
+            </Button>
           </div>
         </div>
       </CardContent>
