@@ -7,11 +7,12 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { Calendar, Clock, MapPin, Users, Plus, Edit, Eye, Trash2 } from 'lucide-react';
+import { Calendar, Clock, MapPin, Users, Plus, Edit, Eye, Trash2, Grid, List, Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import ImageUpload from '@/components/ImageUpload';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Event {
   id: string;
@@ -47,12 +48,15 @@ interface Booking {
 export default function EventsManager() {
   const { profile } = useAuth();
   const { toast } = useToast();
-  const [events, setEvents] = useState<Event[]>([]);
+  const [allPublishedEvents, setAllPublishedEvents] = useState<Event[]>([]);
+  const [myEvents, setMyEvents] = useState<Event[]>([]);
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<'card' | 'list'>('card');
+  const [searchTerm, setSearchTerm] = useState('');
 
   // Form state
   const [formData, setFormData] = useState({
@@ -70,13 +74,39 @@ export default function EventsManager() {
   });
 
   useEffect(() => {
-    if (profile?.profile_type === 'lieu') {
-      fetchEvents();
-      fetchBookings();
+    if (profile) {
+      fetchAllPublishedEvents();
+      if (profile.profile_type === 'lieu') {
+        fetchMyEvents();
+        fetchBookings();
+      }
     }
   }, [profile]);
 
-  const fetchEvents = async () => {
+  const fetchAllPublishedEvents = async () => {
+    const { data, error } = await supabase
+      .from('events')
+      .select(`
+        *,
+        profiles:venue_profile_id (
+          display_name,
+          location,
+          avatar_url
+        )
+      `)
+      .eq('status', 'published')
+      .order('event_date', { ascending: true });
+
+    if (error) {
+      console.error('Error fetching published events:', error);
+      toast({ title: "Erreur", description: "Impossible de charger les événements", variant: "destructive" });
+    } else {
+      setAllPublishedEvents(data || []);
+    }
+    setLoading(false);
+  };
+
+  const fetchMyEvents = async () => {
     if (!profile) return;
 
     const { data, error } = await supabase
@@ -86,12 +116,11 @@ export default function EventsManager() {
       .order('event_date', { ascending: true });
 
     if (error) {
-      console.error('Error fetching events:', error);
-      toast({ title: "Erreur", description: "Impossible de charger les événements", variant: "destructive" });
+      console.error('Error fetching my events:', error);
+      toast({ title: "Erreur", description: "Impossible de charger mes événements", variant: "destructive" });
     } else {
-      setEvents(data || []);
+      setMyEvents(data || []);
     }
-    setLoading(false);
   };
 
   const fetchBookings = async () => {
@@ -200,7 +229,8 @@ export default function EventsManager() {
       toast({ title: "Succès", description: "Événement créé avec succès" });
       setIsCreateModalOpen(false);
       resetForm();
-      fetchEvents();
+      fetchMyEvents();
+      fetchAllPublishedEvents();
     }
   };
 
@@ -235,21 +265,167 @@ export default function EventsManager() {
     return <Badge variant={variants[status]}>{labels[status]}</Badge>;
   };
 
+  const filteredPublishedEvents = allPublishedEvents.filter(event =>
+    event.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    event.description?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    event.location?.toLowerCase().includes(searchTerm.toLowerCase())
+  );
+
+  const EventCard = ({ event, isOwner = false }: { event: Event & { profiles?: any }, isOwner?: boolean }) => (
+    <Card className="overflow-hidden">
+      {event.image_url && (
+        <div className="aspect-video relative overflow-hidden">
+          <img 
+            src={event.image_url} 
+            alt={event.title}
+            className="w-full h-full object-cover"
+            style={{
+              objectPosition: `center ${event.image_position_y || 50}%`
+            }}
+          />
+        </div>
+      )}
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start mb-2">
+          <h3 className="text-lg font-semibold line-clamp-1">{event.title}</h3>
+          {getStatusBadge(event.status)}
+        </div>
+        
+        {event.profiles && (
+          <p className="text-sm text-muted-foreground mb-2">
+            Organisé par {event.profiles.display_name}
+          </p>
+        )}
+        
+        <div className="space-y-1 text-sm text-muted-foreground mb-3">
+          <div className="flex items-center gap-2">
+            <Calendar className="h-4 w-4" />
+            {new Date(event.event_date).toLocaleDateString('fr-FR')}
+            {event.event_time && (
+              <>
+                <Clock className="h-4 w-4 ml-2" />
+                {event.event_time}
+              </>
+            )}
+          </div>
+          {event.location && (
+            <div className="flex items-center gap-2">
+              <MapPin className="h-4 w-4" />
+              {event.location}
+            </div>
+          )}
+        </div>
+
+        {event.description && (
+          <p className="text-sm mb-3 line-clamp-2">{event.description}</p>
+        )}
+
+        {(event.budget_min || event.budget_max) && (
+          <div className="text-sm text-muted-foreground mb-3">
+            Budget: {event.budget_min && `${event.budget_min}€`}
+            {event.budget_min && event.budget_max && ' - '}
+            {event.budget_max && `${event.budget_max}€`}
+          </div>
+        )}
+
+        {isOwner && (
+          <div className="flex gap-2 mt-3">
+            {event.status === 'published' && (
+              <Button variant="outline" size="sm">
+                <Eye className="h-4 w-4" />
+              </Button>
+            )}
+            <Button variant="outline" size="sm">
+              <Edit className="h-4 w-4" />
+            </Button>
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  );
+
+  const EventListItem = ({ event, isOwner = false }: { event: Event & { profiles?: any }, isOwner?: boolean }) => (
+    <Card>
+      <CardContent className="p-4">
+        <div className="flex justify-between items-start">
+          <div className="flex-1">
+            <div className="flex items-center gap-3 mb-2">
+              <h3 className="text-lg font-semibold">{event.title}</h3>
+              {getStatusBadge(event.status)}
+            </div>
+            
+            {event.profiles && (
+              <p className="text-sm text-muted-foreground mb-2">
+                Organisé par {event.profiles.display_name}
+              </p>
+            )}
+            
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <Calendar className="h-4 w-4" />
+                {new Date(event.event_date).toLocaleDateString('fr-FR')}
+              </div>
+              {event.event_time && (
+                <div className="flex items-center gap-2">
+                  <Clock className="h-4 w-4" />
+                  {event.event_time}
+                </div>
+              )}
+              {event.location && (
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  {event.location}
+                </div>
+              )}
+            </div>
+
+            {event.description && (
+              <p className="mt-3 text-sm">{event.description}</p>
+            )}
+
+            {(event.budget_min || event.budget_max) && (
+              <div className="mt-2 text-sm text-muted-foreground">
+                Budget: {event.budget_min && `${event.budget_min}€`}
+                {event.budget_min && event.budget_max && ' - '}
+                {event.budget_max && `${event.budget_max}€`}
+              </div>
+            )}
+          </div>
+
+          {isOwner && (
+            <div className="flex gap-2 ml-4">
+              {event.status === 'published' && (
+                <Button variant="outline" size="sm">
+                  <Eye className="h-4 w-4" />
+                </Button>
+              )}
+              <Button variant="outline" size="sm">
+                <Edit className="h-4 w-4" />
+              </Button>
+            </div>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
+
   if (loading) {
     return <div className="flex justify-center p-8">Chargement...</div>;
   }
 
   return (
     <div className="container mx-auto p-6 space-y-6">
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Gestion des événements</h1>
-        <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-          <DialogTrigger asChild>
-            <Button onClick={() => resetForm()}>
-              <Plus className="h-4 w-4 mr-2" />
-              Créer un événement
-            </Button>
-          </DialogTrigger>
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+        <h1 className="text-3xl font-bold">Événements</h1>
+        <div className="flex gap-2 w-full sm:w-auto">
+          {profile?.profile_type === 'lieu' && (
+            <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+              <DialogTrigger asChild>
+                <Button onClick={() => resetForm()}>
+                  <Plus className="h-4 w-4 mr-2" />
+                  Créer un événement
+                </Button>
+              </DialogTrigger>
           <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
             <DialogHeader>
               <DialogTitle>Créer un nouvel événement</DialogTitle>
@@ -363,132 +539,147 @@ export default function EventsManager() {
             </div>
           </DialogContent>
         </Dialog>
+          )}
+        </div>
       </div>
 
-      {/* Events List */}
-      <div className="grid gap-6">
-        <h2 className="text-2xl font-semibold">Mes événements</h2>
-        {events.length === 0 ? (
-          <Card>
-            <CardContent className="p-8 text-center">
-              <p className="text-muted-foreground">Aucun événement créé pour le moment.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4">
-            {events.map((event) => (
-              <Card key={event.id}>
-                <CardContent className="p-6">
-                  <div className="flex justify-between items-start">
-                    <div className="flex-1">
-                      <div className="flex items-center gap-3 mb-2">
-                        <h3 className="text-xl font-semibold">{event.title}</h3>
-                        {getStatusBadge(event.status)}
-                      </div>
-                      
-                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm text-muted-foreground">
+      {/* Search and View Toggle */}
+      <div className="flex flex-col sm:flex-row gap-4 justify-between items-start sm:items-center">
+        <div className="relative flex-1 max-w-md">
+          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Rechercher des événements..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
+        </div>
+        <div className="flex gap-2">
+          <Button
+            variant={viewMode === 'card' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('card')}
+          >
+            <Grid className="h-4 w-4" />
+          </Button>
+          <Button
+            variant={viewMode === 'list' ? 'default' : 'outline'}
+            size="sm"
+            onClick={() => setViewMode('list')}
+          >
+            <List className="h-4 w-4" />
+          </Button>
+        </div>
+      </div>
+
+      <Tabs defaultValue="all" className="w-full">
+        <TabsList>
+          <TabsTrigger value="all">Tous les événements</TabsTrigger>
+          {profile?.profile_type === 'lieu' && (
+            <TabsTrigger value="mine">Mes événements</TabsTrigger>
+          )}
+        </TabsList>
+        
+        <TabsContent value="all" className="space-y-4">
+          {filteredPublishedEvents.length === 0 ? (
+            <Card>
+              <CardContent className="p-8 text-center">
+                <p className="text-muted-foreground">
+                  {searchTerm ? 'Aucun événement trouvé pour cette recherche.' : 'Aucun événement publié pour le moment.'}
+                </p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className={viewMode === 'card' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-4'}>
+              {filteredPublishedEvents.map((event) => 
+                viewMode === 'card' ? (
+                  <EventCard key={event.id} event={event} />
+                ) : (
+                  <EventListItem key={event.id} event={event} />
+                )
+              )}
+            </div>
+          )}
+        </TabsContent>
+
+        {profile?.profile_type === 'lieu' && (
+          <TabsContent value="mine" className="space-y-4">
+            {myEvents.length === 0 ? (
+              <Card>
+                <CardContent className="p-8 text-center">
+                  <p className="text-muted-foreground">Aucun événement créé pour le moment.</p>
+                </CardContent>
+              </Card>
+            ) : (
+              <div className={viewMode === 'card' ? 'grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4' : 'space-y-4'}>
+                {myEvents.map((event) => 
+                  viewMode === 'card' ? (
+                    <EventCard key={event.id} event={event} isOwner={true} />
+                  ) : (
+                    <EventListItem key={event.id} event={event} isOwner={true} />
+                  )
+                )}
+              </div>
+            )}
+          </TabsContent>
+        )}
+      </Tabs>
+
+      {/* Bookings - Only show for venues */}
+      {profile?.profile_type === 'lieu' && (
+        <div>
+          <h2 className="text-2xl font-semibold mb-4">Demandes de booking</h2>
+          {bookings.filter(b => b.status === 'pending').length === 0 ? (
+            <Card>
+              <CardContent className="p-6 text-center">
+                <p className="text-muted-foreground">Aucune demande de booking en attente.</p>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="space-y-3">
+              {bookings.filter(b => b.status === 'pending').map((booking) => (
+                <Card key={booking.id}>
+                  <CardContent className="p-4">
+                    <div className="flex justify-between items-center">
+                      <div className="flex items-center gap-4">
                         <div className="flex items-center gap-2">
-                          <Calendar className="h-4 w-4" />
-                          {new Date(event.event_date).toLocaleDateString('fr-FR')}
+                          <Users className="h-4 w-4" />
+                          <span className="font-medium">{booking.artist.display_name}</span>
                         </div>
-                        {event.event_time && (
-                          <div className="flex items-center gap-2">
-                            <Clock className="h-4 w-4" />
-                            {event.event_time}
-                          </div>
+                        {booking.proposed_fee && (
+                          <span className="text-sm text-muted-foreground">
+                            Cachet proposé: {booking.proposed_fee}€
+                          </span>
                         )}
-                        {event.location && (
-                          <div className="flex items-center gap-2">
-                            <MapPin className="h-4 w-4" />
-                            {event.location}
-                          </div>
+                        {booking.message && (
+                          <span className="text-sm text-muted-foreground">
+                            "{booking.message}"
+                          </span>
                         )}
                       </div>
-
-                      {event.description && (
-                        <p className="mt-3 text-sm">{event.description}</p>
-                      )}
-
-                      {(event.budget_min || event.budget_max) && (
-                        <div className="mt-2 text-sm text-muted-foreground">
-                          Budget: {event.budget_min && `${event.budget_min}€`}
-                          {event.budget_min && event.budget_max && ' - '}
-                          {event.budget_max && `${event.budget_max}€`}
-                        </div>
-                      )}
-                    </div>
-
-                    <div className="flex gap-2 ml-4">
-                      {event.status === 'published' && (
-                        <Button variant="outline" size="sm">
-                          <Eye className="h-4 w-4" />
+                      <div className="flex gap-2">
+                        <Button
+                          size="sm"
+                          onClick={() => handleUpdateBookingStatus(booking.id, 'confirmed')}
+                        >
+                          Confirmer
                         </Button>
-                      )}
-                      <Button variant="outline" size="sm">
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-
-      {/* Bookings */}
-      <div>
-        <h2 className="text-2xl font-semibold mb-4">Demandes de booking</h2>
-        {bookings.filter(b => b.status === 'pending').length === 0 ? (
-          <Card>
-            <CardContent className="p-6 text-center">
-              <p className="text-muted-foreground">Aucune demande de booking en attente.</p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-3">
-            {bookings.filter(b => b.status === 'pending').map((booking) => (
-              <Card key={booking.id}>
-                <CardContent className="p-4">
-                  <div className="flex justify-between items-center">
-                    <div className="flex items-center gap-4">
-                      <div className="flex items-center gap-2">
-                        <Users className="h-4 w-4" />
-                        <span className="font-medium">{booking.artist.display_name}</span>
+                        <Button
+                          size="sm"
+                          variant="outline"
+                          onClick={() => handleUpdateBookingStatus(booking.id, 'cancelled')}
+                        >
+                          Annuler
+                        </Button>
                       </div>
-                      {booking.proposed_fee && (
-                        <span className="text-sm text-muted-foreground">
-                          Cachet proposé: {booking.proposed_fee}€
-                        </span>
-                      )}
-                      {booking.message && (
-                        <span className="text-sm text-muted-foreground">
-                          "{booking.message}"
-                        </span>
-                      )}
                     </div>
-                    <div className="flex gap-2">
-                      <Button
-                        size="sm"
-                        onClick={() => handleUpdateBookingStatus(booking.id, 'confirmed')}
-                      >
-                        Confirmer
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => handleUpdateBookingStatus(booking.id, 'cancelled')}
-                      >
-                        Annuler
-                      </Button>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 }
