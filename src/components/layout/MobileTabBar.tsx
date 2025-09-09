@@ -30,6 +30,8 @@ export function MobileTabBar() {
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
           { name: "Artists", href: "/artists", icon: Music },
+          { name: "Agents", href: "/profiles?type=agent", icon: UserSearch },
+          { name: "Lieux", href: "/lieux", icon: Building2 },
           { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
         ];
@@ -37,6 +39,7 @@ export function MobileTabBar() {
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
           { name: "Artists", href: "/artists", icon: Music },
+          { name: "Lieux", href: "/lieux", icon: Building2 },
           { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
         ];
@@ -50,6 +53,8 @@ export function MobileTabBar() {
       case 'lieu':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Artists", href: "/artists", icon: Music },
+          { name: "Agents", href: "/profiles?type=agent", icon: UserSearch },
           { name: "Lieux", href: "/lieux", icon: MapPin },
           { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
