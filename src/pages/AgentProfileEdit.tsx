@@ -11,15 +11,21 @@ import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Upload } from "lucide-react";
 import { toast } from "sonner";
 import { Profile, AgentArtist } from "@/lib/types";
-
 export function AgentProfileEdit() {
-  const { id } = useParams<{ id: string }>();
+  const {
+    id
+  } = useParams<{
+    id: string;
+  }>();
   const navigate = useNavigate();
-  const { user, profile, refreshProfile } = useAuth();
+  const {
+    user,
+    profile,
+    refreshProfile
+  } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
-  
   const [profileData, setProfileData] = useState<Partial<Profile>>({
     display_name: "",
     bio: "",
@@ -30,13 +36,11 @@ export function AgentProfileEdit() {
     youtube_url: "",
     avatar_url: "",
     email: "",
-    phone: "",
+    phone: ""
   });
-
   const [confirmedArtists, setConfirmedArtists] = useState<Profile[]>([]);
   const [pendingArtists, setPendingArtists] = useState<Profile[]>([]);
   const [availableArtists, setAvailableArtists] = useState<Profile[]>([]);
-
   useEffect(() => {
     if (user && profile) {
       if (profile.profile_type !== "agent" || profile.id !== id) {
@@ -50,15 +54,12 @@ export function AgentProfileEdit() {
       navigate("/auth");
     }
   }, [user, profile, id, navigate, loading]);
-
   const fetchProfile = async () => {
     try {
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("id", id)
-        .single();
-
+      const {
+        data,
+        error
+      } = await supabase.from("profiles").select("*").eq("id", id).single();
       if (error) throw error;
       if (data) setProfileData(data);
     } catch (error) {
@@ -68,40 +69,36 @@ export function AgentProfileEdit() {
       setLoading(false);
     }
   };
-
   const fetchArtistRoster = async () => {
     try {
-      const { data, error } = await supabase
-        .from("agent_artists")
-        .select("artist_profile_id, representation_status")
-        .eq("agent_profile_id", id);
-
+      const {
+        data,
+        error
+      } = await supabase.from("agent_artists").select("artist_profile_id, representation_status").eq("agent_profile_id", id);
       if (error) throw error;
       if (data) {
         // Separate by status
         const confirmedIds = data.filter(aa => aa.representation_status === 'accepted').map(aa => aa.artist_profile_id);
         const pendingIds = data.filter(aa => aa.representation_status === 'pending').map(aa => aa.artist_profile_id);
-        
+
         // Fetch confirmed artists
         if (confirmedIds.length > 0) {
-          const { data: confirmedProfiles, error: confirmedError } = await supabase
-            .from("profiles")
-            .select("*")
-            .in("id", confirmedIds);
-          
+          const {
+            data: confirmedProfiles,
+            error: confirmedError
+          } = await supabase.from("profiles").select("*").in("id", confirmedIds);
           if (confirmedError) throw confirmedError;
           setConfirmedArtists(confirmedProfiles || []);
         } else {
           setConfirmedArtists([]);
         }
-        
+
         // Fetch pending artists
         if (pendingIds.length > 0) {
-          const { data: pendingProfiles, error: pendingError } = await supabase
-            .from("profiles")
-            .select("*")
-            .in("id", pendingIds);
-          
+          const {
+            data: pendingProfiles,
+            error: pendingError
+          } = await supabase.from("profiles").select("*").in("id", pendingIds);
           if (pendingError) throw pendingError;
           setPendingArtists(pendingProfiles || []);
         } else {
@@ -112,65 +109,57 @@ export function AgentProfileEdit() {
       console.error("Error fetching artist roster:", error);
     }
   };
-
   const fetchAvailableArtists = async () => {
     try {
       // Get current artist IDs to exclude them
-      const { data: existingData } = await supabase
-        .from("agent_artists")
-        .select("artist_profile_id")
-        .eq("agent_profile_id", id);
-      
+      const {
+        data: existingData
+      } = await supabase.from("agent_artists").select("artist_profile_id").eq("agent_profile_id", id);
       const existingIds = existingData?.map(aa => aa.artist_profile_id) || [];
-      
-      const { data, error } = await supabase
-        .from("profiles")
-        .select("*")
-        .eq("profile_type", "artist")
-        .eq("is_public", true)
-        .not("id", "in", `(${existingIds.length > 0 ? existingIds.join(",") : "null"})`);
-
+      const {
+        data,
+        error
+      } = await supabase.from("profiles").select("*").eq("profile_type", "artist").eq("is_public", true).not("id", "in", `(${existingIds.length > 0 ? existingIds.join(",") : "null"})`);
       if (error) throw error;
       if (data) setAvailableArtists(data);
     } catch (error) {
       console.error("Error fetching available artists:", error);
     }
   };
-
   const handleInputChange = (field: keyof Profile, value: string) => {
     setProfileData(prev => ({
       ...prev,
       [field]: value
     }));
   };
-
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file || !user) return;
-
     setUploading(true);
     try {
       const fileExt = file.name.split('.').pop();
       const fileName = `${user.id}/avatar.${fileExt}`;
-
-      const { error: uploadError } = await supabase.storage
-        .from('avatars')
-        .upload(fileName, file, { upsert: true });
-
+      const {
+        error: uploadError
+      } = await supabase.storage.from('avatars').upload(fileName, file, {
+        upsert: true
+      });
       if (uploadError) throw uploadError;
-
-      const { data: { publicUrl } } = supabase.storage
-        .from('avatars')
-        .getPublicUrl(fileName);
-
-      const { error: updateError } = await supabase
-        .from('profiles')
-        .update({ avatar_url: publicUrl })
-        .eq('id', id);
-
+      const {
+        data: {
+          publicUrl
+        }
+      } = supabase.storage.from('avatars').getPublicUrl(fileName);
+      const {
+        error: updateError
+      } = await supabase.from('profiles').update({
+        avatar_url: publicUrl
+      }).eq('id', id);
       if (updateError) throw updateError;
-
-      setProfileData(prev => ({ ...prev, avatar_url: publicUrl }));
+      setProfileData(prev => ({
+        ...prev,
+        avatar_url: publicUrl
+      }));
       toast.success("Avatar updated successfully");
       // Refresh the profile in useAuth to update header avatar
       await refreshProfile();
@@ -181,15 +170,12 @@ export function AgentProfileEdit() {
       setUploading(false);
     }
   };
-
   const handleSave = async () => {
     setSaving(true);
     try {
-      const { error } = await supabase
-        .from("profiles")
-        .update(profileData)
-        .eq("id", id);
-
+      const {
+        error
+      } = await supabase.from("profiles").update(profileData).eq("id", id);
       if (error) throw error;
       toast.success("Profile updated successfully");
     } catch (error) {
@@ -199,17 +185,15 @@ export function AgentProfileEdit() {
       setSaving(false);
     }
   };
-
   const handleAddArtist = async (artistId: string) => {
     try {
-      const { error } = await supabase
-        .from("agent_artists")
-        .insert([{
-          agent_profile_id: id,
-          artist_profile_id: artistId,
-          representation_status: 'pending'
-        }]);
-
+      const {
+        error
+      } = await supabase.from("agent_artists").insert([{
+        agent_profile_id: id,
+        artist_profile_id: artistId,
+        representation_status: 'pending'
+      }]);
       if (error) throw error;
       toast.success("Representation request sent to artist");
       fetchArtistRoster();
@@ -219,15 +203,11 @@ export function AgentProfileEdit() {
       toast.error("Failed to send representation request");
     }
   };
-
   const handleRemoveArtist = async (artistId: string) => {
     try {
-      const { error } = await supabase
-        .from("agent_artists")
-        .delete()
-        .eq("agent_profile_id", id)
-        .eq("artist_profile_id", artistId);
-
+      const {
+        error
+      } = await supabase.from("agent_artists").delete().eq("agent_profile_id", id).eq("artist_profile_id", artistId);
       if (error) throw error;
       toast.success("Artist removed from roster");
       fetchArtistRoster();
@@ -236,13 +216,10 @@ export function AgentProfileEdit() {
       toast.error("Failed to remove artist");
     }
   };
-
   if (loading) {
     return <div className="flex items-center justify-center min-h-screen">Loading...</div>;
   }
-
-  return (
-    <div className="container mx-auto p-6 space-y-6">
+  return <div className="container mx-auto p-6 space-y-6">
       <Card>
         <CardHeader>
           <CardTitle>Agent Profile Settings</CardTitle>
@@ -264,13 +241,7 @@ export function AgentProfileEdit() {
                   </span>
                 </Button>
               </Label>
-              <input
-                id="avatar-upload"
-                type="file"
-                accept="image/*"
-                onChange={handleAvatarUpload}
-                className="hidden"
-              />
+              <input id="avatar-upload" type="file" accept="image/*" onChange={handleAvatarUpload} className="hidden" />
             </div>
           </div>
 
@@ -278,75 +249,42 @@ export function AgentProfileEdit() {
             <label htmlFor="display_name" className="block text-sm font-medium mb-2">
               Display Name
             </label>
-            <Input
-              id="display_name"
-              value={profileData.display_name || ""}
-              onChange={(e) => handleInputChange("display_name", e.target.value)}
-              placeholder="Your name or agency name"
-            />
+            <Input id="display_name" value={profileData.display_name || ""} onChange={e => handleInputChange("display_name", e.target.value)} placeholder="Your name or agency name" />
           </div>
 
           <div>
             <label htmlFor="bio" className="block text-sm font-medium mb-2">
               Bio
             </label>
-            <Textarea
-              id="bio"
-              value={profileData.bio || ""}
-              onChange={(e) => handleInputChange("bio", e.target.value)}
-              placeholder="Tell us about your agency and experience"
-              rows={4}
-            />
+            <Textarea id="bio" value={profileData.bio || ""} onChange={e => handleInputChange("bio", e.target.value)} placeholder="Tell us about your agency and experience" rows={4} />
           </div>
 
           <div>
             <label htmlFor="location" className="block text-sm font-medium mb-2">
               Location
             </label>
-            <Input
-              id="location"
-              value={profileData.location || ""}
-              onChange={(e) => handleInputChange("location", e.target.value)}
-              placeholder="City, Country"
-            />
+            <Input id="location" value={profileData.location || ""} onChange={e => handleInputChange("location", e.target.value)} placeholder="City, Country" />
           </div>
 
           <div>
             <label htmlFor="website" className="block text-sm font-medium mb-2">
               Website
             </label>
-            <Input
-              id="website"
-              value={profileData.website || ""}
-              onChange={(e) => handleInputChange("website", e.target.value)}
-              placeholder="https://yourwebsite.com"
-            />
+            <Input id="website" value={profileData.website || ""} onChange={e => handleInputChange("website", e.target.value)} placeholder="https://yourwebsite.com" />
           </div>
 
           <div>
             <label htmlFor="email" className="block text-sm font-medium mb-2">
               Email de contact
             </label>
-            <Input
-              id="email"
-              type="email"
-              value={profileData.email || ""}
-              onChange={(e) => handleInputChange("email", e.target.value)}
-              placeholder="contact@example.com"
-            />
+            <Input id="email" type="email" value={profileData.email || ""} onChange={e => handleInputChange("email", e.target.value)} placeholder="contact@example.com" />
           </div>
 
           <div>
             <label htmlFor="phone" className="block text-sm font-medium mb-2">
               Téléphone de contact
             </label>
-            <Input
-              id="phone"
-              type="tel"
-              value={profileData.phone || ""}
-              onChange={(e) => handleInputChange("phone", e.target.value)}
-              placeholder="+33 1 23 45 67 89"
-            />
+            <Input id="phone" type="tel" value={profileData.phone || ""} onChange={e => handleInputChange("phone", e.target.value)} placeholder="+33 1 23 45 67 89" />
           </div>
 
           <div className="flex gap-4">
@@ -369,8 +307,7 @@ export function AgentProfileEdit() {
           <div>
             <h4 className="font-medium mb-4">Confirmed Artists</h4>
             <div className="space-y-4">
-              {confirmedArtists.map((artist) => (
-                <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg bg-green-50">
+              {confirmedArtists.map(artist => <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg bg-green-50">
                   <div>
                     <h5 className="font-medium">{artist.display_name}</h5>
                     <p className="text-sm text-muted-foreground">{artist.location}</p>
@@ -378,19 +315,12 @@ export function AgentProfileEdit() {
                       Confirmed
                     </span>
                   </div>
-                  <Button 
-                    variant="destructive" 
-                    size="sm"
-                    onClick={() => handleRemoveArtist(artist.id)}
-                  >
+                  <Button variant="destructive" size="sm" onClick={() => handleRemoveArtist(artist.id)}>
                     Remove
                   </Button>
-                </div>
-              ))}
+                </div>)}
               
-              {confirmedArtists.length === 0 && (
-                <p className="text-muted-foreground">No confirmed artists yet.</p>
-              )}
+              {confirmedArtists.length === 0 && <p className="text-muted-foreground">No confirmed artists yet.</p>}
             </div>
           </div>
 
@@ -398,8 +328,7 @@ export function AgentProfileEdit() {
           <div>
             <h4 className="font-medium mb-4">Pending Requests</h4>
             <div className="space-y-4">
-              {pendingArtists.map((artist) => (
-                <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg bg-amber-50">
+              {pendingArtists.map(artist => <div key={artist.id} className="flex items-center justify-between p-4 border rounded-lg bg-red-900">
                   <div>
                     <h5 className="font-medium">{artist.display_name}</h5>
                     <p className="text-sm text-muted-foreground">{artist.location}</p>
@@ -407,19 +336,12 @@ export function AgentProfileEdit() {
                       Awaiting Response
                     </span>
                   </div>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => handleRemoveArtist(artist.id)}
-                  >
+                  <Button variant="outline" size="sm" onClick={() => handleRemoveArtist(artist.id)}>
                     Cancel Request
                   </Button>
-                </div>
-              ))}
+                </div>)}
               
-              {pendingArtists.length === 0 && (
-                <p className="text-muted-foreground">No pending requests.</p>
-              )}
+              {pendingArtists.length === 0 && <p className="text-muted-foreground">No pending requests.</p>}
             </div>
           </div>
 
@@ -427,28 +349,20 @@ export function AgentProfileEdit() {
           <div>
             <h4 className="font-medium mb-4">Send Representation Request</h4>
             <div className="space-y-2">
-              {availableArtists.map((artist) => (
-                <div key={artist.id} className="flex items-center justify-between p-3 border rounded">
+              {availableArtists.map(artist => <div key={artist.id} className="flex items-center justify-between p-3 border rounded">
                   <div>
                     <span className="font-medium">{artist.display_name}</span>
                     <span className="text-sm text-muted-foreground ml-2">{artist.location}</span>
                   </div>
-                  <Button 
-                    size="sm" 
-                    onClick={() => handleAddArtist(artist.id)}
-                  >
+                  <Button size="sm" onClick={() => handleAddArtist(artist.id)}>
                     Send Request
                   </Button>
-                </div>
-              ))}
+                </div>)}
               
-              {availableArtists.length === 0 && (
-                <p className="text-muted-foreground">No available artists to add.</p>
-              )}
+              {availableArtists.length === 0 && <p className="text-muted-foreground">No available artists to add.</p>}
             </div>
           </div>
         </CardContent>
       </Card>
-    </div>
-  );
+    </div>;
 }
