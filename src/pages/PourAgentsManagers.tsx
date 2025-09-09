@@ -116,9 +116,9 @@ export default function PourAgentsManagers() {
             <span className="text-foreground">comme jamais auparavant</span>
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Vybbi vous donne tous les outils pour gérer, développer et monétiser le talent de vos artistes avec une efficacité maximale.
-          </p>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Vybbi vous donne tous les outils pour gérer, développer et monétiser le talent de vos artistes avec une efficacité maximale. Les agents et bookers bénéficient d'outils dédiés pour gérer leurs artistes, trouver de nouveaux talents et organiser des tournées.
+            </p>
 
           <div className="grid grid-cols-3 gap-8 max-w-md mx-auto mb-12">
             <div className="text-center">
@@ -143,7 +143,7 @@ export default function PourAgentsManagers() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Gérez comme un pro</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Des outils professionnels conçus spécifiquement pour les agents et managers
+              Des outils professionnels conçus spécifiquement pour les agents et managers. Synchronisez les disponibilités de vos artistes, des lieux et coordinateurs pour rendre la planification beaucoup plus simple et transparente.
             </p>
           </div>
 
@@ -261,6 +261,14 @@ export default function PourAgentsManagers() {
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
                   <span>Essai gratuit de 30 jours</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Outils dédiés pour gestion multi-artistes</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Calendriers synchronisés pour planification optimale</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />

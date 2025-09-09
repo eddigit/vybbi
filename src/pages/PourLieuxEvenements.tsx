@@ -134,9 +134,9 @@ export default function PourLieuxEvenements() {
             <span className="text-foreground">qui feront vibrer votre lieu</span>
           </h1>
           
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
-            Clubs, festivals, bars, restaurants : Vybbi vous connecte avec les meilleurs talents pour créer des expériences inoubliables.
-          </p>
+            <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto">
+              Clubs, festivals, bars, restaurants : Vybbi vous connecte avec les meilleurs talents pour créer des expériences inoubliables. Notre marketplace unifiée vous permet de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et organiser votre événement complet.
+            </p>
 
           <div className="grid grid-cols-3 gap-8 max-w-md mx-auto mb-12">
             <div className="text-center">
@@ -191,7 +191,7 @@ export default function PourLieuxEvenements() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Pourquoi choisir Vybbi ?</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Des outils conçus spécifiquement pour optimiser la gestion de vos événements
+              Des outils conçus spécifiquement pour optimiser la gestion de vos événements. Bénéficiez d'un espace de travail partagé pour chaque événement, centralisant la communication, les contrats, les riders techniques et les plannings entre toutes les parties.
             </p>
           </div>
 
@@ -309,6 +309,14 @@ export default function PourLieuxEvenements() {
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
                   <span>Inscription gratuite et rapide</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Marketplace unifiée : DJ, groupes, danseurs sur une plateforme</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Espace de travail partagé pour chaque événement</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
