@@ -46,7 +46,6 @@ const artistItems = [
 const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
-  { title: "Mes Artistes", url: `/agents/${profileId}/edit`, icon: Star },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Mon Profil", url: `/agents/${profileId}/edit`, icon: User },
 ];
