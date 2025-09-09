@@ -69,25 +69,37 @@ export function AnnoncesWall() {
           genres,
           status,
           created_at,
-          profiles!annonces_user_id_fkey (
-            id,
-            display_name,
-            avatar_url,
-            profile_type
-          )
+          user_id
         `)
         .eq("status", "published")
         .order("created_at", { ascending: false });
 
       if (error) throw error;
+
+      if (!data) {
+        setAnnonces([]);
+        return;
+      }
+
+      // Fetch profiles for each announcement
+      const userIds = data.map(annonce => annonce.user_id);
+      const { data: profilesData, error: profilesError } = await supabase
+        .from("profiles")
+        .select("id, display_name, avatar_url, profile_type, user_id")
+        .in("user_id", userIds);
+
+      if (profilesError) throw profilesError;
+
+      // Combine announcements with their profiles
+      const annoncesWithProfiles = data.map(annonce => {
+        const profile = profilesData?.find(p => p.user_id === annonce.user_id);
+        return {
+          ...annonce,
+          profiles: profile || null
+        };
+      });
       
-      // Type assertion with proper filtering
-      const annoncesData = data?.map(item => ({
-        ...item,
-        profiles: item.profiles as any // Temporary type assertion for profiles
-      })) || [];
-      
-      setAnnonces(annoncesData as AnnonceWithProfile[]);
+      setAnnonces(annoncesWithProfiles as AnnonceWithProfile[]);
     } catch (error) {
       console.error("Error fetching annonces:", error);
       toast.error("Erreur lors du chargement des annonces");
