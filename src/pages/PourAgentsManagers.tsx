@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Users, BarChart3, DollarSign, Calendar, Shield, TrendingUp, CheckCircle, Star } from 'lucide-react';
+import { ArrowLeft, Users, BarChart3, DollarSign, Calendar, Shield, TrendingUp, CheckCircle, Star, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -319,6 +319,59 @@ export default function PourAgentsManagers() {
                 </CardContent>
               </Card>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Technology for Agents */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Outils technologiques avancés</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Gérez vos artistes avec l'efficacité de l'IA et des analytics prédictifs
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-indigo-500 to-purple-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Dashboard Prédictif</h3>
+                <p className="text-sm text-muted-foreground">Analysez les tendances du marché et optimisez les tarifs de vos artistes en temps réel</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Gestion Multi-Artistes</h3>
+                <p className="text-sm text-muted-foreground">Interface centralisée pour gérer tous vos talents avec suivi automatique des performances</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Commissions Automatisées</h3>
+                <p className="text-sm text-muted-foreground">Calcul et suivi automatique des commissions avec blockchain pour la transparence</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/technologie">
+                Découvrir notre technologie
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

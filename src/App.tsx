@@ -41,7 +41,8 @@ import Parrainage from "./pages/Parrainage";
 import AdminCommunication from "./pages/AdminCommunication";
 import AdminDashboard from "./pages/AdminDashboard";
 import Blog from "./pages/Blog";
-import BlogPost from "./pages/BlogPost";
+import BlogPost from './pages/BlogPost';
+import Technologie from './pages/Technologie';
 
 const queryClient = new QueryClient();
 
@@ -89,8 +90,9 @@ const App = () => (
         <Route path="/parrainage" element={<Parrainage />} />
         <Route path="/admin/communication" element={<AdminCommunication />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
-        <Route path="/blog" element={<Blog />} />
-        <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/blog" element={<Blog />} />
+          <Route path="/blog/:slug" element={<BlogPost />} />
+          <Route path="/technologie" element={<Technologie />} />
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

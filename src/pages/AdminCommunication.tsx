@@ -65,8 +65,50 @@ export default function AdminCommunication() {
     },
   });
 
-  const handleCreate = () => {
-    setEditingPost(null);
+  const handleCreate = (type?: string) => {
+    if (type === 'tech') {
+      // Pre-fill with tech manifesto content
+      setEditingPost({
+        title: "Manifeste Technologique Vybbi",
+        content: `Quand la Technologie Rencontre la Passion
+
+Derrière l'interface élégante de Vybbi.app se cache un arsenal technologique digne des plus grandes plateformes mondiales. Notre mission : utiliser l'innovation pour résoudre les vrais problèmes de l'industrie musicale nocturne.
+
+## Intelligence Artificielle : Le Matching Parfait
+
+**Le Problème :** Comment trouver l'artiste parfait parmi des milliers de profils ?
+
+**Notre Solution :** Un algorithme d'IA propriétaire qui analyse :
+• Style musical et influences
+• Historique de performances
+• Feedback et ratings
+• Disponibilités géographiques
+• Budget et préférences de l'organisateur
+
+**Le Résultat :** 87% de taux de satisfaction sur les recommandations (vs 34% pour la recherche manuelle).
+
+## Blockchain : La Révolution des Droits d'Auteur
+
+**Le Problème :** Traçabilité des œuvres, paiements des royalties, contrats opaques.
+
+**Notre Innovation :** Partenariat exclusif pour intégrer :
+• Certification NFT des performances live
+• Smart contracts pour paiements automatiques
+• Traçabilité blockchain des créations
+• Droits d'auteur numériques inviolables
+
+**L'Impact :** Premier écosystème musical avec blockchain native intégrée.
+
+L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
+        slug: "manifeste-technologique-vybbi",
+        status: "draft" as const,
+        excerpt: "Découvrez l'arsenal technologique qui révolutionne l'industrie musicale nocturne.",
+        image_url: "",
+        published_at: null
+      } as any);
+    } else {
+      setEditingPost(null);
+    }
     setIsDialogOpen(true);
   };
 
@@ -103,10 +145,19 @@ export default function AdminCommunication() {
             Gérez les articles de blog et les actualités de la plateforme
           </p>
         </div>
-        <Button onClick={handleCreate}>
-          <Plus className="w-4 h-4 mr-2" />
-          Nouvel article
-        </Button>
+        <div className="flex gap-4">
+          <Button onClick={() => handleCreate()}>
+            <Plus className="w-4 h-4 mr-2" />
+            Nouvel article
+          </Button>
+          <Button 
+            variant="outline" 
+            onClick={() => handleCreate('tech')}
+          >
+            <Plus className="w-4 h-4 mr-2" />
+            Créer l'article "Manifeste Tech"
+          </Button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -202,7 +253,7 @@ export default function AdminCommunication() {
             <p className="text-muted-foreground mb-4">
               Commencez par créer votre premier article de blog.
             </p>
-            <Button onClick={handleCreate}>
+            <Button onClick={() => handleCreate()}>
               <Plus className="w-4 h-4 mr-2" />
               Créer un article
             </Button>

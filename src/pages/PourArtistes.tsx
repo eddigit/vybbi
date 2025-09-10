@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search, FileText } from 'lucide-react';
+import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search, FileText, ArrowRight } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -255,6 +255,59 @@ export default function PourArtistes() {
                 </CardContent>
               </Card>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Technology for Artists */}
+      <section className="py-16 px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Technologie au service de votre art</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Notre IA analyse votre style musical et vous connecte avec les opportunités parfaites
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Search className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Matching IA Personnalisé</h3>
+                <p className="text-sm text-muted-foreground">Notre algorithme analyse votre style, vos influences et votre historique pour vous proposer les meilleures opportunités</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Analytics de Carrière</h3>
+                <p className="text-sm text-muted-foreground">Suivez votre progression, analysez vos performances et optimisez votre développement artistique</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-lg font-semibold mb-2 text-foreground">Paiements Blockchain</h3>
+                <p className="text-sm text-muted-foreground">Sécurisation des droits d'auteur et paiements automatiques via smart contracts</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button size="lg" variant="outline" asChild>
+              <Link to="/technologie">
+                Découvrir notre technologie
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

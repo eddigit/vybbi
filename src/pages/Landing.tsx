@@ -1,7 +1,21 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift } from 'lucide-react';
+import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3 } from 'lucide-react';
+
+// Define Blockchain icon component
+const Blockchain = ({ className }: { className?: string }) => (
+  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <rect x="3" y="3" width="7" height="7" />
+    <rect x="14" y="3" width="7" height="7" />
+    <rect x="14" y="14" width="7" height="7" />
+    <rect x="3" y="14" width="7" height="7" />
+    <path d="m5 15 2-2" />
+    <path d="m5 9 2 2" />
+    <path d="m15 19 2-2" />
+    <path d="m15 5 2 2" />
+  </svg>
+);
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
