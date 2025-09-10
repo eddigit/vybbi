@@ -43,6 +43,7 @@ import AdminDashboard from "./pages/AdminDashboard";
 import Blog from "./pages/Blog";
 import BlogPost from './pages/BlogPost';
 import Technologie from './pages/Technologie';
+import Fondateurs from './pages/Fondateurs';
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,7 @@ const App = () => (
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/technologie" element={<Technologie />} />
+          <Route path="/fondateurs" element={<Fondateurs />} />
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
