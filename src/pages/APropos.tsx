@@ -78,8 +78,7 @@ const APropos = () => {
                 <p className="font-semibold">Une vision révolutionnaire.</p>
               </div>
               <p className="text-lg leading-relaxed">
-                Derrière Vybbi.app se cache l'histoire extraordinaire de Gilles KORZEC, 
-                un homme aux multiples talents qui a vécu chaque facette de l'industrie 
+                Derrière Vybbi.app se cache l'histoire d'un homme aux multiples talents qui a vécu chaque facette de l'industrie 
                 du divertissement nocturne. Musicien, magicien, entrepreneur digital 
                 depuis l'adolescence, Gilles a navigué pendant des années dans les 
                 méandres complexes d'un secteur où le talent ne suffit pas toujours.
