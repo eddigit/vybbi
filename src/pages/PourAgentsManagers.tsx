@@ -137,11 +137,75 @@ export default function PourAgentsManagers() {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Key Arguments Section */}
       <section className="py-16 px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Gérez comme un pro</h2>
+            <h2 className="text-4xl font-bold mb-4">5 avantages exclusifs pour les professionnels</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Découvrez pourquoi les meilleurs agents et managers utilisent Vybbi pour développer leurs artistes
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Centralisation des artistes</h3>
+                <p className="text-muted-foreground">Chaque agent gère son portefeuille depuis la plateforme, avec un profil clair et vérifié.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Business récurrent</h3>
+                <p className="text-muted-foreground">Des lieux du monde entier viennent chercher des artistes → nouvelles opportunités sans prospection sauvage.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Traçabilité complète</h3>
+                <p className="text-muted-foreground">Contrats, échanges et bookings confirmés directement depuis VYBBI.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Shield className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Crédibilité renforcée</h3>
+                <p className="text-muted-foreground">Être listé comme agent officiel d'un artiste apporte confiance aux établissements.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <DollarSign className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Monétisation internationale</h3>
+                <p className="text-muted-foreground">Possibilité de représenter des artistes dans plusieurs pays et d'être trouvé localement.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Outils professionnels avancés</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Des outils professionnels conçus spécifiquement pour les agents et managers. Synchronisez les disponibilités de vos artistes, des lieux et coordinateurs pour rendre la planification beaucoup plus simple et transparente.
             </p>

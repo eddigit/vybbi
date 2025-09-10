@@ -185,11 +185,75 @@ export default function PourLieuxEvenements() {
         </div>
       </section>
 
-      {/* Benefits Section */}
+      {/* Key Arguments Section */}
       <section className="py-16 px-6">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Pourquoi choisir Vybbi ?</h2>
+            <h2 className="text-4xl font-bold mb-4">5 raisons de choisir Vybbi pour vos événements</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Découvrez pourquoi des centaines de lieux nous font confiance pour transformer leur programmation
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Search className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Accès direct aux talents</h3>
+                <p className="text-muted-foreground">Recherche instantanée par style, ville, budget. Plus besoin de passer par des intermédiaires coûteux.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Gain de temps</h3>
+                <p className="text-muted-foreground">Un seul espace central pour trouver, contacter et confirmer un artiste.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Visibilité accrue</h3>
+                <p className="text-muted-foreground">Vos événements apparaissent sur le mur d'annonces et touchent la communauté mondiale d'artistes.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Star className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Qualité garantie</h3>
+                <p className="text-muted-foreground">Reviews sur les artistes, avec notes et commentaires laissés par d'autres établissements.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-yellow-500 to-orange-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Diversité complète</h3>
+                <p className="text-muted-foreground">DJs, musiciens, danseurs, performers, magiciens, tout au même endroit.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Benefits Section */}
+      <section className="py-16 px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Outils professionnels intégrés</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Des outils conçus spécifiquement pour optimiser la gestion de vos événements. Bénéficiez d'un espace de travail partagé pour chaque événement, centralisant la communication, les contrats, les riders techniques et les plannings entre toutes les parties.
             </p>
