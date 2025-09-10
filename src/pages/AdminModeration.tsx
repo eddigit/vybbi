@@ -296,35 +296,42 @@ const AdminModeration = () => {
     setSelectedProfiles(prev => [...new Set([...prev, ...typeProfiles])]);
   };
 
-  // Send broadcast message
-  const handleSendBroadcast = async (profileTypes: ('artist' | 'agent' | 'manager' | 'lieu')[] | null = null) => {
-    if (!adminMessage.trim()) {
+  // Send broadcast message to all users of a specific type
+  const handleSendBroadcast = async (profileTypes: ('artist' | 'agent' | 'manager' | 'lieu')[] | null, message?: string) => {
+    const messageContent = message || adminMessage;
+    if (!messageContent.trim()) {
       toast({ title: "Erreur", description: "Veuillez saisir un message", variant: "destructive" });
       return;
     }
 
     try {
-      const { data, error } = await supabase.rpc('send_admin_broadcast', {
-        profile_types: profileTypes,
-        only_public: false,
-        content: adminMessage
-      });
+      const { data, error } = await supabase
+        .rpc('send_admin_broadcast', {
+          profile_types: profileTypes,
+          only_public: false,
+          content: messageContent
+        });
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error sending broadcast:', error);
+        toast({ title: "Erreur", description: "Erreur lors de l'envoi du message de diffusion", variant: "destructive" });
+        return;
+      }
 
       const { sent_count, error_count } = data[0];
       toast({ 
         title: "Diffusion terminée", 
-        description: `Messages envoyés: ${sent_count}${error_count > 0 ? `, Erreurs: ${error_count}` : ''}` 
+        description: `Message envoyé à ${sent_count} utilisateur(s)${error_count > 0 ? ` (${error_count} erreurs)` : ''}` 
       });
-
+      
       setAdminMessage("");
       setMessageDialogOpen(false);
     } catch (error) {
       console.error('Error sending broadcast:', error);
-      toast({ title: "Erreur", description: "Erreur lors de la diffusion", variant: "destructive" });
+      toast({ title: "Erreur", description: "Erreur lors de l'envoi du message de diffusion", variant: "destructive" });
     }
   };
+
 
   if (!hasRole('admin')) {
     return null;
@@ -386,22 +393,46 @@ const AdminModeration = () => {
                     Tout déselectionner
                   </Button>
                 </div>
-              </div>
-
-              <div>
-                <Label>Diffusion rapide</Label>
-                <div className="flex gap-2 mt-2 flex-wrap">
-                  <Button variant="secondary" size="sm" onClick={() => handleSendBroadcast(['artist'])}>
-                    Diffuser aux Artistes
-                  </Button>
-                  <Button variant="secondary" size="sm" onClick={() => handleSendBroadcast(['lieu'])}>
-                    Diffuser aux Lieux
-                  </Button>
-                  <Button variant="secondary" size="sm" onClick={() => handleSendBroadcast(null)}>
-                    Diffuser à Tous
-                  </Button>
+                
+                <div>
+                  <Label>Diffusion rapide</Label>
+                  <div className="flex gap-2 mt-2 flex-wrap">
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      onClick={() => handleSendBroadcast(['artist'])}
+                      disabled={!adminMessage.trim()}
+                    >
+                      Diffuser aux Artistes
+                    </Button>
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      onClick={() => handleSendBroadcast(['lieu'])}
+                      disabled={!adminMessage.trim()}
+                    >
+                      Diffuser aux Lieux
+                    </Button>
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      onClick={() => handleSendBroadcast(['agent', 'manager'])}
+                      disabled={!adminMessage.trim()}
+                    >
+                      Diffuser aux Agents/Managers
+                    </Button>
+                    <Button 
+                      variant="secondary" 
+                      size="sm" 
+                      onClick={() => handleSendBroadcast(null)}
+                      disabled={!adminMessage.trim()}
+                    >
+                      Diffuser à Tous
+                    </Button>
+                  </div>
                 </div>
               </div>
+
 
               <div>
                 <Label>Destinataires ({selectedProfiles.length} sélectionné(s))</Label>

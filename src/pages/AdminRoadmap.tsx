@@ -109,8 +109,7 @@ export default function AdminRoadmap() {
           .from('roadmap_items')
           .insert({
             ...formData,
-            due_date: formData.due_date || null,
-            created_by: user?.id
+            due_date: formData.due_date || null
           });
 
         if (error) throw error;
