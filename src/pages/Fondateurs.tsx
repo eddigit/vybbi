@@ -80,10 +80,10 @@ export default function Fondateurs() {
   ];
 
   const roadmapItems = [
-    { quarter: "Q1 2025", event: "Lancement officiel avec événement fondateurs VIP" },
-    { quarter: "Q2 2025", event: "Expansion européenne (accès prioritaire nouveaux marchés)" },
-    { quarter: "Q3 2025", event: "Fonctionnalités IA avancées (bêta exclusive)" },
-    { quarter: "Q4 2025", event: "Vybbi Festival - événement annuel fondateurs" }
+    { quarter: "Q1 2026", event: "Sortie officielle de la plateforme Vybbi le 1er janvier 2026 avec événement fondateurs VIP" },
+    { quarter: "Q2 2026", event: "Expansion européenne (accès prioritaire nouveaux marchés)" },
+    { quarter: "Q3 2026", event: "Fonctionnalités IA avancées (bêta exclusive)" },
+    { quarter: "Q4 2026", event: "Vybbi Festival - événement annuel fondateurs" }
   ];
 
   const faqItems = [
@@ -502,7 +502,7 @@ export default function Fondateurs() {
       <section className="py-16 px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Roadmap Exclusive 2025</h2>
+            <h2 className="text-4xl font-bold mb-4">Roadmap Exclusive 2026</h2>
             <p className="text-xl text-muted-foreground">
               Les étapes clés qui vous attendent en tant que membre fondateur
             </p>
