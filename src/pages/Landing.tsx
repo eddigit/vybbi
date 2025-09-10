@@ -85,16 +85,25 @@ export default function Landing() {
                 <span className="font-bold text-xl text-foreground">Vybbi</span>
               </div>
             
-            <div className="hidden md:flex items-center gap-8">
-              <a href="#features" className="text-muted-foreground hover:text-foreground transition-colors">
-                Fonctionnalités
-              </a>
-              <a href="#pricing" className="text-muted-foreground hover:text-foreground transition-colors">
-                Tarifs
-              </a>
-              <a href="#testimonials" className="text-muted-foreground hover:text-foreground transition-colors">
-                Témoignages
-              </a>
+            <div className="hidden md:flex items-center gap-6">
+              <Link to="/a-propos" className="text-muted-foreground hover:text-foreground transition-colors">
+                À propos
+              </Link>
+              <Link to="/pour-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pour Artistes
+              </Link>
+              <Link to="/pour-agents-managers" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pour Agents
+              </Link>
+              <Link to="/pour-lieux-evenements" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pour Lieux
+              </Link>
+              <Link to="/technologie" className="text-muted-foreground hover:text-foreground transition-colors">
+                Technologie
+              </Link>
+              <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+                Blog
+              </Link>
             </div>
 
             <div className="flex items-center gap-4">
