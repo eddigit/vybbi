@@ -90,17 +90,26 @@ const AdminModeration = () => {
       // Enrich messages with sender names
       const messagesWithProfiles = await Promise.all(
         (messagesData || []).map(async (message) => {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('display_name, profile_type')
-            .eq('user_id', message.sender_id)
-            .single();
-          
-          return {
-            ...message,
-            sender_name: profileData?.display_name || 'Utilisateur supprimé',
-            sender_type: profileData?.profile_type || 'inconnu'
-          };
+          try {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('display_name, profile_type')
+              .eq('user_id', message.sender_id)
+              .maybeSingle();
+            
+            return {
+              ...message,
+              sender_name: profileData?.display_name || 'Utilisateur supprimé',
+              sender_type: profileData?.profile_type || 'inconnu'
+            };
+          } catch (error) {
+            console.warn('Error fetching profile for message:', message.id, error);
+            return {
+              ...message,
+              sender_name: 'Utilisateur supprimé',
+              sender_type: 'inconnu'
+            };
+          }
         })
       );
       setMessages(messagesWithProfiles);
@@ -116,16 +125,24 @@ const AdminModeration = () => {
       // Enrich events with venue names
       const eventsWithProfiles = await Promise.all(
         (eventsData || []).map(async (event) => {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('display_name')
-            .eq('id', event.venue_profile_id)
-            .single();
-          
-          return {
-            ...event,
-            venue_name: profileData?.display_name || 'Organisateur supprimé'
-          };
+          try {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('display_name')
+              .eq('id', event.venue_profile_id)
+              .maybeSingle();
+            
+            return {
+              ...event,
+              venue_name: profileData?.display_name || 'Organisateur supprimé'
+            };
+          } catch (error) {
+            console.warn('Error fetching profile for event:', event.id, error);
+            return {
+              ...event,
+              venue_name: 'Organisateur supprimé'
+            };
+          }
         })
       );
       setEvents(eventsWithProfiles);
@@ -141,16 +158,24 @@ const AdminModeration = () => {
       // Enrich annonces with author names
       const annoncesWithProfiles = await Promise.all(
         (annoncesData || []).map(async (annonce) => {
-          const { data: profileData } = await supabase
-            .from('profiles')
-            .select('display_name')
-            .eq('user_id', annonce.user_id)
-            .single();
-          
-          return {
-            ...annonce,
-            author_name: profileData?.display_name || 'Auteur supprimé'
-          };
+          try {
+            const { data: profileData } = await supabase
+              .from('profiles')
+              .select('display_name')
+              .eq('user_id', annonce.user_id)
+              .maybeSingle();
+            
+            return {
+              ...annonce,
+              author_name: profileData?.display_name || 'Auteur supprimé'
+            };
+          } catch (error) {
+            console.warn('Error fetching profile for annonce:', annonce.id, error);
+            return {
+              ...annonce,
+              author_name: 'Auteur supprimé'
+            };
+          }
         })
       );
       setAnnonces(annoncesWithProfiles);
@@ -161,12 +186,20 @@ const AdminModeration = () => {
         .select('*')
         .order('created_at', { ascending: false });
 
-      if (profilesError) throw profilesError;
-      setProfiles(profilesData || []);
+      if (profilesError) {
+        console.warn('Error fetching profiles:', profilesError);
+        setProfiles([]);
+      } else {
+        setProfiles(profilesData || []);
+      }
 
     } catch (error) {
-      console.error('Error fetching data:', error);
-      toast({ title: "Erreur", description: "Impossible de charger les données", variant: "destructive" });
+      console.error('Error in fetchData:', error);
+      toast({ 
+        title: "Erreur", 
+        description: "Impossible de charger certaines données de modération", 
+        variant: "destructive" 
+      });
     } finally {
       setLoading(false);
     }
