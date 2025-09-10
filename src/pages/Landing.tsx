@@ -171,15 +171,15 @@ export default function Landing() {
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Portfolio multimédia</span>
+                    <span className="text-card-foreground">Visibilité mondiale</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Agenda des disponibilités</span>
+                    <span className="text-card-foreground">Opportunités directes</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Gestion des contrats</span>
+                    <span className="text-card-foreground">Égalité des chances</span>
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2">
@@ -209,15 +209,15 @@ export default function Landing() {
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Gestion de roster</span>
+                    <span className="text-card-foreground">Centralisation des artistes</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Suivi des commissions</span>
+                    <span className="text-card-foreground">Business récurrent</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Analytics de performance</span>
+                    <span className="text-card-foreground">Crédibilité renforcée</span>
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2">
@@ -247,15 +247,15 @@ export default function Landing() {
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Recherche d'artistes</span>
+                    <span className="text-card-foreground">Accès direct aux talents</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Gestion d'événements</span>
+                    <span className="text-card-foreground">Gain de temps</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Planning automatisé</span>
+                    <span className="text-card-foreground">Qualité garantie</span>
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2">
