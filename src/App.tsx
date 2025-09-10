@@ -34,6 +34,7 @@ import AccesComplet from "./pages/AccesComplet";
 import EventsManager from "./pages/EventsManager";
 import VenueProfileEdit from "./pages/VenueProfileEdit";
 import AdminRoadmap from "./pages/AdminRoadmap";
+import AdminModeration from "./pages/AdminModeration";
 
 const queryClient = new QueryClient();
 
@@ -75,6 +76,7 @@ const App = () => (
         <Route path="/events" element={<EventsManager />} />
         <Route path="/lieux/:id/edit" element={<VenueProfileEdit />} />
         <Route path="/admin/roadmap" element={<AdminRoadmap />} />
+        <Route path="/admin/moderation" element={<AdminModeration />} />
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

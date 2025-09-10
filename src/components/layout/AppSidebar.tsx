@@ -75,6 +75,7 @@ const adminItems = [
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Reports", url: "/reports", icon: BarChart3 },
   { title: "Roadmap", url: "/admin/roadmap", icon: Route },
+  { title: "Modération", url: "/admin/moderation", icon: Settings },
 ];
 
 export function AppSidebar() {
