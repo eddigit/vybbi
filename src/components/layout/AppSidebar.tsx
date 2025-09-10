@@ -19,6 +19,7 @@ import {
   MapPin,
   User,
   Route,
+  MessageCircle,
 } from "lucide-react";
 
 import {
@@ -74,6 +75,7 @@ const adminItems = [
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Communication", url: "/admin/communication", icon: MessageCircle },
   { title: "Roadmap", url: "/admin/roadmap", icon: Route },
   { title: "Modération", url: "/admin/moderation", icon: Settings },
 ];

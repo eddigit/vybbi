@@ -17,6 +17,7 @@ import {
   Megaphone,
   Shield,
   Route,
+  MessageCircle,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -73,6 +74,7 @@ const adminItems = [
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Communication", url: "/admin/communication", icon: MessageCircle },
   { title: "Roadmap", url: "/admin/roadmap", icon: Route },
   { title: "Modération", url: "/admin/moderation", icon: Shield },
 ];
@@ -86,6 +88,7 @@ export function TopNav() {
   const publicItems = !profile ? [
     { title: "Annonces", url: "/annonces" },
     { title: "Nos Artistes", url: "/nos-artistes" },
+    { title: "Blog", url: "/blog" },
   ] : [];
 
   // Get navigation items based on profile type
