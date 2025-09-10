@@ -44,6 +44,7 @@ import Blog from "./pages/Blog";
 import BlogPost from './pages/BlogPost';
 import Technologie from './pages/Technologie';
 import Fondateurs from './pages/Fondateurs';
+import APropos from './pages/APropos';
 
 const queryClient = new QueryClient();
 
@@ -95,6 +96,7 @@ const App = () => (
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/technologie" element={<Technologie />} />
           <Route path="/fondateurs" element={<Fondateurs />} />
+          <Route path="/a-propos" element={<APropos />} />
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
