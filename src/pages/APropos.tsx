@@ -70,7 +70,7 @@ const APropos = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="text-center lg:text-left">
               <h2 className="text-4xl font-bold mb-6">
-                Gilles KORZEC : De la Scène à la Vision
+                De la Scène à la Vision
               </h2>
               <div className="text-xl text-muted-foreground mb-8">
                 <p className="mb-4">54 ans. Des décennies dans la nuit.</p>
