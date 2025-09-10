@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
@@ -56,7 +57,8 @@ interface Profile {
 }
 
 const AdminModeration = () => {
-  const { hasRole, loading: authLoading } = useAuth();
+  const { user, hasRole, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<MessageWithProfile[]>([]);
@@ -66,6 +68,51 @@ const AdminModeration = () => {
   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
   const [adminMessage, setAdminMessage] = useState("");
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
+  const fetchedRef = useRef(false);
+
+  // Compute isAdmin once to avoid re-renders
+  const isAdmin = useMemo(() => !authLoading && hasRole('admin'), [hasRole, authLoading]);
+
+  // Batch profile fetching helper
+  const batchFetchProfiles = async (userIds: string[], profileIds: string[] = []) => {
+    const profileMap: Record<string, { display_name: string; profile_type: string }> = {};
+    
+    try {
+      // Fetch by user_id
+      if (userIds.length > 0) {
+        const { data: userProfiles } = await supabase
+          .from('profiles')
+          .select('user_id, display_name, profile_type')
+          .in('user_id', [...new Set(userIds)]);
+        
+        userProfiles?.forEach(profile => {
+          profileMap[profile.user_id] = {
+            display_name: profile.display_name,
+            profile_type: profile.profile_type
+          };
+        });
+      }
+      
+      // Fetch by profile_id
+      if (profileIds.length > 0) {
+        const { data: idProfiles } = await supabase
+          .from('profiles')
+          .select('id, display_name, profile_type')
+          .in('id', [...new Set(profileIds)]);
+        
+        idProfiles?.forEach(profile => {
+          profileMap[profile.id] = {
+            display_name: profile.display_name,
+            profile_type: profile.profile_type
+          };
+        });
+      }
+    } catch (error) {
+      console.warn('Error batch fetching profiles:', error);
+    }
+    
+    return profileMap;
+  };
 
   // Don't redirect immediately - wait for auth to load
   useEffect(() => {
@@ -75,141 +122,89 @@ const AdminModeration = () => {
     }
   }, [hasRole, authLoading]);
 
-  // Fetch all data
+  // Optimized data fetching with batched profile requests
   const fetchData = async () => {
+    console.log('Starting fetchData...');
+    setLoading(true);
+    
     try {
-      // Fetch messages
-      const { data: messagesData, error: messagesError } = await supabase
-        .from('messages')
-        .select('*')
-        .order('created_at', { ascending: false })
-        .limit(100);
+      // Fetch all base data in parallel
+      const [messagesResult, eventsResult, annoncesResult, profilesResult] = await Promise.allSettled([
+        supabase.from('messages').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('events').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('annonces').select('*').order('created_at', { ascending: false }).limit(50),
+        supabase.from('profiles').select('*').order('created_at', { ascending: false }).limit(200)
+      ]);
 
-      if (messagesError) throw messagesError;
-
-      // Enrich messages with sender names
-      const messagesWithProfiles = await Promise.all(
-        (messagesData || []).map(async (message) => {
-          try {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('display_name, profile_type')
-              .eq('user_id', message.sender_id)
-              .maybeSingle();
-            
-            return {
-              ...message,
-              sender_name: profileData?.display_name || 'Utilisateur supprimé',
-              sender_type: profileData?.profile_type || 'inconnu'
-            };
-          } catch (error) {
-            console.warn('Error fetching profile for message:', message.id, error);
-            return {
-              ...message,
-              sender_name: 'Utilisateur supprimé',
-              sender_type: 'inconnu'
-            };
-          }
-        })
-      );
-      setMessages(messagesWithProfiles);
-
-      // Fetch events
-      const { data: eventsData, error: eventsError } = await supabase
-        .from('events')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (eventsError) throw eventsError;
-
-      // Enrich events with venue names
-      const eventsWithProfiles = await Promise.all(
-        (eventsData || []).map(async (event) => {
-          try {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('display_name')
-              .eq('id', event.venue_profile_id)
-              .maybeSingle();
-            
-            return {
-              ...event,
-              venue_name: profileData?.display_name || 'Organisateur supprimé'
-            };
-          } catch (error) {
-            console.warn('Error fetching profile for event:', event.id, error);
-            return {
-              ...event,
-              venue_name: 'Organisateur supprimé'
-            };
-          }
-        })
-      );
-      setEvents(eventsWithProfiles);
-
-      // Fetch annonces
-      const { data: annoncesData, error: annoncesError } = await supabase
-        .from('annonces')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (annoncesError) throw annoncesError;
-
-      // Enrich annonces with author names
-      const annoncesWithProfiles = await Promise.all(
-        (annoncesData || []).map(async (annonce) => {
-          try {
-            const { data: profileData } = await supabase
-              .from('profiles')
-              .select('display_name')
-              .eq('user_id', annonce.user_id)
-              .maybeSingle();
-            
-            return {
-              ...annonce,
-              author_name: profileData?.display_name || 'Auteur supprimé'
-            };
-          } catch (error) {
-            console.warn('Error fetching profile for annonce:', annonce.id, error);
-            return {
-              ...annonce,
-              author_name: 'Auteur supprimé'
-            };
-          }
-        })
-      );
-      setAnnonces(annoncesWithProfiles);
-
-      // Fetch all profiles
-      const { data: profilesData, error: profilesError } = await supabase
-        .from('profiles')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (profilesError) {
-        console.warn('Error fetching profiles:', profilesError);
-        setProfiles([]);
+      // Process messages
+      if (messagesResult.status === 'fulfilled' && messagesResult.value.data) {
+        const messagesData = messagesResult.value.data;
+        const senderIds = messagesData.map(m => m.sender_id);
+        const profileMap = await batchFetchProfiles(senderIds);
+        
+        const messagesWithProfiles = messagesData.map(message => ({
+          ...message,
+          sender_name: profileMap[message.sender_id]?.display_name || 'Utilisateur supprimé',
+          sender_type: profileMap[message.sender_id]?.profile_type || 'inconnu'
+        }));
+        setMessages(messagesWithProfiles);
       } else {
-        setProfiles(profilesData || []);
+        console.warn('Failed to fetch messages:', messagesResult);
+        setMessages([]);
       }
 
+      // Process events
+      if (eventsResult.status === 'fulfilled' && eventsResult.value.data) {
+        const eventsData = eventsResult.value.data;
+        const venueIds = eventsData.map(e => e.venue_profile_id);
+        const profileMap = await batchFetchProfiles([], venueIds);
+        
+        const eventsWithProfiles = eventsData.map(event => ({
+          ...event,
+          venue_name: profileMap[event.venue_profile_id]?.display_name || 'Organisateur supprimé'
+        }));
+        setEvents(eventsWithProfiles);
+      } else {
+        console.warn('Failed to fetch events:', eventsResult);
+        setEvents([]);
+      }
+
+      // Process annonces
+      if (annoncesResult.status === 'fulfilled' && annoncesResult.value.data) {
+        const annoncesData = annoncesResult.value.data;
+        const authorIds = annoncesData.map(a => a.user_id);
+        const profileMap = await batchFetchProfiles(authorIds);
+        
+        const annoncesWithProfiles = annoncesData.map(annonce => ({
+          ...annonce,
+          author_name: profileMap[annonce.user_id]?.display_name || 'Auteur supprimé'
+        }));
+        setAnnonces(annoncesWithProfiles);
+      } else {
+        console.warn('Failed to fetch annonces:', annoncesResult);
+        setAnnonces([]);
+      }
+
+      // Process profiles
+      if (profilesResult.status === 'fulfilled' && profilesResult.value.data) {
+        setProfiles(profilesResult.value.data);
+      } else {
+        console.warn('Failed to fetch profiles:', profilesResult);
+        setProfiles([]);
+      }
+
+      console.log('fetchData completed successfully');
     } catch (error) {
-      console.error('Error in fetchData:', error);
+      console.error('Unexpected error in fetchData:', error);
       toast({ 
         title: "Erreur", 
-        description: "Impossible de charger certaines données de modération", 
+        description: "Erreur lors du chargement des données", 
         variant: "destructive" 
       });
     } finally {
       setLoading(false);
     }
   };
-
-  useEffect(() => {
-    if (!authLoading && hasRole('admin')) {
-      fetchData();
-    }
-  }, [hasRole, authLoading]);
 
   // Delete message
   const handleDeleteMessage = async (messageId: string) => {
@@ -374,7 +369,7 @@ const AdminModeration = () => {
     );
   }
 
-  if (!hasRole('admin')) {
+  if (!isAdmin) {
     return (
       <div className="container mx-auto p-6">
         <div className="text-center text-red-500">Accès refusé - Vous devez être administrateur</div>
