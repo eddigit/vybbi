@@ -2,54 +2,20 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Mail, Phone } from "lucide-react";
-
 const APropos = () => {
-  const problems = [
-    {
-      category: "Pour les Artistes",
-      items: [
-        "Fin de l'isolement : Plus besoin de connaître \"les bonnes personnes\"",
-        "Visibilité méritée : Votre talent parle pour vous",
-        "Accès direct : Connexion directe avec agents, lieux et organisateurs",
-        "Égalité des chances : Même plateforme pour tous, du débutant à la star"
-      ]
-    },
-    {
-      category: "Pour les Agents & Managers",
-      items: [
-        "Découverte facilitée : Accès à un vivier mondial de talents",
-        "Évaluation objective : Profils complets, références vérifiées",
-        "Gestion simplifiée : Outils intégrés pour le suivi des artistes",
-        "Réseau élargi : Connexions avec lieux et organisateurs"
-      ]
-    },
-    {
-      category: "Pour les Lieux & Organisateurs",
-      items: [
-        "Booking simplifié : Recherche et réservation en quelques clics",
-        "Diversité garantie : Accès à tous types d'artistes et performances",
-        "Sécurité juridique : Contrats standardisés et validation légale",
-        "Optimisation budgétaire : Transparence des tarifs et négociation directe"
-      ]
-    }
-  ];
-
-  const visionPoints = [
-    "Les artistes peuvent exprimer leur créativité sans barrières",
-    "Les agents découvrent les talents de demain",
-    "Les lieux programment la diversité et l'excellence",
-    "Les organisateurs créent des événements mémorables"
-  ];
-
-  const innovations = [
-    "Intelligence Artificielle pour le matching optimal",
-    "Blockchain pour la traçabilité et la sécurité",
-    "Analytics pour l'optimisation des performances",
-    "Services juridiques pour la protection de tous"
-  ];
-
-  return (
-    <div className="min-h-screen bg-background">
+  const problems = [{
+    category: "Pour les Artistes",
+    items: ["Fin de l'isolement : Plus besoin de connaître \"les bonnes personnes\"", "Visibilité méritée : Votre talent parle pour vous", "Accès direct : Connexion directe avec agents, lieux et organisateurs", "Égalité des chances : Même plateforme pour tous, du débutant à la star"]
+  }, {
+    category: "Pour les Agents & Managers",
+    items: ["Découverte facilitée : Accès à un vivier mondial de talents", "Évaluation objective : Profils complets, références vérifiées", "Gestion simplifiée : Outils intégrés pour le suivi des artistes", "Réseau élargi : Connexions avec lieux et organisateurs"]
+  }, {
+    category: "Pour les Lieux & Organisateurs",
+    items: ["Booking simplifié : Recherche et réservation en quelques clics", "Diversité garantie : Accès à tous types d'artistes et performances", "Sécurité juridique : Contrats standardisés et validation légale", "Optimisation budgétaire : Transparence des tarifs et négociation directe"]
+  }];
+  const visionPoints = ["Les artistes peuvent exprimer leur créativité sans barrières", "Les agents découvrent les talents de demain", "Les lieux programment la diversité et l'excellence", "Les organisateurs créent des événements mémorables"];
+  const innovations = ["Intelligence Artificielle pour le matching optimal", "Blockchain pour la traçabilité et la sécurité", "Analytics pour l'optimisation des performances", "Services juridiques pour la protection de tous"];
+  return <div className="min-h-screen bg-background">
       {/* Hero Section */}
       <section className="py-20 px-6 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
         <div className="container mx-auto">
@@ -69,16 +35,15 @@ const APropos = () => {
         <div className="container mx-auto">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div className="text-center lg:text-left">
-              <h2 className="text-4xl font-bold mb-6">
-                De la Scène à la Vision
-              </h2>
+              <h2 className="text-4xl font-bold mb-6">Vybbi - De la Scène à la Vision</h2>
               <div className="text-xl text-muted-foreground mb-8">
                 <p className="mb-4">54 ans. Des décennies dans la nuit.</p>
                 <p className="mb-4">Passionné de digital depuis l'âge de 11 ans.</p>
                 <p className="font-semibold">Une vision révolutionnaire.</p>
               </div>
               <p className="text-lg leading-relaxed">
-                Derrière Vybbi.app se cache l'histoire d'un homme aux multiples talents qui a vécu chaque facette de l'industrie 
+                Derrière Vybbi.app se cache l'histoire extraordinaire de Gilles KORZEC, 
+                un homme aux multiples talents qui a vécu chaque facette de l'industrie 
                 du divertissement nocturne. Musicien, magicien, entrepreneur digital 
                 depuis l'adolescence, Gilles a navigué pendant des années dans les 
                 méandres complexes d'un secteur où le talent ne suffit pas toujours.
@@ -86,11 +51,7 @@ const APropos = () => {
             </div>
             <div className="flex justify-center">
               <div className="relative">
-                <img
-                  src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png"
-                  alt="Gilles KORZEC, Fondateur de Vybbi.app"
-                  className="w-80 h-80 object-cover rounded-2xl shadow-2xl"
-                />
+                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles KORZEC, Fondateur de Vybbi.app" className="w-80 h-80 object-cover rounded-2xl shadow-2xl" />
                 <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground p-4 rounded-xl shadow-lg">
                   <div className="text-center">
                     <p className="font-bold text-lg">Gilles KORZEC</p>
@@ -187,21 +148,17 @@ const APropos = () => {
           </div>
           
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {problems.map((problem, index) => (
-              <Card key={index} className="glass-card p-6">
+            {problems.map((problem, index) => <Card key={index} className="glass-card p-6">
                 <CardContent className="p-0">
                   <h3 className="text-xl font-bold mb-6 text-center">{problem.category}</h3>
                   <ul className="space-y-3">
-                    {problem.items.map((item, itemIndex) => (
-                      <li key={itemIndex} className="flex items-start">
+                    {problem.items.map((item, itemIndex) => <li key={itemIndex} className="flex items-start">
                         <div className="w-2 h-2 bg-primary rounded-full mr-3 mt-2 flex-shrink-0"></div>
                         <span className="text-sm">{item}</span>
-                      </li>
-                    ))}
+                      </li>)}
                   </ul>
                 </CardContent>
-              </Card>
-            ))}
+              </Card>)}
           </div>
         </div>
       </section>
@@ -224,24 +181,20 @@ const APropos = () => {
             <div>
               <h3 className="text-2xl font-bold mb-6">Un Écosystème Complet</h3>
               <ul className="space-y-4">
-                {visionPoints.map((point, index) => (
-                  <li key={index} className="flex items-start">
+                {visionPoints.map((point, index) => <li key={index} className="flex items-start">
                     <div className="w-3 h-3 bg-secondary rounded-full mr-3 mt-1 flex-shrink-0"></div>
                     <span>{point}</span>
-                  </li>
-                ))}
+                  </li>)}
               </ul>
             </div>
             
             <div>
               <h3 className="text-2xl font-bold mb-6">L'Innovation au Service de l'Humain</h3>
               <ul className="space-y-4">
-                {innovations.map((innovation, index) => (
-                  <li key={index} className="flex items-start">
+                {innovations.map((innovation, index) => <li key={index} className="flex items-start">
                     <div className="w-3 h-3 bg-primary rounded-full mr-3 mt-1 flex-shrink-0"></div>
                     <span>{innovation}</span>
-                  </li>
-                ))}
+                  </li>)}
               </ul>
               <p className="mt-6 text-sm text-muted-foreground">
                 Mais derrière chaque algorithme, il y a la compréhension humaine des besoins réels du secteur.
@@ -317,11 +270,7 @@ const APropos = () => {
           <Card className="max-w-2xl mx-auto p-8">
             <CardContent className="text-center p-0">
               <div className="mb-6">
-                <img
-                  src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png"
-                  alt="Gilles KORZEC"
-                  className="w-24 h-24 object-cover rounded-full mx-auto mb-4 shadow-lg"
-                />
+                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles KORZEC" className="w-24 h-24 object-cover rounded-full mx-auto mb-4 shadow-lg" />
                 <h3 className="text-2xl font-bold">Gilles KORZEC</h3>
                 <p className="text-muted-foreground">Fondateur & CEO - Vybbi.app</p>
               </div>
@@ -343,8 +292,6 @@ const APropos = () => {
           </Card>
         </div>
       </section>
-    </div>
-  );
+    </div>;
 };
-
 export default APropos;
