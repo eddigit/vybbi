@@ -716,6 +716,54 @@ export type Database = {
           },
         ]
       }
+      roadmap_items: {
+        Row: {
+          area: string | null
+          audience: string | null
+          created_at: string
+          created_by: string | null
+          description: string | null
+          due_date: string | null
+          id: string
+          priority: Database["public"]["Enums"]["roadmap_priority"]
+          sort_order: number | null
+          status: Database["public"]["Enums"]["roadmap_item_status"]
+          title: string
+          type: Database["public"]["Enums"]["roadmap_item_type"]
+          updated_at: string
+        }
+        Insert: {
+          area?: string | null
+          audience?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["roadmap_priority"]
+          sort_order?: number | null
+          status?: Database["public"]["Enums"]["roadmap_item_status"]
+          title: string
+          type: Database["public"]["Enums"]["roadmap_item_type"]
+          updated_at?: string
+        }
+        Update: {
+          area?: string | null
+          audience?: string | null
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          due_date?: string | null
+          id?: string
+          priority?: Database["public"]["Enums"]["roadmap_priority"]
+          sort_order?: number | null
+          status?: Database["public"]["Enums"]["roadmap_item_status"]
+          title?: string
+          type?: Database["public"]["Enums"]["roadmap_item_type"]
+          updated_at?: string
+        }
+        Relationships: []
+      }
       user_roles: {
         Row: {
           created_at: string
@@ -912,6 +960,14 @@ export type Database = {
       media_type: "image" | "video" | "audio"
       profile_type: "artist" | "agent" | "manager" | "lieu"
       representation_status: "pending" | "accepted" | "rejected" | "revoked"
+      roadmap_item_status:
+        | "done"
+        | "in_progress"
+        | "planned"
+        | "on_hold"
+        | "cancelled"
+      roadmap_item_type: "feature" | "task" | "selling_point"
+      roadmap_priority: "low" | "medium" | "high" | "critical"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -1049,6 +1105,15 @@ export const Constants = {
       media_type: ["image", "video", "audio"],
       profile_type: ["artist", "agent", "manager", "lieu"],
       representation_status: ["pending", "accepted", "rejected", "revoked"],
+      roadmap_item_status: [
+        "done",
+        "in_progress",
+        "planned",
+        "on_hold",
+        "cancelled",
+      ],
+      roadmap_item_type: ["feature", "task", "selling_point"],
+      roadmap_priority: ["low", "medium", "high", "critical"],
     },
   },
 } as const

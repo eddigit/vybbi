@@ -18,6 +18,7 @@ import {
   Briefcase,
   MapPin,
   User,
+  Route,
 } from "lucide-react";
 
 import {
@@ -73,6 +74,7 @@ const adminItems = [
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Roadmap", url: "/admin/roadmap", icon: Route },
 ];
 
 export function AppSidebar() {
