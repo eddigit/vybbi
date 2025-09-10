@@ -56,7 +56,7 @@ interface Profile {
 }
 
 const AdminModeration = () => {
-  const { hasRole } = useAuth();
+  const { hasRole, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(true);
   const [messages, setMessages] = useState<MessageWithProfile[]>([]);
@@ -67,13 +67,13 @@ const AdminModeration = () => {
   const [adminMessage, setAdminMessage] = useState("");
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
 
-  // Redirect if not admin
+  // Don't redirect immediately - wait for auth to load
   useEffect(() => {
-    if (!hasRole('admin')) {
+    if (!authLoading && !hasRole('admin')) {
       window.location.href = '/dashboard';
       return;
     }
-  }, [hasRole]);
+  }, [hasRole, authLoading]);
 
   // Fetch all data
   const fetchData = async () => {
@@ -173,10 +173,10 @@ const AdminModeration = () => {
   };
 
   useEffect(() => {
-    if (hasRole('admin')) {
+    if (!authLoading && hasRole('admin')) {
       fetchData();
     }
-  }, [hasRole]);
+  }, [hasRole, authLoading]);
 
   // Delete message
   const handleDeleteMessage = async (messageId: string) => {
@@ -333,14 +333,26 @@ const AdminModeration = () => {
   };
 
 
+  if (authLoading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">Chargement de l'authentification...</div>
+      </div>
+    );
+  }
+
   if (!hasRole('admin')) {
-    return null;
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center text-red-500">Accès refusé - Vous devez être administrateur</div>
+      </div>
+    );
   }
 
   if (loading) {
     return (
       <div className="container mx-auto p-6">
-        <div className="text-center">Chargement...</div>
+        <div className="text-center">Chargement des données...</div>
       </div>
     );
   }
