@@ -944,6 +944,21 @@ export type Database = {
         }
         Returns: boolean
       }
+      send_admin_broadcast: {
+        Args: {
+          content?: string
+          only_public?: boolean
+          profile_types?: Database["public"]["Enums"]["profile_type"][]
+        }
+        Returns: {
+          error_count: number
+          sent_count: number
+        }[]
+      }
+      send_admin_message: {
+        Args: { content: string; target_user_id: string }
+        Returns: string
+      }
       start_direct_conversation: {
         Args: { target_user_id: string }
         Returns: string

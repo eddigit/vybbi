@@ -15,6 +15,8 @@ import {
   User,
   ChevronDown,
   Megaphone,
+  Shield,
+  Route,
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -67,6 +69,8 @@ const getLieuItems = (profileId: string) => [
 ];
 
 const adminItems = [
+  { title: "Modération", url: "/admin/moderation", icon: Shield },
+  { title: "Roadmap", url: "/admin/roadmap", icon: Route },
   { title: "Partners", url: "/partners", icon: Users },
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },

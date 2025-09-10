@@ -63,34 +63,13 @@ export default function AdminRoadmap() {
     due_date: ''
   });
 
-  // Check if user is admin
-  const [isAdmin, setIsAdmin] = useState(false);
+  // Use hasRole from useAuth hook
+  const { hasRole } = useAuth();
 
   useEffect(() => {
-    const checkAdminRole = async () => {
-      if (!user) return;
-      
-      try {
-        const { data, error } = await supabase
-          .from('user_roles')
-          .select('role')
-          .eq('user_id', user.id)
-          .eq('role', 'admin')
-          .single();
-
-        setIsAdmin(!!data && !error);
-      } catch (error) {
-        setIsAdmin(false);
-      }
-    };
-
-    checkAdminRole();
-  }, [user]);
-
-  useEffect(() => {
-    if (!user || !isAdmin) return;
+    if (!user || !hasRole('admin')) return;
     fetchRoadmapItems();
-  }, [user, isAdmin]);
+  }, [user, hasRole]);
 
   const fetchRoadmapItems = async () => {
     try {
@@ -190,7 +169,7 @@ export default function AdminRoadmap() {
     }
   };
 
-  if (!user || !isAdmin) {
+  if (!user || !hasRole('admin')) {
     return (
       <div className="container mx-auto p-6">
         <Card>

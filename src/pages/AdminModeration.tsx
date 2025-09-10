@@ -240,45 +240,38 @@ const AdminModeration = () => {
     }
 
     try {
-      const currentUser = await supabase.auth.getUser();
-      if (!currentUser.data.user) {
-        toast({ title: "Erreur", description: "Utilisateur non connecté", variant: "destructive" });
-        return;
-      }
+      let sentCount = 0;
+      let errorCount = 0;
 
-      // For each selected profile, create or find a direct conversation and send message
+      // Send individual messages using the new admin function
       for (const profileId of selectedProfiles) {
         const profile = profiles.find(p => p.id === profileId);
         if (!profile) continue;
 
         try {
-          // Start conversation with the user
-          const { data: conversationData, error: convError } = await supabase
-            .rpc('start_direct_conversation', { target_user_id: profile.user_id });
+          const { error } = await supabase.rpc('send_admin_message', {
+            target_user_id: profile.user_id,
+            content: adminMessage
+          });
 
-          if (convError) {
-            console.error('Error creating conversation:', convError);
-            continue;
-          }
-
-          // Send message as admin
-          const { error: msgError } = await supabase
-            .from('messages')
-            .insert({
-              conversation_id: conversationData,
-              content: `🔴 [MESSAGE ADMINISTRATEUR] 🔴\n\n${adminMessage}`,
-              sender_id: currentUser.data.user.id
-            });
-
-          if (msgError) {
-            console.error('Error sending message:', msgError);
+          if (error) {
+            console.error('Error sending admin message:', error);
+            errorCount++;
+          } else {
+            sentCount++;
           }
         } catch (profileError) {
           console.error('Error processing profile:', profileError);
+          errorCount++;
         }
       }
 
-      toast({ title: "Succès", description: `Message envoyé à ${selectedProfiles.length} destinataire(s)` });
+      if (sentCount > 0) {
+        toast({ title: "Succès", description: `Message envoyé à ${sentCount} destinataire(s)${errorCount > 0 ? ` (${errorCount} erreurs)` : ''}` });
+      } else {
+        toast({ title: "Erreur", description: "Aucun message n'a pu être envoyé", variant: "destructive" });
+      }
+
       setAdminMessage("");
       setSelectedProfiles([]);
       setMessageDialogOpen(false);
@@ -301,6 +294,36 @@ const AdminModeration = () => {
   const selectAllProfilesOfType = (type: string) => {
     const typeProfiles = profiles.filter(p => p.profile_type === type).map(p => p.id);
     setSelectedProfiles(prev => [...new Set([...prev, ...typeProfiles])]);
+  };
+
+  // Send broadcast message
+  const handleSendBroadcast = async (profileTypes: ('artist' | 'agent' | 'manager' | 'lieu')[] | null = null) => {
+    if (!adminMessage.trim()) {
+      toast({ title: "Erreur", description: "Veuillez saisir un message", variant: "destructive" });
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.rpc('send_admin_broadcast', {
+        profile_types: profileTypes,
+        only_public: false,
+        content: adminMessage
+      });
+
+      if (error) throw error;
+
+      const { sent_count, error_count } = data[0];
+      toast({ 
+        title: "Diffusion terminée", 
+        description: `Messages envoyés: ${sent_count}${error_count > 0 ? `, Erreurs: ${error_count}` : ''}` 
+      });
+
+      setAdminMessage("");
+      setMessageDialogOpen(false);
+    } catch (error) {
+      console.error('Error sending broadcast:', error);
+      toast({ title: "Erreur", description: "Erreur lors de la diffusion", variant: "destructive" });
+    }
   };
 
   if (!hasRole('admin')) {
@@ -361,6 +384,21 @@ const AdminModeration = () => {
                   </Button>
                   <Button variant="outline" size="sm" onClick={() => setSelectedProfiles([])}>
                     Tout déselectionner
+                  </Button>
+                </div>
+              </div>
+
+              <div>
+                <Label>Diffusion rapide</Label>
+                <div className="flex gap-2 mt-2 flex-wrap">
+                  <Button variant="secondary" size="sm" onClick={() => handleSendBroadcast(['artist'])}>
+                    Diffuser aux Artistes
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={() => handleSendBroadcast(['lieu'])}>
+                    Diffuser aux Lieux
+                  </Button>
+                  <Button variant="secondary" size="sm" onClick={() => handleSendBroadcast(null)}>
+                    Diffuser à Tous
                   </Button>
                 </div>
               </div>
