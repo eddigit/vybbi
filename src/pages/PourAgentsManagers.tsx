@@ -201,6 +201,50 @@ export default function PourAgentsManagers() {
         </div>
       </section>
 
+      {/* Les fondamentaux Section */}
+      <section className="py-16 px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Aussi inclus : Les fondamentaux</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Tous les outils essentiels pour gérer efficacement vos artistes
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Gestion de roster</h3>
+                <p className="text-muted-foreground">Organisez et gérez tous vos artistes depuis un tableau de bord centralisé.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Suivi des commissions</h3>
+                <p className="text-muted-foreground">Surveillez vos revenus et commissions en temps réel avec des rapports détaillés.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <BarChart3 className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Analytics de performance</h3>
+                <p className="text-muted-foreground">Analysez les performances de vos artistes avec des métriques avancées.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
       {/* Benefits Section */}
       <section className="py-16 px-6">
         <div className="container mx-auto">

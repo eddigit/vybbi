@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search } from 'lucide-react';
+import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search, FileText } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -183,6 +183,50 @@ export default function PourArtistes() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-foreground">Égalité des chances</h3>
                 <p className="text-muted-foreground">Petit artiste ou star, la plateforme met tout le monde au même niveau de visibilité dans la recherche.</p>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Les fondamentaux Section */}
+      <section className="py-16 px-6 bg-muted/30">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Aussi inclus : Les fondamentaux</h2>
+            <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
+              Tous les outils essentiels pour gérer votre carrière artistique
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Portfolio multimédia</h3>
+                <p className="text-muted-foreground">Présentez votre art avec photos, vidéos et démos audio dans un portfolio professionnel.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-green-500 to-emerald-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Calendar className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Agenda des disponibilités</h3>
+                <p className="text-muted-foreground">Gérez votre planning et vos disponibilités pour faciliter les bookings.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <FileText className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Gestion des contrats</h3>
+                <p className="text-muted-foreground">Négociez et gérez vos contrats directement sur la plateforme.</p>
               </CardContent>
             </Card>
           </div>

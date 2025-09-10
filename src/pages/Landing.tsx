@@ -171,11 +171,31 @@ export default function Landing() {
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Portfolio multimédia</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Agenda des disponibilités</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Gestion des contrats</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Visibilité mondiale</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Opportunités directes</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Réputation professionnelle</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Outils médias</span>
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
@@ -209,6 +229,18 @@ export default function Landing() {
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Gestion de roster</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Suivi des commissions</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Analytics de performance</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Centralisation des artistes</span>
                   </li>
                   <li className="flex items-center">
@@ -217,7 +249,15 @@ export default function Landing() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Traçabilité</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Crédibilité renforcée</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Monétisation internationale</span>
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2">
@@ -247,6 +287,18 @@ export default function Landing() {
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Recherche d'artistes</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Gestion d'événements</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Planning automatisé</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Accès direct aux talents</span>
                   </li>
                   <li className="flex items-center">
@@ -255,7 +307,15 @@ export default function Landing() {
                   </li>
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Visibilité accrue</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Qualité garantie</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-success mr-2" />
+                    <span className="text-card-foreground">Diversité</span>
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2">
