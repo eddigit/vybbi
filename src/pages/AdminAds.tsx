@@ -152,7 +152,7 @@ export default function AdminAds() {
           <div className="grid gap-4">
             <CreativesManager 
               onEdit={openCreativeDialog} 
-              onRefreshReady={setRefreshCreatives}
+              onRefreshReady={(fn) => setRefreshCreatives(() => fn)}
             />
           </div>
         </TabsContent>
@@ -201,7 +201,7 @@ export default function AdminAds() {
         onOpenChange={setCreativeDialogOpen}
         creative={editingCreative}
         onSuccess={() => {
-          if (refreshCreatives) refreshCreatives();
+          refreshCreatives?.();
           setEditingCreative(null);
         }}
       />
