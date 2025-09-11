@@ -42,6 +42,7 @@ export function Layout({ children }: LayoutProps) {
   // For all other pages (dashboard, agent pages, etc.), use responsive navigation
   return (
     <div className="min-h-screen bg-background">
+      {/* Header stays at full width */}
       <Header />
       
       <div className="flex w-full">
@@ -52,7 +53,7 @@ export function Layout({ children }: LayoutProps) {
           </div>
         </div>
 
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col min-w-0">
           {/* Desktop horizontal nav, hidden on mobile */}
           <div className="hidden md:block">
             <TopNav />
