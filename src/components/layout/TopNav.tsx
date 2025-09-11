@@ -126,7 +126,7 @@ export function TopNav() {
 
   return (
     <nav className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="flex items-center px-4 overflow-x-auto">
+      <div className="flex items-center justify-center px-4 overflow-x-auto">
         <div className="flex items-center gap-1 min-w-max">
           {/* Public Navigation Items */}
           {publicItems.map((item) => (
