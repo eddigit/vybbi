@@ -30,32 +30,37 @@ const APropos = () => {
         </div>
       </section>
 
-      {/* Gilles KORZEC Section */}
+      {/* Mission et Vision Section */}
       <section className="py-16 px-6">
         <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-6">Une Plateforme Née de l'Expérience du Terrain</h2>
+            <p className="text-xl text-muted-foreground max-w-4xl mx-auto">
+              Vybbi.app révolutionne l'industrie de la nuit en créant un écosystème équitable 
+              où le talent prime sur les connexions.
+            </p>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
-            <div className="text-center lg:text-left">
-              <h2 className="text-4xl font-bold mb-6">Vybbi - De la Scène à la Vision</h2>
-              <div className="text-xl text-muted-foreground mb-8">
-                <p className="mb-4">54 ans. Des décennies dans la nuit.</p>
-                <p className="mb-4">Passionné de digital depuis l'âge de 11 ans.</p>
-                <p className="font-semibold">Une vision révolutionnaire.</p>
-              </div>
-              <p className="text-lg leading-relaxed">
-                Derrière Vybbi.app se cache l'histoire extraordinaire de Gilles KORZEC, 
-                un homme aux multiples talents qui a vécu chaque facette de l'industrie 
-                du divertissement nocturne. Musicien, magicien, entrepreneur digital 
-                depuis l'adolescence, Gilles a navigué pendant des années dans les 
-                méandres complexes d'un secteur où le talent ne suffit pas toujours.
-              </p>
+            <div>
+              <Card className="bg-secondary/10 border-secondary/30 p-8">
+                <h3 className="text-2xl font-bold mb-6 text-secondary">
+                  "Une plateforme qui donne les mêmes chances à tous"
+                </h3>
+                <p className="text-lg leading-relaxed">
+                  Vybbi.app est née d'un constat simple : dans l'industrie de la nuit, 
+                  le succès dépend trop souvent de qui vous connaissez plutôt que de ce que vous valez. 
+                  Notre mission est de démocratiser cet écosystème.
+                </p>
+              </Card>
             </div>
             <div className="flex justify-center">
               <div className="relative">
-                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles KORZEC, Fondateur de Vybbi.app" className="w-80 h-80 object-cover rounded-2xl shadow-2xl" />
-                <div className="absolute -bottom-4 -right-4 bg-primary text-primary-foreground p-4 rounded-xl shadow-lg">
-                  <div className="text-center">
-                    <p className="font-bold text-lg">Gilles KORZEC</p>
-                    <p className="text-sm opacity-90">Fondateur & CEO</p>
+                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles KORZEC, Fondateur de Vybbi.app" className="w-64 h-64 object-cover rounded-2xl shadow-2xl" />
+                <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground p-3 rounded-xl shadow-lg">
+                  <div className="text-center text-sm">
+                    <p className="font-bold">Gilles KORZEC</p>
+                    <p className="opacity-90">Fondateur</p>
                   </div>
                 </div>
               </div>
@@ -64,77 +69,47 @@ const APropos = () => {
         </div>
       </section>
 
-      {/* Parcours Section */}
+      {/* Valeurs de Vybbi */}
       <section className="py-16 px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6">
-              Un Parcours Forgé par la Passion et l'Innovation
+              Les Valeurs Fondatrices de Vybbi
             </h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             <Card className="glass-card p-6">
               <CardContent className="text-center p-0">
-                <div className="text-6xl mb-4">🎵</div>
-                <h3 className="text-xl font-bold mb-4">Musicien</h3>
-                <p>Vibrant sur les scènes des clubs, maîtrisant l'art de faire danser les foules</p>
+                <div className="text-6xl mb-4">⚖️</div>
+                <h3 className="text-xl font-bold mb-4">Égalité des Chances</h3>
+                <p>Tous les talents méritent d'être découverts, peu importe leur réseau</p>
               </CardContent>
             </Card>
             
             <Card className="glass-card p-6">
               <CardContent className="text-center p-0">
-                <div className="text-6xl mb-4">🎭</div>
-                <h3 className="text-xl font-bold mb-4">Magicien</h3>
-                <p>Captivant les audiences avec ses performances, maître de l'entertainment nocturne</p>
+                <div className="text-6xl mb-4">🔗</div>
+                <h3 className="text-xl font-bold mb-4">Connexions Authentiques</h3>
+                <p>Créer de vraies relations professionnelles basées sur la compatibilité</p>
               </CardContent>
             </Card>
             
             <Card className="glass-card p-6">
               <CardContent className="text-center p-0">
-                <div className="text-6xl mb-4">💻</div>
-                <h3 className="text-xl font-bold mb-4">Digital Pioneer</h3>
-                <p>Passionné de technologie depuis 11 ans, entrepreneur digital visionnaire</p>
+                <div className="text-6xl mb-4">🚀</div>
+                <h3 className="text-xl font-bold mb-4">Innovation Continue</h3>
+                <p>Utiliser la technologie pour simplifier et améliorer l'industrie</p>
               </CardContent>
             </Card>
           </div>
 
           <Card className="bg-primary/5 border-primary/20 p-8">
             <blockquote className="text-xl italic text-center">
-              "J'ai réalisé que même avec du talent dans plusieurs domaines et une expertise digital, 
-              cela ne suffisait pas. Il fallait appartenir au bon cercle, connaître les bonnes personnes. 
-              C'était profondément injuste."
+              "Vybbi.app, c'est le LinkedIn de la nuit que l'industrie attendait. 
+              Une plateforme où votre talent compte plus que votre carnet d'adresses."
             </blockquote>
-            <cite className="block text-center mt-4 font-semibold">- Gilles KORZEC</cite>
           </Card>
-        </div>
-      </section>
-
-      {/* Épiphanie Section */}
-      <section className="py-16 px-6">
-        <div className="container mx-auto text-center">
-          <h2 className="text-4xl font-bold mb-8">
-            L'Épiphanie : Démocratiser l'Industrie de la Nuit
-          </h2>
-          
-          <Card className="bg-secondary/10 border-secondary/30 p-8 mb-12 max-w-4xl mx-auto">
-            <h3 className="text-2xl font-bold mb-6 text-secondary">
-              "Pourquoi le succès devrait-il dépendre de qui vous connaissez plutôt que de ce que vous valez ?"
-            </h3>
-            <p className="text-lg leading-relaxed">
-              Cette question a hanté Gilles pendant des années. Témoin de talents exceptionnels 
-              restés dans l'ombre faute de connexions, et de professionnels peinant à découvrir 
-              ces perles rares, il a compris qu'il fallait révolutionner le système.
-            </p>
-          </Card>
-
-          <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-8 rounded-2xl">
-            <p className="text-xl leading-relaxed max-w-4xl mx-auto">
-              À 54 ans, avec la sagesse de l'expérience et la fougue de l'innovation, 
-              Gilles a décidé de créer la solution qu'il aurait rêvé d'avoir à ses débuts : 
-              <strong className="text-primary"> une plateforme qui donne les mêmes chances à tous</strong>.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -169,11 +144,13 @@ const APropos = () => {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-6">La Vision Vybbi : Un Écosystème Équitable</h2>
             <Card className="bg-primary/5 border-primary/20 p-8 max-w-4xl mx-auto">
-              <blockquote className="text-xl italic">
-                "Vybbi.app, c'est le LinkedIn de la nuit que j'aurais voulu avoir à mes débuts. 
-                Une plateforme où votre talent compte plus que votre carnet d'adresses."
-              </blockquote>
-              <cite className="block mt-4 font-semibold">- Gilles KORZEC</cite>
+              <h3 className="text-2xl font-bold mb-4 text-primary">
+                Le LinkedIn de la nuit enfin accessible à tous
+              </h3>
+              <p className="text-lg">
+                Une plateforme où votre talent compte plus que votre carnet d'adresses, 
+                où chaque opportunité est basée sur la valeur ajoutée réelle.
+              </p>
             </Card>
           </div>
 
@@ -197,7 +174,7 @@ const APropos = () => {
                   </li>)}
               </ul>
               <p className="mt-6 text-sm text-muted-foreground">
-                Mais derrière chaque algorithme, il y a la compréhension humaine des besoins réels du secteur.
+                Derrière chaque algorithme, une compréhension profonde des besoins réels du secteur.
               </p>
             </div>
           </div>
@@ -208,51 +185,50 @@ const APropos = () => {
       <section className="py-16 px-6 bg-gradient-to-br from-primary/10 via-background to-secondary/10">
         <div className="container mx-auto text-center">
           <h2 className="text-4xl font-bold mb-8">
-            Une Mission Personnelle Devenue Universelle
+            La Mission Vybbi : Démocratiser l'Industrie de la Nuit
           </h2>
           
           <div className="max-w-4xl mx-auto mb-12">
             <p className="text-xl leading-relaxed mb-8">
-              Ce qui a commencé comme une frustration personnelle est devenu une mission universelle : 
-              <strong className="text-primary"> démocratiser l'industrie de la nuit mondiale</strong>.
+              Vybbi transforme l'industrie du divertissement nocturne en créant un écosystème équitable où 
+              <strong className="text-primary"> chaque talent a sa chance de briller</strong>.
             </p>
             
             <p className="text-lg leading-relaxed">
-              Gilles KORZEC ne se contente pas de créer une plateforme. Il bâtit un mouvement 
-              pour que chaque artiste, où qu'il soit, quelles que soient ses connexions, 
-              puisse avoir sa chance de briller.
+              Notre plateforme connecte artistes, agents et lieux de manière intelligente, 
+              en se basant sur les compétences et la compatibilité plutôt que sur les réseaux existants.
             </p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
             <Card className="glass-card p-6">
               <CardContent className="text-center p-0">
-                <h3 className="font-bold text-lg mb-2">Parce que votre talent</h3>
-                <p className="text-muted-foreground">mérite d'être reconnu</p>
+                <h3 className="font-bold text-lg mb-2">Pour votre talent</h3>
+                <p className="text-muted-foreground">qui mérite d'être reconnu</p>
               </CardContent>
             </Card>
             
             <Card className="glass-card p-6">
               <CardContent className="text-center p-0">
-                <h3 className="font-bold text-lg mb-2">Parce que votre passion</h3>
-                <p className="text-muted-foreground">mérite d'être récompensée</p>
+                <h3 className="font-bold text-lg mb-2">Pour votre passion</h3>
+                <p className="text-muted-foreground">qui mérite d'être récompensée</p>
               </CardContent>
             </Card>
             
             <Card className="glass-card p-6">
               <CardContent className="text-center p-0">
-                <h3 className="font-bold text-lg mb-2">Parce que votre succès</h3>
-                <p className="text-muted-foreground">ne devrait dépendre que de vous</p>
+                <h3 className="font-bold text-lg mb-2">Pour votre succès</h3>
+                <p className="text-muted-foreground">qui ne devrait dépendre que de vous</p>
               </CardContent>
             </Card>
           </div>
 
           <Card className="bg-primary text-primary-foreground p-8 max-w-4xl mx-auto">
-            <blockquote className="text-xl italic mb-4">
-              "Après 30 ans dans cette industrie, entre musique, magie et digital, 
-              je sais une chose : le talent existe partout. Vybbi.app existe pour qu'il soit reconnu partout."
-            </blockquote>
-            <cite className="block font-semibold">- Gilles KORZEC, Fondateur</cite>
+            <h3 className="text-2xl font-bold mb-4">L'Engagement Vybbi</h3>
+            <p className="text-lg">
+              Nous croyons qu'une industrie plus juste et transparente bénéficie à tous : 
+              artistes, professionnels et audiences découvrent enfin ce qu'ils cherchaient vraiment.
+            </p>
           </Card>
         </div>
       </section>
@@ -261,19 +237,17 @@ const APropos = () => {
       <section className="py-16 px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-4xl font-bold mb-6">Contactez le Fondateur</h2>
+            <h2 className="text-4xl font-bold mb-6">Contactez l'Équipe Vybbi</h2>
             <p className="text-xl text-muted-foreground">
-              Gilles KORZEC est disponible pour échanger avec la communauté Vybbi
+              Nous sommes à votre écoute pour faire grandir la communauté ensemble
             </p>
           </div>
           
           <Card className="max-w-2xl mx-auto p-8">
             <CardContent className="text-center p-0">
-              <div className="mb-6">
-                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles KORZEC" className="w-24 h-24 object-cover rounded-full mx-auto mb-4 shadow-lg" />
-                <h3 className="text-2xl font-bold">Gilles KORZEC</h3>
-                <p className="text-muted-foreground">Fondateur & CEO - Vybbi.app</p>
-              </div>
+              <div className="text-6xl mb-6">🚀</div>
+              <h3 className="text-2xl font-bold mb-2">Vybbi.app</h3>
+              <p className="text-muted-foreground mb-6">L'avenir de l'industrie de la nuit</p>
               
               <div className="space-y-4">
                 <Button variant="outline" className="w-full" asChild>
@@ -283,9 +257,8 @@ const APropos = () => {
                   </a>
                 </Button>
                 
-                <p className="text-sm text-muted-foreground flex items-center justify-center gap-2">
-                  <Phone className="w-4 h-4" />
-                  Disponible pour échanger avec la communauté Vybbi
+                <p className="text-sm text-muted-foreground">
+                  Une question ? Une suggestion ? Écrivez-nous !
                 </p>
               </div>
             </CardContent>
