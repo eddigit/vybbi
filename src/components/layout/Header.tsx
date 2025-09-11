@@ -74,14 +74,6 @@ export function Header() {
           <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
         </Link>
 
-        {/* Centered Date Badge */}
-        <div className="hidden xs:flex flex-1 justify-center">
-          {showAdminControls && (
-            <Badge variant="secondary" className="hidden sm:block text-xs whitespace-nowrap">
-              lundi 8 septembre 2025 à 16:39
-            </Badge>
-          )}
-        </div>
 
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
           {showAdminControls && (
