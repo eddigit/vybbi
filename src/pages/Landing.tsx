@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3 } from 'lucide-react';
+import { Badge } from "@/components/ui/badge";
+import { AdSlot } from "@/components/ads/AdSlot";
+import { TickerBanner } from "@/components/TickerBanner";
 
 // Define Blockchain icon component
 const Blockchain = ({ className }: { className?: string }) => (
@@ -16,11 +19,11 @@ const Blockchain = ({ className }: { className?: string }) => (
     <path d="m15 5 2 2" />
   </svg>
 );
+
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { AdSlot } from "@/components/ads/AdSlot";
+
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
   const features = [{
@@ -124,17 +127,16 @@ export default function Landing() {
         <div className="container mx-auto">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
-            <div className="xl:block">
-              <AdSlot slotId="ADS-LANDING-LEFT" width={200} height={600} hideIfEmpty={true} fit="contain" />
+            <div className="xl:block mt-24 mb-24">
+              <AdSlot slotId="ADS-LANDING-LEFT" width={200} height={800} hideIfEmpty={true} fit="contain" />
             </div>
             
             {/* Main Hero Content */}
             <div className="text-center">
               <div className="max-w-5xl md:max-w-6xl mx-auto">
-            <Badge className="mb-6 text-sm px-4 py-2">
-              <Zap className="w-4 h-4 mr-2" />
-              THE HYPE OF THE NIGHT
-            </Badge>
+            <div className="mb-6 flex justify-center">
+              <TickerBanner />
+            </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight line-clamp-3 md:line-clamp-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
@@ -176,18 +178,17 @@ export default function Landing() {
         </div>
         
         {/* Right Ad Slot */}
-        <div className="xl:block">
-          <AdSlot slotId="ADS-LANDING-RIGHT" width={200} height={600} hideIfEmpty={true} fit="contain" />
+        <div className="xl:block mt-24 mb-24">
+          <AdSlot slotId="ADS-LANDING-RIGHT" width={200} height={800} hideIfEmpty={true} fit="contain" />
         </div>
       </div>
       
       {/* Mobile/Tablet Hero Content (visible when grid is hidden) */}
       <div className="xl:hidden text-center">
         <div className="max-w-5xl md:max-w-6xl mx-auto">
-          <Badge className="mb-6 text-sm px-4 py-2">
-            <Zap className="w-4 h-4 mr-2" />
-            THE HYPE OF THE NIGHT
-          </Badge>
+          <div className="mb-6 flex justify-center">
+            <TickerBanner />
+          </div>
           
           <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight line-clamp-3 md:line-clamp-2">
             <span className="bg-gradient-primary bg-clip-text text-transparent">
