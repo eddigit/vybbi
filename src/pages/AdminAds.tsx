@@ -6,6 +6,9 @@ import { Badge } from "@/components/ui/badge";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { AdSlotDialog } from "@/components/admin/AdSlotDialog";
+import { AdCampaignDialog } from "@/components/admin/AdCampaignDialog";
+import { AdCreativeDialog } from "@/components/admin/AdCreativeDialog";
 import { 
   Plus, 
   Edit, 
@@ -26,6 +29,14 @@ export default function AdminAds() {
   const { hasRole, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
+  
+  // Dialog states
+  const [slotDialogOpen, setSlotDialogOpen] = useState(false);
+  const [campaignDialogOpen, setCampaignDialogOpen] = useState(false);
+  const [creativeDialogOpen, setCreativeDialogOpen] = useState(false);
+  const [editingSlot, setEditingSlot] = useState<any>(null);
+  const [editingCampaign, setEditingCampaign] = useState<any>(null);
+  const [editingCreative, setEditingCreative] = useState<any>(null);
 
   // Show loading while checking auth
   if (authLoading) {
@@ -49,6 +60,21 @@ export default function AdminAds() {
       </div>
     );
   }
+
+  const openSlotDialog = (slot?: any) => {
+    setEditingSlot(slot || null);
+    setSlotDialogOpen(true);
+  };
+
+  const openCampaignDialog = (campaign?: any) => {
+    setEditingCampaign(campaign || null);
+    setCampaignDialogOpen(true);
+  };
+
+  const openCreativeDialog = (creative?: any) => {
+    setEditingCreative(creative || null);
+    setCreativeDialogOpen(true);
+  };
 
   return (
     <div className="container mx-auto p-6 space-y-6">
@@ -76,14 +102,14 @@ export default function AdminAds() {
         <TabsContent value="slots" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Emplacements publicitaires</h2>
-            <Button>
+            <Button onClick={() => openSlotDialog()}>
               <Plus className="w-4 h-4 mr-2" />
               Nouvel emplacement
             </Button>
           </div>
 
           <div className="grid gap-4">
-            <SlotsManager />
+            <SlotsManager onEdit={openSlotDialog} />
           </div>
         </TabsContent>
 
@@ -91,14 +117,14 @@ export default function AdminAds() {
         <TabsContent value="campaigns" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Campagnes publicitaires</h2>
-            <Button>
+            <Button onClick={() => openCampaignDialog()}>
               <Plus className="w-4 h-4 mr-2" />
               Nouvelle campagne
             </Button>
           </div>
 
           <div className="grid gap-4">
-            <CampaignsManager />
+            <CampaignsManager onEdit={openCampaignDialog} />
           </div>
         </TabsContent>
 
@@ -106,14 +132,14 @@ export default function AdminAds() {
         <TabsContent value="creatives" className="space-y-6">
           <div className="flex items-center justify-between">
             <h2 className="text-2xl font-semibold">Créatifs publicitaires</h2>
-            <Button>
+            <Button onClick={() => openCreativeDialog()}>
               <Plus className="w-4 h-4 mr-2" />
               Nouveau créatif
             </Button>
           </div>
 
           <div className="grid gap-4">
-            <CreativesManager />
+            <CreativesManager onEdit={openCreativeDialog} />
           </div>
         </TabsContent>
 
@@ -134,15 +160,38 @@ export default function AdminAds() {
           </div>
         </TabsContent>
       </Tabs>
+
+      {/* Dialogs */}
+      <AdSlotDialog
+        open={slotDialogOpen}
+        onOpenChange={setSlotDialogOpen}
+        slot={editingSlot}
+        onSuccess={() => window.location.reload()}
+      />
+      
+      <AdCampaignDialog
+        open={campaignDialogOpen}
+        onOpenChange={setCampaignDialogOpen}
+        campaign={editingCampaign}
+        onSuccess={() => window.location.reload()}
+      />
+      
+      <AdCreativeDialog
+        open={creativeDialogOpen}
+        onOpenChange={setCreativeDialogOpen}
+        creative={editingCreative}
+        onSuccess={() => window.location.reload()}
+      />
     </div>
   );
 }
 
 // COMPOSANTS GESTIONNAIRES
 
-function SlotsManager() {
+function SlotsManager({ onEdit }: { onEdit: (slot: any) => void }) {
   const [slots, setSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadSlots();
@@ -173,8 +222,28 @@ function SlotsManager() {
 
       if (error) throw error;
       loadSlots();
+      toast({ title: "Emplacement mis à jour" });
     } catch (error) {
       console.error('Error toggling slot:', error);
+      toast({ title: "Erreur lors de la mise à jour", variant: "destructive" });
+    }
+  };
+
+  const deleteSlot = async (slotId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cet emplacement ?')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('ad_slots')
+        .delete()
+        .eq('id', slotId);
+
+      if (error) throw error;
+      loadSlots();
+      toast({ title: "Emplacement supprimé" });
+    } catch (error) {
+      console.error('Error deleting slot:', error);
+      toast({ title: "Erreur lors de la suppression", variant: "destructive" });
     }
   };
 
@@ -209,10 +278,10 @@ function SlotsManager() {
                 >
                   {slot.is_enabled ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => onEdit(slot)}>
                   <Edit className="w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => deleteSlot(slot.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -224,9 +293,10 @@ function SlotsManager() {
   );
 }
 
-function CampaignsManager() {
+function CampaignsManager({ onEdit }: { onEdit: (campaign: any) => void }) {
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadCampaigns();
@@ -267,8 +337,28 @@ function CampaignsManager() {
 
       if (error) throw error;
       loadCampaigns();
+      toast({ title: "Campagne mise à jour" });
     } catch (error) {
       console.error('Error toggling campaign:', error);
+      toast({ title: "Erreur lors de la mise à jour", variant: "destructive" });
+    }
+  };
+
+  const deleteCampaign = async (campaignId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer cette campagne ?')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('ad_campaigns')
+        .delete()
+        .eq('id', campaignId);
+
+      if (error) throw error;
+      loadCampaigns();
+      toast({ title: "Campagne supprimée" });
+    } catch (error) {
+      console.error('Error deleting campaign:', error);
+      toast({ title: "Erreur lors de la suppression", variant: "destructive" });
     }
   };
 
@@ -305,10 +395,10 @@ function CampaignsManager() {
                 >
                   {campaign.is_active ? <Pause className="w-4 h-4" /> : <Play className="w-4 h-4" />}
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => onEdit(campaign)}>
                   <Edit className="w-4 h-4" />
                 </Button>
-                <Button variant="outline" size="sm">
+                <Button variant="outline" size="sm" onClick={() => deleteCampaign(campaign.id)}>
                   <Trash2 className="w-4 h-4" />
                 </Button>
               </div>
@@ -320,9 +410,10 @@ function CampaignsManager() {
   );
 }
 
-function CreativesManager() {
+function CreativesManager({ onEdit }: { onEdit: (creative: any) => void }) {
   const [creatives, setCreatives] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const { toast } = useToast();
 
   useEffect(() => {
     loadCreatives();
@@ -344,6 +435,24 @@ function CreativesManager() {
       console.error('Error loading creatives:', error);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const deleteCreative = async (creativeId: string) => {
+    if (!confirm('Êtes-vous sûr de vouloir supprimer ce créatif ?')) return;
+    
+    try {
+      const { error } = await supabase
+        .from('ad_assets')
+        .delete()
+        .eq('id', creativeId);
+
+      if (error) throw error;
+      loadCreatives();
+      toast({ title: "Créatif supprimé" });
+    } catch (error) {
+      console.error('Error deleting creative:', error);
+      toast({ title: "Erreur lors de la suppression", variant: "destructive" });
     }
   };
 
@@ -372,10 +481,10 @@ function CreativesManager() {
                 </p>
               </div>
               <div className="flex items-center gap-2">
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => onEdit(creative)}>
                   <Edit className="w-3 h-3" />
                 </Button>
-                <Button variant="outline" size="sm" className="flex-1">
+                <Button variant="outline" size="sm" className="flex-1" onClick={() => deleteCreative(creative.id)}>
                   <Trash2 className="w-3 h-3" />
                 </Button>
               </div>
@@ -554,8 +663,7 @@ function Documentation() {
       <CardContent className="space-y-2 text-sm">
         <p>• <strong>Emplacements:</strong> Définissent où apparaissent les publicités (Landing, Dashboard, etc.)</p>
         <p>• <strong>Campagnes:</strong> Groupent les créatifs avec dates, horaires et ciblage</p>
-        <p>• <strong>Créatifs:</strong> Images/bannières associées aux campagnes</p>
-        <p>• <strong>Mapping:</strong> Associe campagnes → emplacements avec priorité/pondération</p>
+        <p>• <strong>Créatifs:</strong> Images/bannières uploadées et associées aux campagnes</p>
         <p>• <strong>Diffusion:</strong> Sélection automatique selon statut, dates, fenêtre horaire, fréquence</p>
         <p>• <strong>Tracking:</strong> Impression (viewport) + Clic avec UTM automatiques</p>
         <p>• <strong>Responsive:</strong> Emplacements masqués sur mobile selon breakpoint défini</p>
