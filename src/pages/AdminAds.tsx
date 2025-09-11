@@ -117,7 +117,7 @@ export default function AdminAds() {
           <div className="grid gap-4">
             <SlotsManager 
               onEdit={openSlotDialog} 
-              onRefreshReady={setRefreshSlots}
+              onRefreshReady={(fn) => setRefreshSlots(() => fn)}
             />
           </div>
         </TabsContent>
@@ -135,7 +135,7 @@ export default function AdminAds() {
           <div className="grid gap-4">
             <CampaignsManager 
               onEdit={openCampaignDialog} 
-              onRefreshReady={setRefreshCampaigns}
+              onRefreshReady={(fn) => setRefreshCampaigns(() => fn)}
             />
           </div>
         </TabsContent>
