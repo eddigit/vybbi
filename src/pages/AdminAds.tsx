@@ -223,9 +223,9 @@ function SlotsManager({ onEdit, onRefreshReady }: {
 
   useEffect(() => {
     loadSlots();
-    // Provide refresh function to parent
+    // Provide refresh function to parent (run once on mount to avoid loops)
     onRefreshReady(loadSlots);
-  }, [onRefreshReady]);
+  }, []);
 
   const loadSlots = async () => {
     try {
@@ -333,9 +333,9 @@ function CampaignsManager({ onEdit, onRefreshReady }: {
 
   useEffect(() => {
     loadCampaigns();
-    // Provide refresh function to parent
+    // Provide refresh function to parent (run once on mount to avoid loops)
     onRefreshReady(loadCampaigns);
-  }, [onRefreshReady]);
+  }, []);
 
   const loadCampaigns = async () => {
     try {
