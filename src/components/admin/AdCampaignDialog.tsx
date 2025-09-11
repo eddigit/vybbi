@@ -350,11 +350,18 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
           </div>
 
           <DialogFooter>
-            <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
+            <Button type="button" variant="outline" onClick={() => onOpenChange(false)} disabled={loading}>
               Annuler
             </Button>
             <Button type="submit" disabled={loading}>
-              {loading ? "Enregistrement..." : campaign ? "Modifier" : "Créer"}
+              {loading ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                  {campaign ? "Modification..." : "Création..."}
+                </>
+              ) : (
+                campaign ? "Modifier" : "Créer"
+              )}
             </Button>
           </DialogFooter>
         </form>

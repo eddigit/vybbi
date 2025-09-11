@@ -37,6 +37,11 @@ export default function AdminAds() {
   const [editingSlot, setEditingSlot] = useState<any>(null);
   const [editingCampaign, setEditingCampaign] = useState<any>(null);
   const [editingCreative, setEditingCreative] = useState<any>(null);
+  
+  // Refresh functions
+  const [refreshSlots, setRefreshSlots] = useState<(() => void) | null>(null);
+  const [refreshCampaigns, setRefreshCampaigns] = useState<(() => void) | null>(null);
+  const [refreshCreatives, setRefreshCreatives] = useState<(() => void) | null>(null);
 
   // Show loading while checking auth
   if (authLoading) {
@@ -109,7 +114,10 @@ export default function AdminAds() {
           </div>
 
           <div className="grid gap-4">
-            <SlotsManager onEdit={openSlotDialog} />
+            <SlotsManager 
+              onEdit={openSlotDialog} 
+              onRefreshReady={setRefreshSlots}
+            />
           </div>
         </TabsContent>
 
@@ -124,7 +132,10 @@ export default function AdminAds() {
           </div>
 
           <div className="grid gap-4">
-            <CampaignsManager onEdit={openCampaignDialog} />
+            <CampaignsManager 
+              onEdit={openCampaignDialog} 
+              onRefreshReady={setRefreshCampaigns}
+            />
           </div>
         </TabsContent>
 
@@ -139,7 +150,10 @@ export default function AdminAds() {
           </div>
 
           <div className="grid gap-4">
-            <CreativesManager onEdit={openCreativeDialog} />
+            <CreativesManager 
+              onEdit={openCreativeDialog} 
+              onRefreshReady={setRefreshCreatives}
+            />
           </div>
         </TabsContent>
 
@@ -166,21 +180,30 @@ export default function AdminAds() {
         open={slotDialogOpen}
         onOpenChange={setSlotDialogOpen}
         slot={editingSlot}
-        onSuccess={() => window.location.reload()}
+        onSuccess={() => {
+          if (refreshSlots) refreshSlots();
+          setEditingSlot(null);
+        }}
       />
       
       <AdCampaignDialog
         open={campaignDialogOpen}
         onOpenChange={setCampaignDialogOpen}
         campaign={editingCampaign}
-        onSuccess={() => window.location.reload()}
+        onSuccess={() => {
+          if (refreshCampaigns) refreshCampaigns();
+          setEditingCampaign(null);
+        }}
       />
       
       <AdCreativeDialog
         open={creativeDialogOpen}
         onOpenChange={setCreativeDialogOpen}
         creative={editingCreative}
-        onSuccess={() => window.location.reload()}
+        onSuccess={() => {
+          if (refreshCreatives) refreshCreatives();
+          setEditingCreative(null);
+        }}
       />
     </div>
   );
@@ -188,14 +211,19 @@ export default function AdminAds() {
 
 // COMPOSANTS GESTIONNAIRES
 
-function SlotsManager({ onEdit }: { onEdit: (slot: any) => void }) {
+function SlotsManager({ onEdit, onRefreshReady }: { 
+  onEdit: (slot: any) => void;
+  onRefreshReady: (refreshFn: () => void) => void;
+}) {
   const [slots, setSlots] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     loadSlots();
-  }, []);
+    // Provide refresh function to parent
+    onRefreshReady(loadSlots);
+  }, [onRefreshReady]);
 
   const loadSlots = async () => {
     try {
@@ -293,14 +321,19 @@ function SlotsManager({ onEdit }: { onEdit: (slot: any) => void }) {
   );
 }
 
-function CampaignsManager({ onEdit }: { onEdit: (campaign: any) => void }) {
+function CampaignsManager({ onEdit, onRefreshReady }: { 
+  onEdit: (campaign: any) => void;
+  onRefreshReady: (refreshFn: () => void) => void;
+}) {
   const [campaigns, setCampaigns] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     loadCampaigns();
-  }, []);
+    // Provide refresh function to parent
+    onRefreshReady(loadCampaigns);
+  }, [onRefreshReady]);
 
   const loadCampaigns = async () => {
     try {
@@ -410,14 +443,19 @@ function CampaignsManager({ onEdit }: { onEdit: (campaign: any) => void }) {
   );
 }
 
-function CreativesManager({ onEdit }: { onEdit: (creative: any) => void }) {
+function CreativesManager({ onEdit, onRefreshReady }: { 
+  onEdit: (creative: any) => void;
+  onRefreshReady: (refreshFn: () => void) => void;
+}) {
   const [creatives, setCreatives] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
 
   useEffect(() => {
     loadCreatives();
-  }, []);
+    // Provide refresh function to parent
+    onRefreshReady(loadCreatives);
+  }, [onRefreshReady]);
 
   const loadCreatives = async () => {
     try {
