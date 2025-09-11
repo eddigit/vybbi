@@ -27,7 +27,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
     target_url: "",
     start_date: "",
     end_date: "",
-    placement_type: "banner",
+        placement_type: "header",
     status: "draft",
     is_active: true,
     daily_window_start: "",
@@ -50,7 +50,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
         target_url: campaign.target_url || "",
         start_date: campaign.start_date || "",
         end_date: campaign.end_date || "",
-        placement_type: campaign.placement_type || "banner",
+        placement_type: campaign.placement_type || "header",
         status: campaign.status || "draft",
         is_active: campaign.is_active ?? true,
         daily_window_start: campaign.daily_window_start || "",
@@ -66,7 +66,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
         target_url: "",
         start_date: today,
         end_date: "",
-        placement_type: "banner",
+        placement_type: "header",
         status: "draft",
         is_active: true,
         daily_window_start: "",
@@ -280,6 +280,21 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
 
           <div className="grid grid-cols-2 gap-4">
             <div className="space-y-2">
+              <Label htmlFor="placement_type">Type d'emplacement</Label>
+              <Select value={formData.placement_type} onValueChange={(value) => setFormData(prev => ({ ...prev, placement_type: value }))}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="header">Header</SelectItem>
+                  <SelectItem value="sidebar_left">Sidebar Gauche</SelectItem>
+                  <SelectItem value="sidebar_right">Sidebar Droite</SelectItem>
+                  <SelectItem value="banner_top">Banner Haut</SelectItem>
+                  <SelectItem value="banner_bottom">Banner Bas</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+            <div className="space-y-2">
               <Label htmlFor="status">Statut</Label>
               <Select value={formData.status} onValueChange={(value) => setFormData(prev => ({ ...prev, status: value }))}>
                 <SelectTrigger>
@@ -293,14 +308,15 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
                 </SelectContent>
               </Select>
             </div>
-            <div className="flex items-center space-x-2 pt-7">
-              <Switch
-                id="is_active"
-                checked={formData.is_active}
-                onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
-              />
-              <Label htmlFor="is_active">Campagne active</Label>
-            </div>
+          </div>
+
+          <div className="flex items-center space-x-2">
+            <Switch
+              id="is_active"
+              checked={formData.is_active}
+              onCheckedChange={(checked) => setFormData(prev => ({ ...prev, is_active: checked }))}
+            />
+            <Label htmlFor="is_active">Campagne active</Label>
           </div>
 
           <div className="space-y-2">
