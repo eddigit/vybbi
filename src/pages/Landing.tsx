@@ -20,10 +20,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import FeaturedArtistsStrip from "@/components/FeaturedArtistsStrip";
-import { Header } from "@/components/layout/Header";
-import { Footer } from "@/components/layout/Footer";
-import { AdBanner } from "@/components/ads/AdBanner";
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
   const features = [{
@@ -79,63 +75,48 @@ export default function Landing() {
     number: "98%",
     label: "Satisfaction"
   }];
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      <div className="flex">
-        {/* Left sidebar ad */}
-        <div className="hidden xl:block w-[300px] p-4">
-          <div className="sticky top-4">
-            <AdBanner placement="sidebar_left" />
+  return <div className="min-h-screen bg-background">
+      {/* Navigation */}
+      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
+        <div className="container mx-auto px-2 sm:px-6 py-4">
+          <div className="flex items-center justify-between">
+              <div className="flex items-center gap-2">
+                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-12 h-12" />
+                <span className="font-bold text-xl text-foreground">Vybbi</span>
+              </div>
+            
+            <div className="hidden md:flex items-center gap-6">
+              <Link to="/a-propos" className="text-muted-foreground hover:text-foreground transition-colors">
+                À propos
+              </Link>
+              <Link to="/pour-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pour Artistes
+              </Link>
+              <Link to="/pour-agents-managers" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pour Agents
+              </Link>
+              <Link to="/pour-lieux-evenements" className="text-muted-foreground hover:text-foreground transition-colors">
+                Pour Lieux
+              </Link>
+              <Link to="/technologie" className="text-muted-foreground hover:text-foreground transition-colors">
+                Technologie
+              </Link>
+              <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
+                Blog
+              </Link>
+            </div>
+
+            <div className="flex items-center gap-4">
+              <Button variant="ghost" asChild>
+                <Link to="/auth">Connexion</Link>
+              </Button>
+              <Button asChild>
+                <Link to="/auth">Commencer</Link>
+              </Button>
+            </div>
           </div>
         </div>
-
-        <div className="flex-1">
-          {/* Navigation */}
-          <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
-            <div className="container mx-auto px-2 sm:px-6 py-4">
-              <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-12 h-12" />
-                    <span className="font-bold text-xl text-foreground">Vybbi</span>
-                  </div>
-                
-                {/* Centered Ad Space */}
-                <div className="hidden md:flex flex-1 justify-center">
-                  <AdBanner placement="header" className="max-w-md" />
-                </div>
-                
-                <div className="hidden md:flex items-center gap-6">
-                  <Link to="/a-propos" className="text-muted-foreground hover:text-foreground transition-colors">
-                    À propos
-                  </Link>
-                  <Link to="/pour-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Pour Artistes
-                  </Link>
-                  <Link to="/pour-agents-managers" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Pour Agents
-                  </Link>
-                  <Link to="/pour-lieux-evenements" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Pour Lieux
-                  </Link>
-                  <Link to="/technologie" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Technologie
-                  </Link>
-                  <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                    Blog
-                  </Link>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <Button variant="ghost" asChild>
-                    <Link to="/auth">Connexion</Link>
-                  </Button>
-                  <Button asChild>
-                    <Link to="/auth">Commencer</Link>
-                  </Button>
-                </div>
-              </div>
-            </div>
-          </nav>
+      </nav>
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-2 sm:px-6">
@@ -690,19 +671,5 @@ export default function Landing() {
           </div>
         </div>
       </footer>
-
-      <Footer />
-      
-      </div>
-
-      {/* Right sidebar ad */}
-      <div className="hidden xl:block w-[300px] p-4">
-        <div className="sticky top-4">
-          <AdBanner placement="sidebar_right" />
-        </div>
-      </div>
-      
-      </div>
-    </div>
-  );
+    </div>;
 }

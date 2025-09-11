@@ -3,7 +3,6 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
-import { AdBanner } from "@/components/ads/AdBanner";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -41,40 +40,20 @@ export function Layout({ children }: LayoutProps) {
 
   // For all other pages (dashboard, agent pages, etc.), use responsive navigation
   return (
-    <div className="min-h-screen bg-background">
-      {/* Header stays at full width */}
+    <div className="min-h-screen flex flex-col w-full bg-background">
       <Header />
-      
-      <div className="flex w-full">
-        {/* Left sidebar ad */}
-        <div className="hidden xl:block w-[300px] p-4">
-          <div className="sticky top-4">
-            <AdBanner placement="sidebar_left" />
-          </div>
-        </div>
-
-        <div className="flex-1 flex flex-col min-w-0">
-          {/* Desktop horizontal nav, hidden on mobile */}
-          <div className="hidden md:block">
-            <TopNav />
-          </div>
-          <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-16">
-            {children}
-          </main>
-          {/* Mobile tab bar, hidden on desktop */}
-          <MobileTabBar />
-          {/* Footer hidden on mobile for better UX */}
-          <div className="hidden md:block">
-            <Footer />
-          </div>
-        </div>
-
-        {/* Right sidebar ad */}
-        <div className="hidden xl:block w-[300px] p-4">
-          <div className="sticky top-4">
-            <AdBanner placement="sidebar_right" />
-          </div>
-        </div>
+      {/* Desktop horizontal nav, hidden on mobile */}
+      <div className="hidden md:block">
+        <TopNav />
+      </div>
+      <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-16">
+        {children}
+      </main>
+      {/* Mobile tab bar, hidden on desktop */}
+      <MobileTabBar />
+      {/* Footer hidden on mobile for better UX */}
+      <div className="hidden md:block">
+        <Footer />
       </div>
     </div>
   );

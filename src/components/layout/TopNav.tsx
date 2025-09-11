@@ -78,7 +78,6 @@ const adminItems = [
   { title: "Communication", url: "/admin/communication", icon: MessageCircle },
   { title: "Roadmap", url: "/admin/roadmap", icon: Route },
   { title: "Modération", url: "/admin/moderation", icon: Shield },
-  { title: "Régie Pub", url: "/admin/advertising", icon: Megaphone },
 ];
 
 export function TopNav() {

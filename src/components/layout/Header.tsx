@@ -1,18 +1,64 @@
-import { Link, useNavigate } from "react-router-dom";
+import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useAuth } from "@/hooks/useAuth";
+import { Input } from "@/components/ui/input";
+import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { LogOut, User } from "lucide-react";
-import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { AdBanner } from "@/components/ads/AdBanner";
+import { 
+  DropdownMenu, 
+  DropdownMenuTrigger, 
+  DropdownMenuContent, 
+  DropdownMenuItem, 
+  DropdownMenuLabel, 
+  DropdownMenuSeparator 
+} from "@/components/ui/dropdown-menu";
+import { useLocation, Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { useNotifications } from "@/hooks/useNotifications";
+import { useState } from "react";
 
 export function Header() {
-  const { user, profile, signOut } = useAuth();
+  const location = useLocation();
   const navigate = useNavigate();
+  const { user, profile, signOut } = useAuth();
+  const { toast } = useToast();
+  const { notifications, unreadCount, markAsRead } = useNotifications();
+  const [searchQuery, setSearchQuery] = useState("");
+  
+
+  const isArtistPage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
+  const showAdminControls = !isArtistPage && location.pathname !== '/';
+
+  const handleRefresh = () => {
+    window.location.reload();
+    toast({
+      title: "Page actualisée",
+      description: "La page a été rechargée avec succès.",
+    });
+  };
+
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      // Pour l'instant, redirection vers la page artistes avec le terme de recherche
+      navigate(`/artists?search=${encodeURIComponent(searchQuery.trim())}`);
+      toast({
+        title: "Recherche effectuée",
+        description: `Recherche pour: "${searchQuery}"`,
+      });
+    }
+  };
 
   const handleLogout = async () => {
     await signOut();
     navigate('/auth');
+  };
+
+  const handleNotificationClick = (notification: any) => {
+    markAsRead(notification.id);
+    if (notification.conversationId) {
+      navigate('/messages', { state: { selectedConversationId: notification.conversationId } });
+    }
   };
 
   return (
@@ -28,12 +74,102 @@ export function Header() {
           <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
         </Link>
 
-        {/* Centered Ad Space */}
-        <div className="hidden md:flex flex-1 justify-center">
-          <AdBanner placement="header" className="max-w-md" />
+        {/* Centered Date Badge */}
+        <div className="hidden xs:flex flex-1 justify-center">
+          {showAdminControls && (
+            <Badge variant="secondary" className="hidden sm:block text-xs whitespace-nowrap">
+              lundi 8 septembre 2025 à 16:39
+            </Badge>
+          )}
         </div>
 
-        <div className="flex items-center gap-4">
+        <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
+          {showAdminControls && (
+            <>
+              {/* Mobile: Only refresh button */}
+              <div className="sm:hidden">
+                <Button 
+                  variant="ghost" 
+                  size="icon" 
+                  className="h-9 w-9"
+                  onClick={handleRefresh}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                </Button>
+              </div>
+
+              {/* Desktop: Full refresh button */}
+              <div className="hidden sm:flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  size="sm" 
+                  className="gap-2"
+                  onClick={handleRefresh}
+                >
+                  <RefreshCw className="h-4 w-4" />
+                  Actualiser
+                </Button>
+              </div>
+
+              {/* Search - Hidden on mobile, visible on tablet+ */}
+              <form onSubmit={handleSearch} className="hidden lg:block relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                <Input
+                  placeholder="Recherche..."
+                  className="pl-10 w-48 xl:w-64"
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
+              </form>
+
+              {/* Notifications */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10">
+                    <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
+                    {unreadCount > 0 && (
+                      <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 text-xs bg-primary text-primary-foreground flex items-center justify-center rounded-full min-w-[16px] sm:min-w-[20px]">
+                        {unreadCount > 99 ? '99+' : unreadCount}
+                      </Badge>
+                    )}
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="w-72 sm:w-80">
+                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  {notifications.length === 0 ? (
+                    <DropdownMenuItem disabled>
+                      Aucune notification
+                    </DropdownMenuItem>
+                  ) : (
+                    notifications.map((notification) => (
+                      <DropdownMenuItem 
+                        key={notification.id} 
+                        className="flex flex-col items-start p-3 cursor-pointer hover:bg-accent"
+                        onClick={() => handleNotificationClick(notification)}
+                      >
+                        <div className={`flex items-center gap-2 w-full ${notification.unread ? 'font-semibold' : ''}`}>
+                          <span className="text-sm flex-1 truncate">{notification.title}</span>
+                          {notification.unread && (
+                            <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0"></div>
+                          )}
+                        </div>
+                        <span className="text-xs text-muted-foreground mt-1 line-clamp-2">{notification.description}</span>
+                        <span className="text-xs text-muted-foreground mt-1">{notification.time}</span>
+                      </DropdownMenuItem>
+                    ))
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/messages" className="w-full text-center">
+                      Voir tous les messages
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </>
+          )}
+
           {profile && (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -47,6 +183,90 @@ export function Header() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 sm:w-56">
+                <DropdownMenuLabel className="text-sm">Mon compte</DropdownMenuLabel>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
+                           profile.profile_type === 'agent' ? `/partners/${profile.id}` :
+                           profile.profile_type === 'manager' ? `/partners/${profile.id}` :
+                           profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
+                    <User className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Mon profil</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}/edit` : 
+                           profile.profile_type === 'agent' ? `/agents/${profile.id}/edit` :
+                           profile.profile_type === 'manager' ? `/managers/${profile.id}/edit` :
+                           profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}/edit`} className="flex items-center">
+                    <Pencil className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Modifier</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/messages" className="flex items-center">
+                    <MessageSquare className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Messages</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/dashboard" className="flex items-center">
+                    <LayoutDashboard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Tableau de bord</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/annonces" className="flex items-center">
+                    <Megaphone className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Annonces</span>
+                  </Link>
+                </DropdownMenuItem>
+
+                {/* Quick access menu items for mobile - condensed */}
+                {(profile.profile_type === 'agent' || profile.profile_type === 'manager' || profile.profile_type === 'lieu') && (
+                  <DropdownMenuItem asChild>
+                    <Link to="/artists" className="flex items-center sm:hidden">
+                      <Search className="mr-2 h-3 w-3" />
+                      <span className="text-sm">Artistes</span>
+                    </Link>
+                  </DropdownMenuItem>
+                )}
+                
+                {(profile.profile_type === 'agent' || profile.profile_type === 'manager') && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/lieux" className="flex items-center sm:hidden">
+                        <MapPin className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Lieux</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/events" className="flex items-center sm:hidden">
+                        <Star className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Événements</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+
+                {profile.profile_type === 'artist' && (
+                  <>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profiles?type=agent" className="flex items-center sm:hidden">
+                        <Users className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Agents</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/profiles?type=manager" className="flex items-center sm:hidden">
+                        <Users className="mr-2 h-3 w-3" />
+                        <span className="text-sm">Managers</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </>
+                )}
+
+                <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="flex items-center text-destructive">
                   <LogOut className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                   <span className="text-sm">Déconnexion</span>
