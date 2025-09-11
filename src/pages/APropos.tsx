@@ -44,7 +44,7 @@ const APropos = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
             <div>
               <Card className="bg-secondary/10 border-secondary/30 p-8">
-                <h3 className="text-2xl font-bold mb-6 text-secondary">
+                <h3 className="text-2xl font-bold mb-6 text-[#9e55e7]">
                   "Une plateforme qui donne les mêmes chances à tous"
                 </h3>
                 <p className="text-lg leading-relaxed">
