@@ -81,9 +81,6 @@ export default function Landing() {
   }];
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5">
-      {/* Header stays at full width */}
-      <Header />
-      
       <div className="flex">
         {/* Left sidebar ad */}
         <div className="hidden xl:block w-[300px] p-4">
@@ -94,13 +91,18 @@ export default function Landing() {
 
         <div className="flex-1">
           {/* Navigation */}
-          <nav className="fixed top-16 w-full bg-background/95 backdrop-blur-sm border-b z-40">
+          <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
             <div className="container mx-auto px-2 sm:px-6 py-4">
               <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-12 h-12" />
                     <span className="font-bold text-xl text-foreground">Vybbi</span>
                   </div>
+                
+                {/* Centered Ad Space */}
+                <div className="hidden md:flex flex-1 justify-center">
+                  <AdBanner placement="header" className="max-w-md" />
+                </div>
                 
                 <div className="hidden md:flex items-center gap-6">
                   <Link to="/a-propos" className="text-muted-foreground hover:text-foreground transition-colors">
