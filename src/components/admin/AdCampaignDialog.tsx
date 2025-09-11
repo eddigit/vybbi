@@ -93,14 +93,31 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Validation
+    if (!formData.name.trim()) {
+      toast({ title: "Le nom de campagne est requis", variant: "destructive" });
+      return;
+    }
+    
+    if (!formData.start_date || !formData.end_date) {
+      toast({ title: "Les dates de début et fin sont requises", variant: "destructive" });
+      return;
+    }
+    
+    if (new Date(formData.start_date) >= new Date(formData.end_date)) {
+      toast({ title: "La date de fin doit être après la date de début", variant: "destructive" });
+      return;
+    }
+
     setLoading(true);
 
     try {
       const campaignData = {
-        name: formData.name,
-        description: formData.description,
-        advertiser: formData.advertiser,
-        target_url: formData.target_url,
+        name: formData.name.trim(),
+        description: formData.description?.trim() || null,
+        advertiser: formData.advertiser?.trim() || null,
+        target_url: formData.target_url?.trim() || null,
         start_date: formData.start_date,
         end_date: formData.end_date,
         placement_type: formData.placement_type,
@@ -121,7 +138,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
         if (error) throw error;
         campaignId = campaign.id;
         
-        // Delete existing campaign slots
+        // Delete existing slots
         await supabase
           .from('ad_campaign_slots')
           .delete()
@@ -137,10 +154,9 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
         campaignId = data.id;
       }
 
-      // Insert new campaign slots only if slots are selected AND valid
-      if (formData.selected_slots && formData.selected_slots.length > 0) {
-        // Filter out any null/undefined values
-        const validSlotIds = formData.selected_slots.filter(slotId => slotId && typeof slotId === 'string');
+      // Insert campaign slots
+      if (formData.selected_slots?.length > 0) {
+        const validSlotIds = formData.selected_slots.filter(id => id);
         
         if (validSlotIds.length > 0) {
           const slotsData = validSlotIds.map(slotId => ({
@@ -160,7 +176,8 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
       }
 
       toast({
-        title: campaign ? "Campagne modifiée avec succès" : "Campagne créée avec succès"
+        title: campaign ? "Campagne modifiée" : "Campagne créée",
+        description: "Les modifications ont été enregistrées"
       });
 
       onSuccess();
@@ -168,7 +185,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
     } catch (error: any) {
       toast({
         title: "Erreur",
-        description: error.message,
+        description: error.message || "Erreur lors de l'enregistrement",
         variant: "destructive"
       });
     } finally {

@@ -9,6 +9,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdSlotDialog } from "@/components/admin/AdSlotDialog";
 import { AdCampaignDialog } from "@/components/admin/AdCampaignDialog";
 import { AdCreativeDialog } from "@/components/admin/AdCreativeDialog";
+import { AdSystemTester } from "@/components/ads/AdSystemTester";
 import { 
   Plus, 
   Edit, 
@@ -168,6 +169,7 @@ export default function AdminAds() {
           </div>
 
           <div className="grid gap-6">
+            <SystemTester />
             <AnalyticsOverview />
             <GlobalSettings />
             <Documentation />
@@ -532,6 +534,10 @@ function CreativesManager({ onEdit, onRefreshReady }: {
       ))}
     </div>
   );
+}
+
+function SystemTester() {
+  return <AdSystemTester />;
 }
 
 function AnalyticsOverview() {

@@ -89,7 +89,7 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
     if (!file) return;
 
     try {
-      // Validation du fichier
+      // Validation stricte
       if (file.size > 10 * 1024 * 1024) {
         toast({
           title: "Fichier trop volumineux",
@@ -99,10 +99,11 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
         return;
       }
 
-      if (!file.type.startsWith('image/')) {
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.type)) {
         toast({
           title: "Type de fichier invalide",
-          description: "Seules les images sont acceptées",
+          description: "Seuls JPG, PNG, WebP et SVG sont acceptés",
           variant: "destructive"
         });
         return;
@@ -139,7 +140,6 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
       };
       img.src = url;
     } catch (error: any) {
-      console.error("File selection error:", error);
       toast({
         title: "Erreur",
         description: "Erreur lors de la sélection du fichier",
@@ -150,17 +150,19 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
 
   const uploadFile = async (file: File): Promise<string> => {
     try {
-      // Validation du fichier
       if (!file) throw new Error("Aucun fichier sélectionné");
       if (file.size > 10 * 1024 * 1024) throw new Error("Le fichier ne peut pas dépasser 10MB");
+      
+      const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp', 'image/svg+xml'];
+      if (!allowedTypes.includes(file.type)) {
+        throw new Error('Format non supporté. Utilisez JPG, PNG, WebP ou SVG.');
+      }
       
       const fileExt = file.name.split('.').pop();
       if (!fileExt) throw new Error("Extension de fichier invalide");
       
       const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
       const filePath = `ad-assets/${fileName}`;
-
-      console.log("Starting file upload:", fileName);
       
       const { error: uploadError } = await supabase.storage
         .from('ad-assets')
@@ -170,7 +172,6 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
         });
 
       if (uploadError) {
-        console.error("Upload error:", uploadError);
         throw new Error(`Erreur d'upload: ${uploadError.message}`);
       }
 
@@ -178,10 +179,8 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
         .from('ad-assets')
         .getPublicUrl(filePath);
 
-      console.log("File uploaded successfully:", data.publicUrl);
       return data.publicUrl;
     } catch (error: any) {
-      console.error("Upload process failed:", error);
       throw error;
     }
   };
@@ -190,7 +189,7 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
     e.preventDefault();
     
     try {
-      // Validation des champs requis
+      // Validation stricte
       if (!formData.campaign_id) {
         throw new Error("Veuillez sélectionner une campagne");
       }
@@ -202,7 +201,7 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
       setLoading(true);
       let fileUrl = formData.file_url;
 
-      // Upload new file if selected
+      // Upload nouveau fichier si sélectionné
       if (selectedFile) {
         setUploading(true);
         toast({ title: "Upload en cours...", description: "Veuillez patienter" });
@@ -220,15 +219,14 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
       const data = {
         file_name: formData.file_name || selectedFile?.name || "",
         file_url: fileUrl,
-        alt_text: formData.alt_text,
+        alt_text: formData.alt_text?.trim() || null,
         campaign_id: formData.campaign_id,
         width: formData.width ? parseInt(formData.width) : null,
         height: formData.height ? parseInt(formData.height) : null,
         display_order: formData.display_order ? parseInt(formData.display_order) : 0,
         file_size: formData.file_size ? parseInt(formData.file_size) : selectedFile?.size || null,
+        file_type: selectedFile?.type || 'image/unknown'
       };
-
-      console.log("Saving creative data:", data);
 
       if (creative) {
         const { error } = await supabase
@@ -237,13 +235,11 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
           .eq('id', creative.id);
         
         if (error) {
-          console.error("Update error:", error);
           throw new Error(`Erreur de mise à jour: ${error.message}`);
         }
         toast({ 
-          title: "Succès", 
-          description: "Créatif modifié avec succès",
-          variant: "default"
+          title: "Créatif modifié", 
+          description: "Les modifications ont été enregistrées"
         });
       } else {
         const { error } = await supabase
@@ -251,20 +247,17 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
           .insert([data]);
         
         if (error) {
-          console.error("Insert error:", error);
           throw new Error(`Erreur de création: ${error.message}`);
         }
         toast({ 
-          title: "Succès", 
-          description: "Créatif créé avec succès",
-          variant: "default"
+          title: "Créatif créé", 
+          description: "Le nouveau créatif a été ajouté"
         });
       }
 
       onSuccess();
       onOpenChange(false);
     } catch (error: any) {
-      console.error("Submit error:", error);
       toast({
         title: "Erreur",
         description: error.message || "Une erreur inattendue s'est produite",

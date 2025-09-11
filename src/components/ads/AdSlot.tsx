@@ -43,8 +43,6 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
   // Load eligible creative for this slot
   const loadCreative = async () => {
     try {
-      console.log(`[AdSlot] Loading creative for slot: ${slotId}`);
-      
       // Get slot info and global settings
       const { data: slotData } = await supabase
         .from('ad_slots')
@@ -53,16 +51,13 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .eq('is_enabled', true)
         .single();
 
-      console.log(`[AdSlot] Slot data for ${slotId}:`, slotData);
-
       if (!slotData) {
-        console.log(`[AdSlot] No slot data found for ${slotId}`);
         setCreative(null);
         setLoading(false);
         return;
       }
 
-      // Get global settings - DEFAULT TO ENABLED IF NOT FOUND
+      // Get global settings
       const { data: settingsData } = await supabase
         .from('ad_settings')
         .select('setting_value')
@@ -70,18 +65,13 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .single();
 
       const globalSettings = settingsData?.setting_value as any;
-      console.log(`[AdSlot] Global settings:`, globalSettings);
-      
-      // FORCE ADS TO BE ENABLED FOR DEBUGGING
-      const adsEnabled = globalSettings?.enabled !== false; // Default to true
-      if (!adsEnabled) {
-        console.log(`[AdSlot] Ads globally disabled`);
-        // Don't return - force display for debugging
-      }
+      const adsEnabled = globalSettings?.enabled !== false;
 
-      // Get current time for daily window check
-      const now = new Date();
-      const currentTime = now.toTimeString().slice(0, 8); // HH:MM:SS format
+      if (!adsEnabled) {
+        setCreative(null);
+        setLoading(false);
+        return;
+      }
 
       // Get eligible campaigns and their creatives
       const { data: campaignSlots } = await supabase
@@ -120,62 +110,35 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
 
       // Filter eligible campaigns
       const eligibleCreatives: AdCreative[] = [];
-      
-      console.log(`[AdSlot] Found ${campaignSlots?.length} campaign slots for ${slotId}`);
+      const now = new Date();
+      const currentTime = now.toTimeString().slice(0, 8);
       
       for (const slot of campaignSlots) {
         const campaign = slot.ad_campaigns;
-        console.log(`[AdSlot] Processing campaign:`, campaign.name, {
-          is_active: campaign.is_active,
-          status: campaign.status,
-          start_date: campaign.start_date,
-          end_date: campaign.end_date,
-          assets_count: campaign.ad_assets?.length
-        });
         
-        // SIMPLIFIED CHECK - just check if campaign is active
-        if (!campaign.is_active) {
-          console.log(`[AdSlot] Campaign ${campaign.name} is not active`);
-          continue;
-        }
+        if (!campaign.is_active || campaign.status !== 'active') continue;
         
-        // RELAXED DATE CHECK
+        // Date range check
         const startDate = new Date(campaign.start_date);
         const endDate = new Date(campaign.end_date);
-        const today = new Date();
-        
-        if (today < startDate || today > endDate) {
-          console.log(`[AdSlot] Campaign ${campaign.name} date out of range`, { today, startDate, endDate });
-          continue;
+        if (now < startDate || now > endDate) continue;
+
+        // Daily window check
+        if (campaign.daily_window_start && campaign.daily_window_end) {
+          if (currentTime < campaign.daily_window_start || currentTime > campaign.daily_window_end) {
+            continue;
+          }
         }
 
-        // Skip daily window check for debugging
-        console.log(`[AdSlot] Campaign ${campaign.name} passed date checks`);
+        // Check assets
+        if (!campaign.ad_assets?.length) continue;
 
-        // Check if campaign has assets
-        if (!campaign.ad_assets?.length) {
-          console.log(`[AdSlot] Campaign ${campaign.name} has no assets`);
-          continue;
-        }
-
-        // Add eligible creatives from this campaign
         for (const asset of campaign.ad_assets) {
-          console.log(`[AdSlot] Processing asset:`, asset.id, {
-            dimensions: `${asset.width}x${asset.height}`,
-            slot_dimensions: `${slotData.width}x${slotData.height}`
-          });
-          
-          // RELAXED DIMENSION CHECK
+          // Dimension check (flexible)
           const widthOk = !slotData.width || !asset.width || Math.abs(asset.width - slotData.width) <= 100;
           const heightOk = !slotData.height || !asset.height || Math.abs(asset.height - slotData.height) <= 200;
           
-          if (!widthOk || !heightOk) {
-            console.log(`[AdSlot] Asset ${asset.id} dimensions don't match`);
-            continue;
-          }
-
-          // SKIP FREQUENCY CAP FOR DEBUGGING
-          console.log(`[AdSlot] Adding eligible creative:`, asset.id);
+          if (!widthOk || !heightOk) continue;
 
           eligibleCreatives.push({
             id: asset.id,
@@ -190,11 +153,8 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
           });
         }
       }
-
-      console.log(`[AdSlot] Found ${eligibleCreatives.length} eligible creatives for ${slotId}`);
       
       if (eligibleCreatives.length === 0) {
-        console.log(`[AdSlot] No eligible creatives found for ${slotId}`);
         setCreative(null);
         setLoading(false);
         return;
@@ -205,7 +165,7 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
       const highestPriority = eligibleCreatives[0].priority;
       const topPriorityCreatives = eligibleCreatives.filter(c => c.priority === highestPriority);
 
-      // Weighted random selection among top priority creatives
+      // Weighted random selection
       const totalWeight = topPriorityCreatives.reduce((sum, c) => sum + c.weight, 0);
       let random = Math.random() * totalWeight;
       let selectedCreative = topPriorityCreatives[0];
@@ -218,10 +178,9 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         }
       }
 
-      console.log(`[AdSlot] Selected creative for ${slotId}:`, selectedCreative);
       setCreative(selectedCreative);
     } catch (error) {
-      console.error(`[AdSlot] Error loading ad creative for ${slotId}:`, error);
+      console.error(`Error loading ad for slot ${slotId}:`, error);
       setCreative(null);
     } finally {
       setLoading(false);
