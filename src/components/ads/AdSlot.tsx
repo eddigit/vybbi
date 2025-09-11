@@ -52,7 +52,62 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .single();
 
       if (!slotData) {
-        setCreative(null);
+        // Fallback: no slot configured, pull any active campaign assets
+        const { data: campaigns } = await supabase
+          .from('ad_campaigns')
+          .select(`
+            id, name, is_active, start_date, end_date, status, daily_window_start, daily_window_end, target_url,
+            ad_assets (
+              id, file_url, alt_text, width, height
+            )
+          `)
+          .eq('is_active', true);
+
+        const eligible: AdCreative[] = [];
+        const now = new Date();
+        const currentTime = now.toTimeString().slice(0, 8);
+
+        for (const campaign of campaigns || []) {
+          // Date range check
+          const startDate = new Date(campaign.start_date);
+          const endDate = new Date(campaign.end_date);
+          if (now < startDate || now > endDate) continue;
+
+          // Daily window check
+          if (campaign.daily_window_start && campaign.daily_window_end) {
+            if (currentTime < campaign.daily_window_start || currentTime > campaign.daily_window_end) continue;
+          }
+
+          if (!campaign.ad_assets?.length) continue;
+
+          for (const asset of campaign.ad_assets) {
+            // Use component-provided dimensions since no slot exists in DB
+            const effectiveWidth = width || null;
+            const effectiveHeight = height || null;
+            const widthOk = !effectiveWidth || !asset.width || Math.abs(asset.width - effectiveWidth) <= 100;
+            const heightOk = !effectiveHeight || !asset.height || Math.abs(asset.height - effectiveHeight) <= 200;
+            if (!widthOk || !heightOk) continue;
+
+            eligible.push({
+              id: asset.id,
+              file_url: asset.file_url,
+              alt_text: asset.alt_text,
+              width: asset.width,
+              height: asset.height,
+              campaign_id: campaign.id,
+              target_url: campaign.target_url,
+              weight: 1,
+              priority: 0,
+            });
+          }
+        }
+
+        if (eligible.length > 0) {
+          const idx = Math.floor(Math.random() * eligible.length);
+          setCreative(eligible[idx]);
+        } else {
+          setCreative(null);
+        }
         setLoading(false);
         return;
       }
@@ -116,7 +171,7 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
       for (const slot of campaignSlots) {
         const campaign = slot.ad_campaigns;
         
-        if (!campaign.is_active || campaign.status !== 'active') continue;
+        if (!campaign.is_active) continue;
         
         // Date range check
         const startDate = new Date(campaign.start_date);
@@ -134,10 +189,12 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         if (!campaign.ad_assets?.length) continue;
 
         for (const asset of campaign.ad_assets) {
-          // Dimension check (flexible)
-          const widthOk = !slotData.width || !asset.width || Math.abs(asset.width - slotData.width) <= 100;
-          const heightOk = !slotData.height || !asset.height || Math.abs(asset.height - slotData.height) <= 200;
-          
+          // Dimension check (flexible, uses slot dimensions or provided props as fallback)
+          const effectiveWidth = slotData.width || width || null;
+          const effectiveHeight = slotData.height || height || null;
+          const widthOk = !effectiveWidth || !asset.width || Math.abs(asset.width - effectiveWidth) <= 100;
+          const heightOk = !effectiveHeight || !asset.height || Math.abs(asset.height - effectiveHeight) <= 200;
+
           if (!widthOk || !heightOk) continue;
 
           eligibleCreatives.push({
