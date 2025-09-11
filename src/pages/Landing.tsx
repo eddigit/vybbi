@@ -122,21 +122,21 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-2 sm:px-6">
         <div className="container mx-auto">
-          <div className="hidden xl:grid xl:grid-cols-[300px_1fr_300px] gap-8 items-start">
+          <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
             <div className="xl:block">
-              <AdSlot slotId="ADS-LANDING-LEFT" width={300} height={600} hideIfEmpty={true} />
+              <AdSlot slotId="ADS-LANDING-LEFT" width={200} height={600} hideIfEmpty={true} fit="contain" />
             </div>
             
             {/* Main Hero Content */}
             <div className="text-center">
-              <div className="max-w-4xl mx-auto">
+              <div className="max-w-5xl md:max-w-6xl mx-auto">
             <Badge className="mb-6 text-sm px-4 py-2">
               <Zap className="w-4 h-4 mr-2" />
               THE HYPE OF THE NIGHT
             </Badge>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-6 leading-tight">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight line-clamp-3 md:line-clamp-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Connectez votre
               </span>
@@ -177,19 +177,19 @@ export default function Landing() {
         
         {/* Right Ad Slot */}
         <div className="xl:block">
-          <AdSlot slotId="ADS-LANDING-RIGHT" width={300} height={600} hideIfEmpty={true} />
+          <AdSlot slotId="ADS-LANDING-RIGHT" width={200} height={600} hideIfEmpty={true} fit="contain" />
         </div>
       </div>
       
       {/* Mobile/Tablet Hero Content (visible when grid is hidden) */}
       <div className="xl:hidden text-center">
-        <div className="max-w-4xl mx-auto">
+        <div className="max-w-5xl md:max-w-6xl mx-auto">
           <Badge className="mb-6 text-sm px-4 py-2">
             <Zap className="w-4 h-4 mr-2" />
             THE HYPE OF THE NIGHT
           </Badge>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-6 leading-tight">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight line-clamp-3 md:line-clamp-2">
             <span className="bg-gradient-primary bg-clip-text text-transparent">
               Connectez votre
             </span>

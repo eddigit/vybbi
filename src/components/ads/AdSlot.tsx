@@ -7,6 +7,7 @@ interface AdSlotProps {
   height?: number;
   hideIfEmpty?: boolean;
   className?: string;
+  fit?: 'cover' | 'contain' | 'fill';
 }
 
 interface AdCreative {
@@ -21,7 +22,7 @@ interface AdCreative {
   priority: number;
 }
 
-export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = "" }: AdSlotProps) {
+export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = "", fit = 'cover' }: AdSlotProps) {
   const [creative, setCreative] = useState<AdCreative | null>(null);
   const [loading, setLoading] = useState(true);
   const [impressionTracked, setImpressionTracked] = useState(false);
@@ -362,7 +363,7 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         <img
           src={creative.file_url}
           alt={creative.alt_text || 'Publicité'}
-          className="w-full h-full object-cover rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200"
+          className={`w-full h-full object-${fit} rounded-lg shadow-sm hover:shadow-md transition-shadow duration-200 ${fit === 'contain' ? 'bg-muted/10' : ''}`}
           style={{ 
             width: width || creative.width || 300, 
             height: height || creative.height || 250 
