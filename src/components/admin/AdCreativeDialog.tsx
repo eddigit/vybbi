@@ -86,7 +86,28 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) {
+    if (!file) return;
+
+    try {
+      // Validation du fichier
+      if (file.size > 10 * 1024 * 1024) {
+        toast({
+          title: "Fichier trop volumineux",
+          description: "Le fichier ne peut pas dépasser 10MB",
+          variant: "destructive"
+        });
+        return;
+      }
+
+      if (!file.type.startsWith('image/')) {
+        toast({
+          title: "Type de fichier invalide",
+          description: "Seules les images sont acceptées",
+          variant: "destructive"
+        });
+        return;
+      }
+
       setSelectedFile(file);
       
       // Create preview URL
@@ -101,66 +122,113 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
       }));
 
       // Get image dimensions
-      if (file.type.startsWith('image/')) {
-        const img = new Image();
-        img.onload = () => {
-          setFormData(prev => ({
-            ...prev,
-            width: img.width.toString(),
-            height: img.height.toString()
-          }));
-        };
-        img.src = url;
-      }
+      const img = new Image();
+      img.onload = () => {
+        setFormData(prev => ({
+          ...prev,
+          width: img.width.toString(),
+          height: img.height.toString()
+        }));
+      };
+      img.onerror = () => {
+        toast({
+          title: "Erreur",
+          description: "Impossible de lire les dimensions de l'image",
+          variant: "destructive"
+        });
+      };
+      img.src = url;
+    } catch (error: any) {
+      console.error("File selection error:", error);
+      toast({
+        title: "Erreur",
+        description: "Erreur lors de la sélection du fichier",
+        variant: "destructive"
+      });
     }
   };
 
   const uploadFile = async (file: File): Promise<string> => {
-    const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
-    const filePath = `ad-assets/${fileName}`;
+    try {
+      // Validation du fichier
+      if (!file) throw new Error("Aucun fichier sélectionné");
+      if (file.size > 10 * 1024 * 1024) throw new Error("Le fichier ne peut pas dépasser 10MB");
+      
+      const fileExt = file.name.split('.').pop();
+      if (!fileExt) throw new Error("Extension de fichier invalide");
+      
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(2)}.${fileExt}`;
+      const filePath = `ad-assets/${fileName}`;
 
-    const { error: uploadError } = await supabase.storage
-      .from('ad-assets')
-      .upload(filePath, file);
+      console.log("Starting file upload:", fileName);
+      
+      const { error: uploadError } = await supabase.storage
+        .from('ad-assets')
+        .upload(filePath, file, {
+          cacheControl: '3600',
+          upsert: false
+        });
 
-    if (uploadError) throw uploadError;
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        throw new Error(`Erreur d'upload: ${uploadError.message}`);
+      }
 
-    const { data } = supabase.storage
-      .from('ad-assets')
-      .getPublicUrl(filePath);
+      const { data } = supabase.storage
+        .from('ad-assets')
+        .getPublicUrl(filePath);
 
-    return data.publicUrl;
+      console.log("File uploaded successfully:", data.publicUrl);
+      return data.publicUrl;
+    } catch (error: any) {
+      console.error("Upload process failed:", error);
+      throw error;
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    
     try {
+      // Validation des champs requis
+      if (!formData.campaign_id) {
+        throw new Error("Veuillez sélectionner une campagne");
+      }
+
+      if (!formData.file_url && !selectedFile) {
+        throw new Error("Veuillez sélectionner un fichier");
+      }
+
+      setLoading(true);
       let fileUrl = formData.file_url;
 
       // Upload new file if selected
       if (selectedFile) {
         setUploading(true);
-        fileUrl = await uploadFile(selectedFile);
+        toast({ title: "Upload en cours...", description: "Veuillez patienter" });
+        
+        try {
+          fileUrl = await uploadFile(selectedFile);
+          toast({ title: "Upload terminé", description: "Fichier uploadé avec succès" });
+        } catch (uploadError: any) {
+          setUploading(false);
+          throw new Error(`Erreur d'upload: ${uploadError.message}`);
+        }
         setUploading(false);
       }
 
-      if (!fileUrl) {
-        throw new Error("Aucun fichier sélectionné");
-      }
-
       const data = {
-        file_name: formData.file_name,
+        file_name: formData.file_name || selectedFile?.name || "",
         file_url: fileUrl,
         alt_text: formData.alt_text,
         campaign_id: formData.campaign_id,
         width: formData.width ? parseInt(formData.width) : null,
         height: formData.height ? parseInt(formData.height) : null,
         display_order: formData.display_order ? parseInt(formData.display_order) : 0,
-        file_size: formData.file_size ? parseInt(formData.file_size) : null,
+        file_size: formData.file_size ? parseInt(formData.file_size) : selectedFile?.size || null,
       };
+
+      console.log("Saving creative data:", data);
 
       if (creative) {
         const { error } = await supabase
@@ -168,23 +236,38 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
           .update(data)
           .eq('id', creative.id);
         
-        if (error) throw error;
-        toast({ title: "Créatif modifié avec succès" });
+        if (error) {
+          console.error("Update error:", error);
+          throw new Error(`Erreur de mise à jour: ${error.message}`);
+        }
+        toast({ 
+          title: "Succès", 
+          description: "Créatif modifié avec succès",
+          variant: "default"
+        });
       } else {
         const { error } = await supabase
           .from('ad_assets')
           .insert([data]);
         
-        if (error) throw error;
-        toast({ title: "Créatif créé avec succès" });
+        if (error) {
+          console.error("Insert error:", error);
+          throw new Error(`Erreur de création: ${error.message}`);
+        }
+        toast({ 
+          title: "Succès", 
+          description: "Créatif créé avec succès",
+          variant: "default"
+        });
       }
 
       onSuccess();
       onOpenChange(false);
     } catch (error: any) {
+      console.error("Submit error:", error);
       toast({
         title: "Erreur",
-        description: error.message,
+        description: error.message || "Une erreur inattendue s'est produite",
         variant: "destructive"
       });
     } finally {
@@ -327,8 +410,8 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
             <Button type="button" variant="outline" onClick={() => onOpenChange(false)}>
               Annuler
             </Button>
-            <Button type="submit" disabled={loading || uploading}>
-              {uploading ? "Upload..." : loading ? "Enregistrement..." : creative ? "Modifier" : "Créer"}
+            <Button type="submit" disabled={loading || uploading || (!formData.file_url && !selectedFile)}>
+              {uploading ? "Upload en cours..." : loading ? "Enregistrement..." : creative ? "Modifier" : "Créer"}
             </Button>
           </DialogFooter>
         </form>
