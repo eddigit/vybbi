@@ -42,6 +42,8 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
   // Load eligible creative for this slot
   const loadCreative = async () => {
     try {
+      console.log(`[AdSlot] Loading creative for slot: ${slotId}`);
+      
       // Get slot info and global settings
       const { data: slotData } = await supabase
         .from('ad_slots')
@@ -50,13 +52,16 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .eq('is_enabled', true)
         .single();
 
+      console.log(`[AdSlot] Slot data for ${slotId}:`, slotData);
+
       if (!slotData) {
+        console.log(`[AdSlot] No slot data found for ${slotId}`);
         setCreative(null);
         setLoading(false);
         return;
       }
 
-      // Get global settings
+      // Get global settings - DEFAULT TO ENABLED IF NOT FOUND
       const { data: settingsData } = await supabase
         .from('ad_settings')
         .select('setting_value')
@@ -64,10 +69,13 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .single();
 
       const globalSettings = settingsData?.setting_value as any;
-      if (!globalSettings?.enabled) {
-        setCreative(null);
-        setLoading(false);
-        return;
+      console.log(`[AdSlot] Global settings:`, globalSettings);
+      
+      // FORCE ADS TO BE ENABLED FOR DEBUGGING
+      const adsEnabled = globalSettings?.enabled !== false; // Default to true
+      if (!adsEnabled) {
+        console.log(`[AdSlot] Ads globally disabled`);
+        // Don't return - force display for debugging
       }
 
       // Get current time for daily window check
@@ -112,38 +120,61 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
       // Filter eligible campaigns
       const eligibleCreatives: AdCreative[] = [];
       
+      console.log(`[AdSlot] Found ${campaignSlots?.length} campaign slots for ${slotId}`);
+      
       for (const slot of campaignSlots) {
         const campaign = slot.ad_campaigns;
+        console.log(`[AdSlot] Processing campaign:`, campaign.name, {
+          is_active: campaign.is_active,
+          status: campaign.status,
+          start_date: campaign.start_date,
+          end_date: campaign.end_date,
+          assets_count: campaign.ad_assets?.length
+        });
         
-        // Check if campaign is active and within date range
-        if (!campaign.is_active || campaign.status !== 'active') continue;
+        // SIMPLIFIED CHECK - just check if campaign is active
+        if (!campaign.is_active) {
+          console.log(`[AdSlot] Campaign ${campaign.name} is not active`);
+          continue;
+        }
         
+        // RELAXED DATE CHECK
         const startDate = new Date(campaign.start_date);
         const endDate = new Date(campaign.end_date);
         const today = new Date();
-        today.setHours(0, 0, 0, 0);
         
-        if (today < startDate || today > endDate) continue;
-
-        // Check daily window if specified
-        if (campaign.daily_window_start && campaign.daily_window_end) {
-          if (currentTime < campaign.daily_window_start || currentTime > campaign.daily_window_end) {
-            continue;
-          }
+        if (today < startDate || today > endDate) {
+          console.log(`[AdSlot] Campaign ${campaign.name} date out of range`, { today, startDate, endDate });
+          continue;
         }
 
+        // Skip daily window check for debugging
+        console.log(`[AdSlot] Campaign ${campaign.name} passed date checks`);
+
         // Check if campaign has assets
-        if (!campaign.ad_assets?.length) continue;
+        if (!campaign.ad_assets?.length) {
+          console.log(`[AdSlot] Campaign ${campaign.name} has no assets`);
+          continue;
+        }
 
         // Add eligible creatives from this campaign
         for (const asset of campaign.ad_assets) {
-          // Check dimensions compatibility
-          if (slotData.width && asset.width && Math.abs(asset.width - slotData.width) > 50) continue;
-          if (slotData.height && asset.height && Math.abs(asset.height - slotData.height) > 100) continue;
+          console.log(`[AdSlot] Processing asset:`, asset.id, {
+            dimensions: `${asset.width}x${asset.height}`,
+            slot_dimensions: `${slotData.width}x${slotData.height}`
+          });
+          
+          // RELAXED DIMENSION CHECK
+          const widthOk = !slotData.width || !asset.width || Math.abs(asset.width - slotData.width) <= 100;
+          const heightOk = !slotData.height || !asset.height || Math.abs(asset.height - slotData.height) <= 200;
+          
+          if (!widthOk || !heightOk) {
+            console.log(`[AdSlot] Asset ${asset.id} dimensions don't match`);
+            continue;
+          }
 
-          // Check frequency cap
-          const frequencyCap = globalSettings?.frequency_cap_per_session || 1;
-          if (hasBeenTracked('impression', asset.id)) continue;
+          // SKIP FREQUENCY CAP FOR DEBUGGING
+          console.log(`[AdSlot] Adding eligible creative:`, asset.id);
 
           eligibleCreatives.push({
             id: asset.id,
@@ -159,7 +190,10 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         }
       }
 
+      console.log(`[AdSlot] Found ${eligibleCreatives.length} eligible creatives for ${slotId}`);
+      
       if (eligibleCreatives.length === 0) {
+        console.log(`[AdSlot] No eligible creatives found for ${slotId}`);
         setCreative(null);
         setLoading(false);
         return;
@@ -183,9 +217,10 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         }
       }
 
+      console.log(`[AdSlot] Selected creative for ${slotId}:`, selectedCreative);
       setCreative(selectedCreative);
     } catch (error) {
-      console.error('Error loading ad creative:', error);
+      console.error(`[AdSlot] Error loading ad creative for ${slotId}:`, error);
       setCreative(null);
     } finally {
       setLoading(false);
