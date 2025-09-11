@@ -455,9 +455,9 @@ function CreativesManager({ onEdit, onRefreshReady }: {
 
   useEffect(() => {
     loadCreatives();
-    // Provide refresh function to parent
+    // Provide refresh function to parent (run once on mount to avoid loops)
     onRefreshReady(loadCreatives);
-  }, [onRefreshReady]);
+  }, []);
 
   const loadCreatives = async () => {
     try {
