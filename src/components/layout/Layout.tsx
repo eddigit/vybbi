@@ -41,35 +41,38 @@ export function Layout({ children }: LayoutProps) {
 
   // For all other pages (dashboard, agent pages, etc.), use responsive navigation
   return (
-    <div className="min-h-screen flex w-full bg-background">
-      {/* Left sidebar ad */}
-      <div className="hidden xl:block w-[300px] p-4">
-        <div className="sticky top-4">
-          <AdBanner placement="sidebar_left" />
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <div className="flex w-full">
+        {/* Left sidebar ad */}
+        <div className="hidden xl:block w-[300px] p-4">
+          <div className="sticky top-4">
+            <AdBanner placement="sidebar_left" />
+          </div>
         </div>
-      </div>
 
-      <div className="flex-1 flex flex-col">
-        <Header />
-        {/* Desktop horizontal nav, hidden on mobile */}
-        <div className="hidden md:block">
-          <TopNav />
+        <div className="flex-1 flex flex-col">
+          {/* Desktop horizontal nav, hidden on mobile */}
+          <div className="hidden md:block">
+            <TopNav />
+          </div>
+          <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-16">
+            {children}
+          </main>
+          {/* Mobile tab bar, hidden on desktop */}
+          <MobileTabBar />
+          {/* Footer hidden on mobile for better UX */}
+          <div className="hidden md:block">
+            <Footer />
+          </div>
         </div>
-        <main className="flex-1 p-4 sm:p-6 pb-20 md:pb-16">
-          {children}
-        </main>
-        {/* Mobile tab bar, hidden on desktop */}
-        <MobileTabBar />
-        {/* Footer hidden on mobile for better UX */}
-        <div className="hidden md:block">
-          <Footer />
-        </div>
-      </div>
 
-      {/* Right sidebar ad */}
-      <div className="hidden xl:block w-[300px] p-4">
-        <div className="sticky top-4">
-          <AdBanner placement="sidebar_right" />
+        {/* Right sidebar ad */}
+        <div className="hidden xl:block w-[300px] p-4">
+          <div className="sticky top-4">
+            <AdBanner placement="sidebar_right" />
+          </div>
         </div>
       </div>
     </div>
