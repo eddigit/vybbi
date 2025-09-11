@@ -20,6 +20,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import FeaturedArtistsStrip from "@/components/FeaturedArtistsStrip";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { AdBanner } from "@/components/ads/AdBanner";
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
   const features = [{
@@ -75,7 +79,17 @@ export default function Landing() {
     number: "98%",
     label: "Satisfaction"
   }];
-  return <div className="min-h-screen bg-background">
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-primary/5 via-background to-secondary/5 flex">
+      {/* Left sidebar ad */}
+      <div className="hidden xl:block w-[300px] p-4">
+        <div className="sticky top-4">
+          <AdBanner placement="sidebar_left" />
+        </div>
+      </div>
+
+      <div className="flex-1">
+        <Header />
       {/* Navigation */}
       <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
         <div className="container mx-auto px-2 sm:px-6 py-4">
@@ -671,5 +685,16 @@ export default function Landing() {
           </div>
         </div>
       </footer>
-    </div>;
+
+        <Footer />
+      </div>
+
+      {/* Right sidebar ad */}
+      <div className="hidden xl:block w-[300px] p-4">
+        <div className="sticky top-4">
+          <AdBanner placement="sidebar_right" />
+        </div>
+      </div>
+    </div>
+  );
 }

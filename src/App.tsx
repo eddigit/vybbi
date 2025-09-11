@@ -40,6 +40,7 @@ import Partenariats from "./pages/Partenariats";
 import Parrainage from "./pages/Parrainage";
 import AdminCommunication from "./pages/AdminCommunication";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminAdvertising from "./pages/AdminAdvertising";
 import Blog from "./pages/Blog";
 import BlogPost from './pages/BlogPost';
 import Technologie from './pages/Technologie';
@@ -92,6 +93,7 @@ const App = () => (
         <Route path="/parrainage" element={<Parrainage />} />
         <Route path="/admin/communication" element={<AdminCommunication />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/advertising" element={<AdminAdvertising />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/technologie" element={<Technologie />} />
