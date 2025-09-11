@@ -23,19 +23,31 @@ import {
 } from "lucide-react";
 
 export default function AdminAds() {
-  const { hasRole } = useAuth();
+  const { hasRole, loading: authLoading } = useAuth();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
 
-  // Redirect if not admin
-  useEffect(() => {
-    if (!hasRole("admin")) {
-      window.location.href = "/dashboard";
-    }
-  }, [hasRole]);
+  // Show loading while checking auth
+  if (authLoading) {
+    return (
+      <div className="container mx-auto p-6">
+        <div className="animate-pulse">Chargement...</div>
+      </div>
+    );
+  }
 
+  // Show access denied if not admin
   if (!hasRole("admin")) {
-    return <div>Accès refusé</div>;
+    return (
+      <div className="container mx-auto p-6">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-destructive">Accès refusé</h1>
+          <p className="text-muted-foreground mt-2">
+            Vous devez être administrateur pour accéder à cette page.
+          </p>
+        </div>
+      </div>
+    );
   }
 
   return (

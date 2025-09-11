@@ -71,6 +71,7 @@ const getLieuItems = (profileId: string) => [
 
 const adminItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Régie Publicitaire", url: "/admin/ads", icon: Megaphone },
   { title: "Partners", url: "/partners", icon: Users },
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },

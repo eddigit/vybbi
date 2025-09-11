@@ -10,7 +10,7 @@ import { AcquisitionChart } from "@/components/dashboard/AcquisitionChart";
 import { CommissionDistribution } from "@/components/dashboard/CommissionDistribution";
 
 export default function Dashboard() {
-  const { profile, loading } = useAuth();
+  const { profile, loading, hasRole } = useAuth();
   const [activeFilter, setActiveFilter] = useState("30d");
 
   const metrics = [
@@ -52,6 +52,49 @@ export default function Dashboard() {
     );
   }
 
+  // Check if user is admin first
+  if (hasRole('admin')) {
+    // Show admin dashboard with title
+    return (
+      <div className="space-y-6">
+        <div>
+          <h1 className="text-3xl font-bold tracking-tight">Tableau de Bord Admin</h1>
+          <p className="text-muted-foreground">
+            Bienvenue Admin - Vue d'ensemble de la plateforme
+          </p>
+        </div>
+
+        {/* Time Filter */}
+        <div className="flex justify-end">
+          <TimeFilter 
+            activeFilter={activeFilter} 
+            onFilterChange={setActiveFilter} 
+          />
+        </div>
+
+        {/* Metrics Cards */}
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          {metrics.map((metric) => (
+            <MetricCard
+              key={metric.title}
+              title={metric.title}
+              value={metric.value}
+              change={metric.change}
+              changeType={metric.changeType}
+              icon={metric.icon}
+            />
+          ))}
+        </div>
+
+        {/* Charts */}
+        <div className="grid gap-6 md:grid-cols-2">
+          <AcquisitionChart />
+          <CommissionDistribution />
+        </div>
+      </div>
+    );
+  }
+
   // Redirect to appropriate dashboard based on profile type
   if (profile?.profile_type === 'artist') {
     return <ArtistDashboard />;
@@ -65,9 +108,16 @@ export default function Dashboard() {
     return <PartnerDashboard />;
   }
 
-  // Default admin dashboard for unknown profile types or admins
+  // Default fallback for unknown profile types
   return (
     <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight">Tableau de Bord</h1>
+        <p className="text-muted-foreground">
+          Vue d'ensemble de votre activité
+        </p>
+      </div>
+
       {/* Time Filter */}
       <div className="flex justify-end">
         <TimeFilter 
