@@ -73,8 +73,7 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
     try {
       const { data, error } = await supabase
         .from('ad_campaigns')
-        .select('id, name, status')
-        .eq('is_active', true)
+        .select('id, name, status, is_active, start_date, end_date')
         .order('name');
 
       if (error) throw error;
@@ -224,8 +223,7 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
         width: formData.width ? parseInt(formData.width) : null,
         height: formData.height ? parseInt(formData.height) : null,
         display_order: formData.display_order ? parseInt(formData.display_order) : 0,
-        file_size: formData.file_size ? parseInt(formData.file_size) : selectedFile?.size || null,
-        file_type: selectedFile?.type || 'image/unknown'
+        file_size: formData.file_size ? parseInt(formData.file_size) : selectedFile?.size || null
       };
 
       if (creative) {
@@ -298,7 +296,7 @@ export function AdCreativeDialog({ open, onOpenChange, creative, onSuccess }: Ad
               <SelectTrigger>
                 <SelectValue placeholder="Sélectionner une campagne" />
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-[60] bg-background">
                 {campaigns.map((campaign) => (
                   <SelectItem key={campaign.id} value={campaign.id}>
                     {campaign.name} ({campaign.status})
