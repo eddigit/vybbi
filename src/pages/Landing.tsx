@@ -20,6 +20,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AdSlot } from "@/components/ads/AdSlot";
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
   const features = [{
@@ -120,8 +121,16 @@ export default function Landing() {
 
       {/* Hero Section */}
       <section className="pt-24 pb-16 px-2 sm:px-6">
-        <div className="container mx-auto text-center">
-          <div className="max-w-4xl mx-auto">
+        <div className="container mx-auto">
+          <div className="hidden xl:grid xl:grid-cols-[300px_1fr_300px] gap-8 items-start">
+            {/* Left Ad Slot */}
+            <div className="xl:block">
+              <AdSlot slotId="ADS-LANDING-LEFT" width={300} height={600} hideIfEmpty={true} />
+            </div>
+            
+            {/* Main Hero Content */}
+            <div className="text-center">
+              <div className="max-w-4xl mx-auto">
             <Badge className="mb-6 text-sm px-4 py-2">
               <Zap className="w-4 h-4 mr-2" />
               THE HYPE OF THE NIGHT
@@ -165,7 +174,61 @@ export default function Landing() {
             </div>
           </div>
         </div>
-      </section>
+        
+        {/* Right Ad Slot */}
+        <div className="xl:block">
+          <AdSlot slotId="ADS-LANDING-RIGHT" width={300} height={600} hideIfEmpty={true} />
+        </div>
+      </div>
+      
+      {/* Mobile/Tablet Hero Content (visible when grid is hidden) */}
+      <div className="xl:hidden text-center">
+        <div className="max-w-4xl mx-auto">
+          <Badge className="mb-6 text-sm px-4 py-2">
+            <Zap className="w-4 h-4 mr-2" />
+            THE HYPE OF THE NIGHT
+          </Badge>
+          
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-bold mb-6 leading-tight">
+            <span className="bg-gradient-primary bg-clip-text text-transparent">
+              Connectez votre
+            </span>
+            <br />
+            <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
+            <span className="text-foreground"> au monde</span>
+          </h1>
+          
+          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
+            Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
+            Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
+          </p>
+
+          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+            <Button size="lg" className="text-lg px-8 py-6" asChild>
+              <Link to="/auth">
+                Rejoindre la communauté
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
+            <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+              <Link to="/demo">
+                <Play className="mr-2 h-5 w-5" />
+                Voir la démo
+              </Link>
+            </Button>
+          </div>
+
+          {/* Stats */}
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
+            {stats.map((stat, index) => <div key={index} className="text-center">
+                <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
+              </div>)}
+          </div>
+        </div>
+      </div>
+    </div>
+    </section>
 
       {/* Audiences Section */}
       <section className="py-16 px-2 sm:px-6 bg-muted/30">

@@ -14,6 +14,272 @@ export type Database = {
   }
   public: {
     Tables: {
+      ad_assets: {
+        Row: {
+          alt_text: string | null
+          campaign_id: string
+          created_at: string
+          display_order: number | null
+          file_name: string
+          file_size: number | null
+          file_url: string
+          height: number | null
+          id: string
+          width: number | null
+        }
+        Insert: {
+          alt_text?: string | null
+          campaign_id: string
+          created_at?: string
+          display_order?: number | null
+          file_name: string
+          file_size?: number | null
+          file_url: string
+          height?: number | null
+          id?: string
+          width?: number | null
+        }
+        Update: {
+          alt_text?: string | null
+          campaign_id?: string
+          created_at?: string
+          display_order?: number | null
+          file_name?: string
+          file_size?: number | null
+          file_url?: string
+          height?: number | null
+          id?: string
+          width?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_assets_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_campaign_slots: {
+        Row: {
+          campaign_id: string
+          created_at: string
+          id: string
+          is_enabled: boolean | null
+          priority: number | null
+          slot_id: string
+          weight: number | null
+        }
+        Insert: {
+          campaign_id: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          priority?: number | null
+          slot_id: string
+          weight?: number | null
+        }
+        Update: {
+          campaign_id?: string
+          created_at?: string
+          id?: string
+          is_enabled?: boolean | null
+          priority?: number | null
+          slot_id?: string
+          weight?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_campaign_slots_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_campaign_slots_slot_id_fkey"
+            columns: ["slot_id"]
+            isOneToOne: false
+            referencedRelation: "ad_slots"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_campaigns: {
+        Row: {
+          advertiser: string | null
+          created_at: string
+          created_by: string | null
+          daily_window_end: string | null
+          daily_window_start: string | null
+          description: string | null
+          end_date: string
+          id: string
+          is_active: boolean
+          name: string
+          placement_type: string
+          start_date: string
+          status: string
+          target_url: string | null
+          updated_at: string
+        }
+        Insert: {
+          advertiser?: string | null
+          created_at?: string
+          created_by?: string | null
+          daily_window_end?: string | null
+          daily_window_start?: string | null
+          description?: string | null
+          end_date: string
+          id?: string
+          is_active?: boolean
+          name: string
+          placement_type: string
+          start_date: string
+          status?: string
+          target_url?: string | null
+          updated_at?: string
+        }
+        Update: {
+          advertiser?: string | null
+          created_at?: string
+          created_by?: string | null
+          daily_window_end?: string | null
+          daily_window_start?: string | null
+          description?: string | null
+          end_date?: string
+          id?: string
+          is_active?: boolean
+          name?: string
+          placement_type?: string
+          start_date?: string
+          status?: string
+          target_url?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      ad_metrics: {
+        Row: {
+          asset_id: string | null
+          campaign_id: string
+          created_at: string
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          page_url: string | null
+          referrer: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          asset_id?: string | null
+          campaign_id: string
+          created_at?: string
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          asset_id?: string | null
+          campaign_id?: string
+          created_at?: string
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          page_url?: string | null
+          referrer?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ad_metrics_asset_id_fkey"
+            columns: ["asset_id"]
+            isOneToOne: false
+            referencedRelation: "ad_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "ad_metrics_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "ad_campaigns"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ad_settings: {
+        Row: {
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string
+          updated_by: string | null
+        }
+        Insert: {
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Update: {
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string
+          updated_by?: string | null
+        }
+        Relationships: []
+      }
+      ad_slots: {
+        Row: {
+          allowed_formats: string[] | null
+          code: string
+          created_at: string
+          height: number | null
+          hide_if_empty: boolean | null
+          id: string
+          is_enabled: boolean | null
+          name: string
+          page_type: string
+          updated_at: string
+          width: number | null
+        }
+        Insert: {
+          allowed_formats?: string[] | null
+          code: string
+          created_at?: string
+          height?: number | null
+          hide_if_empty?: boolean | null
+          id?: string
+          is_enabled?: boolean | null
+          name: string
+          page_type?: string
+          updated_at?: string
+          width?: number | null
+        }
+        Update: {
+          allowed_formats?: string[] | null
+          code?: string
+          created_at?: string
+          height?: number | null
+          hide_if_empty?: boolean | null
+          id?: string
+          is_enabled?: boolean | null
+          name?: string
+          page_type?: string
+          updated_at?: string
+          width?: number | null
+        }
+        Relationships: []
+      }
       agent_artists: {
         Row: {
           agent_profile_id: string

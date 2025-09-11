@@ -45,6 +45,7 @@ import BlogPost from './pages/BlogPost';
 import Technologie from './pages/Technologie';
 import Fondateurs from './pages/Fondateurs';
 import APropos from './pages/APropos';
+import AdminAds from './pages/AdminAds';
 
 const queryClient = new QueryClient();
 
@@ -92,6 +93,7 @@ const App = () => (
         <Route path="/parrainage" element={<Parrainage />} />
         <Route path="/admin/communication" element={<AdminCommunication />} />
         <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/ads" element={<AdminAds />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/technologie" element={<Technologie />} />
