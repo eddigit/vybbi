@@ -137,21 +137,26 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
         campaignId = data.id;
       }
 
-      // Insert new campaign slots
-      if (formData.selected_slots.length > 0) {
-        const slotsData = formData.selected_slots.map(slotId => ({
-          campaign_id: campaignId,
-          slot_id: slotId,
-          weight: 1,
-          priority: 0,
-          is_enabled: true
-        }));
-
-        const { error: slotsError } = await supabase
-          .from('ad_campaign_slots')
-          .insert(slotsData);
+      // Insert new campaign slots only if slots are selected AND valid
+      if (formData.selected_slots && formData.selected_slots.length > 0) {
+        // Filter out any null/undefined values
+        const validSlotIds = formData.selected_slots.filter(slotId => slotId && typeof slotId === 'string');
         
-        if (slotsError) throw slotsError;
+        if (validSlotIds.length > 0) {
+          const slotsData = validSlotIds.map(slotId => ({
+            campaign_id: campaignId,
+            slot_id: slotId,
+            weight: 1,
+            priority: 0,
+            is_enabled: true
+          }));
+
+          const { error: slotsError } = await supabase
+            .from('ad_campaign_slots')
+            .insert(slotsData);
+          
+          if (slotsError) throw slotsError;
+        }
       }
 
       toast({
@@ -172,6 +177,8 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
   };
 
   const toggleSlot = (slotId: string) => {
+    if (!slotId) return; // Safety check
+    
     setFormData(prev => ({
       ...prev,
       selected_slots: prev.selected_slots.includes(slotId)
