@@ -127,7 +127,7 @@ export default function Landing() {
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-4">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
-            <div className="xl:block sticky top-24 mb-24">
+            <div className="xl:block sticky top-20 mb-24">
               <AdSlot slotId="ADS-LANDING-LEFT" width={200} height={800} hideIfEmpty={true} fit="contain" />
             </div>
             
@@ -178,7 +178,7 @@ export default function Landing() {
         </div>
         
         {/* Right Ad Slot */}
-        <div className="xl:block sticky top-24 mb-24">
+        <div className="xl:block sticky top-20 mb-24">
           <AdSlot slotId="ADS-LANDING-RIGHT" width={200} height={800} hideIfEmpty={true} fit="contain" />
         </div>
       </div>
