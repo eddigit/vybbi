@@ -1,4 +1,4 @@
-import { Bell, Search, RefreshCw, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -29,13 +29,6 @@ export function Header() {
   const isArtistPage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
   const showAdminControls = !isArtistPage && location.pathname !== '/';
 
-  const handleRefresh = () => {
-    window.location.reload();
-    toast({
-      title: "Page actualisée",
-      description: "La page a été rechargée avec succès.",
-    });
-  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -78,30 +71,6 @@ export function Header() {
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
           {showAdminControls && (
             <>
-              {/* Mobile: Only refresh button */}
-              <div className="sm:hidden">
-                <Button 
-                  variant="ghost" 
-                  size="icon" 
-                  className="h-9 w-9"
-                  onClick={handleRefresh}
-                >
-                  <RefreshCw className="h-4 w-4" />
-                </Button>
-              </div>
-
-              {/* Desktop: Full refresh button */}
-              <div className="hidden sm:flex items-center gap-2">
-                <Button 
-                  variant="outline" 
-                  size="sm" 
-                  className="gap-2"
-                  onClick={handleRefresh}
-                >
-                  <RefreshCw className="h-4 w-4" />
-                  Actualiser
-                </Button>
-              </div>
 
               {/* Search - Hidden on mobile, visible on tablet+ */}
               <form onSubmit={handleSearch} className="hidden lg:block relative">
