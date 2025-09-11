@@ -20,6 +20,7 @@ import {
   User,
   Route,
   MessageCircle,
+  Megaphone,
 } from "lucide-react";
 
 import {
@@ -76,6 +77,7 @@ const adminItems = [
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Reports", url: "/reports", icon: BarChart3 },
+  { title: "Régie Publicitaire", url: "/admin/ads", icon: Megaphone },
   { title: "Communication", url: "/admin/communication", icon: MessageCircle },
   { title: "Roadmap", url: "/admin/roadmap", icon: Route },
   { title: "Modération", url: "/admin/moderation", icon: Settings },
