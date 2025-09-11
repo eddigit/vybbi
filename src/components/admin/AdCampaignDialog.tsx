@@ -321,7 +321,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
 
           <div className="space-y-2">
             <Label>Emplacements publicitaires</Label>
-            <div className="grid grid-cols-2 gap-2 max-h-32 overflow-y-auto border rounded p-2">
+            <div className="grid grid-cols-1 gap-2 max-h-32 overflow-y-auto border rounded p-2">
               {slots.map((slot) => (
                 <div key={slot.id} className="flex items-center space-x-2">
                   <input
@@ -331,11 +331,14 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
                     onChange={() => toggleSlot(slot.id)}
                     className="rounded"
                   />
-                  <Label htmlFor={`slot-${slot.id}`} className="text-sm">
-                    {slot.name}
+                  <Label htmlFor={`slot-${slot.id}`} className="text-sm cursor-pointer">
+                    {slot.name} ({slot.width}x{slot.height}px)
                   </Label>
                 </div>
               ))}
+            </div>
+            <div className="text-xs text-muted-foreground">
+              Sélectionnez plusieurs emplacements pour diffuser sur plusieurs zones simultanément
             </div>
           </div>
 
