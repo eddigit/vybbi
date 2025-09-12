@@ -16,11 +16,18 @@ import {
   Shield,
   Database,
   Activity,
-  Music
+  Music,
+  Bot,
+  Target,
+  Clock
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { RadioManagement } from "@/components/admin/RadioManagement";
+import { VybbiChat } from "@/components/admin/VybbiChat";
+import { VybbiConfig } from "@/components/admin/VybbiConfig";
+import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
+import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
 
 interface AdminStats {
   totalUsers: number;
@@ -134,11 +141,12 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-5">
+        <TabsList className="grid w-full grid-cols-6">
           <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
           <TabsTrigger value="users">Utilisateurs</TabsTrigger>
           <TabsTrigger value="content">Contenus</TabsTrigger>
           <TabsTrigger value="radio">Radio</TabsTrigger>
+          <TabsTrigger value="ai">Intelligence Artificielle</TabsTrigger>
           <TabsTrigger value="system">Système</TabsTrigger>
         </TabsList>
 
@@ -297,6 +305,94 @@ export default function AdminDashboard() {
               <RadioManagement />
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="ai" className="space-y-4">
+          <div className="grid gap-4">
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Interactions Vybbi
+                  </CardTitle>
+                  <Bot className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">247</div>
+                  <p className="text-xs text-muted-foreground">
+                    +12% ce mois
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Matchings Réussis
+                  </CardTitle>
+                  <Target className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">89</div>
+                  <p className="text-xs text-muted-foreground">
+                    Taux: 76%
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Temps Réponse Moyen
+                  </CardTitle>
+                  <Clock className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">850ms</div>
+                  <p className="text-xs text-muted-foreground">
+                    Optimal &lt; 1s
+                  </p>
+                </CardContent>
+              </Card>
+              <Card>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    Statut IA
+                  </CardTitle>
+                  <Activity className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold text-green-600">●</div>
+                  <p className="text-xs text-muted-foreground">
+                    Opérationnel
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Tabs defaultValue="chat" className="space-y-4">
+              <TabsList>
+                <TabsTrigger value="chat">Chat Vybbi</TabsTrigger>
+                <TabsTrigger value="config">Configuration</TabsTrigger>
+                <TabsTrigger value="monitoring">Monitoring</TabsTrigger>
+                <TabsTrigger value="knowledge">Base de Connaissances</TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="chat">
+                <VybbiChat />
+              </TabsContent>
+              
+              <TabsContent value="config">
+                <VybbiConfig />
+              </TabsContent>
+              
+              <TabsContent value="monitoring">
+                <VybbiMonitoring />
+              </TabsContent>
+              
+              <TabsContent value="knowledge">
+                <VybbiKnowledge />
+              </TabsContent>
+            </Tabs>
+          </div>
         </TabsContent>
 
         <TabsContent value="system" className="space-y-6">

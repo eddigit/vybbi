@@ -56,6 +56,7 @@ import AdminAds from './pages/AdminAds';
 import TopArtistes from './pages/TopArtistes';
 import InscriptionConfirmation from './pages/InscriptionConfirmation';
 import Onboarding from './pages/Onboarding';
+import RechercheAvancee from './pages/RechercheAvancee';
 
 const queryClient = new QueryClient();
 
@@ -122,6 +123,7 @@ const App = () => (
               <Route path="/fondateurs" element={<Fondateurs />} />
               <Route path="/a-propos" element={<APropos />} />
               <Route path="/top-artistes" element={<TopArtistes />} />
+              <Route path="/recherche-avancee" element={<RechercheAvancee />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
