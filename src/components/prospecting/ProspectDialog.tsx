@@ -126,6 +126,16 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
     try {
       setLoading(true);
 
+      // Validate required fields
+      if (!prospect.contact_name.trim()) {
+        toast({
+          title: "Erreur de validation",
+          description: "Le nom du contact est requis",
+          variant: "destructive",
+        });
+        return;
+      }
+
       if (prospectId) {
         // Update existing prospect
         const { error } = await supabase
@@ -133,14 +143,40 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
           .update(prospect)
           .eq('id', prospectId);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
       } else {
-        // Create new prospect
-        const { error } = await supabase
-          .from('prospects')
-          .insert([prospect]);
+        // Create new prospect with required fields
+        const prospectData = {
+          prospect_type: prospect.prospect_type,
+          contact_name: prospect.contact_name.trim(),
+          company_name: prospect.company_name?.trim() || null,
+          email: prospect.email?.trim() || null,
+          phone: prospect.phone?.trim() || null,
+          address: prospect.address?.trim() || null,
+          city: prospect.city?.trim() || null,
+          website: prospect.website?.trim() || null,
+          status: prospect.status,
+          qualification_score: prospect.qualification_score || 0,
+          notes: prospect.notes?.trim() || null,
+          source: prospect.source?.trim() || 'manual'
+        };
 
-        if (error) throw error;
+        console.log('Creating prospect:', prospectData);
+
+        const { data, error } = await supabase
+          .from('prospects')
+          .insert([prospectData])
+          .select();
+
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
+
+        console.log('Created prospect:', data);
       }
 
       toast({
