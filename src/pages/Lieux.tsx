@@ -7,6 +7,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 export default function Lieux() {
   const [lieux, setLieux] = useState<Profile[]>([]);
@@ -72,7 +73,7 @@ export default function Lieux() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
         {filteredLieux.map((lieu) => (
-          <Link key={lieu.id} to={`/lieux/${lieu.id}`}>
+          <Link key={lieu.id} to={getProfileUrl(lieu)}>
             <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card/95 backdrop-blur-sm border border-border/50">
               <CardContent className="p-6">
                 <div className="flex flex-col items-center text-center">

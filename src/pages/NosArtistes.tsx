@@ -9,6 +9,7 @@ import { MapPin, Users, Briefcase, Calendar, ArrowRight } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 export default function NosArtistes() {
   const { user, loading: authLoading } = useAuth();
@@ -86,13 +87,7 @@ export default function NosArtistes() {
   };
 
   const getProfileLink = (profile: Profile) => {
-    switch (profile.profile_type) {
-      case 'artist': return `/artists/${profile.id}`;
-      case 'agent':
-      case 'manager': return `/partners/${profile.id}`;
-      case 'lieu': return `/lieux/${profile.id}`;
-      default: return `/profiles`;
-    }
+    return getProfileUrl(profile);
   };
 
   const ProfileCard = ({ profile }: { profile: Profile }) => (

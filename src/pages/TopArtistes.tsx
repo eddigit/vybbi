@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 interface TopArtist {
   profile_id: string;
@@ -21,6 +22,7 @@ interface TopArtist {
   overall_score: number;
   total_reviews: number;
   combined_score: number;
+  slug?: string; // Add slug field for SEO-friendly URLs
 }
 
 export default function TopArtistes() {
@@ -315,7 +317,7 @@ export default function TopArtistes() {
 
               {/* View Profile Button */}
               <Button asChild variant="outline" size="sm">
-                <Link to={`/artists/${artist.profile_id}`}>
+                <Link to={getProfileUrl({ profile_type: 'artist', id: artist.profile_id })}>
                   Voir profil
                 </Link>
               </Button>
