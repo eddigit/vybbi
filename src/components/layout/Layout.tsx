@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
+import { RadioPlayer } from "../RadioPlayer";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -21,6 +22,7 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </div>
         <Footer />
+        <RadioPlayer />
       </>
     );
   }
@@ -34,6 +36,7 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </main>
         <Footer />
+        <RadioPlayer />
       </div>
     );
   }
@@ -55,6 +58,7 @@ export function Layout({ children }: LayoutProps) {
       <div className="hidden md:block">
         <Footer />
       </div>
+      <RadioPlayer />
     </div>
   );
 }
