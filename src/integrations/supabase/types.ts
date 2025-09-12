@@ -1479,6 +1479,39 @@ export type Database = {
         }
         Relationships: []
       }
+      vybbi_interactions: {
+        Row: {
+          action: string | null
+          created_at: string
+          filters: Json | null
+          id: string
+          message: string
+          response: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          action?: string | null
+          created_at?: string
+          filters?: Json | null
+          id?: string
+          message: string
+          response: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          action?: string | null
+          created_at?: string
+          filters?: Json | null
+          id?: string
+          message?: string
+          response?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
