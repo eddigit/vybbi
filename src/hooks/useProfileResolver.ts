@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
+import { useProfileTracking } from './useProfileTracking';
 
 interface ResolvedProfile {
   id: string;
@@ -41,6 +42,13 @@ export const useProfileResolver = (identifier: string | undefined) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  
+  // Track profile view when successfully loaded
+  useProfileTracking(
+    profile?.id, 
+    'full_profile',
+    window.location.pathname
+  );
 
   useEffect(() => {
     if (!identifier) {

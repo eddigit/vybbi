@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { Calendar, Music, Users, Eye } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Calendar, Music, Users, Eye, TrendingUp, TrendingDown, MessageSquare, Edit } from "lucide-react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { ArtistRepresentationRequests } from "@/components/ArtistRepresentationRequests";
+import { ProfileVisitors } from "@/components/ProfileVisitors";
+import { ProfileViewStatsCard } from "@/components/ProfileViewStatsCard";
 
 export default function ArtistDashboard() {
   const { profile } = useAuth();
@@ -82,93 +85,130 @@ export default function ArtistDashboard() {
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Tableau de bord artiste</h1>
           <p className="text-muted-foreground">Bienvenue {profile?.display_name}</p>
         </div>
-        <Button asChild>
-          <Link to={`/artists/${profile?.id}`}>
-            Voir mon profil public
-          </Link>
-        </Button>
+        {profile && (
+          <Button asChild>
+            <Link to={`/artistes/${profile.id}`}>
+              <Eye className="h-4 w-4 mr-2" />
+              Voir mon profil public
+            </Link>
+          </Button>
+        )}
       </div>
 
-      {/* Metrics Cards */}
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {metrics.map((metric) => (
-          <Card key={metric.title}>
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-              <CardTitle className="text-sm font-medium">
-                {metric.title}
-              </CardTitle>
-              <metric.icon className="h-4 w-4 text-muted-foreground" />
+      {/* Main Dashboard Content */}
+      <Tabs defaultValue="overview" className="space-y-6">
+        <TabsList className="grid w-full grid-cols-3">
+          <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
+          <TabsTrigger value="visitors">Qui visite mon profil</TabsTrigger>
+          <TabsTrigger value="requests">Demandes de représentation</TabsTrigger>
+        </TabsList>
+
+        <TabsContent value="overview" className="space-y-6">
+          {/* Metrics Cards */}
+          <div className="grid gap-4 md:grid-cols-3 lg:grid-cols-4">
+            {metrics.map((metric) => (
+              <Card key={metric.title}>
+                <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                  <CardTitle className="text-sm font-medium">
+                    {metric.title}
+                  </CardTitle>
+                  <metric.icon className="h-4 w-4 text-muted-foreground" />
+                </CardHeader>
+                <CardContent>
+                  <div className="text-2xl font-bold">{metric.value}</div>
+                  <div className="flex items-center text-xs text-muted-foreground mt-1">
+                    {metric.changeType === 'positive' ? (
+                      <TrendingUp className="h-3 w-3 mr-1 text-emerald-500" />
+                    ) : (
+                      <TrendingDown className="h-3 w-3 mr-1 text-red-500" />
+                    )}
+                    <span className={
+                      metric.changeType === "positive" ? "text-emerald-500" :
+                      metric.changeType === "negative" ? "text-red-500" :
+                      "text-muted-foreground"
+                    }>
+                      {metric.change}
+                    </span>
+                    <span className="ml-1">ce mois-ci</span>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            {/* Profile Views Stats Card */}
+            {profile && (
+              <ProfileViewStatsCard profileId={profile.id} />
+            )}
+          </div>
+
+          {/* Quick Actions */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Actions rapides</CardTitle>
+              <CardDescription>
+                Accès rapide aux fonctionnalités importantes
+              </CardDescription>
             </CardHeader>
             <CardContent>
-              <div className="text-2xl font-bold">{metric.value}</div>
-              <p className="text-xs text-muted-foreground">
-                <span className={
-                  metric.changeType === "positive" ? "text-green-600" :
-                  metric.changeType === "negative" ? "text-red-600" :
-                  metric.changeType === "neutral" ? "text-yellow-600" :
-                  "text-gray-600"
-                }>
-                  {metric.change}
-                </span>
-                {" "}par rapport au mois dernier
-              </p>
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <Link to="/annonces">
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardContent className="p-4 text-center">
+                      <Calendar className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <h3 className="font-medium">Gérer mes candidatures</h3>
+                      <p className="text-sm text-muted-foreground">Voir et gérer toutes mes candidatures</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                
+                <Link to="/artist-profile-edit">
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardContent className="p-4 text-center">
+                      <Edit className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <h3 className="font-medium">Éditer mon profil</h3>
+                      <p className="text-sm text-muted-foreground">Mettre à jour mes informations</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+                
+                <Link to="/messages">
+                  <Card className="cursor-pointer hover:shadow-md transition-shadow">
+                    <CardContent className="p-4 text-center">
+                      <MessageSquare className="h-8 w-8 mx-auto mb-2 text-primary" />
+                      <h3 className="font-medium">Messages</h3>
+                      <p className="text-sm text-muted-foreground">Voir mes conversations</p>
+                    </CardContent>
+                  </Card>
+                </Link>
+              </div>
             </CardContent>
           </Card>
-        ))}
-      </div>
+        </TabsContent>
 
-      {/* Representation Requests */}
-      <ArtistRepresentationRequests />
+        <TabsContent value="visitors" className="space-y-6">
+          {profile && <ProfileVisitors profileId={profile.id} />}
+        </TabsContent>
 
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card>
-          <CardHeader>
-            <CardTitle>Mes candidatures</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Gérez vos candidatures aux annonces
-            </p>
-            <Button className="w-full" variant="outline" asChild>
-              <Link to="/annonces">Voir les annonces</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Mon profil</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Mettez à jour vos informations et médias
-            </p>
-            <Button className="w-full" variant="outline" asChild>
-              <Link to={`/artists/${profile?.id}/edit`}>Modifier le profil</Link>
-            </Button>
-          </CardContent>
-        </Card>
-
-        <Card>
-          <CardHeader>
-            <CardTitle>Messages</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-muted-foreground mb-4">
-              Consultez vos conversations
-            </p>
-            <Button className="w-full" variant="outline" asChild>
-              <Link to="/messages">Voir les messages</Link>
-            </Button>
-          </CardContent>
-        </Card>
-      </div>
+        <TabsContent value="requests" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle>Demandes de représentation</CardTitle>
+              <CardDescription>
+                Gérez les demandes d'agents et managers
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <ArtistRepresentationRequests />
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
     </div>
   );
 }
