@@ -6,6 +6,13 @@ interface TickerMessage {
   message: string;
   is_active: boolean;
   display_order: number;
+  start_date?: string;
+  end_date?: string;
+  days_of_week?: string[];
+  start_time?: string;
+  end_time?: string;
+  timezone?: string;
+  priority?: number;
 }
 
 export function TickerBanner() {
@@ -16,12 +23,34 @@ export function TickerBanner() {
     fetchMessages();
   }, []);
 
+  const isMessageActive = (message: TickerMessage): boolean => {
+    const now = new Date();
+    const currentDate = now.toISOString().split('T')[0];
+    const currentTime = now.toTimeString().split(' ')[0].slice(0, 5);
+    const currentDayOfWeek = now.toLocaleDateString('en-US', { weekday: 'long' }).toLowerCase();
+
+    // Check date range
+    if (message.start_date && currentDate < message.start_date) return false;
+    if (message.end_date && currentDate > message.end_date) return false;
+
+    // Check days of week
+    if (message.days_of_week?.length && !message.days_of_week.includes(currentDayOfWeek)) return false;
+
+    // Check time range
+    if (message.start_time && message.end_time) {
+      if (currentTime < message.start_time || currentTime > message.end_time) return false;
+    }
+
+    return true;
+  };
+
   const fetchMessages = async () => {
     try {
       const { data, error } = await supabase
         .from('site_ticker_messages')
         .select('*')
         .eq('is_active', true)
+        .order('priority', { ascending: false })
         .order('display_order', { ascending: true });
 
       if (error) {
@@ -29,7 +58,9 @@ export function TickerBanner() {
         return;
       }
 
-      setMessages(data || []);
+      // Filter messages based on schedule and prioritize
+      const activeMessages = (data || []).filter(isMessageActive);
+      setMessages(activeMessages);
     } catch (error) {
       console.error('Error fetching ticker messages:', error);
     }

@@ -1746,28 +1746,49 @@ export type Database = {
         Row: {
           created_at: string
           created_by: string | null
+          days_of_week: string[] | null
           display_order: number | null
+          end_date: string | null
+          end_time: string | null
           id: string
           is_active: boolean
           message: string
+          priority: number | null
+          start_date: string | null
+          start_time: string | null
+          timezone: string | null
           updated_at: string
         }
         Insert: {
           created_at?: string
           created_by?: string | null
+          days_of_week?: string[] | null
           display_order?: number | null
+          end_date?: string | null
+          end_time?: string | null
           id?: string
           is_active?: boolean
           message: string
+          priority?: number | null
+          start_date?: string | null
+          start_time?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Update: {
           created_at?: string
           created_by?: string | null
+          days_of_week?: string[] | null
           display_order?: number | null
+          end_date?: string | null
+          end_time?: string | null
           id?: string
           is_active?: boolean
           message?: string
+          priority?: number | null
+          start_date?: string | null
+          start_time?: string | null
+          timezone?: string | null
           updated_at?: string
         }
         Relationships: []

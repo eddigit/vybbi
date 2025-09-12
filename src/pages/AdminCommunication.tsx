@@ -31,6 +31,13 @@ interface TickerMessage {
   message: string;
   is_active: boolean;
   display_order: number;
+  start_date?: string;
+  end_date?: string;
+  days_of_week?: string[];
+  start_time?: string;
+  end_time?: string;
+  timezone?: string;
+  priority?: number;
   created_at: string;
   updated_at: string;
 }
@@ -39,9 +46,27 @@ export default function AdminCommunication() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
   const [newTickerMessage, setNewTickerMessage] = useState("");
+  const [newTickerSchedule, setNewTickerSchedule] = useState({
+    start_date: "",
+    end_date: "",
+    days_of_week: [] as string[],
+    start_time: "",
+    end_time: "",
+    priority: 1
+  });
   const [editingTicker, setEditingTicker] = useState<TickerMessage | null>(null);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  const daysOfWeek = [
+    { value: 'monday', label: 'Lundi' },
+    { value: 'tuesday', label: 'Mardi' },
+    { value: 'wednesday', label: 'Mercredi' },
+    { value: 'thursday', label: 'Jeudi' },
+    { value: 'friday', label: 'Vendredi' },
+    { value: 'saturday', label: 'Samedi' },
+    { value: 'sunday', label: 'Dimanche' }
+  ];
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ['admin-blog-posts'],
@@ -95,13 +120,27 @@ export default function AdminCommunication() {
   });
 
   const createTickerMutation = useMutation({
-    mutationFn: async (message: string) => {
+    mutationFn: async (data: { 
+      message: string; 
+      start_date?: string; 
+      end_date?: string; 
+      days_of_week?: string[]; 
+      start_time?: string; 
+      end_time?: string; 
+      priority?: number; 
+    }) => {
       const { error } = await supabase
         .from('site_ticker_messages')
         .insert([{
-          message,
+          message: data.message,
           is_active: true,
-          display_order: tickerMessages.length
+          display_order: tickerMessages.length,
+          start_date: data.start_date || null,
+          end_date: data.end_date || null,
+          days_of_week: data.days_of_week?.length ? data.days_of_week : null,
+          start_time: data.start_time || null,
+          end_time: data.end_time || null,
+          priority: data.priority || 1
         }]);
       
       if (error) throw error;
@@ -109,6 +148,14 @@ export default function AdminCommunication() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-ticker-messages'] });
       setNewTickerMessage("");
+      setNewTickerSchedule({
+        start_date: "",
+        end_date: "",
+        days_of_week: [],
+        start_time: "",
+        end_time: "",
+        priority: 1
+      });
       toast({
         title: "Message ajouté",
         description: "Le message du bandeau a été ajouté avec succès.",
@@ -124,11 +171,20 @@ export default function AdminCommunication() {
   });
 
   const updateTickerMutation = useMutation({
-    mutationFn: async ({ id, message, is_active }: { id: string, message: string, is_active: boolean }) => {
+    mutationFn: async (data: TickerMessage) => {
       const { error } = await supabase
         .from('site_ticker_messages')
-        .update({ message, is_active })
-        .eq('id', id);
+        .update({ 
+          message: data.message, 
+          is_active: data.is_active,
+          start_date: data.start_date || null,
+          end_date: data.end_date || null,
+          days_of_week: data.days_of_week?.length ? data.days_of_week : null,
+          start_time: data.start_time || null,
+          end_time: data.end_time || null,
+          priority: data.priority || 1
+        })
+        .eq('id', data.id);
       
       if (error) throw error;
     },
@@ -411,8 +467,104 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
                   className="min-h-[100px]"
                 />
               </div>
+              
+              <div className="space-y-4 border-t pt-4">
+                <h4 className="font-medium text-sm">Programmation (optionnel)</h4>
+                
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="start-date">Date de début</Label>
+                    <Input
+                      id="start-date"
+                      type="date"
+                      value={newTickerSchedule.start_date}
+                      onChange={(e) => setNewTickerSchedule(prev => ({ ...prev, start_date: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="end-date">Date de fin</Label>
+                    <Input
+                      id="end-date"
+                      type="date"
+                      value={newTickerSchedule.end_date}
+                      onChange={(e) => setNewTickerSchedule(prev => ({ ...prev, end_date: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label>Jours de la semaine</Label>
+                  <div className="flex flex-wrap gap-2">
+                    {daysOfWeek.map((day) => (
+                      <div key={day.value} className="flex items-center space-x-2">
+                        <input
+                          type="checkbox"
+                          id={day.value}
+                          checked={newTickerSchedule.days_of_week.includes(day.value)}
+                          onChange={(e) => {
+                            if (e.target.checked) {
+                              setNewTickerSchedule(prev => ({
+                                ...prev,
+                                days_of_week: [...prev.days_of_week, day.value]
+                              }));
+                            } else {
+                              setNewTickerSchedule(prev => ({
+                                ...prev,
+                                days_of_week: prev.days_of_week.filter(d => d !== day.value)
+                              }));
+                            }
+                          }}
+                          className="rounded border-input"
+                        />
+                        <Label htmlFor={day.value} className="text-sm">{day.label}</Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="start-time">Heure de début</Label>
+                    <Input
+                      id="start-time"
+                      type="time"
+                      value={newTickerSchedule.start_time}
+                      onChange={(e) => setNewTickerSchedule(prev => ({ ...prev, start_time: e.target.value }))}
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="end-time">Heure de fin</Label>
+                    <Input
+                      id="end-time"
+                      type="time"
+                      value={newTickerSchedule.end_time}
+                      onChange={(e) => setNewTickerSchedule(prev => ({ ...prev, end_time: e.target.value }))}
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="priority">Priorité (1-10)</Label>
+                  <Input
+                    id="priority"
+                    type="number"
+                    min="1"
+                    max="10"
+                    value={newTickerSchedule.priority}
+                    onChange={(e) => setNewTickerSchedule(prev => ({ ...prev, priority: parseInt(e.target.value) || 1 }))}
+                  />
+                </div>
+              </div>
               <Button 
-                onClick={() => createTickerMutation.mutate(newTickerMessage)}
+                onClick={() => createTickerMutation.mutate({
+                  message: newTickerMessage,
+                  start_date: newTickerSchedule.start_date || undefined,
+                  end_date: newTickerSchedule.end_date || undefined,
+                  days_of_week: newTickerSchedule.days_of_week.length > 0 ? newTickerSchedule.days_of_week : undefined,
+                  start_time: newTickerSchedule.start_time || undefined,
+                  end_time: newTickerSchedule.end_time || undefined,
+                  priority: newTickerSchedule.priority
+                })}
                 disabled={!newTickerMessage.trim() || createTickerMutation.isPending}
               >
                 <Plus className="w-4 h-4 mr-2" />
@@ -444,6 +596,91 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
                           onChange={(e) => setEditingTicker({ ...editingTicker, message: e.target.value })}
                           className="min-h-[100px]"
                         />
+                        
+                        <div className="space-y-4 border-t pt-4">
+                          <h4 className="font-medium text-sm">Programmation</h4>
+                          
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label>Date de début</Label>
+                              <Input
+                                type="date"
+                                value={editingTicker.start_date || ""}
+                                onChange={(e) => setEditingTicker({ ...editingTicker, start_date: e.target.value || undefined })}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Date de fin</Label>
+                              <Input
+                                type="date"
+                                value={editingTicker.end_date || ""}
+                                onChange={(e) => setEditingTicker({ ...editingTicker, end_date: e.target.value || undefined })}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Jours de la semaine</Label>
+                            <div className="flex flex-wrap gap-2">
+                              {daysOfWeek.map((day) => (
+                                <div key={day.value} className="flex items-center space-x-2">
+                                  <input
+                                    type="checkbox"
+                                    id={`edit-${day.value}`}
+                                    checked={editingTicker.days_of_week?.includes(day.value) || false}
+                                    onChange={(e) => {
+                                      const currentDays = editingTicker.days_of_week || [];
+                                      if (e.target.checked) {
+                                        setEditingTicker({ 
+                                          ...editingTicker, 
+                                          days_of_week: [...currentDays, day.value]
+                                        });
+                                      } else {
+                                        setEditingTicker({ 
+                                          ...editingTicker, 
+                                          days_of_week: currentDays.filter(d => d !== day.value)
+                                        });
+                                      }
+                                    }}
+                                    className="rounded border-input"
+                                  />
+                                  <Label htmlFor={`edit-${day.value}`} className="text-sm">{day.label}</Label>
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4">
+                            <div className="space-y-2">
+                              <Label>Heure de début</Label>
+                              <Input
+                                type="time"
+                                value={editingTicker.start_time || ""}
+                                onChange={(e) => setEditingTicker({ ...editingTicker, start_time: e.target.value || undefined })}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label>Heure de fin</Label>
+                              <Input
+                                type="time"
+                                value={editingTicker.end_time || ""}
+                                onChange={(e) => setEditingTicker({ ...editingTicker, end_time: e.target.value || undefined })}
+                              />
+                            </div>
+                          </div>
+
+                          <div className="space-y-2">
+                            <Label>Priorité (1-10)</Label>
+                            <Input
+                              type="number"
+                              min="1"
+                              max="10"
+                              value={editingTicker.priority || 1}
+                              onChange={(e) => setEditingTicker({ ...editingTicker, priority: parseInt(e.target.value) || 1 })}
+                            />
+                          </div>
+                        </div>
+                        
                         <div className="flex items-center space-x-2">
                           <Switch
                             checked={editingTicker.is_active}
@@ -453,11 +690,7 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
                         </div>
                         <div className="flex gap-2">
                           <Button
-                            onClick={() => updateTickerMutation.mutate({
-                              id: editingTicker.id,
-                              message: editingTicker.message,
-                              is_active: editingTicker.is_active
-                            })}
+                            onClick={() => updateTickerMutation.mutate(editingTicker)}
                             disabled={updateTickerMutation.isPending}
                             size="sm"
                           >
@@ -476,14 +709,41 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
                       <div className="flex items-start justify-between">
                         <div className="flex-1">
                           <p className="font-medium mb-2">{ticker.message}</p>
-                          <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                          <div className="flex items-center flex-wrap gap-2 text-sm text-muted-foreground">
                             <Badge variant={ticker.is_active ? "default" : "secondary"}>
                               {ticker.is_active ? "Actif" : "Inactif"}
                             </Badge>
+                            {ticker.priority && ticker.priority > 1 && (
+                              <Badge variant="outline">Priorité {ticker.priority}</Badge>
+                            )}
                             <span>
                               Créé le {new Date(ticker.created_at).toLocaleDateString('fr-FR')}
                             </span>
                           </div>
+                          {(ticker.start_date || ticker.end_date || ticker.days_of_week?.length || ticker.start_time || ticker.end_time) && (
+                            <div className="mt-3 p-3 bg-muted/50 rounded-lg">
+                              <h5 className="font-medium text-sm mb-2">Programmation:</h5>
+                              <div className="text-sm space-y-1">
+                                {(ticker.start_date || ticker.end_date) && (
+                                  <p>
+                                    📅 {ticker.start_date ? `Du ${new Date(ticker.start_date).toLocaleDateString('fr-FR')}` : ''} 
+                                    {ticker.end_date ? ` au ${new Date(ticker.end_date).toLocaleDateString('fr-FR')}` : ''}
+                                  </p>
+                                )}
+                                {ticker.days_of_week?.length && (
+                                  <p>📆 Jours: {ticker.days_of_week.map(day => 
+                                    daysOfWeek.find(d => d.value === day)?.label || day
+                                  ).join(', ')}</p>
+                                )}
+                                {(ticker.start_time || ticker.end_time) && (
+                                  <p>
+                                    🕐 {ticker.start_time ? `De ${ticker.start_time}` : ''} 
+                                    {ticker.end_time ? ` à ${ticker.end_time}` : ''}
+                                  </p>
+                                )}
+                              </div>
+                            </div>
+                          )}
                         </div>
                         <div className="flex gap-2">
                           <Button
