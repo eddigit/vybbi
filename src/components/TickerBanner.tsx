@@ -47,7 +47,7 @@ export function TickerBanner() {
   const currentMessage = messages[currentIndex]?.message || "THE HYPE OF THE NIGHT";
 
   return (
-    <div className="relative overflow-hidden bg-gradient-to-r from-primary via-purple-600 to-pink-600 rounded-full px-6 py-3 shadow-lg">
+    <div className="relative overflow-hidden bg-gradient-to-r from-primary via-purple-600 to-pink-600 rounded-full px-8 py-4 shadow-lg w-full max-w-4xl mx-auto">
       <div className="flex items-center justify-center">
         <div className="relative h-6 flex items-center">
           <div 
