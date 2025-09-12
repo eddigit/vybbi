@@ -126,6 +126,17 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
     try {
       setLoading(true);
 
+      // Get current user
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) {
+        toast({
+          title: "Erreur",
+          description: "Utilisateur non connecté",
+          variant: "destructive",
+        });
+        return;
+      }
+
       // Validate required fields
       if (!prospect.contact_name.trim()) {
         toast({
@@ -148,6 +159,42 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
           throw error;
         }
       } else {
+        // Get or create vybbi agent for current user
+        let agentId = null;
+        const { data: existingAgent } = await supabase
+          .from('vybbi_agents')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+        if (existingAgent) {
+          agentId = existingAgent.id;
+        } else {
+          // Create agent if doesn't exist
+          const { data: profileData } = await supabase
+            .from('profiles')
+            .select('display_name, email')
+            .eq('user_id', user.id)
+            .single();
+
+          const { data: newAgent, error: agentError } = await supabase
+            .from('vybbi_agents')
+            .insert([{
+              user_id: user.id,
+              agent_name: profileData?.display_name || 'Admin',
+              email: profileData?.email || user.email || '',
+              is_active: true
+            }])
+            .select('id')
+            .single();
+
+          if (agentError) {
+            console.error('Error creating agent:', agentError);
+            throw agentError;
+          }
+          agentId = newAgent.id;
+        }
+
         // Create new prospect with required fields
         const prospectData = {
           prospect_type: prospect.prospect_type,
@@ -161,7 +208,9 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
           status: prospect.status,
           qualification_score: prospect.qualification_score || 0,
           notes: prospect.notes?.trim() || null,
-          source: prospect.source?.trim() || 'manual'
+          source: prospect.source?.trim() || 'manual',
+          created_by: user.id,
+          assigned_agent_id: agentId
         };
 
         console.log('Creating prospect:', prospectData);

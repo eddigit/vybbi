@@ -10,6 +10,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import ProspectDialog from '@/components/prospecting/ProspectDialog';
 import { 
   Users, 
   TrendingUp, 
@@ -72,6 +73,8 @@ export default function AdminProspecting() {
   const [loading, setLoading] = useState(true);
   const [statusFilter, setStatusFilter] = useState<string>('all');
   const [typeFilter, setTypeFilter] = useState<string>('all');
+  const [prospectDialogOpen, setProspectDialogOpen] = useState(false);
+  const [selectedProspectId, setSelectedProspectId] = useState<string | undefined>();
 
   useEffect(() => {
     if (user) {
@@ -199,7 +202,10 @@ export default function AdminProspecting() {
           <h1 className="text-3xl font-bold">Système de Prospection Vybbi</h1>
           <p className="text-muted-foreground">Gestion complète de la prospection commerciale</p>
         </div>
-        <Button>
+        <Button onClick={() => {
+          setSelectedProspectId(undefined);
+          setProspectDialogOpen(true);
+        }}>
           <Plus className="mr-2 h-4 w-4" />
           Nouveau Prospect
         </Button>
@@ -352,10 +358,24 @@ export default function AdminProspecting() {
                       </TableCell>
                       <TableCell>
                         <div className="flex gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedProspectId(prospect.id);
+                              setProspectDialogOpen(true);
+                            }}
+                          >
                             <Eye className="h-4 w-4" />
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedProspectId(prospect.id);
+                              setProspectDialogOpen(true);
+                            }}
+                          >
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button variant="outline" size="sm">
@@ -437,6 +457,13 @@ export default function AdminProspecting() {
           </Card>
         </TabsContent>
       </Tabs>
+
+      <ProspectDialog
+        open={prospectDialogOpen}
+        onOpenChange={setProspectDialogOpen}
+        prospectId={selectedProspectId}
+        onProspectUpdated={loadData}
+      />
     </div>
   );
 }
