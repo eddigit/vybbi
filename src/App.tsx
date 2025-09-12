@@ -54,6 +54,7 @@ import APropos from './pages/APropos';
 import AdminAds from './pages/AdminAds';
 import TopArtistes from './pages/TopArtistes';
 import InscriptionConfirmation from './pages/InscriptionConfirmation';
+import Onboarding from './pages/Onboarding';
 
 const queryClient = new QueryClient();
 
@@ -83,6 +84,8 @@ const App = () => (
               <Route path="/commissions" element={<Commissions />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/inscription/confirmation" element={<InscriptionConfirmation />} />
+              <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profiles" element={<Profiles />} />
               <Route path="/messages" element={<Messages />} />
               <Route path="/artists" element={<Artists />} />
@@ -117,7 +120,6 @@ const App = () => (
               <Route path="/fondateurs" element={<Fondateurs />} />
               <Route path="/a-propos" element={<APropos />} />
               <Route path="/top-artistes" element={<TopArtistes />} />
-              <Route path="/inscription/confirmation" element={<InscriptionConfirmation />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </Layout>
