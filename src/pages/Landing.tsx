@@ -126,7 +126,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-8 px-2 sm:px-6">
+      <section className="pt-24 pb-4 px-2 sm:px-6">
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-4">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
