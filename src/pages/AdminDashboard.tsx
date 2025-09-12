@@ -15,10 +15,12 @@ import {
   AlertTriangle,
   Shield,
   Database,
-  Activity
+  Activity,
+  Music
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
+import { RadioManagement } from "@/components/admin/RadioManagement";
 
 interface AdminStats {
   totalUsers: number;
@@ -132,10 +134,11 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-4">
+        <TabsList className="grid w-full grid-cols-5">
           <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
           <TabsTrigger value="users">Utilisateurs</TabsTrigger>
           <TabsTrigger value="content">Contenus</TabsTrigger>
+          <TabsTrigger value="radio">Radio</TabsTrigger>
           <TabsTrigger value="system">Système</TabsTrigger>
         </TabsList>
 
@@ -277,6 +280,23 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="radio" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Music className="h-5 w-5" />
+                Gestion Radio Vybbi
+              </CardTitle>
+              <CardDescription>
+                Configuration des playlists, approbation des morceaux et gestion des abonnements
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <RadioManagement />
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="system" className="space-y-6">

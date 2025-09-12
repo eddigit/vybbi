@@ -25,9 +25,40 @@ export function useRadioPlayer() {
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Build playlist from artists' audio media assets
+  // Build playlist from radio management system or fallback
   const buildPlaylist = useCallback(async () => {
     try {
+      console.log("Fetching radio playlist...");
+      
+      // Try to use the new radio management function first
+      const { data: radioTracks, error: radioError } = await supabase
+        .rpc('get_radio_playlist');
+
+      if (!radioError && radioTracks && radioTracks.length > 0) {
+        console.log(`Found ${radioTracks.length} managed radio tracks`);
+        
+        // Convert radio tracks to Track format
+        const tracks: Track[] = radioTracks.map((track: any) => ({
+          id: track.media_asset_id,
+          title: track.file_name?.replace(/\.[^/.]+$/, '') || 'Audio Track',
+          url: track.file_url,
+          artist: {
+            id: track.artist_profile_id,
+            display_name: track.artist_name || 'Artiste inconnu',
+            avatar_url: track.artist_avatar
+          },
+          type: 'media' as const
+        }));
+
+        // Shuffle for radio experience
+        const shuffled = [...tracks].sort(() => Math.random() - 0.5);
+        setPlaylist(shuffled);
+        return;
+      }
+
+      console.log("No managed radio tracks, using fallback method...");
+      
+      // Fallback to old method for backward compatibility
       // 1) Fetch public artists
       const { data: artists, error: artistsError } = await supabase
         .from('profiles')
@@ -129,8 +160,29 @@ export function useRadioPlayer() {
       const d = isFinite(audio.duration) ? audio.duration : 0;
       setDuration(d || 0);
     };
-    const onEnded = () => {
-      nextTrack();
+    const onEnded = async () => {
+      // Move to next track
+      if (!playlist.length) return;
+      
+      // Log track completion analytics
+      if (audioRef.current && track) {
+        const completed = audio.currentTime / audio.duration > 0.8;
+        try {
+          await supabase
+            .from('radio_play_history')
+            .insert({
+              media_asset_id: track.id,
+              duration_seconds: Math.floor(audio.currentTime || 0),
+              completed
+            });
+          console.log('Track completion logged');
+        } catch (error) {
+          console.error('Error logging track completion:', error);
+        }
+      }
+      
+      setCurrentTrackIndex((i) => (i + 1) % playlist.length);
+      setProgress(0);
     };
 
     audio.addEventListener('timeupdate', onTime);
@@ -188,6 +240,8 @@ export function useRadioPlayer() {
     if (audioRef.current) audioRef.current.pause();
   }, []);
 
+  const currentTrack = playlist[currentTrackIndex] || null;
+
   const nextTrack = useCallback(() => {
     if (!playlist.length) return;
     setCurrentTrackIndex((i) => (i + 1) % playlist.length);
@@ -212,8 +266,6 @@ export function useRadioPlayer() {
     setVolumePct(clamped);
     if (audioRef.current) audioRef.current.volume = clamped / 100;
   }, []);
-
-  const currentTrack = playlist[currentTrackIndex] || null;
 
   return {
     playlist,

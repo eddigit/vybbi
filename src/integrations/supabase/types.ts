@@ -417,6 +417,56 @@ export type Database = {
           },
         ]
       }
+      artist_radio_subscriptions: {
+        Row: {
+          artist_profile_id: string
+          auto_approve_tracks: boolean
+          created_at: string
+          credits_remaining: number
+          expires_at: string | null
+          id: string
+          is_active: boolean
+          priority_boost: number
+          starts_at: string
+          subscription_type: string
+          updated_at: string
+        }
+        Insert: {
+          artist_profile_id: string
+          auto_approve_tracks?: boolean
+          created_at?: string
+          credits_remaining?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          priority_boost?: number
+          starts_at?: string
+          subscription_type: string
+          updated_at?: string
+        }
+        Update: {
+          artist_profile_id?: string
+          auto_approve_tracks?: boolean
+          created_at?: string
+          credits_remaining?: number
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean
+          priority_boost?: number
+          starts_at?: string
+          subscription_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "artist_radio_subscriptions_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       availability_slots: {
         Row: {
           artist_profile_id: string
@@ -992,6 +1042,141 @@ export type Database = {
           },
         ]
       }
+      radio_play_history: {
+        Row: {
+          completed: boolean
+          duration_seconds: number | null
+          id: string
+          media_asset_id: string
+          played_at: string
+          playlist_id: string | null
+          user_id: string | null
+        }
+        Insert: {
+          completed?: boolean
+          duration_seconds?: number | null
+          id?: string
+          media_asset_id: string
+          played_at?: string
+          playlist_id?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          completed?: boolean
+          duration_seconds?: number | null
+          id?: string
+          media_asset_id?: string
+          played_at?: string
+          playlist_id?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "radio_play_history_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "radio_play_history_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "radio_playlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      radio_playlist_tracks: {
+        Row: {
+          added_at: string
+          added_by: string | null
+          id: string
+          is_approved: boolean
+          last_played_at: string | null
+          media_asset_id: string
+          play_count: number
+          playlist_id: string
+          weight: number
+        }
+        Insert: {
+          added_at?: string
+          added_by?: string | null
+          id?: string
+          is_approved?: boolean
+          last_played_at?: string | null
+          media_asset_id: string
+          play_count?: number
+          playlist_id: string
+          weight?: number
+        }
+        Update: {
+          added_at?: string
+          added_by?: string | null
+          id?: string
+          is_approved?: boolean
+          last_played_at?: string | null
+          media_asset_id?: string
+          play_count?: number
+          playlist_id?: string
+          weight?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "radio_playlist_tracks_media_asset_id_fkey"
+            columns: ["media_asset_id"]
+            isOneToOne: false
+            referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "radio_playlist_tracks_playlist_id_fkey"
+            columns: ["playlist_id"]
+            isOneToOne: false
+            referencedRelation: "radio_playlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      radio_playlists: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          is_active: boolean
+          name: string
+          priority: number
+          schedule_end: string | null
+          schedule_start: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name: string
+          priority?: number
+          schedule_end?: string | null
+          schedule_start?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean
+          name?: string
+          priority?: number
+          schedule_end?: string | null
+          schedule_start?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -1276,6 +1461,21 @@ export type Database = {
           peer_profile_type: Database["public"]["Enums"]["profile_type"]
           peer_user_id: string
           reply_received: boolean
+        }[]
+      }
+      get_radio_playlist: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          artist_avatar: string
+          artist_name: string
+          artist_profile_id: string
+          file_name: string
+          file_url: string
+          media_asset_id: string
+          priority_boost: number
+          subscription_type: string
+          track_id: string
+          weight: number
         }[]
       }
       has_role: {
