@@ -48,6 +48,7 @@ import Fondateurs from './pages/Fondateurs';
 import APropos from './pages/APropos';
 import AdminAds from './pages/AdminAds';
 import TopArtistes from './pages/TopArtistes';
+import InscriptionConfirmation from './pages/InscriptionConfirmation';
 
 const queryClient = new QueryClient();
 
@@ -102,7 +103,8 @@ const App = () => (
           <Route path="/fondateurs" element={<Fondateurs />} />
           <Route path="/a-propos" element={<APropos />} />
           <Route path="/top-artistes" element={<TopArtistes />} />
-        <Route path="*" element={<NotFound />} />
+          <Route path="/inscription/confirmation" element={<InscriptionConfirmation />} />
+          <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
         <RadioPlayer />

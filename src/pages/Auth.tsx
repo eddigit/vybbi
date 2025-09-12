@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -19,6 +19,11 @@ export default function Auth() {
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [profileType, setProfileType] = useState('');
+  const [roleDetail, setRoleDetail] = useState('');
+
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') === 'signin' ? 'signin' : 'signup';
 
   if (loading) {
     return (
@@ -46,7 +51,8 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signUp(email, password, displayName, profileType);
+      await signUp(email, password, displayName, profileType, roleDetail || undefined);
+      navigate('/inscription/confirmation');
     } finally {
       setIsLoading(false);
     }
@@ -85,7 +91,7 @@ export default function Auth() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue="signin" className="space-y-4">
+            <Tabs defaultValue={initialTab} className="space-y-4">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Connexion</TabsTrigger>
                 <TabsTrigger value="signup">Inscription</TabsTrigger>
@@ -182,6 +188,74 @@ export default function Auth() {
                       </SelectContent>
                     </Select>
                   </div>
+
+                  {profileType === 'artist' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Spécialité</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez votre spécialité" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="DJ">DJ</SelectItem>
+                          <SelectItem value="musicien">Musicien</SelectItem>
+                          <SelectItem value="danseur">Danseur</SelectItem>
+                          <SelectItem value="chanteur">Chanteur</SelectItem>
+                          <SelectItem value="producteur">Producteur</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {profileType === 'agent' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Type de partenaire</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez votre type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="agent">Agent</SelectItem>
+                          <SelectItem value="manager_cherchant_artistes">Manager recherchant des artistes</SelectItem>
+                          <SelectItem value="autre_partenaire">Autre partenaire</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {profileType === 'manager' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Type de partenaire</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez votre type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="manager">Manager</SelectItem>
+                          <SelectItem value="agent_cherchant_managers">Agent recherchant des managers</SelectItem>
+                          <SelectItem value="autre_partenaire">Autre partenaire</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {profileType === 'lieu' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Catégorie du lieu</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez une catégorie" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="club">Club</SelectItem>
+                          <SelectItem value="bar">Bar</SelectItem>
+                          <SelectItem value="salle_concert">Salle de concert</SelectItem>
+                          <SelectItem value="festival">Festival</SelectItem>
+                          <SelectItem value="autre">Autre</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
@@ -210,7 +284,7 @@ export default function Auth() {
                   <Button 
                     type="submit" 
                     className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-200" 
-                    disabled={isLoading || !profileType}
+                    disabled={isLoading || !profileType || ((profileType === 'artist' || profileType === 'agent' || profileType === 'manager' || profileType === 'lieu') && !roleDetail)}
                   >
                     {isLoading ? (
                       <>

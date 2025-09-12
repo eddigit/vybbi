@@ -513,7 +513,7 @@ export default function ArtistProfile() {
                     </>
                   ) : (
                     <Button className="w-full mb-4" asChild>
-                      <Link to="/auth">
+                      <Link to="/auth?tab=signup">
                         <MessageCircle className="h-4 w-4 mr-2" />
                         Créer un compte pour contacter
                       </Link>

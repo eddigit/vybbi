@@ -37,6 +37,7 @@ const getEmailTemplate = (type: string, data: any) => {
       html: `
         <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://fepxacqrrjvnvpgzwhyr.supabase.co/storage/v1/object/public/ad-assets/vybbi-logo.png" alt="Vybbi" style="width: 56px; height: 56px; display: block; margin: 0 auto 10px; border-radius: 8px; background: rgba(255,255,255,0.1);" />
             <h1 style="color: white; margin: 0; font-size: 28px;">Bienvenue sur Vybbi !</h1>
           </div>
           
@@ -45,6 +46,10 @@ const getEmailTemplate = (type: string, data: any) => {
             
             <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
               Félicitations ! Votre compte <strong>${data.profileType}</strong> a été créé avec succès sur Vybbi.
+            </p>
+            
+            <p style="color: #555; line-height: 1.6; margin-bottom: 25px;">
+              Pour finaliser l'activation de votre compte, <strong>veuillez confirmer votre adresse e-mail</strong> en cliquant sur le lien de validation que nous venons de vous envoyer.
             </p>
             
             <p style="color: #555; line-height: 1.6; margin-bottom: 25px;">

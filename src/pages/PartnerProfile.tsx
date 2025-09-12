@@ -156,7 +156,7 @@ export default function PartnerProfile() {
                   )
                 ) : (
                   <Button asChild>
-                    <Link to="/auth">
+                    <Link to="/auth?tab=signup">
                       <MessageSquare className="w-4 h-4 mr-2" />
                       Créer un compte pour contacter
                     </Link>
@@ -261,10 +261,10 @@ export default function PartnerProfile() {
                                   Message
                                 </Link>
                               ) : (
-                                <Link to="/auth">
-                                  <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
-                                  Créer un compte
-                                </Link>
+                                  <Link to="/auth?tab=signup">
+                                    <MessageSquare className="w-3.5 h-3.5 mr-1.5" />
+                                    Créer un compte
+                                  </Link>
                               )}
                             </Button>
                             <Button size="sm" variant="outline" className="text-xs" asChild>
@@ -331,7 +331,7 @@ export default function PartnerProfile() {
                   )
                 ) : (
                   <Button className="w-full h-12 text-sm font-semibold rounded-xl" asChild>
-                    <Link to="/auth">
+                    <Link to="/auth?tab=signup">
                       <MessageSquare className="w-5 h-5 mr-2" />
                       Créer un compte pour contacter
                     </Link>

@@ -151,7 +151,7 @@ export default function VenueProfile() {
             )
           ) : (
             <Button asChild>
-              <Link to="/auth" className="flex items-center gap-2">
+              <Link to="/auth?tab=signup" className="flex items-center gap-2">
                 <MessageSquare className="w-4 h-4" />
                 Créer un compte
               </Link>
@@ -333,7 +333,7 @@ export default function VenueProfile() {
                     Envoyer un message
                   </Link>
                 ) : (
-                  <Link to="/auth" className="flex items-center justify-center gap-2">
+                  <Link to="/auth?tab=signup" className="flex items-center justify-center gap-2">
                     <MessageSquare className="w-4 h-4" />
                     Créer un compte pour contacter
                   </Link>

@@ -148,7 +148,7 @@ export default function NosArtistes() {
             </Button>
             
             <Button asChild size="sm" className="w-full">
-              <Link to="/auth">
+              <Link to="/auth?tab=signup">
                 Créer un compte pour contacter
               </Link>
             </Button>
