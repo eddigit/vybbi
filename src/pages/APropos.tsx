@@ -1,7 +1,8 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone } from "lucide-react";
+import { Mail, Instagram, Music, Youtube, Linkedin, ExternalLink } from "lucide-react";
+import { VYBBI_SOCIAL_LINKS } from "@/lib/socialLinks";
 const APropos = () => {
   const problems = [{
     category: "Pour les Artistes",
@@ -256,6 +257,32 @@ const APropos = () => {
                     vybbiapp@gmail.com
                   </a>
                 </Button>
+                
+                <div className="flex items-center justify-center gap-4 pt-4">
+                  <p className="text-sm text-muted-foreground">Suivez-nous :</p>
+                  <div className="flex gap-2">
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={VYBBI_SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                        <Instagram className="h-4 w-4" />
+                      </a>
+                    </Button>
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={VYBBI_SOCIAL_LINKS.spotify} target="_blank" rel="noopener noreferrer" aria-label="Spotify">
+                        <Music className="h-4 w-4" />
+                      </a>
+                    </Button>
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={VYBBI_SOCIAL_LINKS.youtube} target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+                        <Youtube className="h-4 w-4" />
+                      </a>
+                    </Button>
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={VYBBI_SOCIAL_LINKS.linkedin} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                        <Linkedin className="h-4 w-4" />
+                      </a>
+                    </Button>
+                  </div>
+                </div>
                 
                 <p className="text-sm text-muted-foreground">
                   Une question ? Une suggestion ? Écrivez-nous !
