@@ -71,18 +71,8 @@ export function useAuth() {
             // Redirect to onboarding if not completed
             navigate('/onboarding', { replace: true });
           } else {
-            // Redirect to appropriate profile page if onboarding is completed
-            if (profileData?.profile_type === 'artist') {
-              navigate(`/artists/${profileData.slug || profileData.id}`, { replace: true });
-            } else if (profileData?.profile_type === 'agent') {
-              navigate(`/agents/${profileData.slug || profileData.id}`, { replace: true });
-            } else if (profileData?.profile_type === 'manager') {
-              navigate(`/managers/${profileData.slug || profileData.id}`, { replace: true });
-            } else if (profileData?.profile_type === 'lieu') {
-              navigate(`/lieux/${profileData.slug || profileData.id}`, { replace: true });
-            } else {
-              navigate('/dashboard', { replace: true });
-            }
+            // Redirect to homepage after successful login
+            navigate('/', { replace: true });
           }
         }
       }, 100);
