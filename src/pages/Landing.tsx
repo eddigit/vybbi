@@ -128,7 +128,7 @@ export default function Landing() {
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
             <div className="xl:block sticky top-20 mb-24">
-              <AdSlot slotId="ADS-LANDING-LEFT" width={200} height={800} hideIfEmpty={true} fit="contain" />
+              <AdSlot slotId="ACCUEIL-GAUCHE" width={200} height={800} hideIfEmpty={true} fit="contain" />
             </div>
             
             {/* Main Hero Content */}
@@ -179,7 +179,7 @@ export default function Landing() {
         
         {/* Right Ad Slot */}
         <div className="xl:block sticky top-20 mb-24">
-          <AdSlot slotId="ADS-LANDING-RIGHT" width={200} height={800} hideIfEmpty={true} fit="contain" />
+          <AdSlot slotId="ACCUEIL-DROITE" width={200} height={800} hideIfEmpty={true} fit="contain" />
         </div>
       </div>
       
