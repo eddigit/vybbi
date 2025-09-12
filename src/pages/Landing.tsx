@@ -141,7 +141,7 @@ export default function Landing() {
               <TickerBanner />
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight line-clamp-3 md:line-clamp-2">
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Connectez votre
               </span>
@@ -193,7 +193,7 @@ export default function Landing() {
             <TickerBanner />
           </div>
           
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 leading-tight line-clamp-3 md:line-clamp-2">
+          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
             <span className="bg-gradient-primary bg-clip-text text-transparent">
               Connectez votre
             </span>
