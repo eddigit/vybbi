@@ -172,6 +172,7 @@ export function useAuth() {
     await supabase.auth.signOut();
     setProfile(null);
     setRoles([]);
+    navigate('/', { replace: true });
   };
 
   const hasRole = (role: AppRole) => {

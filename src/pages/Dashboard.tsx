@@ -13,7 +13,7 @@ import { CommissionDistribution } from "@/components/dashboard/CommissionDistrib
 import { AutoTranslate } from "@/components/AutoTranslate";
 
 export default function Dashboard() {
-  const { profile, loading, hasRole } = useAuth();
+  const { profile, loading, hasRole, user } = useAuth();
   const [activeFilter, setActiveFilter] = useState("30d");
 
   const metrics = [
@@ -53,6 +53,12 @@ export default function Dashboard() {
         <div className="animate-pulse"><AutoTranslate text="Chargement..." /></div>
       </div>
     );
+  }
+
+  // Redirect to home if not authenticated
+  if (!user) {
+    window.location.href = '/';
+    return null;
   }
 
   // Check if user is admin first
