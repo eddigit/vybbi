@@ -992,8 +992,10 @@ export type Database = {
           is_public: boolean
           languages: string[] | null
           location: string | null
+          onboarding_completed: boolean | null
           phone: string | null
           preferred_contact_profile_id: string | null
+          profile_completion_percentage: number | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           slug: string | null
           soundcloud_url: string | null
@@ -1024,8 +1026,10 @@ export type Database = {
           is_public?: boolean
           languages?: string[] | null
           location?: string | null
+          onboarding_completed?: boolean | null
           phone?: string | null
           preferred_contact_profile_id?: string | null
+          profile_completion_percentage?: number | null
           profile_type: Database["public"]["Enums"]["profile_type"]
           slug?: string | null
           soundcloud_url?: string | null
@@ -1056,8 +1060,10 @@ export type Database = {
           is_public?: boolean
           languages?: string[] | null
           location?: string | null
+          onboarding_completed?: boolean | null
           phone?: string | null
           preferred_contact_profile_id?: string | null
+          profile_completion_percentage?: number | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
           slug?: string | null
           soundcloud_url?: string | null
@@ -1478,6 +1484,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      calculate_profile_completion: {
+        Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
+        Returns: number
+      }
       ensure_user_profile: {
         Args: {
           _display_name?: string
