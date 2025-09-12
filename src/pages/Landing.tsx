@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3 } from 'lucide-react';
+import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { TickerBanner } from "@/components/TickerBanner";
@@ -76,8 +76,8 @@ export default function Landing() {
     number: "500+",
     label: "Lieux"
   }, {
-    number: "98%",
-    label: "Satisfaction"
+    number: "24h/24",
+    label: "Radio Vybbi"
   }];
   return <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -92,6 +92,9 @@ export default function Landing() {
             <div className="hidden md:flex items-center gap-6">
               <Link to="/a-propos" className="text-muted-foreground hover:text-foreground transition-colors">
                 À propos
+              </Link>
+              <Link to="/top-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
+                Top Artistes
               </Link>
               <Link to="/pour-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
                 Pour Artistes
@@ -252,42 +255,42 @@ export default function Landing() {
                   />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
-                <p className="text-muted-foreground mb-6">
-                  DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings grâce à notre moteur de matching IA.
-                </p>
-                <ul className="text-left space-y-2 text-sm mb-6">
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Portfolio multimédia</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Agenda des disponibilités</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Gestion des contrats</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Visibilité mondiale</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Opportunités directes</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Réputation professionnelle</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Outils médias</span>
-                  </li>
-                  <li className="flex items-center">
-                    <CheckCircle className="w-4 h-4 text-success mr-2" />
-                    <span className="text-card-foreground">Égalité des chances</span>
-                  </li>
+            <p className="text-muted-foreground mb-6">
+              DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings grâce à notre moteur de matching IA et Radio Vybbi 24h/24.
+            </p>
+            <ul className="text-left space-y-2 text-sm mb-6">
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Portfolio multimédia</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Diffusion Radio Vybbi mondiale</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Agenda des disponibilités</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Gestion des contrats</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Visibilité mondiale</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Classement Top 50</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Réputation professionnelle</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-success mr-2" />
+                <span className="text-card-foreground">Statistiques d'écoute</span>
+              </li>
                 </ul>
                 <div className="flex flex-col gap-2">
                   <Button asChild className="w-full">
@@ -352,13 +355,13 @@ export default function Landing() {
                     <Link to="/pour-agents-managers">En savoir plus</Link>
                   </Button>
                   <Button variant="outline" asChild className="w-full">
-                    <Link to="/pour-agents-managers">S'inscrire</Link>
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+                  <Link to="/pour-agents-managers">S'inscrire</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
 
-            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+          <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
                   <img 
@@ -561,15 +564,78 @@ export default function Landing() {
                     <Play className="mr-2 h-5 w-5" />
                     Voir comment ça marche
                   </Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
+                 </Button>
+               </div>
+             </div>
+           </div>
+         </div>
+       </section>
 
-      {/* Verified Reviews Section */}
-      <section className="py-16 px-2 sm:px-6 bg-muted/30">
+       {/* Radio Vybbi Section */}
+       <section className="py-16 px-2 sm:px-6 bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10">
+         <div className="container mx-auto">
+           <div className="text-center mb-12">
+             <h2 className="text-4xl font-bold mb-4">Radio Vybbi 24h/24</h2>
+             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+               Diffusez votre talent au monde entier avec notre radio dédiée aux artistes Vybbi. 
+               Être écouté partout, à tout moment, et grimper dans notre Top 50.
+             </p>
+           </div>
+
+           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+             <Card className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
+               <CardContent className="p-8 text-center">
+                 <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                   <Music className="w-8 h-8 text-primary-foreground" />
+                 </div>
+                 <h3 className="text-xl font-bold mb-4 text-foreground">Diffusion Mondiale</h3>
+                 <p className="text-muted-foreground">
+                   Vos créations diffusées 24h/24 pour toucher une audience internationale 
+                   et vous faire découvrir par des agents du monde entier.
+                 </p>
+               </CardContent>
+             </Card>
+
+             <Card className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300">
+               <CardContent className="p-8 text-center">
+                 <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                   <TrendingUp className="w-8 h-8 text-primary-foreground" />
+                 </div>
+                 <h3 className="text-xl font-bold mb-4 text-foreground">Statistiques Détaillées</h3>
+                 <p className="text-muted-foreground">
+                   Suivez vos écoutes en temps réel, votre progression dans le classement 
+                   et l'évolution de votre popularité.
+                 </p>
+               </CardContent>
+             </Card>
+
+             <Card className="bg-gradient-card border-border hover:shadow-glow transition-all duration-300 md:col-span-2 lg:col-span-1">
+               <CardContent className="p-8 text-center">
+                 <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                   <Trophy className="w-8 h-8 text-primary-foreground" />
+                 </div>
+                 <h3 className="text-xl font-bold mb-4 text-foreground">Top 50 Artistes</h3>
+                 <p className="text-muted-foreground">
+                   Intégrez notre classement prestigieux des artistes les plus écoutés 
+                   et les mieux notés de la plateforme.
+                 </p>
+               </CardContent>
+             </Card>
+           </div>
+
+           <div className="text-center mt-12">
+             <Button size="lg" asChild className="text-lg px-8 py-6">
+               <Link to="/top-artistes">
+                 Découvrir le Top 50
+                 <TrendingUp className="ml-2 h-5 w-5" />
+               </Link>
+             </Button>
+           </div>
+         </div>
+       </section>
+
+       {/* Excellence & Reviews */}
+       <section className="py-16 px-2 sm:px-6">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <Badge className="mb-6 text-sm px-4 py-2">

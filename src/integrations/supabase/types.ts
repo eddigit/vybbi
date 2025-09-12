@@ -713,6 +713,42 @@ export type Database = {
         }
         Relationships: []
       }
+      detailed_reviews: {
+        Row: {
+          comment: string | null
+          communication_score: number
+          created_at: string
+          id: string
+          overall_average: number | null
+          professionalism_score: number
+          reviewed_profile_id: string
+          reviewer_id: string
+          talent_score: number
+        }
+        Insert: {
+          comment?: string | null
+          communication_score: number
+          created_at?: string
+          id?: string
+          overall_average?: number | null
+          professionalism_score: number
+          reviewed_profile_id: string
+          reviewer_id: string
+          talent_score: number
+        }
+        Update: {
+          comment?: string | null
+          communication_score?: number
+          created_at?: string
+          id?: string
+          overall_average?: number | null
+          professionalism_score?: number
+          reviewed_profile_id?: string
+          reviewer_id?: string
+          talent_score?: number
+        }
+        Relationships: []
+      }
       events: {
         Row: {
           budget_max: number | null
@@ -1041,6 +1077,27 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      radio_likes: {
+        Row: {
+          created_at: string
+          id: string
+          media_asset_id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          media_asset_id: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          media_asset_id?: string
+          user_id?: string
+        }
+        Relationships: []
       }
       radio_play_history: {
         Row: {
@@ -1426,6 +1483,15 @@ export type Database = {
         }
         Returns: string
       }
+      get_artist_radio_stats: {
+        Args: { artist_profile_id: string }
+        Returns: {
+          last_played_at: string
+          ranking_position: number
+          total_duration_seconds: number
+          total_plays: number
+        }[]
+      }
       get_conversations_with_details: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -1476,6 +1542,23 @@ export type Database = {
           subscription_type: string
           track_id: string
           weight: number
+        }[]
+      }
+      get_top_artists: {
+        Args: { genre_filter?: string; limit_count?: number }
+        Returns: {
+          avatar_url: string
+          avg_communication_score: number
+          avg_professionalism_score: number
+          avg_talent_score: number
+          combined_score: number
+          display_name: string
+          genres: string[]
+          location: string
+          overall_score: number
+          profile_id: string
+          total_plays: number
+          total_reviews: number
         }[]
       }
       has_role: {

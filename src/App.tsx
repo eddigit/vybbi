@@ -47,6 +47,7 @@ import Technologie from './pages/Technologie';
 import Fondateurs from './pages/Fondateurs';
 import APropos from './pages/APropos';
 import AdminAds from './pages/AdminAds';
+import TopArtistes from './pages/TopArtistes';
 
 const queryClient = new QueryClient();
 
@@ -100,6 +101,7 @@ const App = () => (
           <Route path="/technologie" element={<Technologie />} />
           <Route path="/fondateurs" element={<Fondateurs />} />
           <Route path="/a-propos" element={<APropos />} />
+          <Route path="/top-artistes" element={<TopArtistes />} />
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>

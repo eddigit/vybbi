@@ -10,8 +10,9 @@ import { Profile, MediaAsset, Review } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { getLanguageByCode } from '@/lib/languages';
 import { getTalentById } from '@/lib/talents';
-import ReviewForm from '@/components/ReviewForm';
+import EnhancedReviewForm from '@/components/EnhancedReviewForm';
 import { ImageGallerySlider } from '@/components/ImageGallerySlider';
+import RadioStatsDisplay from '@/components/RadioStatsDisplay';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
@@ -262,6 +263,19 @@ export default function ArtistProfile() {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           
+          {/* Radio Statistics Card */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Music className="h-5 w-5 text-primary" />
+                Statistiques Radio Vybbi
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RadioStatsDisplay artistId={id!} />
+            </CardContent>
+          </Card>
+
           {/* Bio & Genres */}
           <Card>
             <CardHeader>
@@ -378,7 +392,7 @@ export default function ArtistProfile() {
               <CardContent className="space-y-6">
                 {/* Review Form for eligible users */}
                 {canLeaveReview && (
-                  <ReviewForm 
+                  <EnhancedReviewForm 
                     artistId={id!} 
                     onReviewSubmitted={handleReviewSubmitted}
                     existingReview={userHasReview}

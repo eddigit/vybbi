@@ -1,4 +1,4 @@
-import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -174,6 +174,12 @@ export function Header() {
                   <Link to="/dashboard" className="flex items-center">
                     <LayoutDashboard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="text-sm">Tableau de bord</span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/top-artistes" className="flex items-center">
+                    <Trophy className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm">Top Artistes</span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
