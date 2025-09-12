@@ -123,7 +123,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-16 px-2 sm:px-6">
+      <section className="pt-24 pb-8 px-2 sm:px-6">
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-4">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
@@ -232,7 +232,7 @@ export default function Landing() {
     </section>
 
       {/* Audiences Section */}
-      <section className="py-16 px-2 sm:px-6 bg-muted/30">
+      <section className="py-12 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Pour tous les acteurs de la scène</h2>
