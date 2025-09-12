@@ -56,10 +56,10 @@ const APropos = () => {
             </div>
             <div className="flex justify-center">
               <div className="relative">
-                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles KORZEC, Fondateur de Vybbi.app" className="w-64 h-64 object-cover rounded-2xl shadow-2xl" />
+                <img src="/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png" alt="Gilles, Fondateur de Vybbi.app" className="w-64 h-64 object-cover rounded-2xl shadow-2xl" />
                 <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground p-3 rounded-xl shadow-lg">
                   <div className="text-center text-sm">
-                    <p className="font-bold">Gilles KORZEC</p>
+                    <p className="font-bold">Gilles</p>
                     <p className="opacity-90">Fondateur</p>
                   </div>
                 </div>
