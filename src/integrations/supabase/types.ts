@@ -1082,6 +1082,54 @@ export type Database = {
           },
         ]
       }
+      profile_views: {
+        Row: {
+          created_at: string
+          id: string
+          referrer_page: string | null
+          session_id: string
+          view_type: Database["public"]["Enums"]["view_type"]
+          viewed_profile_id: string
+          viewer_profile_id: string | null
+          viewer_user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          referrer_page?: string | null
+          session_id?: string
+          view_type?: Database["public"]["Enums"]["view_type"]
+          viewed_profile_id: string
+          viewer_profile_id?: string | null
+          viewer_user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          referrer_page?: string | null
+          session_id?: string
+          view_type?: Database["public"]["Enums"]["view_type"]
+          viewed_profile_id?: string
+          viewer_profile_id?: string | null
+          viewer_user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_views_viewed_profile_id_fkey"
+            columns: ["viewed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_views_viewer_profile_id_fkey"
+            columns: ["viewer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           accepts_direct_contact: boolean | null
@@ -1999,6 +2047,18 @@ export type Database = {
           reply_received: boolean
         }[]
       }
+      get_profile_view_stats: {
+        Args: { p_profile_id: string }
+        Returns: {
+          agent_views: number
+          manager_views: number
+          total_views: number
+          unique_visitors: number
+          venue_views: number
+          views_this_month: number
+          views_this_week: number
+        }[]
+      }
       get_radio_playlist: {
         Args: Record<PropertyKey, never>
         Returns: {
@@ -2093,6 +2153,15 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: string
       }
+      track_profile_view: {
+        Args: {
+          p_referrer_page?: string
+          p_session_id?: string
+          p_view_type?: Database["public"]["Enums"]["view_type"]
+          p_viewed_profile_id: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       annonce_status: "draft" | "published" | "closed" | "cancelled"
@@ -2124,6 +2193,7 @@ export type Database = {
         | "cancelled"
       roadmap_item_type: "feature" | "task" | "selling_point"
       roadmap_priority: "low" | "medium" | "high" | "critical"
+      view_type: "full_profile" | "quick_preview" | "search_result"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -2282,6 +2352,7 @@ export const Constants = {
       ],
       roadmap_item_type: ["feature", "task", "selling_point"],
       roadmap_priority: ["low", "medium", "high", "critical"],
+      view_type: ["full_profile", "quick_preview", "search_result"],
     },
   },
 } as const
