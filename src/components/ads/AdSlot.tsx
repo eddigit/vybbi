@@ -68,10 +68,10 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         const currentTime = now.toTimeString().slice(0, 8);
 
         for (const campaign of campaigns || []) {
-          // Date range check
-          const startDate = new Date(campaign.start_date);
-          const endDate = new Date(campaign.end_date);
-          if (now < startDate || now > endDate) continue;
+          // Date range check (inclusive)
+          const startDate = new Date(`${campaign.start_date}T00:00:00`);
+          const endDateInclusive = new Date(`${campaign.end_date}T23:59:59.999`);
+          if (now < startDate || now > endDateInclusive) continue;
 
           // Daily window check
           if (campaign.daily_window_start && campaign.daily_window_end) {
@@ -173,10 +173,10 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         
         if (!campaign.is_active) continue;
         
-        // Date range check
-        const startDate = new Date(campaign.start_date);
-        const endDate = new Date(campaign.end_date);
-        if (now < startDate || now > endDate) continue;
+        // Date range check (inclusive)
+        const startDate = new Date(`${campaign.start_date}T00:00:00`);
+        const endDateInclusive = new Date(`${campaign.end_date}T23:59:59.999`);
+        if (now < startDate || now > endDateInclusive) continue;
 
         // Daily window check
         if (campaign.daily_window_start && campaign.daily_window_end) {
