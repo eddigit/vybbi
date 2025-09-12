@@ -71,8 +71,8 @@ export function useAuth() {
             // Redirect to onboarding if not completed
             navigate('/onboarding', { replace: true });
           } else {
-            // Redirect to homepage after successful login
-            navigate('/', { replace: true });
+            // Redirect to dashboard after successful login
+            navigate('/dashboard', { replace: true });
           }
         }
       }, 100);
