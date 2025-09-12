@@ -319,6 +319,54 @@ export type Database = {
         }
         Relationships: []
       }
+      agent_commissions: {
+        Row: {
+          agent_id: string
+          amount: number
+          conversion_id: string
+          created_at: string
+          id: string
+          paid_at: string | null
+          payment_reference: string | null
+          status: string
+        }
+        Insert: {
+          agent_id: string
+          amount: number
+          conversion_id: string
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+        }
+        Update: {
+          agent_id?: string
+          amount?: number
+          conversion_id?: string
+          created_at?: string
+          id?: string
+          paid_at?: string | null
+          payment_reference?: string | null
+          status?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "agent_commissions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "agent_commissions_conversion_id_fkey"
+            columns: ["conversion_id"]
+            isOneToOne: false
+            referencedRelation: "conversion_tracking"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       annonces: {
         Row: {
           budget_max: number | null
@@ -713,6 +761,66 @@ export type Database = {
         }
         Relationships: []
       }
+      conversion_tracking: {
+        Row: {
+          agent_id: string
+          commission_amount: number | null
+          commission_paid: boolean | null
+          commission_paid_at: string | null
+          confirmed_at: string | null
+          conversion_status: Database["public"]["Enums"]["conversion_status"]
+          conversion_value: number | null
+          created_at: string
+          id: string
+          prospect_id: string
+          subscription_type: string | null
+          user_id: string
+        }
+        Insert: {
+          agent_id: string
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          commission_paid_at?: string | null
+          confirmed_at?: string | null
+          conversion_status?: Database["public"]["Enums"]["conversion_status"]
+          conversion_value?: number | null
+          created_at?: string
+          id?: string
+          prospect_id: string
+          subscription_type?: string | null
+          user_id: string
+        }
+        Update: {
+          agent_id?: string
+          commission_amount?: number | null
+          commission_paid?: boolean | null
+          commission_paid_at?: string | null
+          confirmed_at?: string | null
+          conversion_status?: Database["public"]["Enums"]["conversion_status"]
+          conversion_value?: number | null
+          created_at?: string
+          id?: string
+          prospect_id?: string
+          subscription_type?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "conversion_tracking_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "conversion_tracking_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       detailed_reviews: {
         Row: {
           comment: string | null
@@ -1083,6 +1191,273 @@ export type Database = {
             columns: ["preferred_contact_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospect_assignments: {
+        Row: {
+          agent_id: string
+          assigned_at: string
+          assigned_by: string | null
+          id: string
+          prospect_id: string
+          reason: string | null
+          unassigned_at: string | null
+        }
+        Insert: {
+          agent_id: string
+          assigned_at?: string
+          assigned_by?: string | null
+          id?: string
+          prospect_id: string
+          reason?: string | null
+          unassigned_at?: string | null
+        }
+        Update: {
+          agent_id?: string
+          assigned_at?: string
+          assigned_by?: string | null
+          id?: string
+          prospect_id?: string
+          reason?: string | null
+          unassigned_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_assignments_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospect_assignments_assigned_by_fkey"
+            columns: ["assigned_by"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospect_assignments_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospect_interactions: {
+        Row: {
+          agent_id: string
+          completed_at: string | null
+          content: string | null
+          created_at: string
+          email_clicked: boolean | null
+          email_opened: boolean | null
+          id: string
+          interaction_type: Database["public"]["Enums"]["interaction_type"]
+          next_action: string | null
+          outcome: string | null
+          prospect_id: string
+          scheduled_at: string | null
+          subject: string | null
+        }
+        Insert: {
+          agent_id: string
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string
+          email_clicked?: boolean | null
+          email_opened?: boolean | null
+          id?: string
+          interaction_type: Database["public"]["Enums"]["interaction_type"]
+          next_action?: string | null
+          outcome?: string | null
+          prospect_id: string
+          scheduled_at?: string | null
+          subject?: string | null
+        }
+        Update: {
+          agent_id?: string
+          completed_at?: string | null
+          content?: string | null
+          created_at?: string
+          email_clicked?: boolean | null
+          email_opened?: boolean | null
+          id?: string
+          interaction_type?: Database["public"]["Enums"]["interaction_type"]
+          next_action?: string | null
+          outcome?: string | null
+          prospect_id?: string
+          scheduled_at?: string | null
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_interactions_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospect_interactions_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospecting_campaigns: {
+        Row: {
+          created_at: string
+          created_by: string | null
+          description: string | null
+          email_template_body: string | null
+          email_template_subject: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          target_type: Database["public"]["Enums"]["prospect_type"] | null
+          total_clicked: number | null
+          total_converted: number | null
+          total_opened: number | null
+          total_sent: number | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          email_template_body?: string | null
+          email_template_subject?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          target_type?: Database["public"]["Enums"]["prospect_type"] | null
+          total_clicked?: number | null
+          total_converted?: number | null
+          total_opened?: number | null
+          total_sent?: number | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          email_template_body?: string | null
+          email_template_subject?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          target_type?: Database["public"]["Enums"]["prospect_type"] | null
+          total_clicked?: number | null
+          total_converted?: number | null
+          total_opened?: number | null
+          total_sent?: number | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospecting_campaigns_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospects: {
+        Row: {
+          address: string | null
+          assigned_agent_id: string | null
+          assigned_at: string | null
+          city: string | null
+          company_name: string | null
+          contact_name: string
+          converted_at: string | null
+          converted_user_id: string | null
+          created_at: string
+          created_by: string | null
+          email: string | null
+          id: string
+          last_contact_at: string | null
+          next_follow_up_at: string | null
+          notes: string | null
+          phone: string | null
+          prospect_type: Database["public"]["Enums"]["prospect_type"]
+          qualification_score: number | null
+          social_media: Json | null
+          source: string | null
+          status: Database["public"]["Enums"]["prospect_status"]
+          updated_at: string
+          website: string | null
+        }
+        Insert: {
+          address?: string | null
+          assigned_agent_id?: string | null
+          assigned_at?: string | null
+          city?: string | null
+          company_name?: string | null
+          contact_name: string
+          converted_at?: string | null
+          converted_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          last_contact_at?: string | null
+          next_follow_up_at?: string | null
+          notes?: string | null
+          phone?: string | null
+          prospect_type: Database["public"]["Enums"]["prospect_type"]
+          qualification_score?: number | null
+          social_media?: Json | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["prospect_status"]
+          updated_at?: string
+          website?: string | null
+        }
+        Update: {
+          address?: string | null
+          assigned_agent_id?: string | null
+          assigned_at?: string | null
+          city?: string | null
+          company_name?: string | null
+          contact_name?: string
+          converted_at?: string | null
+          converted_user_id?: string | null
+          created_at?: string
+          created_by?: string | null
+          email?: string | null
+          id?: string
+          last_contact_at?: string | null
+          next_follow_up_at?: string | null
+          notes?: string | null
+          phone?: string | null
+          prospect_type?: Database["public"]["Enums"]["prospect_type"]
+          qualification_score?: number | null
+          social_media?: Json | null
+          source?: string | null
+          status?: Database["public"]["Enums"]["prospect_status"]
+          updated_at?: string
+          website?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospects_assigned_agent_id_fkey"
+            columns: ["assigned_agent_id"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospects_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
             referencedColumns: ["id"]
           },
         ]
@@ -1479,6 +1854,54 @@ export type Database = {
         }
         Relationships: []
       }
+      vybbi_agents: {
+        Row: {
+          agent_name: string
+          commission_rate: number
+          created_at: string
+          email: string
+          hire_date: string
+          id: string
+          is_active: boolean
+          phone: string | null
+          total_commissions: number | null
+          total_converted: number | null
+          total_prospects_assigned: number | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          agent_name: string
+          commission_rate?: number
+          created_at?: string
+          email: string
+          hire_date?: string
+          id?: string
+          is_active?: boolean
+          phone?: string | null
+          total_commissions?: number | null
+          total_converted?: number | null
+          total_prospects_assigned?: number | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          agent_name?: string
+          commission_rate?: number
+          created_at?: string
+          email?: string
+          hire_date?: string
+          id?: string
+          is_active?: boolean
+          phone?: string | null
+          total_commissions?: number | null
+          total_converted?: number | null
+          total_prospects_assigned?: number | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       vybbi_interactions: {
         Row: {
           action: string | null
@@ -1517,6 +1940,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      assign_prospect_to_agent: {
+        Args: { prospect_id: string }
+        Returns: string
+      }
       calculate_profile_completion: {
         Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
         Returns: number
@@ -1681,9 +2108,20 @@ export type Database = {
       availability_status: "available" | "busy" | "unavailable"
       booking_status: "pending" | "confirmed" | "cancelled" | "completed"
       conversation_type: "direct" | "group"
+      conversion_status: "pending" | "confirmed" | "failed"
       event_status: "draft" | "published" | "cancelled" | "completed"
+      interaction_type: "email" | "call" | "meeting" | "message" | "note"
       media_type: "image" | "video" | "audio"
       profile_type: "artist" | "agent" | "manager" | "lieu"
+      prospect_status:
+        | "new"
+        | "contacted"
+        | "qualified"
+        | "interested"
+        | "converted"
+        | "rejected"
+        | "unresponsive"
+      prospect_type: "artist" | "venue" | "agent" | "manager"
       representation_status: "pending" | "accepted" | "rejected" | "revoked"
       roadmap_item_status:
         | "done"
@@ -1826,9 +2264,21 @@ export const Constants = {
       availability_status: ["available", "busy", "unavailable"],
       booking_status: ["pending", "confirmed", "cancelled", "completed"],
       conversation_type: ["direct", "group"],
+      conversion_status: ["pending", "confirmed", "failed"],
       event_status: ["draft", "published", "cancelled", "completed"],
+      interaction_type: ["email", "call", "meeting", "message", "note"],
       media_type: ["image", "video", "audio"],
       profile_type: ["artist", "agent", "manager", "lieu"],
+      prospect_status: [
+        "new",
+        "contacted",
+        "qualified",
+        "interested",
+        "converted",
+        "rejected",
+        "unresponsive",
+      ],
+      prospect_type: ["artist", "venue", "agent", "manager"],
       representation_status: ["pending", "accepted", "rejected", "revoked"],
       roadmap_item_status: [
         "done",

@@ -28,6 +28,7 @@ import { VybbiChat } from "@/components/admin/VybbiChat";
 import { VybbiConfig } from "@/components/admin/VybbiConfig";
 import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
 import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
+import AdminProspecting from "./AdminProspecting";
 
 interface AdminStats {
   totalUsers: number;
@@ -141,10 +142,11 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-6">
+        <TabsList className="grid w-full grid-cols-7">
           <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
           <TabsTrigger value="users">Utilisateurs</TabsTrigger>
           <TabsTrigger value="content">Contenus</TabsTrigger>
+          <TabsTrigger value="prospecting">Prospection</TabsTrigger>
           <TabsTrigger value="radio">Radio</TabsTrigger>
           <TabsTrigger value="ai">Intelligence Artificielle</TabsTrigger>
           <TabsTrigger value="system">Système</TabsTrigger>
@@ -288,6 +290,10 @@ export default function AdminDashboard() {
               </CardContent>
             </Card>
           </div>
+        </TabsContent>
+
+        <TabsContent value="prospecting">
+          <AdminProspecting />
         </TabsContent>
 
         <TabsContent value="radio" className="space-y-6">
