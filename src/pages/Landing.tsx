@@ -126,7 +126,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-8 px-2 sm:px-6">
+      <section className="pt-24 pb-6 px-2 sm:px-6">
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-4">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
@@ -137,7 +137,7 @@ export default function Landing() {
             {/* Main Hero Content */}
             <div className="text-center">
               <div className="max-w-5xl md:max-w-6xl mx-auto">
-            <div className="mb-6 flex justify-center">
+            <div className="mb-4 flex justify-center">
               <TickerBanner />
             </div>
             
@@ -189,7 +189,7 @@ export default function Landing() {
       {/* Mobile/Tablet Hero Content (visible when grid is hidden) */}
       <div className="xl:hidden text-center">
         <div className="max-w-5xl md:max-w-6xl mx-auto">
-          <div className="mb-6 flex justify-center">
+          <div className="mb-4 flex justify-center">
             <TickerBanner />
           </div>
           
