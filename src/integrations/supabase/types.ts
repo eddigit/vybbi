@@ -995,6 +995,7 @@ export type Database = {
           phone: string | null
           preferred_contact_profile_id: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
+          slug: string | null
           soundcloud_url: string | null
           spotify_url: string | null
           talents: string[] | null
@@ -1026,6 +1027,7 @@ export type Database = {
           phone?: string | null
           preferred_contact_profile_id?: string | null
           profile_type: Database["public"]["Enums"]["profile_type"]
+          slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
           talents?: string[] | null
@@ -1057,6 +1059,7 @@ export type Database = {
           phone?: string | null
           preferred_contact_profile_id?: string | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
+          slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
           talents?: string[] | null
@@ -1483,6 +1486,10 @@ export type Database = {
         }
         Returns: string
       }
+      generate_slug: {
+        Args: { input_text: string }
+        Returns: string
+      }
       get_artist_radio_stats: {
         Args: { artist_profile_id: string }
         Returns: {
@@ -1567,6 +1574,42 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      resolve_profile: {
+        Args: { identifier: string }
+        Returns: {
+          accepts_direct_contact: boolean
+          avatar_url: string
+          bio: string
+          city: string
+          created_at: string
+          display_name: string
+          email: string
+          experience: string
+          genres: string[]
+          header_position_y: number
+          header_url: string
+          id: string
+          instagram_url: string
+          is_public: boolean
+          is_slug_match: boolean
+          languages: string[]
+          location: string
+          phone: string
+          preferred_contact_profile_id: string
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          slug: string
+          soundcloud_url: string
+          spotify_url: string
+          talents: string[]
+          tiktok_url: string
+          updated_at: string
+          user_id: string
+          venue_capacity: number
+          venue_category: string
+          website: string
+          youtube_url: string
+        }[]
       }
       send_admin_broadcast: {
         Args: {
