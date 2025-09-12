@@ -1453,13 +1453,6 @@ export type Database = {
             referencedRelation: "vybbi_agents"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "prospects_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "vybbi_agents"
-            referencedColumns: ["id"]
-          },
         ]
       }
       radio_likes: {
