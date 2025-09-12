@@ -1,3 +1,4 @@
+import { TranslationProvider } from "@/contexts/TranslationContext";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -61,7 +62,8 @@ const queryClient = new QueryClient();
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      <TooltipProvider>
+      <TranslationProvider>
+        <TooltipProvider>
         <Toaster />
         <Sonner />
         <BrowserRouter>
@@ -126,8 +128,9 @@ const App = () => (
           <RadioPlayer />
         </BrowserRouter>
       </TooltipProvider>
-    </HelmetProvider>
-  </QueryClientProvider>
+    </TranslationProvider>
+  </HelmetProvider>
+</QueryClientProvider>
 );
 
 export default App;

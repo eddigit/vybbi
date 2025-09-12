@@ -1,3 +1,4 @@
+import { LanguageSelector } from "@/components/LanguageSelector";
 import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -69,6 +70,11 @@ export function Header() {
 
 
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
+          {/* Language Selector */}
+          <div className="hidden sm:block">
+            <LanguageSelector />
+          </div>
+          
           {showAdminControls && (
             <>
 
