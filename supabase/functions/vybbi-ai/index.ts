@@ -54,14 +54,14 @@ serve(async (req) => {
   }
 
   try {
-    const { message, action, filters } = await req.json();
+    const { message, action, filters, context } = await req.json();
     console.log(`Vybbi request: ${action || 'chat'} - ${message}`);
 
-    let context = "";
+    let contextData = "";
     let searchResults = null;
 
     // Enrichir le contexte selon l'action
-    if (action === 'search' || action === 'match' || action === 'recommend') {
+    if (action === 'search' || action === 'match' || action === 'recommend' || action === 'assistant') {
       // Récupérer les données pertinentes de la base
       const [profiles, events, annonces, availability] = await Promise.all([
         supabase.from('profiles').select('*').eq('is_public', true),
@@ -81,7 +81,7 @@ serve(async (req) => {
         availability: availability.data?.slice(0, 30)
       };
 
-      context = `\n\nDONNÉES ACTUELLES DE LA PLATEFORME :\n${JSON.stringify(contextData, null, 2)}`;
+      contextData = `\n\nDONNÉES ACTUELLES DE LA PLATEFORME :\n${JSON.stringify(contextInfo, null, 2)}`;
 
       // Si c'est une recherche, on peut déjà pré-traiter les résultats
       if (action === 'search') {
@@ -104,7 +104,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4.1-2025-04-14',
         messages: [
-          { role: 'system', content: VYBBI_SYSTEM_PROMPT + context },
+          { role: 'system', content: VYBBI_SYSTEM_PROMPT + contextData },
           { role: 'user', content: message }
         ],
         max_tokens: 1000,
@@ -119,14 +119,17 @@ serve(async (req) => {
     const data = await response.json();
     const reply = data.choices[0].message.content;
 
-    // Log de l'interaction
-    await supabase.from('vybbi_interactions').insert({
-      message,
-      response: reply,
-      action,
-      filters,
-      created_at: new Date().toISOString()
-    });
+    // Log de l'interaction (seulement si utilisateur connecté)
+    const authUser = req.headers.get('authorization');
+    if (authUser) {
+      await supabase.from('vybbi_interactions').insert({
+        message,
+        response: reply,
+        action,
+        filters: context || filters,
+        created_at: new Date().toISOString()
+      });
+    }
 
     return new Response(JSON.stringify({ 
       reply, 
