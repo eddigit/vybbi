@@ -74,7 +74,7 @@ export function Header() {
 
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
           {/* Language Selector - Always visible */}
-          <LanguageSelector />
+          
           
           {showAdminControls && (
             <>

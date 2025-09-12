@@ -1,4 +1,4 @@
-import { TranslationTest } from "@/components/TranslationTest";
+
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
@@ -59,8 +59,6 @@ export default function Dashboard() {
     // Show admin dashboard with title
     return (
       <div className="space-y-6">
-        {/* Test de traduction */}
-        <TranslationTest />
         
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
