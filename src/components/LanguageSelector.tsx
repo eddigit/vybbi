@@ -9,8 +9,15 @@ export const LanguageSelector: React.FC = () => {
   
   const currentLangData = getLanguageByCode(currentLanguage);
   
+  console.log('LanguageSelector - Current language:', currentLanguage, 'Data:', currentLangData);
+  
+  const handleLanguageChange = (languageCode: string) => {
+    console.log('LanguageSelector - Changing language to:', languageCode);
+    changeLanguage(languageCode);
+  };
+  
   return (
-    <Select value={currentLanguage} onValueChange={changeLanguage}>
+    <Select value={currentLanguage} onValueChange={handleLanguageChange}>
       <SelectTrigger className="w-auto min-w-[140px] gap-2">
         <Globe className="w-4 h-4" />
         <SelectValue>

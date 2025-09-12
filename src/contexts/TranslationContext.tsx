@@ -28,8 +28,13 @@ interface TranslationProviderProps {
 export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children }) => {
   const { detectedLanguage, userLanguage, changeLanguage, isAutoDetected } = useLanguageDetection();
 
+  console.log('TranslationProvider - Detected:', detectedLanguage, 'User:', userLanguage, 'Auto:', isAutoDetected);
+
   const translate = async (text: string, sourceLanguage?: string): Promise<string> => {
-    return translationService.translate(text, userLanguage, sourceLanguage);
+    console.log('TranslationProvider - Translating:', text.substring(0, 50), 'to:', userLanguage);
+    const result = await translationService.translate(text, userLanguage, sourceLanguage);
+    console.log('TranslationProvider - Translation result:', result.substring(0, 50));
+    return result;
   };
 
   const translateBatch = async (texts: string[], sourceLanguage?: string): Promise<string[]> => {

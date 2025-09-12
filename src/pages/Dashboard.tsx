@@ -1,3 +1,4 @@
+import { AutoTranslate } from "@/components/AutoTranslate";
 import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
 import PartnerDashboard from "@/pages/PartnerDashboard";
@@ -58,9 +59,11 @@ export default function Dashboard() {
     return (
       <div className="space-y-6">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Tableau de Bord Admin</h1>
+          <h1 className="text-3xl font-bold tracking-tight">
+            <AutoTranslate text="Tableau de Bord Admin" />
+          </h1>
           <p className="text-muted-foreground">
-            Bienvenue Admin - Vue d'ensemble de la plateforme
+            <AutoTranslate text="Bienvenue Admin - Vue d'ensemble de la plateforme" />
           </p>
         </div>
 
