@@ -32,6 +32,7 @@ import { Button } from "@/components/ui/button";
 const artistItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artists", url: "/artists", icon: Music },
+  { title: "Recherche Avancée", url: "/recherche-avancee", icon: UserSearch },
   { title: "Agents", url: "/profiles?type=agent", icon: UserSearch },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Lieux", url: "/lieux", icon: Building2 },
@@ -41,6 +42,7 @@ const artistItems = [
 const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
+  { title: "Recherche IA", url: "/recherche-avancee", icon: UserSearch },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Messages", url: "/messages", icon: MessageSquare },
@@ -61,6 +63,7 @@ const getManagerItems = (profileId: string) => [
 const getLieuItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
+  { title: "Recherche IA", url: "/recherche-avancee", icon: UserSearch },
   { title: "Agents", url: "/profiles?type=agent", icon: UserSearch },
   { title: "Lieux", url: "/lieux", icon: MapPin },
   { title: "Annonces", url: "/annonces", icon: Megaphone },

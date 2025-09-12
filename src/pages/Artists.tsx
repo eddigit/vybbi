@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { getProfileUrl } from '@/hooks/useProfileResolver';
 import FeaturedArtistsStrip from '@/components/FeaturedArtistsStrip';
+import { VybbiAssistant } from "@/components/VybbiAssistant";
 
 export default function Artists() {
   const [artists, setArtists] = useState<Profile[]>([]);
@@ -134,8 +135,11 @@ export default function Artists() {
             Try adjusting your search terms or browse all artists
           </p>
         </div>
-      )}
+        )}
       </div>
+      
+      {/* Assistant Vybbi pour les recherches */}
+      <VybbiAssistant context="recherche-artistes" variant="floating" />
     </div>
   );
 }

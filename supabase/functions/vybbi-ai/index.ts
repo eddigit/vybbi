@@ -31,11 +31,24 @@ Tu es Vybbi, l'intelligence artificielle chef d'orchestre de la plateforme music
 - Historique des collaborations et reviews
 - Media assets (démos, portfolios)
 
-## Capacités :
-1. **Matching automatique** : Quand un artiste update ses disponibilités, trouve les opportunités correspondantes
-2. **Recherche complexe** : Comprends les requêtes comme "DJ techno weekend prochain Paris budget 2-5k"
-3. **Recommandations** : Analyse les profils pour suggérer des collaborations pertinentes
-4. **Alerts proactives** : Notifie automatiquement les opportunités de booking
+## Capacités selon le type d'utilisateur :
+### Artistes :
+- Trouver des opportunités de concerts et collaborations
+- Analyser leur performance et visibilité
+- Optimiser leur profil et portfolio
+- Conseils sur les tarifs et négociations
+
+### Agents/Managers :
+- Découvrir de nouveaux talents
+- Matcher leurs artistes avec des événements
+- Analyser le marché et les tendances
+- Optimiser les stratégies de booking
+
+### Lieux/Événements :
+- Trouver des artistes pour leurs événements
+- Analyser leur audience et programmation
+- Optimiser leur offre et tarification
+- Suggestions de line-up
 
 ## Réponses :
 - Toujours en français
@@ -43,6 +56,7 @@ Tu es Vybbi, l'intelligence artificielle chef d'orchestre de la plateforme music
 - Mentionne le nombre de résultats trouvés
 - Propose des alternatives si pas de match exact
 - Sois proactif dans tes suggestions
+- Adapte ton ton selon le contexte (professionnel mais accessible)
 
 Tu peux accéder à toutes les tables de la base de données pour analyser et croiser les informations.
 `;
@@ -55,7 +69,7 @@ serve(async (req) => {
 
   try {
     const { message, action, filters, context } = await req.json();
-    console.log(`Vybbi request: ${action || 'chat'} - ${message}`);
+    console.log(`Vybbi request: ${action || 'chat'} - Context: ${context?.page || 'general'} - ${message}`);
 
     let contextData = "";
     let searchResults = null;
@@ -70,7 +84,7 @@ serve(async (req) => {
         supabase.from('availability_slots').select('*, profiles!inner(display_name, profile_type, genres)').eq('status', 'available')
       ]);
 
-      const contextData = {
+      const contextInfo = {
         profiles_count: profiles.data?.length || 0,
         events_count: events.data?.length || 0,
         annonces_count: annonces.data?.length || 0,
@@ -94,6 +108,17 @@ serve(async (req) => {
       }
     }
 
+    // Enrichir le prompt avec le contexte utilisateur
+    let userContextPrompt = "";
+    if (context) {
+      userContextPrompt = `\n\nCONTEXTE UTILISATEUR :
+- Page actuelle: ${context.page || 'général'}
+- Type de profil: ${context.userType || 'non spécifié'}
+- ID utilisateur: ${context.userId || 'non spécifié'}
+
+Adapte tes réponses à ce contexte spécifique.`;
+    }
+
     // Appel à OpenAI
     const response = await fetch('https://api.openai.com/v1/chat/completions', {
       method: 'POST',
@@ -104,7 +129,7 @@ serve(async (req) => {
       body: JSON.stringify({
         model: 'gpt-4.1-2025-04-14',
         messages: [
-          { role: 'system', content: VYBBI_SYSTEM_PROMPT + contextData },
+          { role: 'system', content: VYBBI_SYSTEM_PROMPT + contextData + userContextPrompt },
           { role: 'user', content: message }
         ],
         max_tokens: 1000,
@@ -120,21 +145,28 @@ serve(async (req) => {
     const reply = data.choices[0].message.content;
 
     // Log de l'interaction (seulement si utilisateur connecté)
-    const authUser = req.headers.get('authorization');
-    if (authUser) {
-      await supabase.from('vybbi_interactions').insert({
-        message,
-        response: reply,
-        action,
-        filters: context || filters,
-        created_at: new Date().toISOString()
-      });
+    const authHeader = req.headers.get('authorization');
+    if (authHeader) {
+      // Extraire l'ID utilisateur du token JWT si possible
+      // Pour l'instant on log sans user_id, juste pour les admins
+      try {
+        await supabase.from('vybbi_interactions').insert({
+          message,
+          response: reply,
+          action,
+          filters: JSON.stringify(context || filters || {}),
+          created_at: new Date().toISOString()
+        });
+      } catch (logError) {
+        console.warn('Could not log interaction:', logError);
+      }
     }
 
     return new Response(JSON.stringify({ 
       reply, 
       searchResults,
       action,
+      context: context?.page,
       timestamp: new Date().toISOString()
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },

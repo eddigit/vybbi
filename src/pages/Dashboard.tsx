@@ -1,5 +1,5 @@
 
-import { AutoTranslate } from "@/components/AutoTranslate";
+import { VybbiAssistant } from "@/components/VybbiAssistant";
 import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
 import PartnerDashboard from "@/pages/PartnerDashboard";
@@ -10,6 +10,7 @@ import { MetricCard } from "@/components/dashboard/MetricCard";
 import { TimeFilter } from "@/components/dashboard/TimeFilter";
 import { AcquisitionChart } from "@/components/dashboard/AcquisitionChart";
 import { CommissionDistribution } from "@/components/dashboard/CommissionDistribution";
+import { AutoTranslate } from "@/components/AutoTranslate";
 
 export default function Dashboard() {
   const { profile, loading, hasRole } = useAuth();
@@ -96,6 +97,9 @@ export default function Dashboard() {
           <AcquisitionChart />
           <CommissionDistribution />
         </div>
+        
+        {/* Assistant Vybbi */}
+        <VybbiAssistant context="dashboard" variant="floating" />
       </div>
     );
   }
@@ -149,7 +153,10 @@ export default function Dashboard() {
       <div className="grid gap-6 md:grid-cols-2">
         <AcquisitionChart />
         <CommissionDistribution />
+        </div>
+        
+        {/* Assistant Vybbi */}
+        <VybbiAssistant context="dashboard" variant="floating" />
       </div>
-    </div>
-  );
-}
+    );
+  }
