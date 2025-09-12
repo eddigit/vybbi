@@ -4,10 +4,7 @@ import { supabase } from "@/integrations/supabase/client";
 interface Artist {
   id: string;
   display_name: string;
-  avatar_url?: string;
-  spotify_url?: string;
-  soundcloud_url?: string;
-  youtube_url?: string;
+  avatar_url?: string | null;
 }
 
 interface Track {
@@ -15,7 +12,7 @@ interface Track {
   title: string;
   url: string;
   artist: Artist;
-  type: 'spotify' | 'soundcloud' | 'youtube' | 'media';
+  type: 'media';
 }
 
 export function useRadioPlayer() {
@@ -24,170 +21,184 @@ export function useRadioPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(0.8);
-  
+  const [volumePct, setVolumePct] = useState(80); // 0..100 UI scale
+
   const audioRef = useRef<HTMLAudioElement | null>(null);
-  const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Create and extract track info from artist URLs
-  const createTracksFromArtist = useCallback((artist: Artist): Track[] => {
-    const tracks: Track[] = [];
-    
-    // For now, we'll create placeholder tracks from social URLs
-    // In a real implementation, you'd use APIs to get actual track data
-    if (artist.spotify_url) {
-      tracks.push({
-        id: `${artist.id}-spotify`,
-        title: `${artist.display_name} - Mix Spotify`,
-        url: artist.spotify_url,
-        artist,
-        type: 'spotify'
-      });
-    }
-    
-    if (artist.soundcloud_url) {
-      tracks.push({
-        id: `${artist.id}-soundcloud`,
-        title: `${artist.display_name} - Mix SoundCloud`,
-        url: artist.soundcloud_url,
-        artist,
-        type: 'soundcloud'
-      });
-    }
-    
-    if (artist.youtube_url) {
-      tracks.push({
-        id: `${artist.id}-youtube`,
-        title: `${artist.display_name} - Mix YouTube`,
-        url: artist.youtube_url,
-        artist,
-        type: 'youtube'
-      });
-    }
-
-    return tracks;
-  }, []);
-
-  // Fetch artists and build playlist
+  // Build playlist from artists' audio media assets
   const buildPlaylist = useCallback(async () => {
     try {
-      const { data: artists, error } = await supabase
+      // 1) Fetch public artists
+      const { data: artists, error: artistsError } = await supabase
         .from('profiles')
-        .select('id, display_name, avatar_url, spotify_url, soundcloud_url, youtube_url')
+        .select('id, display_name, avatar_url')
         .eq('profile_type', 'artist')
         .eq('is_public', true)
-        .not('spotify_url', 'is', null)
-        .or('soundcloud_url.not.is.null,youtube_url.not.is.null')
-        .limit(20);
+        .limit(100);
 
-      if (error) {
-        console.error('Error fetching artists:', error);
+      if (artistsError) {
+        console.error('Error fetching artists:', artistsError);
         return;
       }
 
-      if (artists && artists.length > 0) {
-        const allTracks: Track[] = [];
-        
-        artists.forEach(artist => {
-          const tracks = createTracksFromArtist(artist as Artist);
-          allTracks.push(...tracks);
-        });
-
-        // Shuffle the playlist
-        const shuffledTracks = allTracks.sort(() => Math.random() - 0.5);
-        setPlaylist(shuffledTracks);
+      const artistIds = (artists || []).map(a => a.id);
+      if (!artistIds.length) {
+        setPlaylist([fallbackTrack()]);
+        return;
       }
-    } catch (error) {
-      console.error('Error building playlist:', error);
-    }
-  }, [createTracksFromArtist]);
 
-  // Initialize playlist on mount
+      // 2) Fetch audio media assets for these artists
+      const { data: assets, error: assetsError } = await supabase
+        .from('media_assets')
+        .select('id, file_url, file_name, description, profile_id, media_type')
+        .eq('media_type', 'audio')
+        .in('profile_id', artistIds)
+        .limit(200);
+
+      if (assetsError) {
+        console.error('Error fetching media assets:', assetsError);
+        setPlaylist([fallbackTrack()]);
+        return;
+      }
+
+      const artistMap = new Map<string, Artist>((artists || []).map(a => [a.id, {
+        id: a.id,
+        display_name: a.display_name,
+        avatar_url: a.avatar_url || null,
+      }]));
+
+      const tracks: Track[] = (assets || [])
+        .filter(a => !!a.file_url)
+        .map(a => ({
+          id: a.id,
+          title: a.file_name || a.description || 'Audio',
+          url: a.file_url!,
+          artist: artistMap.get((a as any).profile_id) || {
+            id: 'unknown',
+            display_name: 'Artiste Vybbi',
+            avatar_url: null,
+          },
+          type: 'media',
+        }));
+
+      if (!tracks.length) {
+        setPlaylist([fallbackTrack()]);
+        return;
+      }
+
+      // Shuffle playlist for radio feel
+      const shuffled = [...tracks].sort(() => Math.random() - 0.5);
+      setPlaylist(shuffled);
+    } catch (e) {
+      console.error('Error building radio playlist:', e);
+      setPlaylist([fallbackTrack()]);
+    }
+  }, []);
+
+  // Fallback sample track (local asset)
+  const fallbackTrack = (): Track => ({
+    id: 'vybbi-fallback',
+    title: 'Vybbi Radio – Sample',
+    url: '/radio/sample.mp3',
+    artist: {
+      id: 'vybbi-radio',
+      display_name: 'Vybbi Radio',
+      avatar_url: '/favicon.ico',
+    },
+    type: 'media',
+  });
+
   useEffect(() => {
     buildPlaylist();
   }, [buildPlaylist]);
 
-  // Update progress
-  const updateProgress = useCallback(() => {
-    if (audioRef.current) {
-      setProgress(audioRef.current.currentTime);
-      setDuration(audioRef.current.duration || 0);
-    }
-  }, []);
-
-  // Setup audio event listeners
+  // Create/refresh audio element on track change
   useEffect(() => {
-    if (audioRef.current) {
-      const audio = audioRef.current;
-      
-      audio.addEventListener('timeupdate', updateProgress);
-      audio.addEventListener('ended', nextTrack);
-      audio.addEventListener('loadedmetadata', updateProgress);
-      
-      return () => {
-        audio.removeEventListener('timeupdate', updateProgress);
-        audio.removeEventListener('ended', nextTrack);
-        audio.removeEventListener('loadedmetadata', updateProgress);
-      };
-    }
-  }, [updateProgress]);
+    const track = playlist[currentTrackIndex];
+    if (!track) return;
 
-  // Progress interval
-  useEffect(() => {
+    const audio = new Audio(track.url);
+    audio.volume = volumePct / 100;
+
+    const onTime = () => {
+      setProgress(audio.currentTime || 0);
+      const d = isFinite(audio.duration) ? audio.duration : 0;
+      setDuration(d || 0);
+    };
+    const onLoaded = () => {
+      const d = isFinite(audio.duration) ? audio.duration : 0;
+      setDuration(d || 0);
+    };
+    const onEnded = () => {
+      nextTrack();
+    };
+
+    audio.addEventListener('timeupdate', onTime);
+    audio.addEventListener('loadedmetadata', onLoaded);
+    audio.addEventListener('ended', onEnded);
+
+    // swap current audio
+    if (audioRef.current) {
+      // Stop previous
+      audioRef.current.pause();
+    }
+    audioRef.current = audio;
+
+    // Autoplay if was playing
     if (isPlaying) {
-      intervalRef.current = setInterval(updateProgress, 1000);
-    } else {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      audio.play().catch(() => {
+        // Autoplay might be blocked until user interaction
+      });
     }
 
     return () => {
-      if (intervalRef.current) {
-        clearInterval(intervalRef.current);
-      }
+      audio.pause();
+      audio.removeEventListener('timeupdate', onTime);
+      audio.removeEventListener('loadedmetadata', onLoaded);
+      audio.removeEventListener('ended', onEnded);
     };
-  }, [isPlaying, updateProgress]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentTrackIndex, playlist]);
+
+  // Respect play/pause state
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (!audio) return;
+    if (isPlaying) {
+      audio.play().catch(() => {});
+    } else {
+      audio.pause();
+    }
+  }, [isPlaying]);
+
+  // Apply volume changes
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volumePct / 100;
+    }
+  }, [volumePct]);
 
   const play = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.play();
-      setIsPlaying(true);
-    }
+    setIsPlaying(true);
+    if (audioRef.current) audioRef.current.play().catch(() => {});
   }, []);
 
   const pause = useCallback(() => {
-    if (audioRef.current) {
-      audioRef.current.pause();
-      setIsPlaying(false);
-    }
+    setIsPlaying(false);
+    if (audioRef.current) audioRef.current.pause();
   }, []);
 
   const nextTrack = useCallback(() => {
-    if (playlist.length === 0) return;
-    
-    const nextIndex = (currentTrackIndex + 1) % playlist.length;
-    setCurrentTrackIndex(nextIndex);
+    if (!playlist.length) return;
+    setCurrentTrackIndex((i) => (i + 1) % playlist.length);
     setProgress(0);
-    
-    // Auto-play next track if currently playing
-    if (isPlaying) {
-      setTimeout(() => play(), 100);
-    }
-  }, [playlist.length, currentTrackIndex, isPlaying, play]);
+  }, [playlist.length]);
 
   const previousTrack = useCallback(() => {
-    if (playlist.length === 0) return;
-    
-    const prevIndex = currentTrackIndex === 0 ? playlist.length - 1 : currentTrackIndex - 1;
-    setCurrentTrackIndex(prevIndex);
+    if (!playlist.length) return;
+    setCurrentTrackIndex((i) => (i - 1 + playlist.length) % playlist.length);
     setProgress(0);
-    
-    // Auto-play previous track if currently playing
-    if (isPlaying) {
-      setTimeout(() => play(), 100);
-    }
-  }, [playlist.length, currentTrackIndex, isPlaying, play]);
+  }, [playlist.length]);
 
   const seek = useCallback((time: number) => {
     if (audioRef.current) {
@@ -196,36 +207,13 @@ export function useRadioPlayer() {
     }
   }, []);
 
-  const setVolumeLevel = useCallback((level: number) => {
-    const normalizedLevel = Math.max(0, Math.min(1, level / 100));
-    setVolume(normalizedLevel);
-    if (audioRef.current) {
-      audioRef.current.volume = normalizedLevel;
-    }
+  const setVolume = useCallback((pct: number) => {
+    const clamped = Math.max(0, Math.min(100, Math.round(pct)));
+    setVolumePct(clamped);
+    if (audioRef.current) audioRef.current.volume = clamped / 100;
   }, []);
 
-  // Update audio volume
-  useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.volume = volume;
-    }
-  }, [volume]);
-
   const currentTrack = playlist[currentTrackIndex] || null;
-
-  // Create audio element for current track
-  useEffect(() => {
-    if (currentTrack) {
-      // For now, we'll use a placeholder audio element
-      // In a real implementation, you'd handle different URL types (Spotify, SoundCloud, etc.)
-      // This is a simplified version for demonstration
-      audioRef.current = new Audio();
-      audioRef.current.volume = volume;
-      
-      // Note: Direct playback from Spotify/SoundCloud URLs requires their respective APIs
-      // This is a placeholder implementation
-    }
-  }, [currentTrack, volume]);
 
   return {
     playlist,
@@ -233,12 +221,12 @@ export function useRadioPlayer() {
     isPlaying,
     progress,
     duration,
-    volume: volume * 100,
+    volume: volumePct,
     play,
     pause,
     nextTrack,
     previousTrack,
     seek,
-    setVolume: setVolumeLevel,
+    setVolume,
   };
 }

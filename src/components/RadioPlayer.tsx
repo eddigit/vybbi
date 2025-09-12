@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { Play, Pause, Volume2, SkipForward, SkipBack, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
@@ -7,38 +6,43 @@ import { useRadioPlayer } from "@/hooks/useRadioPlayer";
 import { Link } from "react-router-dom";
 
 export function RadioPlayer() {
-  const [volume, setVolume] = useState([80]);
-  const { 
-    currentTrack, 
-    isPlaying, 
-    progress, 
+  const {
+    currentTrack,
+    isPlaying,
+    progress,
     duration,
-    play, 
-    pause, 
-    nextTrack, 
+    volume,
+    play,
+    pause,
+    nextTrack,
     previousTrack,
-    seek 
+    seek,
+    setVolume,
   } = useRadioPlayer();
 
   if (!currentTrack) return null;
 
   const formatTime = (seconds: number) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
+    const total = Math.max(0, Math.floor(seconds || 0));
+    const mins = Math.floor(total / 60);
+    const secs = total % 60;
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
+  const progressVal = Math.min(Math.floor(progress || 0), Math.floor(duration || 0));
+  const durationVal = Math.floor(duration || 0);
+
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 animate-slide-up">
+    <div className="fixed left-0 right-0 bottom-16 md:bottom-0 z-50 animate-slide-up" aria-label="Lecteur Radio Vybbi">
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center gap-4">
-            {/* Album Art / Artist Avatar */}
+            {/* Pochette / Avatar artiste */}
             <div className="flex-shrink-0">
               <Avatar className="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-primary/20">
-                <AvatarImage 
-                  src={currentTrack.artist.avatar_url || ''} 
-                  alt={currentTrack.artist.display_name}
+                <AvatarImage
+                  src={currentTrack.artist.avatar_url || ''}
+                  alt={`Avatar ${currentTrack.artist.display_name}`}
                 />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
                   {currentTrack.artist.display_name.charAt(0)}
@@ -46,7 +50,7 @@ export function RadioPlayer() {
               </Avatar>
             </div>
 
-            {/* Track Info & Progress */}
+            {/* Infos piste + progression */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
                 <div className="min-w-0 flex-1">
@@ -54,9 +58,10 @@ export function RadioPlayer() {
                     <p className="text-sm font-medium text-foreground truncate">
                       {currentTrack.title}
                     </p>
-                    <Link 
+                    <Link
                       to={`/artists/${currentTrack.artist.id}`}
                       className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+                      aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
                     >
                       <ExternalLink className="w-3 h-3" />
                     </Link>
@@ -66,37 +71,39 @@ export function RadioPlayer() {
                   </p>
                 </div>
                 <div className="text-xs text-muted-foreground ml-2">
-                  {formatTime(progress)} / {formatTime(duration)}
+                  {formatTime(progressVal)} / {formatTime(durationVal)}
                 </div>
               </div>
-              
-              {/* Progress Bar */}
+
+              {/* Barre de progression */}
               <div className="w-full">
                 <Slider
-                  value={[progress]}
-                  max={duration}
+                  value={[progressVal]}
+                  max={Math.max(1, durationVal)}
                   step={1}
-                  onValueChange={([value]) => seek(value)}
+                  onValueChange={([v]) => seek(v)}
                   className="w-full h-1 cursor-pointer"
                 />
               </div>
             </div>
 
-            {/* Controls */}
+            {/* Contrôles */}
             <div className="flex items-center gap-2 sm:gap-3">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={previousTrack}
                 className="w-8 h-8 p-0 hover:bg-primary/10"
+                aria-label="Piste précédente"
               >
                 <SkipBack className="w-4 h-4" />
               </Button>
-              
+
               <Button
                 onClick={isPlaying ? pause : play}
                 size="sm"
                 className="w-10 h-10 p-0 bg-gradient-primary hover:opacity-90 transition-all duration-200 hover-glow"
+                aria-label={isPlaying ? 'Pause' : 'Lecture'}
               >
                 {isPlaying ? (
                   <Pause className="w-5 h-5" />
@@ -104,31 +111,32 @@ export function RadioPlayer() {
                   <Play className="w-5 h-5 ml-0.5" />
                 )}
               </Button>
-              
+
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={nextTrack}
                 className="w-8 h-8 p-0 hover:bg-primary/10"
+                aria-label="Piste suivante"
               >
                 <SkipForward className="w-4 h-4" />
               </Button>
 
-              {/* Volume Control - Hidden on mobile */}
+              {/* Volume (masqué sur mobile) */}
               <div className="hidden sm:flex items-center gap-2 ml-2">
                 <Volume2 className="w-4 h-4 text-muted-foreground" />
                 <div className="w-16">
                   <Slider
-                    value={volume}
+                    value={[volume]}
                     max={100}
                     step={1}
-                    onValueChange={setVolume}
+                    onValueChange={([v]) => setVolume(v)}
                     className="w-full h-1"
                   />
                 </div>
               </div>
 
-              {/* Vybbi Logo/Brand */}
+              {/* Marque Vybbi */}
               <div className="hidden lg:flex items-center ml-4 pl-4 border-l border-border/50">
                 <div className="text-xs">
                   <div className="font-bold text-primary">RADIO</div>
