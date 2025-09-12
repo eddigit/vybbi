@@ -84,8 +84,8 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
             // Use component-provided dimensions since no slot exists in DB
             const effectiveWidth = width || null;
             const effectiveHeight = height || null;
-            const widthOk = !effectiveWidth || !asset.width || Math.abs(asset.width - effectiveWidth) <= 100;
-            const heightOk = !effectiveHeight || !asset.height || Math.abs(asset.height - effectiveHeight) <= 200;
+            const widthOk = fit === 'contain' || !effectiveWidth || !asset.width || Math.abs(asset.width - effectiveWidth) <= 100;
+            const heightOk = fit === 'contain' || !effectiveHeight || !asset.height || Math.abs(asset.height - effectiveHeight) <= 200;
             if (!widthOk || !heightOk) continue;
 
             eligible.push({
@@ -192,8 +192,8 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
           // Dimension check (flexible, uses slot dimensions or provided props as fallback)
           const effectiveWidth = slotData.width || width || null;
           const effectiveHeight = slotData.height || height || null;
-          const widthOk = !effectiveWidth || !asset.width || Math.abs(asset.width - effectiveWidth) <= 100;
-          const heightOk = !effectiveHeight || !asset.height || Math.abs(asset.height - effectiveHeight) <= 200;
+          const widthOk = fit === 'contain' || !effectiveWidth || !asset.width || Math.abs(asset.width - effectiveWidth) <= 100;
+          const heightOk = fit === 'contain' || !effectiveHeight || !asset.height || Math.abs(asset.height - effectiveHeight) <= 200;
 
           if (!widthOk || !heightOk) continue;
 
