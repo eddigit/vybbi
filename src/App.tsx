@@ -4,6 +4,7 @@ import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { Layout } from "@/components/layout/Layout";
+import { RadioPlayer } from "@/components/RadioPlayer";
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
 import Campaigns from "./pages/Campaigns";
@@ -102,6 +103,7 @@ const App = () => (
         <Route path="*" element={<NotFound />} />
           </Routes>
         </Layout>
+        <RadioPlayer />
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
