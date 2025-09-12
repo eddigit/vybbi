@@ -58,7 +58,7 @@ export function Header() {
     <header className="h-14 sm:h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
       <div className="flex h-full items-center justify-between px-3 sm:px-4">
         {/* Mobile: Logo only, Desktop: Logo + Name */}
-        <Link to="/" className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
+        <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
           <img 
             src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
             alt="Vybbi Logo" 

@@ -60,23 +60,24 @@ export function useAuth() {
       setProfile(profileData);
       setRoles(rolesData?.map(r => r.role) || []);
       
-            // Only redirect after everything is set and we're sure user is available
-            setTimeout(() => {
-              // Auto-redirect based on profile type from certain routes
-              const redirectPaths = ['/', '/auth'];
-              if (redirectPaths.includes(window.location.pathname)) {
-                if (profileData?.profile_type === 'artist') {
-                  navigate(`/artists/${profileData.id}/edit`, { replace: true });
-                } else if (profileData?.profile_type === 'agent') {
-                  navigate(`/agents/${profileData.id}/edit`, { replace: true });
-                } else if (profileData?.profile_type === 'manager') {
-                  navigate(`/managers/${profileData.id}/edit`, { replace: true });
-                } else {
-                  // All other profiles (including 'lieu') go to dashboard
-                  navigate('/dashboard', { replace: true });
-                }
-              }
-            }, 100);
+      // Only redirect after login or from auth pages, not during navigation
+      setTimeout(() => {
+        const currentPath = window.location.pathname;
+        const shouldRedirect = currentPath === '/' || currentPath === '/auth';
+        
+        if (shouldRedirect) {
+          if (profileData?.profile_type === 'artist') {
+            navigate(`/artists/${profileData.id}/edit`, { replace: true });
+          } else if (profileData?.profile_type === 'agent') {
+            navigate(`/agents/${profileData.id}/edit`, { replace: true });
+          } else if (profileData?.profile_type === 'manager') {
+            navigate(`/managers/${profileData.id}/edit`, { replace: true });
+          } else {
+            // All other profiles (including 'lieu') go to dashboard
+            navigate('/dashboard', { replace: true });
+          }
+        }
+      }, 100);
     } catch (error) {
       console.error('Error in fetchProfile:', error);
     } finally {
