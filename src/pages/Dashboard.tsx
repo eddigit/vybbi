@@ -49,7 +49,7 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="container mx-auto px-6 py-8">
-        <div className="animate-pulse">Chargement...</div>
+        <div className="animate-pulse"><AutoTranslate text="Chargement..." /></div>
       </div>
     );
   }
@@ -119,9 +119,9 @@ export default function Dashboard() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Tableau de Bord</h1>
+        <h1 className="text-3xl font-bold tracking-tight"><AutoTranslate text="Tableau de Bord" /></h1>
         <p className="text-muted-foreground">
-          Vue d'ensemble de votre activité
+          <AutoTranslate text="Vue d'ensemble de votre activité" />
         </p>
       </div>
 

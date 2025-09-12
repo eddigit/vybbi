@@ -1,4 +1,6 @@
 import { LanguageSelector } from "@/components/LanguageSelector";
+import { AutoTranslate } from "@/components/AutoTranslate";
+import { useTranslate } from "@/hooks/useTranslate";
 import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -25,6 +27,7 @@ export function Header() {
   const { toast } = useToast();
   const { notifications, unreadCount, markAsRead } = useNotifications();
   const [searchQuery, setSearchQuery] = useState("");
+  const { translatedText: searchPlaceholder } = useTranslate("Recherche...");
   
 
   const isArtistPage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
@@ -80,7 +83,7 @@ export function Header() {
               <form onSubmit={handleSearch} className="hidden lg:block relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                 <Input
-                  placeholder="Recherche..."
+                  placeholder={searchPlaceholder}
                   className="pl-10 w-48 xl:w-64"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
@@ -100,11 +103,11 @@ export function Header() {
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-72 sm:w-80">
-                  <DropdownMenuLabel>Notifications</DropdownMenuLabel>
+                  <DropdownMenuLabel><AutoTranslate text="Notifications" /></DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   {notifications.length === 0 ? (
                     <DropdownMenuItem disabled>
-                      Aucune notification
+                      <AutoTranslate text="Aucune notification" />
                     </DropdownMenuItem>
                   ) : (
                     notifications.map((notification) => (
@@ -127,7 +130,7 @@ export function Header() {
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
                     <Link to="/messages" className="w-full text-center">
-                      Voir tous les messages
+                      <AutoTranslate text="Voir tous les messages" />
                     </Link>
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -148,7 +151,7 @@ export function Header() {
                 </button>
               </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 sm:w-56">
-                <DropdownMenuLabel className="text-sm">Mon compte</DropdownMenuLabel>
+                <DropdownMenuLabel className="text-sm"><AutoTranslate text="Mon compte" /></DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
                   <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
@@ -156,7 +159,7 @@ export function Header() {
                            profile.profile_type === 'manager' ? `/partners/${profile.id}` :
                            profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
                     <User className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm">Mon profil</span>
+                    <span className="text-sm"><AutoTranslate text="Mon profil" /></span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
@@ -165,31 +168,31 @@ export function Header() {
                            profile.profile_type === 'manager' ? `/managers/${profile.id}/edit` :
                            profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}/edit`} className="flex items-center">
                     <Pencil className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm">Modifier</span>
+                    <span className="text-sm"><AutoTranslate text="Modifier" /></span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/messages" className="flex items-center">
                     <MessageSquare className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm">Messages</span>
+                    <span className="text-sm"><AutoTranslate text="Messages" /></span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/dashboard" className="flex items-center">
                     <LayoutDashboard className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm">Tableau de bord</span>
+                    <span className="text-sm"><AutoTranslate text="Tableau de bord" /></span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/top-artistes" className="flex items-center">
                     <Trophy className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm">Top Artistes</span>
+                    <span className="text-sm"><AutoTranslate text="Top Artistes" /></span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/annonces" className="flex items-center">
                     <Megaphone className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm">Annonces</span>
+                    <span className="text-sm"><AutoTranslate text="Annonces" /></span>
                   </Link>
                 </DropdownMenuItem>
 
@@ -198,7 +201,7 @@ export function Header() {
                   <DropdownMenuItem asChild>
                     <Link to="/artists" className="flex items-center sm:hidden">
                       <Search className="mr-2 h-3 w-3" />
-                      <span className="text-sm">Artistes</span>
+                      <span className="text-sm"><AutoTranslate text="Artistes" /></span>
                     </Link>
                   </DropdownMenuItem>
                 )}
@@ -208,13 +211,13 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link to="/lieux" className="flex items-center sm:hidden">
                         <MapPin className="mr-2 h-3 w-3" />
-                        <span className="text-sm">Lieux</span>
+                        <span className="text-sm"><AutoTranslate text="Lieux" /></span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/events" className="flex items-center sm:hidden">
                         <Star className="mr-2 h-3 w-3" />
-                        <span className="text-sm">Événements</span>
+                        <span className="text-sm"><AutoTranslate text="Événements" /></span>
                       </Link>
                     </DropdownMenuItem>
                   </>
@@ -225,13 +228,13 @@ export function Header() {
                     <DropdownMenuItem asChild>
                       <Link to="/profiles?type=agent" className="flex items-center sm:hidden">
                         <Users className="mr-2 h-3 w-3" />
-                        <span className="text-sm">Agents</span>
+                        <span className="text-sm"><AutoTranslate text="Agents" /></span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <Link to="/profiles?type=manager" className="flex items-center sm:hidden">
                         <Users className="mr-2 h-3 w-3" />
-                        <span className="text-sm">Managers</span>
+                        <span className="text-sm"><AutoTranslate text="Managers" /></span>
                       </Link>
                     </DropdownMenuItem>
                   </>
@@ -240,7 +243,7 @@ export function Header() {
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={handleLogout} className="flex items-center text-destructive">
                   <LogOut className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="text-sm">Déconnexion</span>
+                  <span className="text-sm"><AutoTranslate text="Déconnexion" /></span>
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
