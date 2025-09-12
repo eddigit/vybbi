@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search, FileText, ArrowRight } from 'lucide-react';
+import { ArrowLeft, Music, Calendar, DollarSign, TrendingUp, Users, Star, CheckCircle, Search, FileText, ArrowRight, Radio, Globe, Tv } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -129,7 +129,7 @@ export default function PourArtistes() {
       <section className="py-16 px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">5 raisons de rejoindre Vybbi dès maintenant</h2>
+            <h2 className="text-4xl font-bold mb-4">6 raisons de rejoindre Vybbi dès maintenant</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Découvrez pourquoi des milliers d'artistes développent leur carrière avec Vybbi
             </p>
@@ -172,7 +172,7 @@ export default function PourArtistes() {
                   <Search className="w-6 h-6 text-white" />
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-foreground">Outils médias</h3>
-                <p className="text-muted-foreground">Mise en avant via le mur d'annonces, possibilité d'être repéré par radios et médias spécialisés.</p>
+                <p className="text-muted-foreground">Mise en avant via le mur d'annonces, diffusion sur Radio Vybbi et possibilité d'être repéré par radios et médias spécialisés.</p>
               </CardContent>
             </Card>
 
@@ -183,6 +183,16 @@ export default function PourArtistes() {
                 </div>
                 <h3 className="text-xl font-semibold mb-2 text-foreground">Égalité des chances</h3>
                 <p className="text-muted-foreground">Petit artiste ou star, la plateforme met tout le monde au même niveau de visibilité dans la recherche.</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6">
+                <div className="w-12 h-12 rounded-lg bg-gradient-to-r from-pink-500 to-violet-500 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-glow">
+                  <Radio className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-2 text-foreground">Radio Vybbi - Diffusion Mondiale</h3>
+                <p className="text-muted-foreground">Soyez diffusé sur notre webradio dédiée exclusivement aux artistes Vybbi et touchez une audience mondiale 24h/24.</p>
               </CardContent>
             </Card>
           </div>
@@ -312,6 +322,88 @@ export default function PourArtistes() {
         </div>
       </section>
 
+      {/* Radio Vybbi Section */}
+      <section className="py-16 px-6">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <Badge className="mb-6 text-sm px-4 py-2 bg-gradient-to-r from-pink-500 to-violet-500">
+              <Radio className="w-4 h-4 mr-2" />
+              RADIO VYBBI
+            </Badge>
+            <h2 className="text-4xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-pink-500 to-violet-500 bg-clip-text text-transparent">
+                Radio Vybbi
+              </span>
+              <br />
+              Votre musique diffusée dans le monde entier
+            </h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Découvrez Radio Vybbi, la première webradio mondiale entièrement dédiée aux artistes inscrits sur notre plateforme. 
+              Une nouvelle manière extraordinaire de faire connaître votre talent et votre son à une audience passionnée.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8 mb-12">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 rounded-lg bg-gradient-to-r from-pink-500 to-violet-500 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
+                  <Radio className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-foreground">Diffusion 24h/24</h3>
+                <p className="text-muted-foreground">Votre musique en rotation continue sur une radio mondiale dédiée exclusivement aux talents Vybbi</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-6 text-center">
+                <div className="w-16 h-16 rounded-lg bg-gradient-to-r from-blue-500 to-cyan-500 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
+                  <Globe className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-foreground">Audience Mondiale Ciblée</h3>
+                <p className="text-muted-foreground">Touchez des auditeurs passionnés d'artistes émergents et de nouveaux talents dans le monde entier</p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border relative overflow-hidden">
+              <CardContent className="p-6 text-center">
+                <Badge className="absolute top-4 right-4 text-xs px-2 py-1 bg-gradient-to-r from-orange-500 to-red-500">
+                  BIENTÔT
+                </Badge>
+                <div className="w-16 h-16 rounded-lg bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow">
+                  <Tv className="w-8 h-8 text-white" />
+                </div>
+                <h3 className="text-xl font-semibold mb-3 text-foreground">Prochainement Web TV</h3>
+                <p className="text-muted-foreground">Très prochainement, showcasez vos performances visuelles : danseurs, chanteurs, magiciens et tous artistes scéniques</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center bg-gradient-to-r from-pink-500/10 to-violet-500/10 rounded-2xl p-8 border border-pink-500/20">
+            <h3 className="text-2xl font-bold mb-4 text-foreground">
+              Une radio unique au monde
+            </h3>
+            <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-6">
+              Radio Vybbi est la première et unique webradio mondiale dédiée exclusivement aux artistes de notre communauté. 
+              Chaque morceau diffusé est créé par un talent inscrit sur Vybbi, offrant une découverte musicale authentique et diversifiée.
+            </p>
+            <div className="flex flex-wrap justify-center gap-4 text-sm text-muted-foreground">
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                <span>100% artistes Vybbi</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                <span>Diffusion mondiale</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-primary" />
+                <span>Tous styles musicaux</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Testimonials */}
       <section className="py-16 px-6">
         <div className="container mx-auto">
@@ -373,6 +465,10 @@ export default function PourArtistes() {
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
                   <span>Services additionnels : assurance, gestion juridique</span>
+                </div>
+                <div className="flex items-center gap-3">
+                  <CheckCircle className="w-5 h-5 text-success" />
+                  <span>Diffusion sur Radio Vybbi, notre webradio mondiale dédiée aux artistes</span>
                 </div>
               </div>
             </div>
