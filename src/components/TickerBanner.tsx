@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { Zap } from "lucide-react";
 
 interface TickerMessage {
   id: string;
@@ -50,7 +49,6 @@ export function TickerBanner() {
   return (
     <div className="relative overflow-hidden bg-gradient-to-r from-primary via-purple-600 to-pink-600 rounded-full px-6 py-3 shadow-lg">
       <div className="flex items-center justify-center">
-        <Zap className="w-4 h-4 mr-2 text-white animate-pulse" />
         <div className="relative h-6 flex items-center">
           <div 
             className="whitespace-nowrap text-white font-bold text-sm uppercase tracking-wider animate-marquee"
