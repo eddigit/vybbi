@@ -122,11 +122,10 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const hookSecret = Deno.env.get('AUTH_EMAIL_HOOK_SECRET');
-    const brevoApiKey = Deno.env.get('BREVO_API_KEY');
-    const fromEmail = 'info@vybbi.app';
-    const fromName = 'Vybbi';
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
 
-    if (!hookSecret || !brevoApiKey) {
+    if (!hookSecret || !supabaseUrl || !serviceRoleKey) {
       console.error('Missing required environment variables');
       return new Response(JSON.stringify({ error: 'Configuration incomplete' }), {
         status: 500,
@@ -172,39 +171,32 @@ const handler = async (req: Request): Promise<Response> => {
     const subject = subjects[email_action_type as keyof typeof subjects] || subjects.signup;
     const htmlContent = getEmailTemplate(email_action_type, email_data);
 
-    // Send email via Brevo
-    const emailResponse = await fetch('https://api.brevo.com/v3/smtp/email', {
+    // Send email via Gmail SMTP using our function
+    const gmailResponse = await fetch(`${Deno.env.get('SUPABASE_URL')}/functions/v1/gmail-send-email`, {
       method: 'POST',
       headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json',
-        'api-key': brevoApiKey
+        'Authorization': `Bearer ${Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')}`,
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
-        sender: {
-          name: fromName,
-          email: fromEmail
-        },
-        to: [
-          {
-            email: user.email,
-            name: user.user_metadata?.display_name || user.email
-          }
-        ],
+        to: user.email,
         subject,
-        htmlContent,
-        textContent: `${subject}\n\nRendez-vous sur: ${email_data.site_url}/auth/v1/verify?token=${email_data.token_hash}&type=${email_data.email_action_type}&redirect_to=${email_data.redirect_to}`
+        html: htmlContent,
+        templateData: { 
+          userName: user.user_metadata?.display_name || user.email,
+          userEmail: user.email
+        }
       })
     });
 
-    if (!emailResponse.ok) {
-      const errorData = await emailResponse.text();
-      console.error('Brevo API error:', errorData);
-      throw new Error(`Brevo API error: ${emailResponse.status}`);
+    if (!gmailResponse.ok) {
+      const errorData = await gmailResponse.text();
+      console.error('Gmail SMTP error:', errorData);
+      throw new Error(`Gmail SMTP error: ${gmailResponse.status}`);
     }
 
-    const result = await emailResponse.json();
-    console.log(`Auth email sent successfully via Brevo:`, result);
+    const result = await gmailResponse.json();
+    console.log(`Auth email sent successfully via Gmail SMTP:`, result);
 
     return new Response(JSON.stringify({ success: true, messageId: result.messageId }), {
       status: 200,
