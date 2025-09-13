@@ -3,6 +3,9 @@ project_id = "fepxacqrrjvnvpgzwhyr"
 [functions.send-notification]
 verify_jwt = false
 
+[functions.send-system-notification]
+verify_jwt = false
+
 [functions.send-prospecting-email]
 verify_jwt = false
 

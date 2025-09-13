@@ -35,6 +35,39 @@ interface NotificationEmailRequest {
   data: EmailNotificationData;
 }
 
+// Core email sending logic for system notifications (always use hardcoded templates)
+const sendSystemNotificationEmail = async (
+  type: EmailNotificationType,
+  to: string,
+  data: EmailNotificationData
+): Promise<{ success: boolean; error?: string }> => {
+  try {
+    const { data: result, error } = await supabase.functions.invoke('send-system-notification', {
+      body: {
+        type,
+        to,
+        data
+      }
+    });
+
+    if (error) {
+      console.error('Supabase function error:', error);
+      return { success: false, error: error.message };
+    }
+
+    if (!result?.success) {
+      console.error('Email sending failed:', result);
+      return { success: false, error: result?.error || 'Email sending failed' };
+    }
+
+    return { success: true };
+  } catch (error: any) {
+    console.error('Email service error:', error);
+    return { success: false, error: error.message };
+  }
+};
+
+// Core email sending logic for prospecting emails (can use Brevo templates)
 export const sendNotificationEmail = async (
   type: EmailNotificationType, 
   to: string, 
@@ -68,25 +101,25 @@ export const sendNotificationEmail = async (
   }
 };
 
-// Fonction utilitaire pour envoyer un email de bienvenue
+// Fonction utilitaire pour envoyer un email de bienvenue (SYSTÈME)
 export const sendWelcomeEmail = async (userEmail: string, userName: string, profileType: string) => {
-  return await sendNotificationEmail('user_registration', userEmail, {
+  return await sendSystemNotificationEmail('user_registration', userEmail, {
     userName,
     userEmail,
     profileType
   });
 };
 
-// Fonction utilitaire pour notifier l'admin d'une nouvelle inscription
+// Fonction utilitaire pour notifier l'admin d'une nouvelle inscription (SYSTÈME)
 export const sendAdminNotification = async (adminEmail: string, userName: string, userEmail: string, profileType: string) => {
-  return await sendNotificationEmail('admin_notification', adminEmail, {
+  return await sendSystemNotificationEmail('admin_notification', adminEmail, {
     userName,
     userEmail,
     profileType
   });
 };
 
-// Fonction utilitaire pour notifier un artiste d'un nouvel avis
+// Fonction utilitaire pour notifier un artiste d'un nouvel avis (SYSTÈME)
 export const sendReviewNotification = async (
   artistEmail: string, 
   artistName: string, 
@@ -95,7 +128,7 @@ export const sendReviewNotification = async (
   rating: number, 
   message?: string
 ) => {
-  return await sendNotificationEmail('review_notification', artistEmail, {
+  return await sendSystemNotificationEmail('review_notification', artistEmail, {
     artistName,
     artistId,
     reviewerName,
@@ -104,21 +137,21 @@ export const sendReviewNotification = async (
   });
 };
 
-// Fonction utilitaire pour envoyer un message de contact
+// Fonction utilitaire pour envoyer un message de contact (SYSTÈME)
 export const sendContactMessage = async (
   to: string,
   senderName: string,
   senderEmail: string,
   message: string
 ) => {
-  return await sendNotificationEmail('contact_message', to, {
+  return await sendSystemNotificationEmail('contact_message', to, {
     senderName,
     senderEmail,
     message
   });
 };
 
-// Fonction utilitaire pour notifier une venue d'une demande de booking
+// Fonction utilitaire pour notifier une venue d'une demande de booking (SYSTÈME)
 export const sendBookingProposedNotification = async (
   venueEmail: string,
   venueName: string,
@@ -128,7 +161,7 @@ export const sendBookingProposedNotification = async (
   proposedFee: string,
   message?: string
 ) => {
-  return await sendNotificationEmail('booking_proposed', venueEmail, {
+  return await sendSystemNotificationEmail('booking_proposed', venueEmail, {
     venueName,
     eventTitle,
     eventDate,
@@ -140,7 +173,7 @@ export const sendBookingProposedNotification = async (
   });
 };
 
-// Fonction utilitaire pour notifier un artiste du changement de statut de booking
+// Fonction utilitaire pour notifier un artiste du changement de statut de booking (SYSTÈME)
 export const sendBookingStatusChangedNotification = async (
   artistEmail: string,
   artistName: string,
@@ -151,7 +184,7 @@ export const sendBookingStatusChangedNotification = async (
   statusColor: string,
   message?: string
 ) => {
-  return await sendNotificationEmail('booking_status_changed', artistEmail, {
+  return await sendSystemNotificationEmail('booking_status_changed', artistEmail, {
     artistName,
     eventTitle,
     eventDate,
@@ -164,7 +197,7 @@ export const sendBookingStatusChangedNotification = async (
   });
 };
 
-// Fonction utilitaire pour notifier un utilisateur d'un nouveau message
+// Fonction utilitaire pour notifier un utilisateur d'un nouveau message (SYSTÈME)
 export const sendMessageReceivedNotification = async (
   recipientEmail: string,
   recipientName: string,
@@ -172,7 +205,7 @@ export const sendMessageReceivedNotification = async (
   message: string,
   conversationId: string
 ) => {
-  return await sendNotificationEmail('message_received', recipientEmail, {
+  return await sendSystemNotificationEmail('message_received', recipientEmail, {
     recipientName,
     senderName,
     message,
@@ -181,7 +214,7 @@ export const sendMessageReceivedNotification = async (
   });
 };
 
-// Fonction utilitaire pour le suivi de prospection
+// Fonction utilitaire pour le suivi de prospection (PEUT UTILISER BREVO)
 export const sendProspectFollowUpEmail = async (
   userEmail: string,
   userName: string,
