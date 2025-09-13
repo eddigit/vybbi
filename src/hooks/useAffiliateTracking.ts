@@ -101,14 +101,11 @@ export const useAffiliateTracking = () => {
       // Get current user ID if authenticated
       const { data: { user } } = await supabase.auth.getUser();
       
-      const { data, error } = await supabase.functions.invoke('track-conversion', {
-        body: {
-          sessionId,
-          linkId,
-          userId: user?.id,
-          conversionType,
-          conversionValue: value
-        }
+      // Use the existing RPC function
+      const { data, error } = await supabase.rpc('track_affiliate_conversion', {
+        p_user_id: user?.id,
+        p_conversion_type: conversionType,
+        p_conversion_value: value
       });
 
       if (error) {

@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
+import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -13,6 +14,9 @@ export function Layout({ children }: LayoutProps) {
   const isLandingPage = location.pathname === '/';
   const isAuthPage = location.pathname === '/auth';
   const isArtistProfilePage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
+  
+  // Initialize global affiliate tracking
+  useAffiliateTracking();
 
   if (isLandingPage || isAuthPage) {
     return (

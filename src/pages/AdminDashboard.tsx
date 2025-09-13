@@ -19,7 +19,8 @@ import {
   Music,
   Bot,
   Target,
-  Clock
+  Clock,
+  BookOpen
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
@@ -102,6 +103,20 @@ export default function AdminDashboard() {
       href: "/admin/communication", 
       icon: MessageSquare,
       color: "text-blue-600"
+    },
+    {
+      title: "Influenceurs", 
+      description: "Gestion des partenaires d'affiliation",
+      href: "/admin/influenceurs",
+      icon: Users,
+      color: "text-purple-600"
+    },
+    {
+      title: "Base de Connaissance",
+      description: "Documentation et guides",
+      href: "/admin/knowledge",
+      icon: BookOpen,
+      color: "text-indigo-600"
     },
     {
       title: "Roadmap",
@@ -212,7 +227,7 @@ export default function AdminDashboard() {
           </div>
 
           {/* Actions rapides */}
-          <div className="grid gap-4 md:grid-cols-3">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {quickActions.map((action) => (
               <Card key={action.title} className="hover:shadow-md transition-shadow">
                 <CardHeader>

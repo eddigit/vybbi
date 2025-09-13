@@ -18,6 +18,8 @@ import {
   Shield,
   Route,
   MessageCircle,
+  BookOpen,
+  Link as LinkIcon
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -72,9 +74,17 @@ const getLieuItems = (profileId: string) => [
   { title: "Mon Profil", url: `/lieux/${profileId}/edit`, icon: User },
 ];
 
+const influenceurItems = [
+  { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Affiliation", url: "/affiliation", icon: LinkIcon },
+  { title: "Messages", url: "/messages", icon: MessageSquare },
+];
+
 const adminItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: LayoutDashboard },
   { title: "Régie Publicitaire", url: "/admin/ads", icon: Megaphone },
+  { title: "Influenceurs", url: "/admin/influenceurs", icon: Users },
+  { title: "Base de Connaissance", url: "/admin/knowledge", icon: BookOpen },
   { title: "Partners", url: "/partners", icon: Users },
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
@@ -112,6 +122,8 @@ export function TopNav() {
         return getManagerItems(profile.id);
       case 'lieu':
         return getLieuItems(profile.id);
+      case 'influenceur':
+        return influenceurItems;
       case 'artist':
       default:
         return artistItems;

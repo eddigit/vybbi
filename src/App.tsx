@@ -57,6 +57,9 @@ import TopArtistes from './pages/TopArtistes';
 import InscriptionConfirmation from './pages/InscriptionConfirmation';
 import Onboarding from './pages/Onboarding';
 import RechercheAvancee from './pages/RechercheAvancee';
+import InfluenceurDashboard from './pages/InfluenceurDashboard';
+import AdminInfluenceurs from './pages/AdminInfluenceurs';
+import AdminKnowledge from './pages/AdminKnowledge';
 
 const queryClient = new QueryClient();
 
@@ -117,6 +120,10 @@ const App = () => (
               <Route path="/admin/communication" element={<AdminCommunication />} />
               <Route path="/admin/dashboard" element={<AdminDashboard />} />
               <Route path="/admin/ads" element={<AdminAds />} />
+              <Route path="/admin/influenceurs" element={<AdminInfluenceurs />} />
+              <Route path="/admin/knowledge" element={<AdminKnowledge />} />
+              <Route path="/affiliation" element={<InfluenceurDashboard />} />
+              <Route path="/influenceurs/:slug" element={<ArtisteProfile />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/technologie" element={<Technologie />} />
