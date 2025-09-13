@@ -36,28 +36,28 @@ const getEmailTemplate = (type: string, data: any) => {
     user_registration: {
       subject: `Bienvenue sur Vybbi, ${data.userName} !`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; text-align: center; border-radius: 10px 10px 0 0;">
-            <img src="https://fepxacqrrjvnvpgzwhyr.supabase.co/storage/v1/object/public/ad-assets/vybbi-logo.png" alt="Vybbi" style="width: 56px; height: 56px; display: block; margin: 0 auto 10px; border-radius: 8px; background: rgba(255,255,255,0.1);" />
+            <img src="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="width: 56px; height: 56px; display: block; margin: 0 auto 10px; border-radius: 8px; background: rgba(255,255,255,0.1);" />
             <h1 style="color: white; margin: 0; font-size: 28px;">Bienvenue sur Vybbi !</h1>
           </div>
           
-          <div style="background: white; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0;">
-            <h2 style="color: #333; margin-bottom: 20px;">Bonjour ${data.userName},</h2>
+          <div style="background: #171717; padding: 30px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour ${data.userName},</h2>
             
-            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+            <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
               Félicitations ! Votre compte <strong>${data.profileType}</strong> a été créé avec succès sur Vybbi.
             </p>
             
-            <p style="color: #555; line-height: 1.6; margin-bottom: 25px;">
+            <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 25px;">
               Pour finaliser l'activation de votre compte, <strong>veuillez confirmer votre adresse e-mail</strong> en cliquant sur le lien de validation que nous venons de vous envoyer.
             </p>
             
-            <p style="color: #555; line-height: 1.6; margin-bottom: 25px;">
+            <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 25px;">
               Vous pouvez maintenant :
             </p>
             
-            <ul style="color: #555; line-height: 1.8; margin-bottom: 25px;">
+            <ul style="color: #e5e5e5; line-height: 1.8; margin-bottom: 25px;">
               <li>Compléter votre profil</li>
               <li>Découvrir les artistes, agents et lieux</li>
               <li>Publier ou répondre aux annonces</li>
@@ -77,7 +77,7 @@ const getEmailTemplate = (type: string, data: any) => {
               </a>
             </div>
             
-            <p style="color: #888; font-size: 14px; margin-top: 30px; border-top: 1px solid #e0e0e0; padding-top: 20px;">
+            <p style="color: #a1a1aa; font-size: 14px; margin-top: 30px; border-top: 1px solid #404040; padding-top: 20px;">
               L'équipe Vybbi<br>
               <em>La plateforme qui met en avant le professionnalisme et la transparence dans l'industrie musicale</em>
             </p>
@@ -89,16 +89,16 @@ const getEmailTemplate = (type: string, data: any) => {
     admin_notification: {
       subject: `Nouvelle inscription : ${data.userName} (${data.profileType})`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-          <div style="background: #f8f9fa; padding: 20px; border-left: 4px solid #667eea;">
-            <h2 style="color: #333; margin: 0 0 15px 0;">Nouvelle inscription sur Vybbi</h2>
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
+          <div style="background: #262626; padding: 20px; border-left: 4px solid #667eea;">
+            <h2 style="color: #ffffff; margin: 0 0 15px 0;">Nouvelle inscription sur Vybbi</h2>
             
-            <div style="background: white; padding: 20px; border-radius: 5px; margin: 15px 0;">
+            <div style="background: #171717; padding: 20px; border-radius: 5px; margin: 15px 0; border: 1px solid #404040;">
               <h3 style="color: #667eea; margin-top: 0;">Détails du nouveau membre :</h3>
-              <p><strong>Nom :</strong> ${data.userName}</p>
-              <p><strong>Email :</strong> ${data.userEmail}</p>
-              <p><strong>Type de profil :</strong> ${data.profileType}</p>
-              <p><strong>Date d'inscription :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+              <p style="color: #e5e5e5;"><strong>Nom :</strong> ${data.userName}</p>
+              <p style="color: #e5e5e5;"><strong>Email :</strong> ${data.userEmail}</p>
+              <p style="color: #e5e5e5;"><strong>Type de profil :</strong> ${data.profileType}</p>
+              <p style="color: #e5e5e5;"><strong>Date d'inscription :</strong> ${new Date().toLocaleString('fr-FR')}</p>
             </div>
             
             <div style="text-align: center; margin: 20px 0;">
@@ -120,26 +120,26 @@ const getEmailTemplate = (type: string, data: any) => {
     review_notification: {
       subject: `Nouvel avis reçu pour ${data.artistName}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouvel avis reçu !</h1>
           </div>
           
-          <div style="background: white; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0;">
-            <h2 style="color: #333; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
+          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
             
-            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+            <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
               Vous avez reçu un nouvel avis de la part de <strong>${data.reviewerName}</strong> !
             </p>
             
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
+            <div style="background: #262626; padding: 20px; border-radius: 5px; margin: 20px 0; border: 1px solid #404040;">
               <div style="display: flex; align-items: center; margin-bottom: 10px;">
                 <span style="color: #ffc107; margin-right: 10px; font-size: 18px;">
                   ${'★'.repeat(data.rating || 0)}${'☆'.repeat(5 - (data.rating || 0))}
                 </span>
-                <span style="color: #666;">${data.rating}/5 étoiles</span>
+                <span style="color: #a1a1aa;">${data.rating}/5 étoiles</span>
               </div>
-              ${data.message ? `<p style="color: #555; font-style: italic; margin: 0;">"${data.message}"</p>` : ''}
+              ${data.message ? `<p style="color: #e5e5e5; font-style: italic; margin: 0;">"${data.message}"</p>` : ''}
             </div>
             
             <div style="text-align: center; margin: 25px 0;">
@@ -154,7 +154,7 @@ const getEmailTemplate = (type: string, data: any) => {
               </a>
             </div>
             
-            <p style="color: #888; font-size: 14px; margin-top: 25px; border-top: 1px solid #e0e0e0; padding-top: 15px;">
+            <p style="color: #a1a1aa; font-size: 14px; margin-top: 25px; border-top: 1px solid #404040; padding-top: 15px;">
               Les avis permettent de renforcer votre crédibilité sur la plateforme Vybbi.
             </p>
           </div>
@@ -165,18 +165,18 @@ const getEmailTemplate = (type: string, data: any) => {
     contact_message: {
       subject: `Nouveau message de contact de ${data.senderName}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
-          <div style="background: #f8f9fa; padding: 20px; border-left: 4px solid #28a745;">
-            <h2 style="color: #333; margin: 0 0 15px 0;">Nouveau message de contact</h2>
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
+          <div style="background: #262626; padding: 20px; border-left: 4px solid #28a745;">
+            <h2 style="color: #ffffff; margin: 0 0 15px 0;">Nouveau message de contact</h2>
             
-            <div style="background: white; padding: 20px; border-radius: 5px; margin: 15px 0;">
+            <div style="background: #171717; padding: 20px; border-radius: 5px; margin: 15px 0; border: 1px solid #404040;">
               <h3 style="color: #28a745; margin-top: 0;">Message reçu :</h3>
-              <p><strong>De :</strong> ${data.senderName}</p>
-              <p><strong>Email :</strong> ${data.senderEmail}</p>
-              <p><strong>Date :</strong> ${new Date().toLocaleString('fr-FR')}</p>
+              <p style="color: #e5e5e5;"><strong>De :</strong> ${data.senderName}</p>
+              <p style="color: #e5e5e5;"><strong>Email :</strong> ${data.senderEmail}</p>
+              <p style="color: #e5e5e5;"><strong>Date :</strong> ${new Date().toLocaleString('fr-FR')}</p>
               
-              <div style="background: #f8f9fa; padding: 15px; margin: 15px 0; border-radius: 3px;">
-                <p style="margin: 0; white-space: pre-line;">${data.message}</p>
+              <div style="background: #262626; padding: 15px; margin: 15px 0; border-radius: 3px; border: 1px solid #404040;">
+                <p style="margin: 0; white-space: pre-line; color: #e5e5e5;">${data.message}</p>
               </div>
             </div>
           </div>
@@ -187,23 +187,23 @@ const getEmailTemplate = (type: string, data: any) => {
     booking_proposed: {
       subject: `Nouvelle demande de booking pour ${data.eventTitle}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouvelle demande de booking !</h1>
           </div>
           
-          <div style="background: white; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0;">
-            <h2 style="color: #333; margin-bottom: 20px;">Bonjour,</h2>
+          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour,</h2>
             
-            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+            <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
               L'artiste <strong>${data.artistName}</strong> souhaite être booké pour votre événement :
             </p>
             
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
-              <p><strong>Événement:</strong> ${data.eventTitle}</p>
-              <p><strong>Date:</strong> ${data.eventDate}</p>
-              ${data.proposedFee ? `<p><strong>Cachet proposé:</strong> ${data.proposedFee}€</p>` : ''}
-              ${data.message ? `<p><strong>Message:</strong></p><p>${data.message}</p>` : ''}
+            <div style="background: #262626; padding: 20px; border-radius: 5px; margin: 20px 0; border: 1px solid #404040;">
+              <p style="color: #e5e5e5;"><strong>Événement:</strong> ${data.eventTitle}</p>
+              <p style="color: #e5e5e5;"><strong>Date:</strong> ${data.eventDate}</p>
+              ${data.proposedFee ? `<p style="color: #e5e5e5;"><strong>Cachet proposé:</strong> ${data.proposedFee}€</p>` : ''}
+              ${data.message ? `<p style="color: #e5e5e5;"><strong>Message:</strong></p><p style="color: #e5e5e5;">${data.message}</p>` : ''}
             </div>
             
             <div style="text-align: center; margin: 25px 0;">
@@ -225,21 +225,21 @@ const getEmailTemplate = (type: string, data: any) => {
     booking_status_changed: {
       subject: `Votre demande de booking a été ${data.bookingStatus === 'confirmed' ? 'confirmée' : 'annulée'}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
           <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
             <h1 style="color: white; margin: 0; font-size: 24px;">Mise à jour de votre demande</h1>
           </div>
           
-          <div style="background: white; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #e0e0e0;">
-            <h2 style="color: #333; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
+          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+            <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
             
-            <p style="color: #555; line-height: 1.6; margin-bottom: 20px;">
+            <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
               Votre demande de booking pour l'événement <strong>${data.eventTitle}</strong> a été <strong>${data.bookingStatus === 'confirmed' ? 'confirmée' : 'annulée'}</strong>.
             </p>
             
-            <div style="background: #f8f9fa; padding: 20px; border-radius: 5px; margin: 20px 0;">
-              <p><strong>Lieu:</strong> ${data.venueName}</p>
-              <p><strong>Date:</strong> ${data.eventDate}</p>
+            <div style="background: #262626; padding: 20px; border-radius: 5px; margin: 20px 0; border: 1px solid #404040;">
+              <p style="color: #e5e5e5;"><strong>Lieu:</strong> ${data.venueName}</p>
+              <p style="color: #e5e5e5;"><strong>Date:</strong> ${data.eventDate}</p>
             </div>
             
             <div style="text-align: center; margin: 25px 0;">
