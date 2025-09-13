@@ -11,7 +11,8 @@ const handler = async (req: Request): Promise<Response> => {
     return new Response(null, { headers: corsHeaders });
   }
 
-  if (req.method !== 'GET') {
+  // Allow both GET (via fetch) and POST (via supabase.functions.invoke)
+  if (req.method !== 'GET' && req.method !== 'POST') {
     return new Response('Method not allowed', { 
       status: 405, 
       headers: corsHeaders 
