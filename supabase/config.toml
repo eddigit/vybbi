@@ -3,5 +3,11 @@ project_id = "fepxacqrrjvnvpgzwhyr"
 [functions.send-notification]
 verify_jwt = false
 
+[functions.send-prospecting-email]
+verify_jwt = false
+
+[functions.send-test-email]
+verify_jwt = false
+
 [functions.translate-text]
 verify_jwt = false

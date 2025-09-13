@@ -1,7 +1,8 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { Resend } from "npm:resend@2.0.0";
-
-const resend = new Resend(Deno.env.get("RESEND_API_KEY"));
+// Configuration Brevo API
+const brevoApiKey = Deno.env.get("BREVO_API_KEY");
+const fromEmail = Deno.env.get("MAIL_FROM_EMAIL") || "info@vybbi.app";
+const fromName = Deno.env.get("MAIL_FROM_NAME") || "Vybbi";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -282,20 +283,46 @@ const handler = async (req: Request): Promise<Response> => {
 
     console.log(`Sending ${type} email to ${to}`);
 
-    const template = getEmailTemplate(type, data);
-    
-    const emailResponse = await resend.emails.send({
-      from: "vybbiapp@gmail.com",
-      to: [to],
-      subject: template.subject,
-      html: template.html,
+    const emailTemplate = getEmailTemplate(type, data);
+
+    // Send email via Brevo
+    if (!brevoApiKey) {
+      throw new Error("BREVO_API_KEY not configured");
+    }
+
+    const emailData = {
+      sender: {
+        name: fromName,
+        email: fromEmail
+      },
+      to: [{ email: to }],
+      subject: emailTemplate.subject,
+      htmlContent: emailTemplate.html
+    };
+
+    const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
+      method: "POST",
+      headers: {
+        "Accept": "application/json",
+        "Content-Type": "application/json",
+        "api-key": brevoApiKey
+      },
+      body: JSON.stringify(emailData)
     });
+
+    if (!brevoResponse.ok) {
+      const errorData = await brevoResponse.text();
+      console.error("Brevo API error:", errorData);
+      throw new Error(`Brevo API error: ${brevoResponse.status} - ${errorData}`);
+    }
+
+    const emailResponse = await brevoResponse.json();
 
     console.log("Email sent successfully:", emailResponse);
 
     return new Response(JSON.stringify({ 
       success: true, 
-      messageId: emailResponse.data?.id 
+      messageId: emailResponse.messageId 
     }), {
       status: 200,
       headers: {
