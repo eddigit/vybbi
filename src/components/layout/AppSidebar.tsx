@@ -23,7 +23,8 @@ import {
   Megaphone,
   BookOpen,
   Shield,
-  Link as LinkIcon
+  Link as LinkIcon,
+  Hash
 } from "lucide-react";
 
 import {
@@ -46,6 +47,7 @@ const artistItems = [
   { title: "Artists", url: "/artists", icon: Music },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Communautés", url: "/communities", icon: Hash },
   { title: "Directory", url: "/profiles", icon: UserSearch },
 ];
 
@@ -53,6 +55,7 @@ const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
   { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Communautés", url: "/communities", icon: Hash },
   { title: "Mon Profil", url: `/agents/${profileId}/edit`, icon: User },
 ];
 
@@ -63,6 +66,7 @@ const getManagerItems = (profileId: string) => [
   { title: "Commissions", url: "/commissions", icon: Euro },
   { title: "Rapports", url: "/reports", icon: BarChart3 },
   { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Communautés", url: "/communities", icon: Hash },
   { title: "Mon Profil", url: `/managers/${profileId}/edit`, icon: User },
 ];
 
@@ -71,6 +75,7 @@ const getLieuItems = (profileId: string) => [
   { title: "Lieux", url: "/lieux", icon: MapPin },
   { title: "Événements", url: "/events", icon: Calendar },
   { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Communautés", url: "/communities", icon: Hash },
   { title: "Mon Profil", url: `/lieux/${profileId}/edit`, icon: User },
 ];
 
@@ -78,6 +83,7 @@ const influenceurItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Affiliation", url: "/affiliation", icon: LinkIcon },
   { title: "Messages", url: "/messages", icon: MessageSquare },
+  { title: "Communautés", url: "/communities", icon: Hash },
 ];
 
 const adminItems = [

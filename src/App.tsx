@@ -16,6 +16,8 @@ import NotFound from "./pages/NotFound";
 import Auth from "./pages/Auth";
 import Profiles from "./pages/Profiles";
 import Messages from "./pages/Messages";
+import Communities from "./pages/Communities";
+import CommunityChat from "./pages/CommunityChat";
 import Artists from "./pages/Artists";
 import Lieux from "./pages/Lieux";
 import ArtistProfile from "./pages/ArtistProfile";
@@ -94,6 +96,8 @@ const App = () => (
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profiles" element={<Profiles />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/communities" element={<Communities />} />
+              <Route path="/community/:communityId" element={<CommunityChat />} />
               <Route path="/artists" element={<Artists />} />
               <Route path="/artists/:id/edit" element={<ArtistProfileEdit />} />
               <Route path="/agents/:id/edit" element={<AgentProfileEdit />} />

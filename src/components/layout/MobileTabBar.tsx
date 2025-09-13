@@ -10,6 +10,7 @@ import {
   MapPin,
   User,
   Megaphone,
+  Hash
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -29,42 +30,37 @@ export function MobileTabBar() {
       case 'artist':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-          { name: "Artists", href: "/artists", icon: Music },
-          { name: "Agents", href: "/profiles?type=agent", icon: UserSearch },
-          { name: "Lieux", href: "/lieux", icon: Building2 },
-          { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
+          { name: "Communautés", href: "/communities", icon: Hash },
+          { name: "Profil", href: `/artists/${profile.id}`, icon: User },
         ];
       case 'agent':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-          { name: "Artists", href: "/artists", icon: Music },
-          { name: "Lieux", href: "/lieux", icon: Building2 },
-          { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
+          { name: "Communautés", href: "/communities", icon: Hash },
+          { name: "Profil", href: `/profiles`, icon: User },
         ];
       case 'manager':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-          { name: "Partners", href: "/partners", icon: Users },
-          { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
+          { name: "Communautés", href: "/communities", icon: Hash },
+          { name: "Profil", href: `/profiles`, icon: User },
         ];
       case 'lieu':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-          { name: "Artists", href: "/artists", icon: Music },
-          { name: "Agents", href: "/profiles?type=agent", icon: UserSearch },
-          { name: "Lieux", href: "/lieux", icon: MapPin },
-          { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
+          { name: "Communautés", href: "/communities", icon: Hash },
+          { name: "Profil", href: `/lieux/${profile.id}`, icon: User },
         ];
       default:
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-          { name: "Artists", href: "/artists", icon: Music },
-          { name: "Annonces", href: "/annonces", icon: Megaphone },
           { name: "Messages", href: "/messages", icon: MessageSquare },
+          { name: "Communautés", href: "/communities", icon: Hash },
+          { name: "Profil", href: "/profiles", icon: User },
         ];
     }
   };
