@@ -280,6 +280,113 @@ export type Database = {
         }
         Relationships: []
       }
+      affiliate_conversions: {
+        Row: {
+          commission_amount: number | null
+          commission_rate: number | null
+          confirmed_at: string | null
+          conversion_status: string
+          conversion_type: string
+          conversion_value: number | null
+          converted_at: string
+          id: string
+          link_id: string
+          paid_at: string | null
+          user_id: string | null
+          visit_id: string | null
+        }
+        Insert: {
+          commission_amount?: number | null
+          commission_rate?: number | null
+          confirmed_at?: string | null
+          conversion_status?: string
+          conversion_type: string
+          conversion_value?: number | null
+          converted_at?: string
+          id?: string
+          link_id: string
+          paid_at?: string | null
+          user_id?: string | null
+          visit_id?: string | null
+        }
+        Update: {
+          commission_amount?: number | null
+          commission_rate?: number | null
+          confirmed_at?: string | null
+          conversion_status?: string
+          conversion_type?: string
+          conversion_value?: number | null
+          converted_at?: string
+          id?: string
+          link_id?: string
+          paid_at?: string | null
+          user_id?: string | null
+          visit_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_conversions_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_links"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_conversions_visit_id_fkey"
+            columns: ["visit_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_visits"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_visits: {
+        Row: {
+          city: string | null
+          country: string | null
+          id: string
+          link_id: string
+          page_url: string | null
+          referrer: string | null
+          session_id: string
+          user_agent: string | null
+          visited_at: string
+          visitor_ip: unknown | null
+        }
+        Insert: {
+          city?: string | null
+          country?: string | null
+          id?: string
+          link_id: string
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          visited_at?: string
+          visitor_ip?: unknown | null
+        }
+        Update: {
+          city?: string | null
+          country?: string | null
+          id?: string
+          link_id?: string
+          page_url?: string | null
+          referrer?: string | null
+          session_id?: string
+          user_agent?: string | null
+          visited_at?: string
+          visitor_ip?: unknown | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_visits_link_id_fkey"
+            columns: ["link_id"]
+            isOneToOne: false
+            referencedRelation: "influencer_links"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       agent_artists: {
         Row: {
           agent_profile_id: string
@@ -949,6 +1056,53 @@ export type Database = {
           venue_profile_id?: string
         }
         Relationships: []
+      }
+      influencer_links: {
+        Row: {
+          clicks_count: number
+          code: string
+          conversions_count: number
+          created_at: string
+          description: string | null
+          id: string
+          influencer_profile_id: string
+          is_active: boolean
+          name: string | null
+          updated_at: string
+        }
+        Insert: {
+          clicks_count?: number
+          code: string
+          conversions_count?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          influencer_profile_id: string
+          is_active?: boolean
+          name?: string | null
+          updated_at?: string
+        }
+        Update: {
+          clicks_count?: number
+          code?: string
+          conversions_count?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          influencer_profile_id?: string
+          is_active?: boolean
+          name?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "influencer_links_influencer_profile_id_fkey"
+            columns: ["influencer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       manager_artists: {
         Row: {
@@ -2057,6 +2211,10 @@ export type Database = {
         }
         Returns: string
       }
+      generate_affiliate_code: {
+        Args: { base_name?: string }
+        Returns: string
+      }
       generate_slug: {
         Args: { input_text: string }
         Returns: string
@@ -2213,6 +2371,14 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: string
       }
+      track_affiliate_conversion: {
+        Args: {
+          p_conversion_type: string
+          p_conversion_value?: number
+          p_user_id: string
+        }
+        Returns: string
+      }
       track_profile_view: {
         Args: {
           p_referrer_page?: string
@@ -2225,7 +2391,13 @@ export type Database = {
     }
     Enums: {
       annonce_status: "draft" | "published" | "closed" | "cancelled"
-      app_role: "admin" | "artist" | "agent" | "manager" | "lieu"
+      app_role:
+        | "admin"
+        | "artist"
+        | "agent"
+        | "manager"
+        | "lieu"
+        | "influenceur"
       application_status: "pending" | "accepted" | "rejected"
       availability_status: "available" | "busy" | "unavailable"
       booking_status: "pending" | "confirmed" | "cancelled" | "completed"
@@ -2234,7 +2406,7 @@ export type Database = {
       event_status: "draft" | "published" | "cancelled" | "completed"
       interaction_type: "email" | "call" | "meeting" | "message" | "note"
       media_type: "image" | "video" | "audio"
-      profile_type: "artist" | "agent" | "manager" | "lieu"
+      profile_type: "artist" | "agent" | "manager" | "lieu" | "influenceur"
       prospect_status:
         | "new"
         | "contacted"
@@ -2382,7 +2554,7 @@ export const Constants = {
   public: {
     Enums: {
       annonce_status: ["draft", "published", "closed", "cancelled"],
-      app_role: ["admin", "artist", "agent", "manager", "lieu"],
+      app_role: ["admin", "artist", "agent", "manager", "lieu", "influenceur"],
       application_status: ["pending", "accepted", "rejected"],
       availability_status: ["available", "busy", "unavailable"],
       booking_status: ["pending", "confirmed", "cancelled", "completed"],
@@ -2391,7 +2563,7 @@ export const Constants = {
       event_status: ["draft", "published", "cancelled", "completed"],
       interaction_type: ["email", "call", "meeting", "message", "note"],
       media_type: ["image", "video", "audio"],
-      profile_type: ["artist", "agent", "manager", "lieu"],
+      profile_type: ["artist", "agent", "manager", "lieu", "influenceur"],
       prospect_status: [
         "new",
         "contacted",
