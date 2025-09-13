@@ -9,6 +9,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Mail, Eye, Send, User, Building, MapPin } from "lucide-react";
 
@@ -50,7 +51,9 @@ export default function ProspectingEmailSender({
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [activeTab, setActiveTab] = useState("select");
+  const [agentId, setAgentId] = useState<string | null>(null);
   
+  const { user } = useAuth();
   const { toast } = useToast();
 
   // Load templates when dialog opens
@@ -59,6 +62,20 @@ export default function ProspectingEmailSender({
       loadProspectingTemplates();
     }
   }, [isOpen]);
+
+  // Fetch current user's agent id when dialog opens
+  useEffect(() => {
+    const fetchAgent = async () => {
+      if (!isOpen || !user?.id) return;
+      const { data, error } = await supabase
+        .from('vybbi_agents')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+      if (!error && data) setAgentId(data.id);
+    };
+    fetchAgent();
+  }, [isOpen, user?.id]);
 
   const loadProspectingTemplates = async () => {
     setIsLoading(true);
@@ -161,15 +178,22 @@ export default function ProspectingEmailSender({
 
       if (error) throw error;
 
-      // Log interaction in prospect_interactions table
-      await supabase.from('prospect_interactions').insert({
-        prospect_id: selectedProspect.id,
-        agent_id: null, // We'll need to get the current user's agent ID if applicable
-        interaction_type: 'email',
-        subject: replaceVariables(finalSubject),
-        content: customMessage || `Template: ${selectedTemplate.name}`,
-        completed_at: new Date().toISOString()
-      });
+      // Log interaction in prospect_interactions table (best effort)
+      if (agentId) {
+        const { error: interactionError } = await supabase.from('prospect_interactions').insert({
+          prospect_id: selectedProspect.id,
+          agent_id: agentId,
+          interaction_type: 'email',
+          subject: replaceVariables(finalSubject),
+          content: customMessage || `Template: ${selectedTemplate.name}`,
+          completed_at: new Date().toISOString()
+        });
+        if (interactionError) {
+          console.error('Error logging prospect interaction:', interactionError);
+        }
+      } else {
+        console.warn('No agentId found; skipping prospect_interactions insert');
+      }
 
       // Update prospect status if this is first contact
       if (selectedTemplate.type === 'vybbi_prospect_first_contact' && selectedProspect.status === 'new') {
