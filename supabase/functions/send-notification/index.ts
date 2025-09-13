@@ -12,7 +12,7 @@ const corsHeaders = {
 };
 
 interface NotificationEmailRequest {
-  type: 'user_registration' | 'admin_notification' | 'review_notification' | 'contact_message' | 'booking_proposed' | 'booking_status_changed';
+  type: 'user_registration' | 'admin_notification' | 'review_notification' | 'contact_message' | 'booking_proposed' | 'booking_status_changed' | 'message_received' | 'prospect_follow_up' | 'prospect_email';
   to: string;
   data: {
     userName?: string;
@@ -31,6 +31,10 @@ interface NotificationEmailRequest {
     proposedFee?: number;
     [key: string]: any;
   };
+  subject?: string;
+  html?: string;
+  htmlContent?: string;
+  template_id?: string;
   isTest?: boolean;
 }
 
@@ -282,7 +286,8 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, to, data, isTest }: NotificationEmailRequest = await req.json();
+    const body = await req.json() as any;
+    const { type, to, data = {}, isTest, subject: providedSubject, html, htmlContent: providedHtmlContent }: NotificationEmailRequest & { [key:string]: any } = body;
 
     console.log(`Sending ${type} email to ${to} ${isTest ? '(TEST)' : ''}`);
 
@@ -291,33 +296,48 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-    // Get email template from database
-    const { data: template, error: templateError } = await supabase
-      .from('email_templates')
-      .select('subject, html_content')
-      .eq('type', type)
-      .eq('is_active', true)
-      .single();
-
     let subject: string;
     let htmlContent: string;
 
-    if (templateError || !template) {
-      console.log('Template not found in DB, using fallback:', templateError);
-      // Fallback to hardcoded templates
-      const fallback = getEmailTemplate(type, data);
-      subject = fallback.subject;
-      htmlContent = fallback.html;
-    } else {
-      subject = template.subject;
-      htmlContent = template.html_content;
+    // If subject/html provided by caller, use them directly
+    if ((providedSubject && (html || providedHtmlContent))) {
+      subject = providedSubject;
+      htmlContent = (html || providedHtmlContent) as string;
 
-      // Replace variables in template
-      Object.keys(data).forEach(key => {
-        const placeholder = new RegExp(`{{${key}}}`, 'g');
-        subject = subject.replace(placeholder, String(data[key]));
-        htmlContent = htmlContent.replace(placeholder, String(data[key]));
-      });
+      // Replace variables if any data provided
+      if (data && typeof data === 'object') {
+        Object.keys(data).forEach(key => {
+          const placeholder = new RegExp(`{{${key}}}`, 'g');
+          subject = subject.replace(placeholder, String(data[key]));
+          htmlContent = htmlContent.replace(placeholder, String(data[key]));
+        });
+      }
+    } else {
+      // Get email template from database
+      const { data: template, error: templateError } = await supabase
+        .from('email_templates')
+        .select('subject, html_content')
+        .eq('type', type)
+        .eq('is_active', true)
+        .single();
+
+      if (templateError || !template) {
+        console.log('Template not found in DB, using fallback:', templateError);
+        // Fallback to hardcoded templates
+        const fallback = getEmailTemplate(type, data);
+        subject = fallback.subject;
+        htmlContent = fallback.html;
+      } else {
+        subject = template.subject;
+        htmlContent = template.html_content;
+
+        // Replace variables in template
+        Object.keys(data).forEach(key => {
+          const placeholder = new RegExp(`{{${key}}}`, 'g');
+          subject = subject.replace(placeholder, String(data[key]));
+          htmlContent = htmlContent.replace(placeholder, String(data[key]));
+        });
+      }
     }
 
     // Send email via Brevo
