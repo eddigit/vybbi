@@ -223,6 +223,223 @@ export const EmailTemplateManager: React.FC = () => {
     return Array.from(variables);
   };
 
+  // Parser HTML existant vers blocs
+  const parseHtmlToBlocks = (htmlContent: string): EmailBlockData[] => {
+    const blocks: EmailBlockData[] = [];
+    
+    if (!htmlContent.trim()) return blocks;
+    
+    // Parser simple pour convertir HTML en blocs
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(htmlContent, 'text/html');
+    const body = doc.body;
+    
+    let blockIndex = 0;
+    
+    const parseElement = (element: Element) => {
+      const tagName = element.tagName.toLowerCase();
+      let textContent = element.textContent?.trim() || '';
+      const innerHTML = element.innerHTML;
+      const style = element.getAttribute('style') || '';
+      
+      // Ignorer les éléments vides sauf hr et img
+      if (!textContent && !['hr', 'img'].includes(tagName) && !innerHTML.includes('<img')) {
+        // Parser les enfants récursivement
+        Array.from(element.children).forEach(child => parseElement(child));
+        return;
+      }
+      
+      switch (tagName) {
+        case 'h1':
+        case 'h2':
+        case 'h3':
+        case 'h4':
+        case 'h5':
+        case 'h6':
+          if (textContent) {
+            blocks.push({
+              id: `block-${Date.now()}-${blockIndex++}`,
+              type: 'title',
+              content: textContent,
+              properties: {
+                level: parseInt(tagName.charAt(1)),
+                color: extractStyleValue(style, 'color') || '#333333',
+                align: extractStyleValue(style, 'text-align') || 'left'
+              }
+            });
+          }
+          break;
+          
+        case 'p':
+          if (textContent) {
+            // Vérifier si c'est une variable
+            const variableMatch = textContent.match(/^\{\{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\}\}$/);
+            if (variableMatch) {
+              blocks.push({
+                id: `block-${Date.now()}-${blockIndex++}`,
+                type: 'variable',
+                content: variableMatch[1],
+                properties: {}
+              });
+            } else {
+              blocks.push({
+                id: `block-${Date.now()}-${blockIndex++}`,
+                type: 'text',
+                content: textContent,
+                properties: {
+                  color: extractStyleValue(style, 'color') || '#333333',
+                  align: extractStyleValue(style, 'text-align') || 'left',
+                  fontSize: extractStyleValue(style, 'font-size') || '14px'
+                }
+              });
+            }
+          }
+          break;
+          
+        case 'img':
+          const src = element.getAttribute('src');
+          const alt = element.getAttribute('alt');
+          if (src) {
+            // Vérifier si c'est un logo (par convention ou taille)
+            const isLogo = alt?.toLowerCase().includes('logo') || 
+                          src.toLowerCase().includes('logo') ||
+                          extractStyleValue(style, 'max-width') === '150px';
+            
+            blocks.push({
+              id: `block-${Date.now()}-${blockIndex++}`,
+              type: isLogo ? 'logo' : 'image',
+              content: src,
+              properties: {
+                alt: alt || '',
+                align: extractStyleValue(style, 'text-align') || getImageAlign(element) || 'center',
+                maxWidth: isLogo ? extractStyleValue(style, 'max-width') || '150px' : undefined
+              }
+            });
+          }
+          break;
+          
+        case 'a':
+          const href = element.getAttribute('href');
+          const parentDiv = element.parentElement;
+          const parentStyle = parentDiv?.getAttribute('style') || '';
+          
+          if (href && textContent) {
+            // Vérifier si c'est un bouton (a des styles de bouton)
+            const hasButtonStyles = style.includes('background-color') || 
+                                  style.includes('padding') ||
+                                  parentStyle.includes('background-color') ||
+                                  (element as HTMLElement).style?.display === 'inline-block';
+            
+            if (hasButtonStyles) {
+              blocks.push({
+                id: `block-${Date.now()}-${blockIndex++}`,
+                type: 'button',
+                content: textContent,
+                properties: {
+                  url: href,
+                  backgroundColor: extractStyleValue(style, 'background-color') || extractStyleValue(parentStyle, 'background-color') || '#007bff',
+                  textColor: extractStyleValue(style, 'color') || '#ffffff',
+                  align: extractStyleValue(parentStyle, 'text-align') || 'center',
+                  padding: extractStyleValue(style, 'padding') || '12px 24px',
+                  borderRadius: extractStyleValue(style, 'border-radius') || '4px'
+                }
+              });
+            }
+          }
+          break;
+          
+        case 'hr':
+          blocks.push({
+            id: `block-${Date.now()}-${blockIndex++}`,
+            type: 'separator',
+            content: '',
+            properties: {
+              color: extractStyleValue(style, 'background-color') || extractStyleValue(style, 'border-color') || '#e0e0e0',
+              margin: extractStyleValue(style, 'margin') || '30px 0'
+            }
+          });
+          break;
+          
+        case 'div':
+          // Vérifier si c'est un conteneur avec une image logo
+          const imgChild = element.querySelector('img');
+          if (imgChild && (imgChild.alt?.toLowerCase().includes('logo') || imgChild.src.toLowerCase().includes('logo'))) {
+            const src = imgChild.getAttribute('src');
+            if (src) {
+              blocks.push({
+                id: `block-${Date.now()}-${blockIndex++}`,
+                type: 'logo',
+                content: src,
+                properties: {
+                  align: extractStyleValue(style, 'text-align') || 'center',
+                  maxWidth: extractStyleValue(imgChild.getAttribute('style') || '', 'max-width') || '150px'
+                }
+              });
+            }
+          } else {
+            // Parser les enfants récursivement
+            Array.from(element.children).forEach(child => parseElement(child));
+          }
+          break;
+          
+        default:
+          // Parser les enfants récursivement
+          Array.from(element.children).forEach(child => parseElement(child));
+          break;
+      }
+    };
+    
+    const getImageAlign = (imgElement: Element): string => {
+      const parent = imgElement.parentElement;
+      if (parent) {
+        const parentStyle = parent.getAttribute('style') || '';
+        const align = extractStyleValue(parentStyle, 'text-align');
+        if (align) return align;
+        
+        if (parentStyle.includes('margin: 0 auto') || parentStyle.includes('margin:0 auto')) {
+          return 'center';
+        }
+      }
+      return 'center';
+    };
+    
+    // Parser le contenu principal
+    if (body.children.length > 0) {
+      Array.from(body.children).forEach(child => parseElement(child));
+    } else {
+      // Si pas de structure body, parser directement le contenu
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = htmlContent;
+      Array.from(tempDiv.children).forEach(child => parseElement(child));
+    }
+    
+    // Ajouter les variables trouvées dans le contenu comme blocs séparés
+    const allVariables = extractVariables(htmlContent);
+    allVariables.forEach(variable => {
+      // Vérifier si cette variable n'est pas déjà incluse dans un bloc texte
+      const alreadyInBlock = blocks.some(block => 
+        block.type === 'variable' && block.content === variable
+      );
+      
+      if (!alreadyInBlock) {
+        blocks.push({
+          id: `block-${Date.now()}-${blockIndex++}`,
+          type: 'variable',
+          content: variable,
+          properties: {}
+        });
+      }
+    });
+    
+    return blocks;
+  };
+  
+  const extractStyleValue = (style: string, property: string): string | null => {
+    const regex = new RegExp(`${property}\\s*:\\s*([^;]+)`, 'i');
+    const match = style.match(regex);
+    return match ? match[1].trim() : null;
+  };
+
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
     setFormData({
@@ -234,8 +451,100 @@ export const EmailTemplateManager: React.FC = () => {
       language: template.language || 'fr',
       is_active: template.is_active
     });
+    
+    // Convertir le HTML existant en blocs
+    const parsedBlocks = parseHtmlToBlocks(template.html_content);
+    setEmailBlocks(parsedBlocks);
+    
     setIsEditing(true);
     setActiveTab('dragdrop');
+  };
+
+  // Créer des templates par défaut si aucun n'existe
+  const createDefaultTemplates = () => {
+    const defaultTemplates = [
+      {
+        name: 'Bienvenue utilisateur',
+        subject: 'Bienvenue sur Vybbi !',
+        type: 'user_registration',
+        category: 'notifications',
+        language: 'fr',
+        is_active: true,
+        html_content: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Bienvenue</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <div style="text-align: center; margin-bottom: 30px;">
+    <img src="https://via.placeholder.com/150x50/6366f1/ffffff?text=VYBBI" alt="Logo Vybbi" style="max-width: 150px;" />
+  </div>
+  
+  <h1 style="color: #333; text-align: center;">Bienvenue {{userName}} !</h1>
+  
+  <p style="color: #666; font-size: 16px; line-height: 1.6;">
+    Nous sommes ravis de vous accueillir sur Vybbi, la plateforme qui connecte les artistes, les lieux et les professionnels de la musique.
+  </p>
+  
+  <p style="color: #666; font-size: 16px; line-height: 1.6;">
+    Votre profil <strong>{{profileType}}</strong> a été créé avec succès. Vous pouvez maintenant explorer toutes les fonctionnalités de notre plateforme.
+  </p>
+  
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="{{loginUrl}}" style="display: inline-block; background-color: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+      Accéder à mon tableau de bord
+    </a>
+  </div>
+  
+  <hr style="border: none; height: 1px; background-color: #e0e0e0; margin: 30px 0;" />
+  
+  <p style="color: #999; font-size: 14px; text-align: center;">
+    Besoin d'aide ? Contactez notre support : {{supportEmail}}
+  </p>
+</body>
+</html>`
+      },
+      {
+        name: 'Notification admin',
+        subject: 'Nouvelle inscription - {{userName}}',
+        type: 'admin_notification',
+        category: 'notifications',
+        language: 'fr',
+        is_active: true,
+        html_content: `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Nouvelle inscription</title>
+</head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #333;">Nouvelle inscription sur Vybbi</h2>
+  
+  <p style="color: #666; font-size: 16px;">
+    Un nouvel utilisateur vient de s'inscrire sur la plateforme :
+  </p>
+  
+  <div style="background-color: #f8f9fa; padding: 20px; border-radius: 6px; margin: 20px 0;">
+    <p><strong>Nom :</strong> {{userName}}</p>
+    <p><strong>Email :</strong> {{userEmail}}</p>
+    <p><strong>Type de profil :</strong> {{profileType}}</p>
+    <p><strong>Date d'inscription :</strong> {{registrationDate}}</p>
+  </div>
+  
+  <div style="text-align: center; margin: 30px 0;">
+    <a href="{{adminUrl}}" style="display: inline-block; background-color: #dc3545; color: white; padding: 12px 24px; text-decoration: none; border-radius: 6px;">
+      Voir dans l'administration
+    </a>
+  </div>
+</body>
+</html>`
+      }
+    ];
+
+    defaultTemplates.forEach(template => {
+      createTemplateMutation.mutate(template);
+    });
   };
 
   const handleCreateNew = () => {
@@ -377,18 +686,55 @@ export const EmailTemplateManager: React.FC = () => {
                   </Select>
                 </div>
               </div>
-              <Button onClick={handleCreateNew} className="flex items-center gap-2">
-                <Plus className="w-4 h-4" />
-                Nouveau template
-              </Button>
+              <div className="flex items-center space-x-2">
+                <Button onClick={handleCreateNew} className="flex items-center gap-2">
+                  <Plus className="w-4 h-4" />
+                  Nouveau template
+                </Button>
+                {(!templates || templates.length === 0) && (
+                  <Button 
+                    onClick={createDefaultTemplates} 
+                    variant="outline" 
+                    className="flex items-center gap-2"
+                    disabled={createTemplateMutation.isPending}
+                  >
+                    <Settings className="w-4 h-4" />
+                    {createTemplateMutation.isPending ? 'Création...' : 'Créer templates par défaut'}
+                  </Button>
+                )}
+              </div>
             </div>
 
             <div className="grid gap-4">
-              {TEMPLATE_CATEGORIES.map(category => {
-                const categoryTemplates = filteredTemplates.filter(t => t.category === category.value);
-                if (categoryTemplates.length === 0) return null;
-                
-                return (
+              {filteredTemplates.length === 0 ? (
+                <div className="text-center py-12">
+                  <Send className="w-16 h-16 mx-auto mb-4 text-muted-foreground/50" />
+                  <h3 className="text-lg font-medium mb-2">Aucun template trouvé</h3>
+                  <p className="text-muted-foreground mb-4">
+                    {templates?.length === 0 
+                      ? "Commencez par créer des templates par défaut ou créez votre premier template."
+                      : "Aucun template ne correspond aux filtres sélectionnés."
+                    }
+                  </p>
+                  {templates?.length === 0 && (
+                    <Button 
+                      onClick={createDefaultTemplates}
+                      disabled={createTemplateMutation.isPending}
+                      className="mr-2"
+                    >
+                      {createTemplateMutation.isPending ? 'Création...' : 'Créer templates par défaut'}
+                    </Button>
+                  )}
+                  <Button onClick={handleCreateNew} variant="outline">
+                    Créer un template
+                  </Button>
+                </div>
+              ) : (
+                TEMPLATE_CATEGORIES.map(category => {
+                  const categoryTemplates = filteredTemplates.filter(t => t.category === category.value);
+                  if (categoryTemplates.length === 0) return null;
+                  
+                  return (
                   <div key={category.value} className="space-y-3">
                     <div className="flex items-center gap-2">
                       <div className={`w-3 h-3 rounded-full ${category.color}`}></div>
@@ -438,12 +784,13 @@ export const EmailTemplateManager: React.FC = () => {
                             </Button>
                           </div>
                         </Card>
-                      ))}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+                       ))}
+                     </div>
+                   </div>
+                 );
+               })
+              )}
+             </div>
           </TabsContent>
 
           <TabsContent value="dragdrop" className="space-y-4">
