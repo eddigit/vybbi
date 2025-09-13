@@ -377,76 +377,25 @@ const handler = async (req: Request): Promise<Response> => {
       }
     }
 
-    // Send via Brevo template or raw HTML depending on provider
-    let emailResult: any = null;
-    const brevoApiKey = Deno.env.get("BREVO_API_KEY");
-    if (!brevoApiKey) {
-      throw new Error("BREVO_API_KEY not configured");
+    // Send via Gmail SMTP instead of Brevo
+    console.log('Attempting to send via Gmail SMTP');
+    
+    const { data: gmailData, error: gmailError } = await supabase.functions.invoke('gmail-send-email', {
+      body: {
+        to: to,
+        subject: subject,
+        html: htmlContent,
+        templateData: data
+      }
+    });
+
+    if (gmailError) {
+      console.error("Gmail SMTP error:", gmailError);
+      throw new Error(`Gmail SMTP error: ${gmailError.message}`);
     }
 
-    if (useBrevoTemplate && brevoTemplateId) {
-      // Call Brevo template endpoint
-      const payload: any = {
-        templateId: brevoTemplateId,
-        to: [{ email: to, name: data.userName || '' }],
-        params: data,
-        ...(subject ? { subject } : {}),
-        ...(Array.isArray(data.tags) ? { tags: data.tags } : {})
-      };
-
-      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "content-type": "application/json",
-          "api-key": brevoApiKey,
-        },
-        body: JSON.stringify({
-          templateId: payload.templateId,
-          to: payload.to,
-          params: payload.params,
-          ...(payload.subject ? { subject: payload.subject } : {}),
-          ...(payload.tags ? { tags: payload.tags } : {}),
-          sender: { name: "Vybbi", email: "noreply@vybbi.com" },
-        }),
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Brevo API error:", errorData);
-        throw new Error(`Brevo API error: ${errorData.message}`);
-      }
-      emailResult = await response.json();
-    } else {
-      // Fallback: send raw HTML
-  const emailPayload: any = {
-        sender: { name: "Vybbi", email: "noreply@vybbi.com" },
-        to: [{ email: to, name: data.userName || "" }],
-        subject,
-        htmlContent,
-      };
-  if (cc) emailPayload.cc = Array.isArray(cc) ? cc.map((e: string) => ({ email: e.trim() })) : [{ email: (cc as string).trim() }];
-  if (bcc) emailPayload.bcc = Array.isArray(bcc) ? bcc.map((e: string) => ({ email: e.trim() })) : [{ email: (bcc as string).trim() }];
-      if (replyTo) emailPayload.replyTo = { email: replyTo.trim() };
-
-      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
-        method: "POST",
-        headers: {
-          accept: "application/json",
-          "api-key": brevoApiKey,
-          "content-type": "application/json",
-        },
-        body: JSON.stringify(emailPayload),
-      });
-      if (!response.ok) {
-        const errorData = await response.json();
-        console.error("Brevo API error:", errorData);
-        throw new Error(`Brevo API error: ${errorData.message}`);
-      }
-      emailResult = await response.json();
-    }
-
-    console.log("Email sent successfully:", emailResult);
+    emailResult = gmailData;
+    console.log("Email sent successfully via Gmail SMTP:", emailResult);
 
     return new Response(
       JSON.stringify({

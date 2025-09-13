@@ -31,7 +31,7 @@ interface EmailTemplate {
   is_active: boolean;
   variables?: Json | null;
   
-  brevo_template_id?: number | null;
+  brevo_template_id?: string | null;
   created_at: string;
   updated_at: string;
 }
