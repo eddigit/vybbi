@@ -1161,11 +1161,13 @@ export type Database = {
       }
       email_templates: {
         Row: {
+          category: string | null
           created_at: string
           created_by: string | null
           html_content: string
           id: string
           is_active: boolean
+          language: string | null
           name: string
           subject: string
           type: string
@@ -1173,11 +1175,13 @@ export type Database = {
           variables: Json | null
         }
         Insert: {
+          category?: string | null
           created_at?: string
           created_by?: string | null
           html_content: string
           id?: string
           is_active?: boolean
+          language?: string | null
           name: string
           subject: string
           type: string
@@ -1185,11 +1189,13 @@ export type Database = {
           variables?: Json | null
         }
         Update: {
+          category?: string | null
           created_at?: string
           created_by?: string | null
           html_content?: string
           id?: string
           is_active?: boolean
+          language?: string | null
           name?: string
           subject?: string
           type?: string

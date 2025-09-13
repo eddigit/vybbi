@@ -1,115 +1,176 @@
-import React, { useState, useRef } from 'react';
+import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Switch } from '@/components/ui/switch';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { Badge } from '@/components/ui/badge';
-import { Alert, AlertDescription } from '@/components/ui/alert';
-import { Separator } from '@/components/ui/separator';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Edit3, Save, Eye, Mail, Trash2, Plus, AlertCircle, Upload, Monitor, Code, Send } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
-import { EmailPreview } from './EmailPreview';
-import { TemplateImportDialog } from './TemplateImportDialog';
-import { VariablePalette } from './VariablePalette';
-import { EmailVisualEditor } from './EmailVisualEditor';
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Badge } from "@/components/ui/badge";
+import { toast } from "sonner";
+import { Editor } from '@monaco-editor/react';
 import EmailSystemValidator from './EmailSystemValidator';
-import Editor from '@monaco-editor/react';
+import { EmailVisualEditor } from './EmailVisualEditor';
+import { EmailDragDropEditor, EmailBlockData } from './EmailDragDropEditor';
+import { Eye, Code, Split, FileText, Send, CheckCircle, XCircle, Edit, Plus, Filter, Settings, Wand2 } from "lucide-react";
 
+// Types
 interface EmailTemplate {
   id: string;
   name: string;
-  type: string;
   subject: string;
   html_content: string;
-  variables: Record<string, any>;
+  type: string;
+  category?: string;
+  language?: string;
   is_active: boolean;
+  variables?: any;
   created_at: string;
   updated_at: string;
 }
 
 const TEMPLATE_TYPES = [
-  { value: 'user_registration', label: 'Inscription utilisateur', color: 'bg-green-100 text-green-800' },
-  { value: 'admin_notification', label: 'Notification admin', color: 'bg-orange-100 text-orange-800' },
-  { value: 'review_notification', label: 'Notification d\'avis', color: 'bg-blue-100 text-blue-800' },
-  { value: 'contact_message', label: 'Message de contact', color: 'bg-purple-100 text-purple-800' },
-  { value: 'booking_proposed', label: 'Proposition de booking', color: 'bg-cyan-100 text-cyan-800' },
-  { value: 'booking_status_changed', label: 'Statut de booking', color: 'bg-yellow-100 text-yellow-800' },
-  { value: 'message_received', label: 'Nouveau message', color: 'bg-indigo-100 text-indigo-800' },
-  { value: 'prospect_follow_up', label: 'Suivi de prospection', color: 'bg-pink-100 text-pink-800' },
+  { value: 'user_registration', label: 'Inscription utilisateur', color: 'bg-blue-100 text-blue-800' },
+  { value: 'admin_notification', label: 'Notification admin', color: 'bg-purple-100 text-purple-800' },
+  { value: 'review_notification', label: 'Notification avis', color: 'bg-green-100 text-green-800' },
+  { value: 'booking_confirmation', label: 'Confirmation réservation', color: 'bg-orange-100 text-orange-800' },
+  { value: 'welcome', label: 'Bienvenue', color: 'bg-pink-100 text-pink-800' },
+  { value: 'password_reset', label: 'Réinitialisation mot de passe', color: 'bg-red-100 text-red-800' },
+  { value: 'newsletter', label: 'Newsletter', color: 'bg-indigo-100 text-indigo-800' },
+  { value: 'promotional', label: 'Promotionnel', color: 'bg-yellow-100 text-yellow-800' },
+  { value: 'system', label: 'Système', color: 'bg-gray-100 text-gray-800' }
 ];
 
-const DEFAULT_VARIABLES: Record<string, string[]> = {
-  user_registration: ['userName', 'userEmail', 'profileType', 'welcomeMessage', 'loginUrl', 'supportEmail'],
-  admin_notification: ['userName', 'userEmail', 'profileType', 'registrationDate', 'adminUrl'],
-  review_notification: ['artistName', 'artistId', 'reviewerName', 'rating', 'message', 'profileUrl'],
-  contact_message: ['senderName', 'senderEmail', 'message', 'replyUrl'],
-  booking_proposed: ['venueName', 'eventTitle', 'eventDate', 'artistName', 'proposedFee', 'message', 'dashboardUrl', 'unsubscribeUrl'],
-  booking_status_changed: ['artistName', 'eventTitle', 'eventDate', 'venueName', 'status', 'statusColor', 'message', 'dashboardUrl', 'unsubscribeUrl'],
-  message_received: ['recipientName', 'senderName', 'message', 'messageUrl', 'unsubscribeUrl'],
-  prospect_follow_up: ['userName', 'profileUrl', 'unsubscribeUrl'],
+const TEMPLATE_CATEGORIES = [
+  { value: 'notifications', label: 'Notifications', color: 'bg-blue-500' },
+  { value: 'artistes', label: 'Artistes', color: 'bg-purple-500' },
+  { value: 'lieux', label: 'Lieux', color: 'bg-green-500' },
+  { value: 'agents', label: 'Agents', color: 'bg-orange-500' }
+];
+
+const TEMPLATE_LANGUAGES = [
+  { value: 'fr', label: 'Français', flag: '🇫🇷' },
+  { value: 'en', label: 'English', flag: '🇬🇧' }
+];
+
+const DEFAULT_VARIABLES: Record<string, Record<string, string>> = {
+  user_registration: {
+    userName: 'Nom de l\'utilisateur',
+    userEmail: 'Email de l\'utilisateur',
+    profileType: 'Type de profil',
+    welcomeMessage: 'Message de bienvenue',
+    loginUrl: 'Lien de connexion',
+    supportEmail: 'Email de support'
+  },
+  admin_notification: {
+    userName: 'Nom de l\'utilisateur',
+    userEmail: 'Email de l\'utilisateur',
+    profileType: 'Type de profil',
+    registrationDate: 'Date d\'inscription',
+    adminUrl: 'Lien admin'
+  },
+  review_notification: {
+    artistName: 'Nom de l\'artiste',
+    reviewerName: 'Nom du reviewer',
+    rating: 'Note donnée',
+    message: 'Message du review',
+    profileUrl: 'Lien vers le profil'
+  }
 };
 
-export const EmailTemplateManager = () => {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
+export const EmailTemplateManager: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState('list');
-  const [editForm, setEditForm] = useState({
+  const [activeTab, setActiveTab] = useState<'list' | 'editor' | 'dragdrop' | 'visual' | 'test' | 'validation'>('list');
+  const [editorMode, setEditorMode] = useState<'code' | 'split' | 'preview'>('code');
+  const [filterCategory, setFilterCategory] = useState<string>('all');
+  const [filterLanguage, setFilterLanguage] = useState<string>('all');
+  const [emailBlocks, setEmailBlocks] = useState<EmailBlockData[]>([]);
+  const [testEmail, setTestEmail] = useState('');
+  
+  // Form state
+  const [formData, setFormData] = useState({
     name: '',
     subject: '',
     html_content: '',
     type: '',
-    is_active: true,
-    variables: []
+    category: 'notifications',
+    language: 'fr',
+    is_active: true
   });
-  const [testEmail, setTestEmail] = useState('');
-  const [editorMode, setEditorMode] = useState<'split' | 'code' | 'preview'>('split');
-  const editorRef = useRef(null);
 
+  const queryClient = useQueryClient();
+
+  // Fetch email templates
   const { data: templates, isLoading } = useQuery({
     queryKey: ['email-templates'],
     queryFn: async () => {
       const { data, error } = await supabase
         .from('email_templates')
         .select('*')
-        .order('type');
+        .order('category', { ascending: true })
+        .order('language', { ascending: true })
+        .order('created_at', { ascending: false });
       
       if (error) throw error;
       return data as EmailTemplate[];
-    },
+    }
   });
 
+  // Filter templates
+  const filteredTemplates = templates?.filter(template => {
+    const categoryMatch = filterCategory === 'all' || template.category === filterCategory;
+    const languageMatch = filterLanguage === 'all' || template.language === filterLanguage;
+    return categoryMatch && languageMatch;
+  }) || [];
+
   const updateTemplateMutation = useMutation({
-    mutationFn: async ({ id, ...updates }: Partial<EmailTemplate> & { id: string }) => {
-      const { error } = await supabase
+    mutationFn: async (updates: Partial<EmailTemplate>) => {
+      if (!selectedTemplate) throw new Error('No template selected');
+      
+      const { data, error } = await supabase
         .from('email_templates')
         .update(updates)
-        .eq('id', id);
+        .eq('id', selectedTemplate.id)
+        .select()
+        .single();
       
       if (error) throw error;
+      return data;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['email-templates'] });
+      toast.success('Template mis à jour avec succès');
       setIsEditing(false);
-      toast({
-        title: "Template mis à jour",
-        description: "Le template email a été sauvegardé avec succès.",
-      });
     },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "Erreur",
-        description: error.message,
-      });
+    onError: (error) => {
+      console.error('Error updating template:', error);
+      toast.error('Erreur lors de la mise à jour du template');
+    }
+  });
+
+  const createTemplateMutation = useMutation({
+    mutationFn: async (templateData: Omit<EmailTemplate, 'id' | 'created_at' | 'updated_at'>) => {
+      const { data, error } = await supabase
+        .from('email_templates')
+        .insert([templateData])
+        .select()
+        .single();
+      
+      if (error) throw error;
+      return data;
     },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['email-templates'] });
+      toast.success('Template créé avec succès');
+      setActiveTab('list');
+    },
+    onError: (error) => {
+      console.error('Error creating template:', error);
+      toast.error('Erreur lors de la création du template');
+    }
   });
 
   const testEmailMutation = useMutation({
@@ -117,62 +178,16 @@ export const EmailTemplateManager = () => {
       const template = templates?.find(t => t.id === templateId);
       if (!template) throw new Error('Template non trouvé');
 
-      // Créer des données factices pour le test
-      const mockData: Record<string, any> = {};
-      const templateType = template.type;
-      const variables = DEFAULT_VARIABLES[templateType] || [];
-      
-      variables.forEach(variable => {
-        switch (variable) {
-          case 'userName':
-            mockData[variable] = 'John Doe';
-            break;
-          case 'userEmail':
-            mockData[variable] = email;
-            break;
-          case 'profileType':
-            mockData[variable] = 'artist';
-            break;
-          case 'artistName':
-            mockData[variable] = 'Jane Artist';
-            break;
-          case 'artistId':
-            mockData[variable] = '123';
-            break;
-          case 'reviewerName':
-            mockData[variable] = 'Mike Reviewer';
-            break;
-          case 'rating':
-            mockData[variable] = 5;
-            break;
-          case 'message':
-            mockData[variable] = 'Ceci est un message de test pour le template email.';
-            break;
-          case 'senderName':
-            mockData[variable] = 'Alice Sender';
-            break;
-          case 'senderEmail':
-            mockData[variable] = 'alice@example.com';
-            break;
-          case 'venueName':
-            mockData[variable] = 'Le Grand Théâtre';
-            break;
-          case 'eventTitle':
-            mockData[variable] = 'Concert de Jazz';
-            break;
-          case 'eventDate':
-            mockData[variable] = '2024-01-15';
-            break;
-          case 'proposedFee':
-            mockData[variable] = '500€';
-            break;
-          case 'status':
-            mockData[variable] = 'confirmé';
-            break;
-          default:
-            mockData[variable] = 'Valeur test';
-        }
-      });
+      // Mock data for testing
+      const mockData: Record<string, any> = {
+        userName: 'John Doe',
+        userEmail: email,
+        profileType: 'artist',
+        artistName: 'Jane Artist',
+        reviewerName: 'Mike Reviewer',
+        rating: 5,
+        message: 'Ceci est un message de test pour le template email.'
+      };
 
       const { data, error } = await supabase.functions.invoke('send-notification', {
         body: {
@@ -187,19 +202,13 @@ export const EmailTemplateManager = () => {
       return data;
     },
     onSuccess: () => {
-      toast({
-        title: "Email de test envoyé",
-        description: `L'email de test a été envoyé à ${testEmail}`,
-      });
+      toast.success(`Email de test envoyé à ${testEmail}`);
       setTestEmail('');
     },
-    onError: (error: any) => {
-      toast({
-        variant: "destructive",
-        title: "Erreur d'envoi",
-        description: error.message,
-      });
-    },
+    onError: (error) => {
+      console.error('Error sending test email:', error);
+      toast.error('Erreur lors de l\'envoi du test');
+    }
   });
 
   const extractVariables = (htmlContent: string): string[] => {
@@ -214,103 +223,64 @@ export const EmailTemplateManager = () => {
     return Array.from(variables);
   };
 
-  const handleEditorChange = (value: string | undefined) => {
-    if (value !== undefined) {
-      setEditForm(prev => ({ 
-        ...prev, 
-        html_content: value,
-        variables: extractVariables(value)
-      }));
-    }
-  };
-
-  const handleImportTemplate = (htmlContent: string, detectedVariables: string[]) => {
-    setEditForm(prev => ({
-      ...prev,
-      html_content: htmlContent,
-      variables: detectedVariables
-    }));
-    setActiveTab('editor');
-  };
-
-  const handleInsertVariable = (variable: string) => {
-    if (editorRef.current) {
-      // @ts-ignore
-      const editor = editorRef.current;
-      const position = editor.getPosition();
-      const range = {
-        startLineNumber: position.lineNumber,
-        startColumn: position.column,
-        endLineNumber: position.lineNumber,
-        endColumn: position.column
-      };
-      
-      editor.executeEdits('insert-variable', [{
-        range: range,
-        text: variable
-      }]);
-      
-      editor.focus();
-    }
-  };
-
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
-    setEditForm({
+    setFormData({
       name: template.name,
       subject: template.subject,
       html_content: template.html_content,
       type: template.type,
-      is_active: template.is_active,
-      variables: extractVariables(template.html_content)
+      category: template.category || 'notifications',
+      language: template.language || 'fr',
+      is_active: template.is_active
     });
     setIsEditing(true);
-    setActiveTab('editor');
+    setActiveTab('dragdrop');
+  };
+
+  const handleCreateNew = () => {
+    setSelectedTemplate(null);
+    setFormData({
+      name: '',
+      subject: '',
+      html_content: '',
+      type: '',
+      category: 'notifications',
+      language: 'fr',
+      is_active: true
+    });
+    setEmailBlocks([]);
+    setIsEditing(true);
+    setActiveTab('dragdrop');
   };
 
   const handleSave = () => {
-    if (!selectedTemplate) return;
-    
-    updateTemplateMutation.mutate({
-      id: selectedTemplate.id,
-      ...editForm,
-    });
+    if (selectedTemplate) {
+      updateTemplateMutation.mutate(formData);
+    } else {
+      createTemplateMutation.mutate(formData);
+    }
+  };
+
+  const handleEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      setFormData(prev => ({ ...prev, html_content: value }));
+    }
+  };
+
+  const handleInsertVariable = (variable: string) => {
+    setFormData(prev => ({ 
+      ...prev, 
+      html_content: prev.html_content + `{{${variable}}}` 
+    }));
   };
 
   const handleTestEmail = (templateId: string) => {
     if (!testEmail) {
-      toast({
-        variant: "destructive",
-        title: "Email requis",
-        description: "Veuillez saisir une adresse email pour le test.",
-      });
+      toast.error('Veuillez saisir une adresse email pour le test');
       return;
     }
-
     testEmailMutation.mutate({ templateId, email: testEmail });
-  };
-
-  const getTemplateTypeInfo = (type: string) => {
-    return TEMPLATE_TYPES.find(t => t.value === type) || { label: type, color: 'bg-gray-100 text-gray-800' };
-  };
-
-  const renderVariables = (variables: string[]) => {
-    if (!variables || variables.length === 0) return null;
-    
-    return (
-      <div className="flex flex-wrap gap-1">
-        {variables.slice(0, 8).map((variable, index) => (
-          <Badge key={index} variant="secondary" className="text-xs">
-            {variable}
-          </Badge>
-        ))}
-        {variables.length > 8 && (
-          <Badge variant="outline" className="text-xs">
-            +{variables.length - 8}
-          </Badge>
-        )}
-      </div>
-    );
   };
 
   if (isLoading) {
@@ -335,383 +305,449 @@ export const EmailTemplateManager = () => {
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Mail className="h-5 w-5" />
+            <Send className="h-5 w-5" />
             Gestion des Templates Email
           </CardTitle>
-          <CardDescription>
-            Gérez les templates d'email utilisés par l'application pour les notifications et communications.
-          </CardDescription>
         </CardHeader>
       </Card>
 
-      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="list">Liste des Templates</TabsTrigger>
-          <TabsTrigger value="editor">Éditeur Code</TabsTrigger>
-          <TabsTrigger value="visual">Éditeur Visuel</TabsTrigger>
-          <TabsTrigger value="test">Test d'Envoi</TabsTrigger>
-          <TabsTrigger value="validation">Validation</TabsTrigger>
-        </TabsList>
+      <div className="w-full">
+        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
+          <TabsList className="grid w-full grid-cols-6">
+            <TabsTrigger value="list" className="flex items-center gap-2">
+              <FileText className="w-4 h-4" />
+              Liste
+            </TabsTrigger>
+            <TabsTrigger value="dragdrop" className="flex items-center gap-2">
+              <Wand2 className="w-4 h-4" />
+              Constructeur
+            </TabsTrigger>
+            <TabsTrigger value="editor" className="flex items-center gap-2">
+              <Code className="w-4 h-4" />
+              Éditeur HTML
+            </TabsTrigger>
+            <TabsTrigger value="visual" className="flex items-center gap-2">
+              <Eye className="w-4 h-4" />
+              Éditeur Visuel
+            </TabsTrigger>
+            <TabsTrigger value="test" className="flex items-center gap-2">
+              <Send className="w-4 h-4" />
+              Test
+            </TabsTrigger>
+            <TabsTrigger value="validation" className="flex items-center gap-2">
+              <CheckCircle className="w-4 h-4" />
+              Validation
+            </TabsTrigger>
+          </TabsList>
 
-        <TabsContent value="list" className="space-y-4">
-          {templates?.map(template => {
-            const typeInfo = getTemplateTypeInfo(template.type);
-            const variables = DEFAULT_VARIABLES[template.type] || [];
+          <TabsContent value="list" className="space-y-4">
+            <div className="flex justify-between items-center mb-6">
+              <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-2">
+                  <Filter className="w-4 h-4" />
+                  <Label>Catégorie:</Label>
+                  <Select value={filterCategory} onValueChange={setFilterCategory}>
+                    <SelectTrigger className="w-40">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toutes</SelectItem>
+                      {TEMPLATE_CATEGORIES.map(cat => (
+                        <SelectItem key={cat.value} value={cat.value}>
+                          {cat.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <Label>Langue:</Label>
+                  <Select value={filterLanguage} onValueChange={setFilterLanguage}>
+                    <SelectTrigger className="w-32">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">Toutes</SelectItem>
+                      {TEMPLATE_LANGUAGES.map(lang => (
+                        <SelectItem key={lang.value} value={lang.value}>
+                          {lang.flag} {lang.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              </div>
+              <Button onClick={handleCreateNew} className="flex items-center gap-2">
+                <Plus className="w-4 h-4" />
+                Nouveau template
+              </Button>
+            </div>
 
-            return (
-              <Card key={template.id}>
-                <CardContent className="pt-6">
-                  <div className="flex items-start justify-between">
-                    <div className="space-y-2 flex-1">
-                      <div className="flex items-center gap-2">
-                        <h3 className="font-semibold">{template.name}</h3>
-                        <Badge className={typeInfo.color}>
-                          {typeInfo.label}
-                        </Badge>
-                        {!template.is_active && (
-                          <Badge variant="secondary">Inactif</Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground">{template.subject}</p>
-                      <div className="space-y-1">
-                        <Label className="text-xs">Variables disponibles:</Label>
-                        {renderVariables(variables)}
-                      </div>
-                      <p className="text-xs text-muted-foreground">
-                        Mis à jour le {new Date(template.updated_at).toLocaleDateString('fr-FR')}
-                      </p>
+            <div className="grid gap-4">
+              {TEMPLATE_CATEGORIES.map(category => {
+                const categoryTemplates = filteredTemplates.filter(t => t.category === category.value);
+                if (categoryTemplates.length === 0) return null;
+                
+                return (
+                  <div key={category.value} className="space-y-3">
+                    <div className="flex items-center gap-2">
+                      <div className={`w-3 h-3 rounded-full ${category.color}`}></div>
+                      <h3 className="font-medium text-lg">{category.label}</h3>
+                      <Badge variant="secondary">{categoryTemplates.length}</Badge>
                     </div>
-                    <div className="flex gap-2">
+                    
+                    <div className="grid gap-3 ml-5">
+                      {categoryTemplates.map((template) => (
+                        <Card key={template.id} className="p-4">
+                          <div className="flex items-center justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-3 mb-2">
+                                <h4 className="font-semibold">{template.name}</h4>
+                                <span className="text-lg">
+                                  {TEMPLATE_LANGUAGES.find(l => l.value === template.language)?.flag}
+                                </span>
+                                {TEMPLATE_TYPES.find(t => t.value === template.type) && (
+                                  <Badge variant="outline" className="text-xs">
+                                    {TEMPLATE_TYPES.find(t => t.value === template.type)?.label}
+                                  </Badge>
+                                )}
+                                <div className="flex items-center gap-2">
+                                  {template.is_active ? (
+                                    <CheckCircle className="w-4 h-4 text-green-500" />
+                                  ) : (
+                                    <XCircle className="w-4 h-4 text-red-500" />
+                                  )}
+                                  <span className="text-sm text-muted-foreground">
+                                    {template.is_active ? 'Actif' : 'Inactif'}
+                                  </span>
+                                </div>
+                              </div>
+                              <p className="text-sm text-muted-foreground mb-2">
+                                <strong>Sujet:</strong> {template.subject}
+                              </p>
+                              <p className="text-xs text-muted-foreground">
+                                Mis à jour: {new Date(template.updated_at).toLocaleDateString('fr-FR')}
+                              </p>
+                            </div>
+                            <Button
+                              onClick={() => handleEdit(template)}
+                              className="flex items-center gap-2"
+                            >
+                              <Edit className="w-4 h-4" />
+                              Modifier
+                            </Button>
+                          </div>
+                        </Card>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="dragdrop" className="space-y-4">
+            <Card className="p-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Wand2 className="w-5 h-5" />
+                  {selectedTemplate ? `Édition: ${selectedTemplate.name}` : 'Nouveau template'}
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                {/* Form fields */}
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="name">Nom du template</Label>
+                    <Input
+                      id="name"
+                      value={formData.name}
+                      onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
+                      placeholder="Nom du template"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="category">Catégorie</Label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, category: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TEMPLATE_CATEGORIES.map((cat) => (
+                          <SelectItem key={cat.value} value={cat.value}>
+                            {cat.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="language">Langue</Label>
+                    <Select
+                      value={formData.language}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, language: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TEMPLATE_LANGUAGES.map((lang) => (
+                          <SelectItem key={lang.value} value={lang.value}>
+                            {lang.flag} {lang.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="subject">Sujet</Label>
+                    <Input
+                      id="subject"
+                      value={formData.subject}
+                      onChange={(e) => setFormData(prev => ({ ...prev, subject: e.target.value }))}
+                      placeholder="Sujet de l'email"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="type">Type</Label>
+                    <Select
+                      value={formData.type}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, type: value }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Sélectionner un type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {TEMPLATE_TYPES.map((type) => (
+                          <SelectItem key={type.value} value={type.value}>
+                            {type.label}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                </div>
+
+                {/* Drag & Drop Editor */}
+                <div className="border rounded-lg" style={{ height: '600px' }}>
+                  <EmailDragDropEditor
+                    initialBlocks={emailBlocks}
+                    onBlocksChange={setEmailBlocks}
+                    onHtmlChange={(html) => setFormData(prev => ({ ...prev, html_content: html }))}
+                    variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
+                  />
+                </div>
+
+                <div className="flex justify-end space-x-2">
+                  <Button variant="outline" onClick={() => setIsEditing(false)}>
+                    Annuler
+                  </Button>
+                  <Button 
+                    onClick={handleSave}
+                    disabled={updateTemplateMutation.isPending || createTemplateMutation.isPending}
+                  >
+                    {(updateTemplateMutation.isPending || createTemplateMutation.isPending) ? 'Sauvegarde...' : 'Sauvegarder'}
+                  </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="editor" className="space-y-4">
+            {selectedTemplate && (
+              <Card className="p-6">
+                <CardHeader>
+                  <CardTitle>Éditeur HTML - {selectedTemplate.name}</CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between mb-4">
+                    <Label>Contenu HTML</Label>
+                    <div className="flex space-x-2">
                       <Button
-                        variant="outline"
+                        variant={editorMode === 'code' ? 'default' : 'outline'}
                         size="sm"
-                        onClick={() => handleEdit(template)}
+                        onClick={() => setEditorMode('code')}
                       >
-                        <Edit3 className="h-4 w-4" />
-                        Modifier
+                        <Code className="w-4 h-4 mr-2" />
+                        Code
+                      </Button>
+                      <Button
+                        variant={editorMode === 'split' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setEditorMode('split')}
+                      >
+                        <Split className="w-4 h-4 mr-2" />
+                        Divisé
+                      </Button>
+                      <Button
+                        variant={editorMode === 'preview' ? 'default' : 'outline'}
+                        size="sm"
+                        onClick={() => setEditorMode('preview')}
+                      >
+                        <Eye className="w-4 h-4 mr-2" />
+                        Aperçu
                       </Button>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            );
-          })}
-        </TabsContent>
 
-        <TabsContent value="editor" className="space-y-6">
-          {!isEditing ? (
-            <div className="text-center py-8">
-              <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Sélectionner un Template</h3>
-              <p className="text-muted-foreground mb-4">
-                Choisissez un template dans la liste pour commencer l'édition
-              </p>
-              <div className="flex gap-2 justify-center">
-                <Button onClick={() => setActiveTab('list')}>
-                  Voir la Liste
-                </Button>
-                <TemplateImportDialog onImport={handleImportTemplate}>
-                  <Button variant="outline">
-                    <Upload className="w-4 h-4 mr-2" />
-                    Importer
-                  </Button>
-                </TemplateImportDialog>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              {/* Header avec informations générales */}
-              <Card>
-                <CardContent className="pt-6">
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div>
-                      <Label htmlFor="edit-name">Nom du Template</Label>
-                      <Input
-                        id="edit-name"
-                        value={editForm.name}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                  <div className="border rounded-lg overflow-hidden" style={{ height: '500px' }}>
+                    {editorMode === 'code' && (
+                      <Editor
+                        height="500px"
+                        defaultLanguage="html"
+                        value={formData.html_content}
+                        onChange={handleEditorChange}
+                        options={{
+                          minimap: { enabled: false },
+                          scrollBeyondLastLine: false,
+                          fontSize: 14,
+                          wordWrap: 'on'
+                        }}
                       />
-                    </div>
-                    <div>
-                      <Label htmlFor="edit-type">Type</Label>
-                      <Select
-                        value={editForm.type}
-                        onValueChange={(value) => setEditForm(prev => ({ ...prev, type: value, variables: extractVariables(editForm.html_content) }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder="Sélectionner le type" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {TEMPLATE_TYPES.map((type) => (
-                            <SelectItem key={type.value} value={type.value}>
-                              {type.label}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                    <div>
-                      <Label htmlFor="edit-subject">Sujet de l'Email</Label>
-                      <Input
-                        id="edit-subject"
-                        value={editForm.subject}
-                        onChange={(e) => setEditForm(prev => ({ ...prev, subject: e.target.value }))}
-                      />
-                    </div>
-                  </div>
-                  
-                  <div className="flex items-center justify-between mt-4">
-                    <div className="flex items-center space-x-2">
-                      <Switch
-                        id="edit-active"
-                        checked={editForm.is_active}
-                        onCheckedChange={(checked) => setEditForm(prev => ({ ...prev, is_active: checked }))}
-                      />
-                      <Label htmlFor="edit-active">Template actif</Label>
-                    </div>
+                    )}
                     
-                    <div className="flex gap-2">
-                      <div className="flex border rounded-lg">
-                        <Button
-                          variant={editorMode === 'code' ? 'default' : 'ghost'}
-                          size="sm"
-                          onClick={() => setEditorMode('code')}
-                        >
-                          <Code className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant={editorMode === 'split' ? 'default' : 'ghost'}
-                          size="sm"
-                          onClick={() => setEditorMode('split')}
-                        >
-                          <Monitor className="w-4 h-4" />
-                        </Button>
-                        <Button
-                          variant={editorMode === 'preview' ? 'default' : 'ghost'}
-                          size="sm"
-                          onClick={() => setEditorMode('preview')}
-                        >
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </div>
-                      
-                      <TemplateImportDialog onImport={handleImportTemplate}>
-                        <Button variant="outline" size="sm">
-                          <Upload className="w-4 h-4 mr-2" />
-                          Importer
-                        </Button>
-                      </TemplateImportDialog>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              {/* Zone d'édition principale */}
-              <div className={`grid gap-4 ${editorMode === 'split' ? 'grid-cols-12' : 'grid-cols-1'}`}>
-                {/* Palette d'outils - toujours visible en mode split */}
-                {editorMode === 'split' && (
-                  <div className="col-span-3">
-                    <VariablePalette 
-                      templateType={editForm.type}
-                      onInsertVariable={handleInsertVariable}
-                    />
-                  </div>
-                )}
-                
-                {/* Éditeur de code */}
-                {(editorMode === 'code' || editorMode === 'split') && (
-                  <div className={editorMode === 'split' ? 'col-span-5' : 'col-span-1'}>
-                    <Card className="h-full">
-                      <CardHeader className="pb-3">
-                        <CardTitle className="text-lg flex items-center gap-2">
-                          <Code className="w-5 h-5" />
-                          Éditeur HTML
-                        </CardTitle>
-                      </CardHeader>
-                      <CardContent className="p-0">
-                        <div className="border-t">
+                    {editorMode === 'split' && (
+                      <div className="flex h-full">
+                        <div className="flex-1 border-r">
                           <Editor
-                            height="600px"
+                            height="500px"
                             defaultLanguage="html"
-                            value={editForm.html_content}
+                            value={formData.html_content}
                             onChange={handleEditorChange}
-                            onMount={(editor) => { editorRef.current = editor; }}
                             options={{
                               minimap: { enabled: false },
-                              fontSize: 14,
-                              wordWrap: 'on',
-                              automaticLayout: true,
                               scrollBeyondLastLine: false,
-                              renderLineHighlight: 'line',
-                              selectOnLineNumbers: true,
-                              roundedSelection: false,
-                              readOnly: false,
-                              cursorStyle: 'line',
-                              theme: 'vs-dark'
+                              fontSize: 12
                             }}
                           />
                         </div>
-                      </CardContent>
-                    </Card>
+                        <div className="flex-1 p-4 bg-gray-50 overflow-auto">
+                          <div 
+                            className="bg-white p-4 rounded shadow-sm"
+                            dangerouslySetInnerHTML={{ __html: formData.html_content }}
+                          />
+                        </div>
+                      </div>
+                    )}
+                    
+                    {editorMode === 'preview' && (
+                      <div className="p-4 bg-gray-50 h-full overflow-auto">
+                        <div 
+                          className="bg-white p-4 rounded shadow-sm max-w-2xl mx-auto"
+                          dangerouslySetInnerHTML={{ __html: formData.html_content }}
+                        />
+                      </div>
+                    )}
                   </div>
-                )}
-                
-                {/* Zone de prévisualisation */}
-                {(editorMode === 'preview' || editorMode === 'split') && (
-                  <div className={editorMode === 'split' ? 'col-span-4' : 'col-span-1'}>
-                    <EmailPreview
-                      htmlContent={editForm.html_content}
-                      variables={editForm.variables || []}
-                      templateType={editForm.type}
-                    />
-                  </div>
-                )}
-                
-                {/* Palette d'outils en mode plein écran */}
-                {editorMode !== 'split' && (
-                  <div className="col-span-1">
-                    <VariablePalette 
-                      templateType={editForm.type}
-                      onInsertVariable={handleInsertVariable}
-                    />
-                  </div>
-                )}
-              </div>
-              
-              {/* Variables détectées */}
-              {editForm.variables && editForm.variables.length > 0 && (
-                <Card>
-                  <CardContent className="pt-4">
-                    <Label className="text-sm font-medium">Variables détectées ({editForm.variables.length})</Label>
-                    <div className="mt-2">
-                      {renderVariables(editForm.variables)}
+
+                  {/* Variable palette */}
+                  <div className="bg-muted p-4 rounded-lg">
+                    <Label className="text-sm font-medium mb-2 block">Variables disponibles</Label>
+                    <div className="flex flex-wrap gap-2">
+                      {Object.entries(DEFAULT_VARIABLES[formData.type] || {}).map(([key, description]) => (
+                        <Button
+                          key={key}
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleInsertVariable(key)}
+                          className="text-xs"
+                        >
+                          {`{{${key}}}`}
+                        </Button>
+                      ))}
                     </div>
-                  </CardContent>
-                </Card>
-              )}
-              
-              {/* Actions */}
-              <div className="flex justify-between">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsEditing(false);
-                    setActiveTab('list');
-                  }}
-                >
-                  Retour à la Liste
-                </Button>
-                
-                <div className="flex gap-2">
+                  </div>
+
+                  <div className="flex justify-end space-x-2">
+                    <Button variant="outline" onClick={() => setIsEditing(false)}>
+                      Annuler
+                    </Button>
+                    <Button onClick={handleSave}>
+                      Sauvegarder
+                    </Button>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="visual" className="space-y-4">
+            {selectedTemplate && (
+              <Card className="p-6">
+                <CardHeader>
+                  <CardTitle>Éditeur Visuel - {selectedTemplate.name}</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <EmailVisualEditor
+                    htmlContent={formData.html_content}
+                    onContentChange={(content) => setFormData(prev => ({ ...prev, html_content: content }))}
+                    onSave={handleSave}
+                    isLoading={updateTemplateMutation.isPending}
+                    templateType={formData.type}
+                    variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
+                  />
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+
+          <TabsContent value="test" className="space-y-4">
+            <Card className="p-6">
+              <CardHeader>
+                <CardTitle>Test d'envoi d'email</CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex gap-4">
+                  <Input
+                    placeholder="email@example.com"
+                    value={testEmail}
+                    onChange={(e) => setTestEmail(e.target.value)}
+                    type="email"
+                  />
                   <Button 
-                    variant="outline"
-                    onClick={() => setActiveTab('test')}
-                    disabled={!editForm.html_content}
+                    onClick={() => selectedTemplate && handleTestEmail(selectedTemplate.id)}
+                    disabled={!selectedTemplate || testEmailMutation.isPending}
                   >
-                    <Send className="w-4 h-4 mr-2" />
-                    Tester
-                  </Button>
-                  <Button onClick={handleSave} disabled={updateTemplateMutation.isPending}>
-                    <Save className="w-4 h-4 mr-2" />
-                    {updateTemplateMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
+                    {testEmailMutation.isPending ? 'Envoi...' : 'Envoyer test'}
                   </Button>
                 </div>
-              </div>
-            </div>
-          )}
-        </TabsContent>
+                
+                <div className="grid gap-4">
+                  {filteredTemplates
+                    .filter(template => template.is_active)
+                    .map((template) => (
+                      <Card key={template.id} className="p-4">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <h4 className="font-medium">{template.name}</h4>
+                            <p className="text-sm text-muted-foreground">{template.subject}</p>
+                          </div>
+                          <Button
+                            size="sm"
+                            onClick={() => handleTestEmail(template.id)}
+                            disabled={!testEmail || testEmailMutation.isPending}
+                          >
+                            Test
+                          </Button>
+                        </div>
+                      </Card>
+                    ))}
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
 
-        <TabsContent value="test">
-          <Card>
-            <CardHeader>
-              <CardTitle>Test d'Envoi de Template</CardTitle>
-              <CardDescription>
-                Envoyez un email de test avec des données factices pour vérifier le rendu des templates.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <Alert>
-                <AlertCircle className="h-4 w-4" />
-                <AlertDescription>
-                  Les emails de test utilisent des données fictives pour toutes les variables du template.
-                </AlertDescription>
-              </Alert>
-
-              <div className="space-y-2">
-                <Label htmlFor="test-email">Adresse email de test</Label>
-                <Input
-                  id="test-email"
-                  type="email"
-                  placeholder="test@example.com"
-                  value={testEmail}
-                  onChange={(e) => setTestEmail(e.target.value)}
-                />
-              </div>
-
-              <Separator />
-
-              <div className="space-y-3">
-                <h3 className="font-semibold">Templates disponibles</h3>
-                {templates?.filter(t => t.is_active).map(template => {
-                  const typeInfo = getTemplateTypeInfo(template.type);
-                  return (
-                    <div key={template.id} className="flex items-center justify-between p-3 border rounded">
-                      <div>
-                        <p className="font-medium">{template.name}</p>
-                        <Badge className={typeInfo.color} variant="secondary">
-                          {typeInfo.label}
-                        </Badge>
-                      </div>
-                      <Button
-                        size="sm"
-                        onClick={() => handleTestEmail(template.id)}
-                        disabled={testEmailMutation.isPending || !testEmail}
-                      >
-                        <Mail className="h-4 w-4 mr-2" />
-                        Tester
-                      </Button>
-                    </div>
-                  );
-                })}
-              </div>
-            </CardContent>
-          </Card>
-        </TabsContent>
-
-        <TabsContent value="validation">
-          <EmailSystemValidator />
-        </TabsContent>
-
-        <TabsContent value="visual" className="space-y-6">
-          {!isEditing ? (
-            <div className="text-center py-8">
-              <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-medium mb-2">Sélectionner un Template</h3>
-              <p className="text-muted-foreground mb-4">
-                Choisissez un template dans la liste pour commencer l'édition visuelle
-              </p>
-              <Button onClick={() => setActiveTab('list')}>
-                Voir la Liste
-              </Button>
-            </div>
-          ) : (
-            <EmailVisualEditor
-              htmlContent={editForm.html_content}
-              onContentChange={(content) => {
-                setEditForm(prev => ({ 
-                  ...prev, 
-                  html_content: content,
-                  variables: extractVariables(content)
-                }));
-              }}
-              onSave={handleSave}
-              isLoading={updateTemplateMutation.isPending}
-              templateType={editForm.type}
-              variables={DEFAULT_VARIABLES[editForm.type] || []}
-            />
-          )}
-        </TabsContent>
-      </Tabs>
+          <TabsContent value="validation" className="space-y-4">
+            <EmailSystemValidator />
+          </TabsContent>
+        </Tabs>
+      </div>
     </div>
   );
 };
