@@ -6,7 +6,9 @@ export type EmailNotificationType =
   | 'review_notification' 
   | 'contact_message'
   | 'booking_proposed'
-  | 'booking_status_changed';
+  | 'booking_status_changed'
+  | 'message_received'
+  | 'prospect_follow_up';
 
 interface EmailNotificationData {
   userName?: string;
@@ -113,5 +115,81 @@ export const sendContactMessage = async (
     senderName,
     senderEmail,
     message
+  });
+};
+
+// Fonction utilitaire pour notifier une venue d'une demande de booking
+export const sendBookingProposedNotification = async (
+  venueEmail: string,
+  venueName: string,
+  eventTitle: string,
+  eventDate: string,
+  artistName: string,
+  proposedFee: string,
+  message?: string
+) => {
+  return await sendNotificationEmail('booking_proposed', venueEmail, {
+    venueName,
+    eventTitle,
+    eventDate,
+    artistName,
+    proposedFee,
+    message,
+    dashboardUrl: `${window.location.origin}/venue-dashboard`,
+    unsubscribeUrl: `${window.location.origin}/unsubscribe`
+  });
+};
+
+// Fonction utilitaire pour notifier un artiste du changement de statut de booking
+export const sendBookingStatusChangedNotification = async (
+  artistEmail: string,
+  artistName: string,
+  eventTitle: string,
+  eventDate: string,
+  venueName: string,
+  status: string,
+  statusColor: string,
+  message?: string
+) => {
+  return await sendNotificationEmail('booking_status_changed', artistEmail, {
+    artistName,
+    eventTitle,
+    eventDate,
+    venueName,
+    status,
+    statusColor,
+    message,
+    dashboardUrl: `${window.location.origin}/artist-dashboard`,
+    unsubscribeUrl: `${window.location.origin}/unsubscribe`
+  });
+};
+
+// Fonction utilitaire pour notifier un utilisateur d'un nouveau message
+export const sendMessageReceivedNotification = async (
+  recipientEmail: string,
+  recipientName: string,
+  senderName: string,
+  message: string,
+  conversationId: string
+) => {
+  return await sendNotificationEmail('message_received', recipientEmail, {
+    recipientName,
+    senderName,
+    message,
+    messageUrl: `${window.location.origin}/messages?conversation=${conversationId}`,
+    unsubscribeUrl: `${window.location.origin}/unsubscribe`
+  });
+};
+
+// Fonction utilitaire pour le suivi de prospection
+export const sendProspectFollowUpEmail = async (
+  userEmail: string,
+  userName: string,
+  profileId: string
+) => {
+  return await sendNotificationEmail('prospect_follow_up', userEmail, {
+    userName,
+    profileUrl: `${window.location.origin}/profile/${profileId}/edit`,
+    unsubscribeUrl: `${window.location.origin}/unsubscribe`
   });
 };

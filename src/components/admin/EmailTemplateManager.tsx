@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { EmailPreview } from './EmailPreview';
 import { TemplateImportDialog } from './TemplateImportDialog';
 import { VariablePalette } from './VariablePalette';
+import EmailSystemValidator from './EmailSystemValidator';
 import Editor from '@monaco-editor/react';
 
 interface EmailTemplate {
@@ -38,6 +39,8 @@ const TEMPLATE_TYPES = [
   { value: 'contact_message', label: 'Message de contact', color: 'bg-purple-100 text-purple-800' },
   { value: 'booking_proposed', label: 'Proposition de booking', color: 'bg-cyan-100 text-cyan-800' },
   { value: 'booking_status_changed', label: 'Statut de booking', color: 'bg-yellow-100 text-yellow-800' },
+  { value: 'message_received', label: 'Nouveau message', color: 'bg-indigo-100 text-indigo-800' },
+  { value: 'prospect_follow_up', label: 'Suivi de prospection', color: 'bg-pink-100 text-pink-800' },
 ];
 
 const DEFAULT_VARIABLES: Record<string, string[]> = {
@@ -45,8 +48,10 @@ const DEFAULT_VARIABLES: Record<string, string[]> = {
   admin_notification: ['userName', 'userEmail', 'profileType', 'registrationDate', 'adminUrl'],
   review_notification: ['artistName', 'artistId', 'reviewerName', 'rating', 'message', 'profileUrl'],
   contact_message: ['senderName', 'senderEmail', 'message', 'replyUrl'],
-  booking_proposed: ['artistName', 'venueName', 'eventTitle', 'eventDate', 'proposedFee', 'bookingUrl'],
-  booking_status_changed: ['artistName', 'venueName', 'eventTitle', 'eventDate', 'status', 'bookingUrl'],
+  booking_proposed: ['venueName', 'eventTitle', 'eventDate', 'artistName', 'proposedFee', 'message', 'dashboardUrl', 'unsubscribeUrl'],
+  booking_status_changed: ['artistName', 'eventTitle', 'eventDate', 'venueName', 'status', 'statusColor', 'message', 'dashboardUrl', 'unsubscribeUrl'],
+  message_received: ['recipientName', 'senderName', 'message', 'messageUrl', 'unsubscribeUrl'],
+  prospect_follow_up: ['userName', 'profileUrl', 'unsubscribeUrl'],
 };
 
 export const EmailTemplateManager = () => {
@@ -343,6 +348,7 @@ export const EmailTemplateManager = () => {
           <TabsTrigger value="list">Liste des Templates</TabsTrigger>
           <TabsTrigger value="editor">Éditeur</TabsTrigger>
           <TabsTrigger value="test">Test d'Envoi</TabsTrigger>
+          <TabsTrigger value="validation">Validation</TabsTrigger>
         </TabsList>
 
         <TabsContent value="list" className="space-y-4">
@@ -668,6 +674,10 @@ export const EmailTemplateManager = () => {
               </div>
             </CardContent>
           </Card>
+        </TabsContent>
+
+        <TabsContent value="validation">
+          <EmailSystemValidator />
         </TabsContent>
       </Tabs>
     </div>
