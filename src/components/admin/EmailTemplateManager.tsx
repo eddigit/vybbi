@@ -17,6 +17,7 @@ import { useToast } from '@/hooks/use-toast';
 import { EmailPreview } from './EmailPreview';
 import { TemplateImportDialog } from './TemplateImportDialog';
 import { VariablePalette } from './VariablePalette';
+import { EmailVisualEditor } from './EmailVisualEditor';
 import EmailSystemValidator from './EmailSystemValidator';
 import Editor from '@monaco-editor/react';
 
@@ -346,7 +347,8 @@ export const EmailTemplateManager = () => {
       <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="list">Liste des Templates</TabsTrigger>
-          <TabsTrigger value="editor">Éditeur</TabsTrigger>
+          <TabsTrigger value="editor">Éditeur Code</TabsTrigger>
+          <TabsTrigger value="visual">Éditeur Visuel</TabsTrigger>
           <TabsTrigger value="test">Test d'Envoi</TabsTrigger>
           <TabsTrigger value="validation">Validation</TabsTrigger>
         </TabsList>
@@ -678,6 +680,36 @@ export const EmailTemplateManager = () => {
 
         <TabsContent value="validation">
           <EmailSystemValidator />
+        </TabsContent>
+
+        <TabsContent value="visual" className="space-y-6">
+          {!isEditing ? (
+            <div className="text-center py-8">
+              <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">Sélectionner un Template</h3>
+              <p className="text-muted-foreground mb-4">
+                Choisissez un template dans la liste pour commencer l'édition visuelle
+              </p>
+              <Button onClick={() => setActiveTab('list')}>
+                Voir la Liste
+              </Button>
+            </div>
+          ) : (
+            <EmailVisualEditor
+              htmlContent={editForm.html_content}
+              onContentChange={(content) => {
+                setEditForm(prev => ({ 
+                  ...prev, 
+                  html_content: content,
+                  variables: extractVariables(content)
+                }));
+              }}
+              onSave={handleSave}
+              isLoading={updateTemplateMutation.isPending}
+              templateType={editForm.type}
+              variables={DEFAULT_VARIABLES[editForm.type] || []}
+            />
+          )}
         </TabsContent>
       </Tabs>
     </div>
