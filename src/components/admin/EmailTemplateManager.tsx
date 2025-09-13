@@ -1121,10 +1121,12 @@ export const EmailTemplateManager: React.FC = () => {
           </TabsContent>
 
           <TabsContent value="editor" className="space-y-4">
-            {selectedTemplate && (
+            {isEditing && (
               <Card className="p-6">
                 <CardHeader>
-                  <CardTitle>Éditeur HTML - {selectedTemplate.name}</CardTitle>
+                  <CardTitle>
+                    Éditeur HTML - {selectedTemplate ? selectedTemplate.name : 'Nouveau template'}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="flex items-center justify-between mb-4">
