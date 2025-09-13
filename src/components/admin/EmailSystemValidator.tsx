@@ -22,7 +22,8 @@ const COMMON_VARIABLES = [
   'userName', 'userEmail', 'profileType', 'dashboardUrl', 'unsubscribeUrl'
 ];
 
-export default function EmailSystemValidator() {
+// Validation du système email - Templates requis
+const EmailSystemValidator = () => {
   const { data: templates, isLoading } = useQuery({
     queryKey: ['email-templates'],
     queryFn: async () => {
@@ -180,4 +181,6 @@ export default function EmailSystemValidator() {
       </Card>
     </div>
   );
-}
+};
+
+export default EmailSystemValidator;
