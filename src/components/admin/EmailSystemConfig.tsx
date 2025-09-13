@@ -22,7 +22,7 @@ export function EmailSystemConfig() {
     provider: "Gmail SMTP",
     host: "smtp.gmail.com",
     port: 587,
-    fromEmail: "vybbi.notifications@gmail.com",
+    fromEmail: "vybbiapp@gmail.com",
     fromName: "Vybbi",
     status: "Actif"
   };
