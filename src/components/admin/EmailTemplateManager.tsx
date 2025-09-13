@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -11,8 +11,13 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Separator } from '@/components/ui/separator';
-import { Edit3, Save, Eye, Mail, Trash2, Plus, AlertCircle } from 'lucide-react';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Edit3, Save, Eye, Mail, Trash2, Plus, AlertCircle, Upload, Monitor, Code, Send } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { EmailPreview } from './EmailPreview';
+import { TemplateImportDialog } from './TemplateImportDialog';
+import { VariablePalette } from './VariablePalette';
+import Editor from '@monaco-editor/react';
 
 interface EmailTemplate {
   id: string;
@@ -36,12 +41,12 @@ const TEMPLATE_TYPES = [
 ];
 
 const DEFAULT_VARIABLES: Record<string, string[]> = {
-  user_registration: ['userName', 'userEmail', 'profileType'],
-  admin_notification: ['userName', 'userEmail', 'profileType'],
-  review_notification: ['artistName', 'artistId', 'reviewerName', 'rating', 'message'],
-  contact_message: ['senderName', 'senderEmail', 'message'],
-  booking_proposed: ['artistName', 'venueName', 'eventTitle', 'eventDate', 'proposedFee'],
-  booking_status_changed: ['artistName', 'venueName', 'eventTitle', 'eventDate', 'status'],
+  user_registration: ['userName', 'userEmail', 'profileType', 'welcomeMessage', 'loginUrl', 'supportEmail'],
+  admin_notification: ['userName', 'userEmail', 'profileType', 'registrationDate', 'adminUrl'],
+  review_notification: ['artistName', 'artistId', 'reviewerName', 'rating', 'message', 'profileUrl'],
+  contact_message: ['senderName', 'senderEmail', 'message', 'replyUrl'],
+  booking_proposed: ['artistName', 'venueName', 'eventTitle', 'eventDate', 'proposedFee', 'bookingUrl'],
+  booking_status_changed: ['artistName', 'venueName', 'eventTitle', 'eventDate', 'status', 'bookingUrl'],
 };
 
 export const EmailTemplateManager = () => {
@@ -54,9 +59,13 @@ export const EmailTemplateManager = () => {
     name: '',
     subject: '',
     html_content: '',
+    type: '',
     is_active: true,
+    variables: []
   });
   const [testEmail, setTestEmail] = useState('');
+  const [editorMode, setEditorMode] = useState<'split' | 'code' | 'preview'>('split');
+  const editorRef = useRef(null);
 
   const { data: templates, isLoading } = useQuery({
     queryKey: ['email-templates'],
@@ -187,13 +196,67 @@ export const EmailTemplateManager = () => {
     },
   });
 
+  const extractVariables = (htmlContent: string): string[] => {
+    const regex = /\{\{\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*\}\}/g;
+    const variables = new Set<string>();
+    let match;
+    
+    while ((match = regex.exec(htmlContent)) !== null) {
+      variables.add(match[1]);
+    }
+    
+    return Array.from(variables);
+  };
+
+  const handleEditorChange = (value: string | undefined) => {
+    if (value !== undefined) {
+      setEditForm(prev => ({ 
+        ...prev, 
+        html_content: value,
+        variables: extractVariables(value)
+      }));
+    }
+  };
+
+  const handleImportTemplate = (htmlContent: string, detectedVariables: string[]) => {
+    setEditForm(prev => ({
+      ...prev,
+      html_content: htmlContent,
+      variables: detectedVariables
+    }));
+    setActiveTab('editor');
+  };
+
+  const handleInsertVariable = (variable: string) => {
+    if (editorRef.current) {
+      // @ts-ignore
+      const editor = editorRef.current;
+      const position = editor.getPosition();
+      const range = {
+        startLineNumber: position.lineNumber,
+        startColumn: position.column,
+        endLineNumber: position.lineNumber,
+        endColumn: position.column
+      };
+      
+      editor.executeEdits('insert-variable', [{
+        range: range,
+        text: variable
+      }]);
+      
+      editor.focus();
+    }
+  };
+
   const handleEdit = (template: EmailTemplate) => {
     setSelectedTemplate(template);
     setEditForm({
       name: template.name,
       subject: template.subject,
       html_content: template.html_content,
+      type: template.type,
       is_active: template.is_active,
+      variables: extractVariables(template.html_content)
     });
     setIsEditing(true);
     setActiveTab('editor');
@@ -226,13 +289,20 @@ export const EmailTemplateManager = () => {
   };
 
   const renderVariables = (variables: string[]) => {
+    if (!variables || variables.length === 0) return null;
+    
     return (
       <div className="flex flex-wrap gap-1">
-        {variables.map(variable => (
-          <Badge key={variable} variant="outline" className="text-xs">
-            {`{{${variable}}}`}
+        {variables.slice(0, 8).map((variable, index) => (
+          <Badge key={index} variant="secondary" className="text-xs">
+            {variable}
           </Badge>
         ))}
+        {variables.length > 8 && (
+          <Badge variant="outline" className="text-xs">
+            +{variables.length - 8}
+          </Badge>
+        )}
       </div>
     );
   };
@@ -320,89 +390,226 @@ export const EmailTemplateManager = () => {
           })}
         </TabsContent>
 
-        <TabsContent value="editor">
-          {isEditing && selectedTemplate ? (
-            <Card>
-              <CardHeader>
-                <CardTitle>Édition du Template</CardTitle>
-                <CardDescription>
-                  Modifiez le template "{selectedTemplate.name}"
-                </CardDescription>
-              </CardHeader>
-              <CardContent className="space-y-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="name">Nom du template</Label>
-                    <Input
-                      id="name"
-                      value={editForm.name}
-                      onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+        <TabsContent value="editor" className="space-y-6">
+          {!isEditing ? (
+            <div className="text-center py-8">
+              <Mail className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
+              <h3 className="text-lg font-medium mb-2">Sélectionner un Template</h3>
+              <p className="text-muted-foreground mb-4">
+                Choisissez un template dans la liste pour commencer l'édition
+              </p>
+              <div className="flex gap-2 justify-center">
+                <Button onClick={() => setActiveTab('list')}>
+                  Voir la Liste
+                </Button>
+                <TemplateImportDialog onImport={handleImportTemplate}>
+                  <Button variant="outline">
+                    <Upload className="w-4 h-4 mr-2" />
+                    Importer
+                  </Button>
+                </TemplateImportDialog>
+              </div>
+            </div>
+          ) : (
+            <div className="space-y-4">
+              {/* Header avec informations générales */}
+              <Card>
+                <CardContent className="pt-6">
+                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                    <div>
+                      <Label htmlFor="edit-name">Nom du Template</Label>
+                      <Input
+                        id="edit-name"
+                        value={editForm.name}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, name: e.target.value }))}
+                      />
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-type">Type</Label>
+                      <Select
+                        value={editForm.type}
+                        onValueChange={(value) => setEditForm(prev => ({ ...prev, type: value, variables: extractVariables(editForm.html_content) }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder="Sélectionner le type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {TEMPLATE_TYPES.map((type) => (
+                            <SelectItem key={type.value} value={type.value}>
+                              {type.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                    <div>
+                      <Label htmlFor="edit-subject">Sujet de l'Email</Label>
+                      <Input
+                        id="edit-subject"
+                        value={editForm.subject}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, subject: e.target.value }))}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="flex items-center justify-between mt-4">
+                    <div className="flex items-center space-x-2">
+                      <Switch
+                        id="edit-active"
+                        checked={editForm.is_active}
+                        onCheckedChange={(checked) => setEditForm(prev => ({ ...prev, is_active: checked }))}
+                      />
+                      <Label htmlFor="edit-active">Template actif</Label>
+                    </div>
+                    
+                    <div className="flex gap-2">
+                      <div className="flex border rounded-lg">
+                        <Button
+                          variant={editorMode === 'code' ? 'default' : 'ghost'}
+                          size="sm"
+                          onClick={() => setEditorMode('code')}
+                        >
+                          <Code className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant={editorMode === 'split' ? 'default' : 'ghost'}
+                          size="sm"
+                          onClick={() => setEditorMode('split')}
+                        >
+                          <Monitor className="w-4 h-4" />
+                        </Button>
+                        <Button
+                          variant={editorMode === 'preview' ? 'default' : 'ghost'}
+                          size="sm"
+                          onClick={() => setEditorMode('preview')}
+                        >
+                          <Eye className="w-4 h-4" />
+                        </Button>
+                      </div>
+                      
+                      <TemplateImportDialog onImport={handleImportTemplate}>
+                        <Button variant="outline" size="sm">
+                          <Upload className="w-4 h-4 mr-2" />
+                          Importer
+                        </Button>
+                      </TemplateImportDialog>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+              
+              {/* Zone d'édition principale */}
+              <div className={`grid gap-4 ${editorMode === 'split' ? 'grid-cols-12' : 'grid-cols-1'}`}>
+                {/* Palette d'outils - toujours visible en mode split */}
+                {editorMode === 'split' && (
+                  <div className="col-span-3">
+                    <VariablePalette 
+                      templateType={editForm.type}
+                      onInsertVariable={handleInsertVariable}
                     />
                   </div>
-                  <div className="flex items-center space-x-2">
-                    <Switch
-                      id="is_active"
-                      checked={editForm.is_active}
-                      onCheckedChange={(checked) => setEditForm(prev => ({ ...prev, is_active: checked }))}
-                    />
-                    <Label htmlFor="is_active">Template actif</Label>
+                )}
+                
+                {/* Éditeur de code */}
+                {(editorMode === 'code' || editorMode === 'split') && (
+                  <div className={editorMode === 'split' ? 'col-span-5' : 'col-span-1'}>
+                    <Card className="h-full">
+                      <CardHeader className="pb-3">
+                        <CardTitle className="text-lg flex items-center gap-2">
+                          <Code className="w-5 h-5" />
+                          Éditeur HTML
+                        </CardTitle>
+                      </CardHeader>
+                      <CardContent className="p-0">
+                        <div className="border-t">
+                          <Editor
+                            height="600px"
+                            defaultLanguage="html"
+                            value={editForm.html_content}
+                            onChange={handleEditorChange}
+                            onMount={(editor) => { editorRef.current = editor; }}
+                            options={{
+                              minimap: { enabled: false },
+                              fontSize: 14,
+                              wordWrap: 'on',
+                              automaticLayout: true,
+                              scrollBeyondLastLine: false,
+                              renderLineHighlight: 'line',
+                              selectOnLineNumbers: true,
+                              roundedSelection: false,
+                              readOnly: false,
+                              cursorStyle: 'line',
+                              theme: 'vs-dark'
+                            }}
+                          />
+                        </div>
+                      </CardContent>
+                    </Card>
                   </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="subject">Sujet de l'email</Label>
-                  <Input
-                    id="subject"
-                    value={editForm.subject}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, subject: e.target.value }))}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="variables">Variables disponibles</Label>
-                  {renderVariables(DEFAULT_VARIABLES[selectedTemplate.type] || [])}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="html_content">Contenu HTML</Label>
-                  <Textarea
-                    id="html_content"
-                    rows={20}
-                    value={editForm.html_content}
-                    onChange={(e) => setEditForm(prev => ({ ...prev, html_content: e.target.value }))}
-                    className="font-mono text-sm"
-                  />
-                </div>
-
+                )}
+                
+                {/* Zone de prévisualisation */}
+                {(editorMode === 'preview' || editorMode === 'split') && (
+                  <div className={editorMode === 'split' ? 'col-span-4' : 'col-span-1'}>
+                    <EmailPreview
+                      htmlContent={editForm.html_content}
+                      variables={editForm.variables || []}
+                      templateType={editForm.type}
+                    />
+                  </div>
+                )}
+                
+                {/* Palette d'outils en mode plein écran */}
+                {editorMode !== 'split' && (
+                  <div className="col-span-1">
+                    <VariablePalette 
+                      templateType={editForm.type}
+                      onInsertVariable={handleInsertVariable}
+                    />
+                  </div>
+                )}
+              </div>
+              
+              {/* Variables détectées */}
+              {editForm.variables && editForm.variables.length > 0 && (
+                <Card>
+                  <CardContent className="pt-4">
+                    <Label className="text-sm font-medium">Variables détectées ({editForm.variables.length})</Label>
+                    <div className="mt-2">
+                      {renderVariables(editForm.variables)}
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+              
+              {/* Actions */}
+              <div className="flex justify-between">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsEditing(false);
+                    setActiveTab('list');
+                  }}
+                >
+                  Retour à la Liste
+                </Button>
+                
                 <div className="flex gap-2">
-                  <Button
-                    onClick={handleSave}
-                    disabled={updateTemplateMutation.isPending}
+                  <Button 
+                    variant="outline"
+                    onClick={() => setActiveTab('test')}
+                    disabled={!editForm.html_content}
                   >
-                    <Save className="h-4 w-4 mr-2" />
+                    <Send className="w-4 h-4 mr-2" />
+                    Tester
+                  </Button>
+                  <Button onClick={handleSave} disabled={updateTemplateMutation.isPending}>
+                    <Save className="w-4 h-4 mr-2" />
                     {updateTemplateMutation.isPending ? 'Sauvegarde...' : 'Sauvegarder'}
                   </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => {
-                      setIsEditing(false);
-                      setActiveTab('list');
-                    }}
-                  >
-                    Annuler
-                  </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card>
-              <CardContent className="pt-6">
-                <div className="text-center text-muted-foreground">
-                  <Edit3 className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                  <p>Sélectionnez un template à modifier dans la liste.</p>
-                </div>
-              </CardContent>
-            </Card>
+              </div>
+            </div>
           )}
         </TabsContent>
 
