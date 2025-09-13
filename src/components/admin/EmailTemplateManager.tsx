@@ -49,6 +49,7 @@ export const EmailTemplateManager = () => {
   const queryClient = useQueryClient();
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [activeTab, setActiveTab] = useState('list');
   const [editForm, setEditForm] = useState({
     name: '',
     subject: '',
@@ -195,6 +196,7 @@ export const EmailTemplateManager = () => {
       is_active: template.is_active,
     });
     setIsEditing(true);
+    setActiveTab('editor');
   };
 
   const handleSave = () => {
@@ -266,7 +268,7 @@ export const EmailTemplateManager = () => {
         </CardHeader>
       </Card>
 
-      <Tabs defaultValue="list" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="list">Liste des Templates</TabsTrigger>
           <TabsTrigger value="editor">Éditeur</TabsTrigger>
@@ -382,7 +384,10 @@ export const EmailTemplateManager = () => {
                   </Button>
                   <Button
                     variant="outline"
-                    onClick={() => setIsEditing(false)}
+                    onClick={() => {
+                      setIsEditing(false);
+                      setActiveTab('list');
+                    }}
                   >
                     Annuler
                   </Button>
