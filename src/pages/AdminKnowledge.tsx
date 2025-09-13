@@ -394,7 +394,7 @@ export default function AdminKnowledge() {
             },
             {
               question: "Comment rejoindre une communauté ?",
-              answer: "Page /communities > Parcourir les communautés publiques > Bouton 'Rejoindre'. Pour les communautés privées, nécessite invitation d'un admin/owner."
+              answer: "Page /communities > Parcourir les communautés publiques > Bouton 'Rejoindre'. Pour les communautés privées, nécessite invitation d'un admin/owner. Accessible via menu principal > 'Communautés' (desktop) ou onglet mobile."
             },
             {
               question: "Notifications et mentions",
