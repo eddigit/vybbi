@@ -29,6 +29,7 @@ import { VybbiConfig } from "@/components/admin/VybbiConfig";
 import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
 import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
 import AdminProspecting from "./AdminProspecting";
+import { EmailSystemConfig } from "@/components/admin/EmailSystemConfig";
 
 interface AdminStats {
   totalUsers: number;
@@ -441,6 +442,9 @@ export default function AdminDashboard() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Configuration Email SMTP */}
+          <EmailSystemConfig />
         </TabsContent>
       </Tabs>
     </div>
