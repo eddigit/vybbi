@@ -15,6 +15,7 @@ import { Editor } from '@monaco-editor/react';
 import EmailSystemValidator from './EmailSystemValidator';
 import { EmailVisualEditor } from './EmailVisualEditor';
 import { EmailDragDropEditor, EmailBlockData } from './EmailDragDropEditor';
+import { EmailTemplatePreview } from './EmailTemplatePreview';
 import { Eye, Code, Split, FileText, Send, CheckCircle, XCircle, Edit, Plus, Filter, Settings, Wand2 } from "lucide-react";
 
 // Types
@@ -785,65 +786,22 @@ export const EmailTemplateManager: React.FC = () => {
                   </Button>
                 </div>
               ) : (
-                TEMPLATE_CATEGORIES.map(category => {
-                  const categoryTemplates = filteredTemplates.filter(t => t.category === category.value);
-                  if (categoryTemplates.length === 0) return null;
-                  
-                  return (
-                  <div key={category.value} className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className={`w-3 h-3 rounded-full ${category.color}`}></div>
-                      <h3 className="font-medium text-lg">{category.label}</h3>
-                      <Badge variant="secondary">{categoryTemplates.length}</Badge>
-                    </div>
-                    
-                    <div className="grid gap-3 ml-5">
-                      {categoryTemplates.map((template) => (
-                        <Card key={template.id} className="p-4">
-                          <div className="flex items-center justify-between">
-                            <div className="flex-1">
-                              <div className="flex items-center gap-3 mb-2">
-                                <h4 className="font-semibold">{template.name}</h4>
-                                <span className="text-lg">
-                                  {TEMPLATE_LANGUAGES.find(l => l.value === template.language)?.flag}
-                                </span>
-                                {TEMPLATE_TYPES.find(t => t.value === template.type) && (
-                                  <Badge variant="outline" className="text-xs">
-                                    {TEMPLATE_TYPES.find(t => t.value === template.type)?.label}
-                                  </Badge>
-                                )}
-                                <div className="flex items-center gap-2">
-                                  {template.is_active ? (
-                                    <CheckCircle className="w-4 h-4 text-green-500" />
-                                  ) : (
-                                    <XCircle className="w-4 h-4 text-red-500" />
-                                  )}
-                                  <span className="text-sm text-muted-foreground">
-                                    {template.is_active ? 'Actif' : 'Inactif'}
-                                  </span>
-                                </div>
-                              </div>
-                              <p className="text-sm text-muted-foreground mb-2">
-                                <strong>Sujet:</strong> {template.subject}
-                              </p>
-                              <p className="text-xs text-muted-foreground">
-                                Mis à jour: {new Date(template.updated_at).toLocaleDateString('fr-FR')}
-                              </p>
-                            </div>
-                            <Button
-                              onClick={() => handleEdit(template)}
-                              className="flex items-center gap-2"
-                            >
-                              <Edit className="w-4 h-4" />
-                              Modifier
-                            </Button>
-                          </div>
-                        </Card>
-                       ))}
-                     </div>
-                   </div>
-                 );
-               })
+                 <div className="space-y-4">
+                   {filteredTemplates.map((template) => (
+                     <EmailTemplatePreview
+                       key={template.id}
+                       template={template}
+                       onEdit={handleEdit}
+                       onTest={(templateId) => testEmailMutation.mutate({ 
+                         templateId, 
+                         email: testEmail 
+                       })}
+                       testEmail={testEmail}
+                       setTestEmail={setTestEmail}
+                       isLoading={testEmailMutation.isPending}
+                     />
+                   ))}
+                 </div>
               )}
              </div>
           </TabsContent>

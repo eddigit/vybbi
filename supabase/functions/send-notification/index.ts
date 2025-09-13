@@ -394,13 +394,13 @@ const handler = async (req: Request): Promise<Response> => {
       throw new Error(`Gmail SMTP error: ${gmailError.message}`);
     }
 
-    emailResult = gmailData;
+    const emailResult = gmailData;
     console.log("Email sent successfully via Gmail SMTP:", emailResult);
 
     return new Response(
       JSON.stringify({
         success: true,
-  messageId: emailResult.messageId
+        messageId: emailResult?.messageId || 'sent'
       }),
       {
         status: 200,

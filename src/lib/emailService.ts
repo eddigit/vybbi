@@ -106,7 +106,8 @@ export const sendWelcomeEmail = async (userEmail: string, userName: string, prof
   return await sendSystemNotificationEmail('user_registration', userEmail, {
     userName,
     userEmail,
-    profileType
+    profileType,
+    dashboardUrl: `${window.location.origin}/dashboard`
   });
 };
 
@@ -115,7 +116,9 @@ export const sendAdminNotification = async (adminEmail: string, userName: string
   return await sendSystemNotificationEmail('admin_notification', adminEmail, {
     userName,
     userEmail,
-    profileType
+    profileType,
+    registrationDate: new Date().toLocaleDateString('fr-FR'),
+    adminUrl: `${window.location.origin}/admin/dashboard`
   });
 };
 
@@ -133,7 +136,8 @@ export const sendReviewNotification = async (
     artistId,
     reviewerName,
     rating,
-    message
+    message,
+    profileUrl: `${window.location.origin}/profile/${artistId}`
   });
 };
 
