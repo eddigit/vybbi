@@ -13,6 +13,7 @@ import { Plus, Edit, Trash2, Eye, MessageSquare, Settings, Mail } from "lucide-r
 import { useToast } from "@/hooks/use-toast";
 import { BlogPostDialog } from "@/components/admin/BlogPostDialog";
 import { EmailTemplateManager } from "@/components/admin/EmailTemplateManager";
+import { EmailSystemConfig } from "@/components/admin/EmailSystemConfig";
 
 interface BlogPost {
   id: string;
@@ -788,7 +789,8 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
           )}
         </TabsContent>
 
-        <TabsContent value="email">
+        <TabsContent value="email" className="space-y-6">
+          <EmailSystemConfig />
           <EmailTemplateManager />
         </TabsContent>
       </Tabs>
