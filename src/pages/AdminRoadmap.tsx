@@ -50,6 +50,7 @@ export default function AdminRoadmap() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState<'all' | 'feature' | 'task' | 'selling_point'>('all');
   const [statusFilter, setStatusFilter] = useState<string>('all');
+  const [areaFilter, setAreaFilter] = useState<string>('all');
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<RoadmapItem | null>(null);
   const [formData, setFormData] = useState({
@@ -196,6 +197,7 @@ export default function AdminRoadmap() {
   const filteredItems = roadmapItems.filter(item => {
     if (filter !== 'all' && item.type !== filter) return false;
     if (statusFilter !== 'all' && item.status !== statusFilter) return false;
+    if (areaFilter !== 'all' && item.area !== areaFilter) return false;
     return true;
   });
 
@@ -219,10 +221,11 @@ export default function AdminRoadmap() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-3">
+        <TabsList className="grid w-full grid-cols-4">
           <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
           <TabsTrigger value="tasks">Gestion des Tâches</TabsTrigger>
           <TabsTrigger value="arguments">Arguments Commerciaux</TabsTrigger>
+          <TabsTrigger value="documentation">Documentation ADN</TabsTrigger>
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
@@ -340,6 +343,21 @@ export default function AdminRoadmap() {
                   <SelectItem value="planned">Planifié</SelectItem>
                   <SelectItem value="on_hold">En attente</SelectItem>
                   <SelectItem value="cancelled">Annulé</SelectItem>
+                </SelectContent>
+              </Select>
+              
+              <Select onValueChange={(value) => setAreaFilter(value)}>
+                <SelectTrigger className="w-[180px]">
+                  <SelectValue placeholder="Domaine" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">Tous les domaines</SelectItem>
+                  <SelectItem value="Multimédia">Multimédia</SelectItem>
+                  <SelectItem value="Marketing">Marketing</SelectItem>
+                  <SelectItem value="Analytics">Analytics</SelectItem>
+                  <SelectItem value="Monétisation">Monétisation</SelectItem>
+                  <SelectItem value="Technique">Technique</SelectItem>
+                  <SelectItem value="Commercial">Commercial</SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -549,6 +567,258 @@ export default function AdminRoadmap() {
                   </Card>
                 ))}
               </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        <TabsContent value="documentation" className="space-y-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Users className="h-6 w-6" />
+                Documentation ADN - Plateforme Vybbi
+              </CardTitle>
+              <CardDescription>
+                Guide complet de l'écosystème et des fonctionnalités de la plateforme
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="prose prose-gray dark:prose-invert max-w-none space-y-8">
+              
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">🎯 Vision & Mission</h2>
+                <div className="bg-muted/50 p-6 rounded-lg">
+                  <h3 className="text-lg font-semibold mb-2">Notre Vision</h3>
+                  <p className="mb-4">Démocratiser l'accès au talent musical en créant le premier écosystème complet de découverte, développement et promotion d'artistes émergents.</p>
+                  
+                  <h3 className="text-lg font-semibold mb-2">Notre Mission</h3>
+                  <p>Connecter artistes, agents, managers et lieux événementiels via une plateforme intelligente intégrant IA de prospection, diffusion média (radio/web TV) et monétisation transparente.</p>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">🚀 Fonctionnalités Core</h2>
+                
+                <div className="grid gap-6 md:grid-cols-2">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-2">🎵 Multimédia Intégré</h3>
+                    <ul className="space-y-2 text-sm">
+                      <li>• <strong>Radio Vybbi</strong> : Diffusion continue avec playlists intelligentes</li>
+                      <li>• <strong>Web TV</strong> : Interviews, reportages et concerts live</li>
+                      <li>• <strong>Studio Live</strong> : Production et streaming en direct</li>
+                    </ul>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-2">🤖 IA & Prospection</h3>
+                    <ul className="space-y-2 text-sm">
+                      <li>• <strong>Prospection automatisée</strong> : Identification de talents via réseaux sociaux</li>
+                      <li>• <strong>Scoring prédictif</strong> : Évaluation du potentiel artistique</li>
+                      <li>• <strong>Matching intelligent</strong> : Connexion artistes-professionnels</li>
+                    </ul>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-2">📊 Analytics Avancés</h3>
+                    <ul className="space-y-2 text-sm">
+                      <li>• <strong>Métriques temps réel</strong> : Écoutes, vues, engagement</li>
+                      <li>• <strong>ROI tracking</strong> : Suivi performance et conversions</li>
+                      <li>• <strong>Reporting personnalisé</strong> : Dashboard par profil utilisateur</li>
+                    </ul>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold text-lg mb-2">💰 Monétisation Multi-Sources</h3>
+                    <ul className="space-y-2 text-sm">
+                      <li>• <strong>Abonnements Premium</strong> : Boost visibilité et fonctionnalités exclusives</li>
+                      <li>• <strong>Commissions affiliés</strong> : Système transparent de rémunération</li>
+                      <li>• <strong>Marketplace services</strong> : Mixing, mastering, coaching</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">💎 Arguments Commerciaux Clés</h2>
+                
+                <div className="space-y-4">
+                  <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg border-l-4 border-primary">
+                    <h3 className="font-semibold">🎯 Solution Tout-en-Un Unique</h3>
+                    <p className="text-sm mt-1">Seule plateforme intégrant découverte IA + diffusion média + booking + monétisation en un écosystème cohérent.</p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg border-l-4 border-primary">
+                    <h3 className="font-semibold">🤖 Technologie IA Propriétaire</h3>
+                    <p className="text-sm mt-1">Algorithmes exclusifs d'identification de talents émergents avec scoring prédictif de succès.</p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg border-l-4 border-primary">
+                    <h3 className="font-semibold">📺 Écosystème Média Complet</h3>
+                    <p className="text-sm mt-1">Radio + Web TV + Streaming = Maximum d'exposition pour les artistes sur tous canaux.</p>
+                  </div>
+
+                  <div className="bg-gradient-to-r from-primary/10 to-secondary/10 p-4 rounded-lg border-l-4 border-primary">
+                    <h3 className="font-semibold">📊 ROI Mesurable & Transparent</h3>
+                    <p className="text-sm mt-1">Analytics détaillés justifiant chaque investissement avec métriques de performance en temps réel.</p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">👥 Profils Utilisateurs</h2>
+                
+                <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">🎤 Artistes</h3>
+                    <p className="text-sm text-muted-foreground">Talents émergents cherchant visibilité, booking et développement professionnel.</p>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">🤝 Agents</h3>
+                    <p className="text-sm text-muted-foreground">Représentants artistiques utilisant l'IA pour identifier et développer nouveaux talents.</p>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">📋 Managers</h3>
+                    <p className="text-sm text-muted-foreground">Gestionnaires de carrière optimisant promotion et monétisation d'artistes.</p>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">🏢 Lieux & Événements</h3>
+                    <p className="text-sm text-muted-foreground">Venues recherchant talents adaptés via filtres et recommandations intelligentes.</p>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">🌟 Influenceurs</h3>
+                    <p className="text-sm text-muted-foreground">Créateurs de contenu monétisant leur audience via système d'affiliation.</p>
+                  </div>
+
+                  <div className="border rounded-lg p-4">
+                    <h3 className="font-semibold mb-2">🎯 Partenaires</h3>
+                    <p className="text-sm text-muted-foreground">Marques et entreprises intégrant l'écosystème Vybbi via API et partenariats.</p>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">🏗️ Architecture Technique</h2>
+                
+                <div className="bg-muted/50 p-6 rounded-lg">
+                  <div className="grid gap-4 md:grid-cols-2">
+                    <div>
+                      <h3 className="font-semibold mb-2">Frontend</h3>
+                      <ul className="text-sm space-y-1">
+                        <li>• React + TypeScript + Tailwind CSS</li>
+                        <li>• PWA avec fonctionnalités offline</li>
+                        <li>• Applications mobile natives (iOS/Android)</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold mb-2">Backend</h3>
+                      <ul className="text-sm space-y-1">
+                        <li>• Supabase (PostgreSQL + Edge Functions)</li>
+                        <li>• API REST et GraphQL</li>
+                        <li>• Microservices streaming audio/vidéo</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold mb-2">IA & Machine Learning</h3>
+                      <ul className="text-sm space-y-1">
+                        <li>• OpenAI GPT pour analyse de contenu</li>
+                        <li>• Modèles prédictifs propriétaires</li>
+                        <li>• Computer vision pour analyse vidéo</li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h3 className="font-semibold mb-2">Infrastructure</h3>
+                      <ul className="text-sm space-y-1">
+                        <li>• CDN global pour streaming</li>
+                        <li>• Auto-scaling sur AWS/Vercel</li>
+                        <li>• Monitoring temps réel et alertes</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">🌟 Différenciateurs Concurrentiels</h2>
+                
+                <div className="space-y-3">
+                  <div className="flex items-start gap-3 p-3 bg-green-50 dark:bg-green-950/20 rounded-lg">
+                    <div className="w-2 h-2 bg-green-500 rounded-full mt-2"></div>
+                    <div>
+                      <strong>Intégration Verticale Complète</strong> - De la découverte à la monétisation
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-blue-50 dark:bg-blue-950/20 rounded-lg">
+                    <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
+                    <div>
+                      <strong>IA Prédictive Propriétaire</strong> - Identification automatique de talents à potentiel
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-purple-50 dark:bg-purple-950/20 rounded-lg">
+                    <div className="w-2 h-2 bg-purple-500 rounded-full mt-2"></div>
+                    <div>
+                      <strong>Écosystème Média Intégré</strong> - Radio, TV et streaming natifs
+                    </div>
+                  </div>
+
+                  <div className="flex items-start gap-3 p-3 bg-orange-50 dark:bg-orange-950/20 rounded-lg">
+                    <div className="w-2 h-2 bg-orange-500 rounded-full mt-2"></div>
+                    <div>
+                      <strong>Monétisation Multi-Facettes</strong> - Sources de revenus diversifiées et transparentes
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section>
+                <h2 className="text-2xl font-bold mb-4 text-primary">🎯 Roadmap Stratégique 2025</h2>
+                
+                <div className="space-y-6">
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3">Q1 2025 - Consolidation</h3>
+                    <div className="bg-muted/30 p-4 rounded-lg">
+                      <ul className="space-y-1 text-sm">
+                        <li>✅ Finalisation Radio Vybbi avec abonnements premium</li>
+                        <li>🔄 Lancement Web TV avec studio live intégré</li>
+                        <li>🔄 Optimisation système de prospection IA</li>
+                        <li>📋 API publique v1.0 pour partenariats</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3">Q2-Q3 2025 - Expansion</h3>
+                    <div className="bg-muted/30 p-4 rounded-lg">
+                      <ul className="space-y-1 text-sm">
+                        <li>📱 Applications mobiles natives iOS/Android</li>
+                        <li>🌍 Internationalisation (UK, US, Canada)</li>
+                        <li>🏪 Marketplace services étendu</li>
+                        <li>🤝 Partenariats labels et distributeurs</li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div>
+                    <h3 className="font-semibold text-lg mb-3">Q4 2025 - Innovation</h3>
+                    <div className="bg-muted/30 p-4 rounded-lg">
+                      <ul className="space-y-1 text-sm">
+                        <li>🎮 Expériences immersives AR/VR</li>
+                        <li>🎵 IA générative pour composition assistée</li>
+                        <li>🔗 Intégration blockchain et NFTs</li>
+                        <li>📊 Analytics prédictifs avancés</li>
+                      </ul>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
             </CardContent>
           </Card>
         </TabsContent>

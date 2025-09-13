@@ -17,7 +17,13 @@ import {
   Shield,
   Link as LinkIcon,
   Search,
-  Settings
+  Settings,
+  Radio,
+  Share2,
+  Bot,
+  Mail,
+  CreditCard,
+  User
 } from "lucide-react";
 import { Input } from "@/components/ui/input";
 
@@ -181,6 +187,178 @@ export default function AdminKnowledge() {
             { question: "Migrations", answer: "Via Supabase CLI ou interface web. Toujours tester en dev avant production." },
             { question: "Backup", answer: "Backups automatiques Supabase. Possibilité d'export manuel via dashboard." },
             { question: "Performance", answer: "Monitoring dans Admin Dashboard > Système. Optimisations SQL recommandées." }
+          ]
+        }
+      ]
+    },
+    
+    "Radio & Web TV": {
+      title: "Radio & Web TV Vybbi",
+      icon: Radio,
+      sections: [
+        {
+          title: "Radio Vybbi",
+          items: [
+            {
+              question: "Comment fonctionne la Radio Vybbi ?",
+              answer: "La Radio Vybbi diffuse en continu des morceaux d'artistes inscrits. Les artistes peuvent soumettre leurs morceaux via leur profil, et les morceaux approuvés sont intégrés dans les playlists automatiques."
+            },
+            {
+              question: "Comment un artiste peut-il soumettre un morceau ?",
+              answer: "Dans le profil artiste, section 'Médias', upload d'un fichier audio. Le morceau passe en modération admin avant diffusion. Les abonnés premium ont une priorité de diffusion."
+            },
+            {
+              question: "Qu'est-ce que l'abonnement radio premium ?",
+              answer: "Abonnement payant donnant aux artistes : priorité de diffusion, boost dans les playlists, statistiques détaillées d'écoute, et approbation automatique des morceaux."
+            }
+          ]
+        },
+        {
+          title: "Web TV",
+          items: [
+            {
+              question: "À quoi sert la Web TV Vybbi ?",
+              answer: "Plateforme de streaming vidéo pour interviews d'artistes, reportages événementiels, concerts live et contenus exclusifs. Accessible depuis l'onglet Web TV du menu principal."
+            },
+            {
+              question: "Comment programmer un live sur la Web TV ?",
+              answer: "Via l'interface admin, section 'Contenu', planifier un événement live avec date/heure. Le studio live intégré permet la diffusion en direct depuis la plateforme."
+            }
+          ]
+        }
+      ]
+    },
+
+    "Système d'Affiliation": {
+      title: "Affiliation (Influenceurs)",
+      icon: Share2,
+      sections: [
+        {
+          title: "Gestion des Influenceurs",
+          items: [
+            {
+              question: "Comment créer un lien d'affiliation ?",
+              answer: "Dans Admin > Influenceurs, sélectionner un profil influenceur et cliquer 'Générer Lien'. Le code unique est automatiquement créé et peut être personnalisé."
+            },
+            {
+              question: "Comment suivre les conversions d'affiliation ?",
+              answer: "Le système track automatiquement les visites via ?ref=CODE. Les conversions sont enregistrées lors d'inscriptions, abonnements ou achats. Tableau de bord disponible dans Admin > Influenceurs."
+            },
+            {
+              question: "Comment sont calculées les commissions ?",
+              answer: "5% par défaut sur la valeur de conversion. Commission payée après confirmation de la conversion (inscription validée, paiement confirmé). Historique dans Admin > Commissions."
+            }
+          ]
+        },
+        {
+          title: "Tracking & Analytics",
+          items: [
+            {
+              question: "Quelles métriques sont trackées ?",
+              answer: "Clicks sur liens, conversions, taux de conversion, revenue généré, géolocalisation des visiteurs. Dashboard temps réel pour chaque influenceur."
+            },
+            {
+              question: "Comment générer un QR Code d'affiliation ?",
+              answer: "Dans la fiche influenceur, bouton 'QR Code' génère automatiquement un QR code contenant le lien d'affiliation. Téléchargeable en PNG haute résolution."
+            }
+          ]
+        }
+      ]
+    },
+
+    "Prospection & IA": {
+      title: "Système de Prospection IA",
+      icon: Bot,
+      sections: [
+        {
+          title: "Prospection Automatisée",
+          items: [
+            {
+              question: "Comment fonctionne la prospection IA ?",
+              answer: "L'IA analyse les réseaux sociaux (Instagram, TikTok, YouTube) pour identifier de nouveaux talents. Scoring automatique basé sur engagement, croissance d'audience et qualité du contenu."
+            },
+            {
+              question: "Comment lancer une campagne de prospection ?",
+              answer: "Admin > Prospection > Nouvelle Campagne. Définir critères (genre musical, zone géographique, taille d'audience). L'IA génère une liste de prospects avec scoring."
+            },
+            {
+              question: "Comment contacter un prospect identifié ?",
+              answer: "Via l'outil d'emailing intégré. Templates automatiques personnalisés selon le profil du prospect. Suivi des ouvertures, clicks et réponses dans le dashboard."
+            }
+          ]
+        },
+        {
+          title: "Gestion des Leads",
+          items: [
+            {
+              question: "Comment qualifier un lead ?",
+              answer: "Système de scoring automatique (A, B, C) + évaluation manuelle. Statuts : prospect > contacté > intéressé > converti > client. Workflow automatisé de suivi."
+            },
+            {
+              question: "Que faire si un prospect s'inscrit ?",
+              answer: "Conversion automatiquement trackée. Attribution à l'agent ayant initié le contact. Commission calculée selon grille tarifaire. Notification aux équipes commerciales."
+            }
+          ]
+        }
+      ]
+    },
+
+    "Système d'Emailing": {
+      title: "Gestion des Emailings",
+      icon: Mail,
+      sections: [
+        {
+          title: "Templates & Campagnes",
+          items: [
+            {
+              question: "Comment créer un template email ?",
+              answer: "Admin > Communication > Templates. Éditeur visuel avec variables dynamiques ({nom}, {genre}, {ville}). Preview temps réel et test d'envoi avant publication."
+            },
+            {
+              question: "Comment envoyer une campagne email ?",
+              answer: "Admin > Communication > Nouvelles Campagnes. Sélection du template, audience cible (par profil/genre/localisation), programmation d'envoi. Suivi temps réel des métriques."
+            },
+            {
+              question: "Quelles variables dynamiques sont disponibles ?",
+              answer: "Variables profil : {nom}, {prenom}, {ville}, {genre_musical}, {type_profil}. Variables système : {lien_profil}, {date}, {plateforme}. Personnalisation automatique par destinataire."
+            }
+          ]
+        },
+        {
+          title: "Analytics & Performance",
+          items: [
+            {
+              question: "Comment suivre les performances d'une campagne ?",
+              answer: "Dashboard avec taux d'ouverture, clicks, conversions, bounces. Segmentation par audience. A/B testing automatique pour optimiser les subject lines."
+            },
+            {
+              question: "Comment éviter le spam ?",
+              answer: "Validation DNS (SPF, DKIM), respect RGPD, lien de désabonnement obligatoire. Monitoring réputation IP. Limitation envois par heure pour préserver delivrability."
+            }
+          ]
+        }
+      ]
+    },
+
+    "Monétisation & Abonnements": {
+      title: "Système de Monétisation",
+      icon: CreditCard,
+      sections: [
+        {
+          title: "Abonnements Premium",
+          items: [
+            {
+              question: "Quels sont les types d'abonnements ?",
+              answer: "Basic (gratuit), Premium (29€/mois), Pro (99€/mois). Chaque niveau débloque : boost radio, priorité booking, analytics avancés, support priority."
+            },
+            {
+              question: "Comment un artiste souscrit un abonnement ?",
+              answer: "Dashboard artiste > Abonnement > Upgrade. Paiement Stripe sécurisé. Activation immédiate des fonctionnalités premium. Gestion auto-renouvellement."
+            },
+            {
+              question: "Comment gérer les commissions agents ?",
+              answer: "Système automatisé : 5-15% selon niveau agent. Calcul sur conversions confirmées. Paiement mensuel via virement. Dashboard dédié pour suivi commissions."
+            }
           ]
         }
       ]
