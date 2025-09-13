@@ -1161,6 +1161,7 @@ export type Database = {
       }
       email_templates: {
         Row: {
+          brevo_template_id: string | null
           category: string | null
           created_at: string
           created_by: string | null
@@ -1170,7 +1171,6 @@ export type Database = {
           language: string | null
           name: string
           provider: string | null
-          brevo_template_id: number | null
           required_variables: Json | null
           subject: string
           type: string
@@ -1178,6 +1178,7 @@ export type Database = {
           variables: Json | null
         }
         Insert: {
+          brevo_template_id?: string | null
           category?: string | null
           created_at?: string
           created_by?: string | null
@@ -1187,7 +1188,6 @@ export type Database = {
           language?: string | null
           name: string
           provider?: string | null
-          brevo_template_id?: number | null
           required_variables?: Json | null
           subject: string
           type: string
@@ -1195,6 +1195,7 @@ export type Database = {
           variables?: Json | null
         }
         Update: {
+          brevo_template_id?: string | null
           category?: string | null
           created_at?: string
           created_by?: string | null
@@ -1204,7 +1205,6 @@ export type Database = {
           language?: string | null
           name?: string
           provider?: string | null
-          brevo_template_id?: number | null
           required_variables?: Json | null
           subject?: string
           type?: string
