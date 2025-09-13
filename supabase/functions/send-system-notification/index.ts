@@ -21,12 +21,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     user_registration: {
       subject: `Bienvenue sur Vybbi, ${data.userName || 'nouveau membre'} !`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Bienvenue sur Vybbi !</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Félicitations !</h2>
             
             <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
@@ -35,7 +36,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/dashboard" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
@@ -52,12 +53,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     admin_notification: {
       subject: `Nouvelle inscription : ${data.userName} (${data.profileType})`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouvelle inscription sur Vybbi</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Nouvel utilisateur inscrit</h2>
             
             <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
@@ -66,7 +68,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/admin/users" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
@@ -83,12 +85,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     review_notification: {
       subject: `Nouvelle review reçue de ${data.reviewerName}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouvelle review reçue !</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
             
             <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
@@ -103,7 +106,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/dashboard" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
@@ -120,12 +123,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     contact_message: {
       subject: `Nouveau message de contact de ${data.name}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouveau message de contact</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Nouveau message reçu</h2>
             
             <div style="background: #262626; padding: 20px; border-radius: 5px; margin: 20px 0; border: 1px solid #404040;">
@@ -137,7 +141,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/admin/messages" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
@@ -154,12 +158,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     booking_proposed: {
       subject: `Nouvelle demande de booking de ${data.artistName}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouvelle demande de booking !</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour,</h2>
             
             <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
@@ -175,7 +180,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/events" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
@@ -192,12 +197,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     booking_status_changed: {
       subject: `Votre demande de booking a été ${data.bookingStatus === 'confirmed' ? 'confirmée' : 'annulée'}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Mise à jour de votre demande</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour ${data.artistName},</h2>
             
             <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
@@ -211,7 +217,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/dashboard" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
@@ -228,12 +234,13 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
     message_received: {
       subject: `Nouveau message de ${data.senderName}`,
       html: `
-        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #0a0a0a;">
-          <div style="background-color: #3b82f6; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+        <div style="max-width: 600px; margin: 0 auto; font-family: Arial, sans-serif; background-color: #1C1C1C;">
+          <div style="background-color: #9D5AE1; padding: 25px; text-align: center; border-radius: 10px 10px 0 0;">
+            <img src="https://vybbi.app/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi" style="height: 40px; margin-bottom: 15px;" />
             <h1 style="color: white; margin: 0; font-size: 24px;">Nouveau message reçu !</h1>
           </div>
           
-          <div style="background: #171717; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
+          <div style="background: #1C1C1C; padding: 25px; border-radius: 0 0 10px 10px; border: 1px solid #404040;">
             <h2 style="color: #ffffff; margin-bottom: 20px;">Bonjour,</h2>
             
             <p style="color: #e5e5e5; line-height: 1.6; margin-bottom: 20px;">
@@ -246,7 +253,7 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
             
             <div style="text-align: center; margin: 25px 0;">
                <a href="${Deno.env.get('SITE_URL') || 'https://vybbi.app'}/messages" 
-                 style="background-color: #3b82f6; 
+                 style="background-color: #9D5AE1; 
                         color: white; 
                         padding: 12px 25px; 
                         text-decoration: none; 
