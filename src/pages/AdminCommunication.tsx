@@ -14,6 +14,7 @@ import { useToast } from "@/hooks/use-toast";
 import { BlogPostDialog } from "@/components/admin/BlogPostDialog";
 import { EmailTemplateManager } from "@/components/admin/EmailTemplateManager";
 import { EmailSystemConfig } from "@/components/admin/EmailSystemConfig";
+import { AuthHookSetup } from "@/components/admin/AuthHookSetup";
 
 interface BlogPost {
   id: string;
@@ -790,6 +791,7 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
         </TabsContent>
 
         <TabsContent value="email" className="space-y-6">
+          <AuthHookSetup />
           <EmailSystemConfig />
           <EmailTemplateManager />
         </TabsContent>
