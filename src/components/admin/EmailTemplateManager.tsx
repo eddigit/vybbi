@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
+import type { Json } from '@/integrations/supabase/types';
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -17,6 +18,8 @@ import { EmailDragDropEditor, EmailBlockData } from './EmailDragDropEditor';
 import { Eye, Code, Split, FileText, Send, CheckCircle, XCircle, Edit, Plus, Filter, Settings, Wand2 } from "lucide-react";
 
 // Types
+type TabValue = 'list' | 'editor' | 'dragdrop' | 'design' | 'visual' | 'test' | 'validation';
+
 interface EmailTemplate {
   id: string;
   name: string;
@@ -26,9 +29,17 @@ interface EmailTemplate {
   category?: string;
   language?: string;
   is_active: boolean;
-  variables?: any;
+  variables?: Json | null;
+  provider?: 'internal' | 'brevo';
+  brevo_template_id?: number | null;
   created_at: string;
   updated_at: string;
+}
+
+interface BrevoTemplateItem {
+  id: number;
+  name: string;
+  subject?: string;
 }
 
 const TEMPLATE_TYPES = [
@@ -83,12 +94,14 @@ const DEFAULT_VARIABLES: Record<string, Record<string, string>> = {
 export const EmailTemplateManager: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'list' | 'editor' | 'dragdrop' | 'design' | 'visual' | 'test' | 'validation'>('list');
+  const [activeTab, setActiveTab] = useState<TabValue>('list');
   const [editorMode, setEditorMode] = useState<'code' | 'split' | 'preview'>('code');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterLanguage, setFilterLanguage] = useState<string>('all');
   const [emailBlocks, setEmailBlocks] = useState<EmailBlockData[]>([]);
   const [testEmail, setTestEmail] = useState('');
+  const [brevoTemplates, setBrevoTemplates] = useState<BrevoTemplateItem[]>([]);
+  const [brevoLoading, setBrevoLoading] = useState(false);
   
   // Design global state
   const [designSettings, setDesignSettings] = useState({
@@ -110,7 +123,9 @@ export const EmailTemplateManager: React.FC = () => {
     type: '',
     category: 'notifications',
     language: 'fr',
-    is_active: true
+  is_active: true,
+  provider: 'internal' as 'internal' | 'brevo',
+  brevo_template_id: null as number | null
   });
 
   const queryClient = useQueryClient();
@@ -121,7 +136,7 @@ export const EmailTemplateManager: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('email_templates')
-        .select('*')
+  .select('id, name, subject, html_content, type, category, language, is_active, variables, provider, brevo_template_id, created_at, updated_at')
         .order('category', { ascending: true })
         .order('language', { ascending: true })
         .order('created_at', { ascending: false });
@@ -191,7 +206,7 @@ export const EmailTemplateManager: React.FC = () => {
       if (!template) throw new Error('Template non trouvé');
 
       // Mock data for testing
-      const mockData: Record<string, any> = {
+  const mockData: Record<string, string | number> = {
         userName: 'John Doe',
         userEmail: email,
         profileType: 'artist',
@@ -250,7 +265,7 @@ export const EmailTemplateManager: React.FC = () => {
     
     const parseElement = (element: Element) => {
       const tagName = element.tagName.toLowerCase();
-      let textContent = element.textContent?.trim() || '';
+    const textContent = element.textContent?.trim() || '';
       const innerHTML = element.innerHTML;
       const style = element.getAttribute('style') || '';
       
@@ -308,7 +323,7 @@ export const EmailTemplateManager: React.FC = () => {
           }
           break;
           
-        case 'img':
+        case 'img': {
           const src = element.getAttribute('src');
           const alt = element.getAttribute('alt');
           if (src) {
@@ -328,9 +343,9 @@ export const EmailTemplateManager: React.FC = () => {
               }
             });
           }
-          break;
+          break; }
           
-        case 'a':
+        case 'a': {
           const href = element.getAttribute('href');
           const parentDiv = element.parentElement;
           const parentStyle = parentDiv?.getAttribute('style') || '';
@@ -358,7 +373,7 @@ export const EmailTemplateManager: React.FC = () => {
               });
             }
           }
-          break;
+          break; }
           
         case 'hr':
           blocks.push({
@@ -372,10 +387,10 @@ export const EmailTemplateManager: React.FC = () => {
           });
           break;
           
-        case 'div':
+        case 'div': {
           // Vérifier si c'est un conteneur avec une image logo
           const imgChild = element.querySelector('img');
-          if (imgChild && (imgChild.alt?.toLowerCase().includes('logo') || imgChild.src.toLowerCase().includes('logo'))) {
+          if (imgChild && (imgChild.alt?.toLowerCase().includes('logo') || (imgChild as HTMLImageElement).src.toLowerCase().includes('logo'))) {
             const src = imgChild.getAttribute('src');
             if (src) {
               blocks.push({
@@ -384,7 +399,7 @@ export const EmailTemplateManager: React.FC = () => {
                 content: src,
                 properties: {
                   align: extractStyleValue(style, 'text-align') || 'center',
-                  maxWidth: extractStyleValue(imgChild.getAttribute('style') || '', 'max-width') || '150px'
+                  maxWidth: extractStyleValue((imgChild.getAttribute('style') || ''), 'max-width') || '150px'
                 }
               });
             }
@@ -392,7 +407,7 @@ export const EmailTemplateManager: React.FC = () => {
             // Parser les enfants récursivement
             Array.from(element.children).forEach(child => parseElement(child));
           }
-          break;
+          break; }
           
         default:
           // Parser les enfants récursivement
@@ -461,7 +476,9 @@ export const EmailTemplateManager: React.FC = () => {
       type: template.type,
       category: template.category || 'notifications',
       language: template.language || 'fr',
-      is_active: template.is_active
+  is_active: template.is_active,
+  provider: (template.provider as 'internal' | 'brevo') || 'internal',
+  brevo_template_id: template.brevo_template_id || null
     });
     
     // Convertir le HTML existant en blocs
@@ -471,6 +488,30 @@ export const EmailTemplateManager: React.FC = () => {
     setIsEditing(true);
     setActiveTab('dragdrop');
   };
+
+  // Charger la liste des templates Brevo quand on passe sur provider=brevo
+  useEffect(() => {
+    const loadBrevoTemplates = async () => {
+      try {
+        setBrevoLoading(true);
+        interface BrevoTemplatesResponse { templates?: BrevoTemplateItem[] }
+        const { data, error } = await supabase.functions.invoke<BrevoTemplatesResponse>('brevo-templates');
+        if (error) throw error;
+        const list: BrevoTemplateItem[] = Array.isArray(data?.templates)
+          ? data!.templates.map((t) => ({ id: t.id, name: t.name, subject: t.subject }))
+          : [];
+        setBrevoTemplates(list);
+      } catch (e) {
+        console.error('Erreur chargement templates Brevo:', e);
+        toast.error("Impossible de charger les templates Brevo");
+      } finally {
+        setBrevoLoading(false);
+      }
+    };
+    if (formData.provider === 'brevo' && brevoTemplates.length === 0) {
+      loadBrevoTemplates();
+    }
+  }, [formData.provider, brevoTemplates.length]);
 
   // Créer des templates par défaut si aucun n'existe
   const createDefaultTemplates = () => {
@@ -568,7 +609,9 @@ export const EmailTemplateManager: React.FC = () => {
       type: '',
       category: 'notifications',
       language: 'fr',
-      is_active: true
+  is_active: true,
+  provider: 'internal',
+  brevo_template_id: null
     });
     setEmailBlocks([]);
     setIsEditing(true);
@@ -633,7 +676,11 @@ export const EmailTemplateManager: React.FC = () => {
       </Card>
 
       <div className="w-full">
-        <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
+        <Tabs
+          value={activeTab}
+          onValueChange={(value) => setActiveTab(value as TabValue)}
+          className="w-full"
+        >
           <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="list" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
@@ -897,16 +944,60 @@ export const EmailTemplateManager: React.FC = () => {
                   </div>
                 </div>
 
-                {/* Drag & Drop Editor */}
-                <div className="border rounded-lg" style={{ height: '600px' }}>
-                  <EmailDragDropEditor
-                    initialBlocks={emailBlocks}
-                    onBlocksChange={setEmailBlocks}
-                    onHtmlChange={(html) => setFormData(prev => ({ ...prev, html_content: html }))}
-                    variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
-                    designSettings={designSettings}
-                  />
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label>Provider</Label>
+                    <Select
+                      value={formData.provider}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, provider: value as 'internal' | 'brevo' }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="internal">Interne (HTML)</SelectItem>
+                        <SelectItem value="brevo">Brevo (Template)</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  {formData.provider === 'brevo' && (
+                    <div className="space-y-2">
+                      <Label>Template Brevo</Label>
+                      <Select
+                        value={formData.brevo_template_id ? String(formData.brevo_template_id) : ''}
+                        onValueChange={(value) => setFormData(prev => ({ ...prev, brevo_template_id: Number(value) }))}
+                      >
+                        <SelectTrigger>
+                          <SelectValue placeholder={brevoLoading ? 'Chargement...' : 'Sélectionner un template'} />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {brevoTemplates.map(t => (
+                            <SelectItem key={t.id} value={String(t.id)}>
+                              {t.name} {t.subject ? `— ${t.subject}` : ''}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                 </div>
+
+                {/* Drag & Drop Editor */}
+                {formData.provider === 'internal' ? (
+                  <div className="border rounded-lg" style={{ height: '600px' }}>
+                    <EmailDragDropEditor
+                      initialBlocks={emailBlocks}
+                      onBlocksChange={setEmailBlocks}
+                      onHtmlChange={(html) => setFormData(prev => ({ ...prev, html_content: html }))}
+                      variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
+                      designSettings={designSettings}
+                    />
+                  </div>
+                ) : (
+                  <div className="rounded-md border p-4 text-sm text-muted-foreground">
+                    Ce template est géré dans Brevo. Vous pouvez éditer le sujet ici et choisir un template Brevo. Les variables seront injectées via les paramètres Brevo.
+                  </div>
+                )}
 
                 <div className="flex justify-end space-x-2">
                   <Button variant="outline" onClick={() => setIsEditing(false)}>

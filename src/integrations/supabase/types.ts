@@ -1169,6 +1169,9 @@ export type Database = {
           is_active: boolean
           language: string | null
           name: string
+          provider: string | null
+          brevo_template_id: number | null
+          required_variables: Json | null
           subject: string
           type: string
           updated_at: string
@@ -1183,6 +1186,9 @@ export type Database = {
           is_active?: boolean
           language?: string | null
           name: string
+          provider?: string | null
+          brevo_template_id?: number | null
+          required_variables?: Json | null
           subject: string
           type: string
           updated_at?: string
@@ -1197,6 +1203,9 @@ export type Database = {
           is_active?: boolean
           language?: string | null
           name?: string
+          provider?: string | null
+          brevo_template_id?: number | null
+          required_variables?: Json | null
           subject?: string
           type?: string
           updated_at?: string

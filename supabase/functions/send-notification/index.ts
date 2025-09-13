@@ -5,9 +5,9 @@ interface NotificationEmailRequest {
   type: string;
   to: string;
   cc?: string | string[];
-  bcc?: string | string[]; 
+  bcc?: string | string[];
   replyTo?: string;
-  data?: any;
+  data?: Record<string, unknown>;
   isTest?: boolean;
   subject?: string;
   html?: string;
@@ -20,7 +20,7 @@ const corsHeaders = {
 };
 
 // Email templates avec CSS compatible pour les clients email
-const getEmailTemplate = (type: string, data: any): { subject: string, html: string } => {
+const getEmailTemplate = (type: string, data: Record<string, unknown>): { subject: string, html: string } => {
   const templates = {
     user_registration: {
       subject: `Bienvenue sur Vybbi, ${data.userName || 'nouveau membre'} !`,
@@ -277,8 +277,19 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const body = await req.json() as any;
-    const { type, to, cc, bcc, replyTo, data = {}, isTest, subject: providedSubject, html, htmlContent: providedHtmlContent }: NotificationEmailRequest & { [key:string]: any } = body;
+    const body = await req.json() as unknown;
+    const {
+      type,
+      to,
+      cc,
+      bcc,
+      replyTo,
+      data = {},
+      isTest,
+      subject: providedSubject,
+      html,
+      htmlContent: providedHtmlContent,
+    } = body as NotificationEmailRequest;
 
     console.log(`Sending ${type} email to ${to} ${isTest ? '(TEST)' : ''}`);
     console.log(`cc: ${Array.isArray(cc) ? cc.join(',') : cc || 'none'} | bcc: ${Array.isArray(bcc) ? bcc.join(',') : bcc || 'none'} | replyTo: ${replyTo || 'none'}`);
@@ -288,8 +299,11 @@ const handler = async (req: Request): Promise<Response> => {
     const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
     const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
 
-    let subject: string;
-    let htmlContent: string;
+  let subject: string = '';
+  let htmlContent: string = '';
+  let useBrevoTemplate = false;
+  let brevoTemplateId: number | null = null;
+  let requiredVars: string[] = [];
 
     // If subject/html provided by caller, use them directly
     if ((providedSubject && (html || providedHtmlContent))) {
@@ -300,15 +314,17 @@ const handler = async (req: Request): Promise<Response> => {
       if (data && typeof data === 'object') {
         Object.keys(data).forEach(key => {
           const placeholder = new RegExp(`{{${key}}}`, 'g');
-          subject = subject.replace(placeholder, String(data[key]));
-          htmlContent = htmlContent.replace(placeholder, String(data[key]));
+          // @ts-ignore - data is a dictionary of unknown values, safe to stringify
+          subject = subject.replace(placeholder, String((data as Record<string, unknown>)[key]));
+          // @ts-ignore
+          htmlContent = htmlContent.replace(placeholder, String((data as Record<string, unknown>)[key]));
         });
       }
     } else {
-      // Get email template from database
+      // Get email template from database (now includes provider)
       const { data: template, error: templateError } = await supabase
         .from('email_templates')
-        .select('subject, html_content')
+        .select('subject, html_content, provider, brevo_template_id, required_variables')
         .eq('type', type)
         .eq('is_active', true)
         .single();
@@ -316,88 +332,126 @@ const handler = async (req: Request): Promise<Response> => {
       if (templateError || !template) {
         console.log('Template not found in DB, using fallback:', templateError);
         // Fallback to hardcoded templates
-        const fallback = getEmailTemplate(type, data);
+        const fallback = getEmailTemplate(type, data as Record<string, unknown>);
         subject = fallback.subject;
         htmlContent = fallback.html;
       } else {
-        subject = template.subject;
-        htmlContent = template.html_content;
+        // Normalize required variables from Json to string[]
+        if (Array.isArray(template.required_variables)) {
+          requiredVars = template.required_variables.filter((v: unknown): v is string => typeof v === 'string');
+        }
 
-        // Replace variables in template
-        Object.keys(data).forEach(key => {
-          const placeholder = new RegExp(`{{${key}}}`, 'g');
-          subject = subject.replace(placeholder, String(data[key]));
-          htmlContent = htmlContent.replace(placeholder, String(data[key]));
-        });
+        if (template.provider === 'brevo' && template.brevo_template_id) {
+          useBrevoTemplate = true;
+          brevoTemplateId = template.brevo_template_id;
+          subject = template.subject || providedSubject || '';
+          // htmlContent not used for Brevo templates
+        } else {
+          subject = template.subject;
+          htmlContent = template.html_content;
+          // Replace variables in template
+          Object.keys(data as Record<string, unknown>).forEach(key => {
+            const placeholder = new RegExp(`{{${key}}}`, 'g');
+            // @ts-ignore - data is a dictionary of unknown values, safe to stringify
+            subject = subject.replace(placeholder, String((data as Record<string, unknown>)[key]));
+            // @ts-ignore
+            htmlContent = htmlContent.replace(placeholder, String((data as Record<string, unknown>)[key]));
+          });
+        }
       }
     }
 
-    // Send email via Brevo
-    console.log(`Prepared email: subject length=${subject?.length || 0}, html length=${htmlContent?.length || 0}`);
+    // Validate required variables if defined
+    if (requiredVars.length > 0) {
+      const providedKeys = Object.keys((data || {}) as Record<string, unknown>);
+      const missing = requiredVars.filter(k => !providedKeys.includes(k));
+      if (missing.length > 0) {
+        return new Response(
+          JSON.stringify({
+            success: false,
+            error: `Variables manquantes dans les paramètres: ${missing.join(', ')}`,
+            missing,
+          }),
+          { status: 400, headers: { "Content-Type": "application/json", ...corsHeaders } }
+        );
+      }
+    }
+
+    // Send via Brevo template or raw HTML depending on provider
+    let emailResult: any = null;
     const brevoApiKey = Deno.env.get("BREVO_API_KEY");
     if (!brevoApiKey) {
       throw new Error("BREVO_API_KEY not configured");
     }
 
-    const emailPayload = {
-      sender: {
-        name: "Vybbi",
-        email: "noreply@vybbi.com"
-      },
-      to: [
-        {
-          email: to,
-          name: data.userName || ""
-        }
-      ],
-      subject: subject,
-      htmlContent: htmlContent
-    };
-
-    // Add cc recipients if provided
-    if (cc) {
-      emailPayload.cc = Array.isArray(cc) 
-        ? cc.map(email => ({ email: email.trim() }))
-        : [{ email: cc.trim() }];
-    }
-
-    // Add bcc recipients if provided  
-    if (bcc) {
-      emailPayload.bcc = Array.isArray(bcc)
-        ? bcc.map(email => ({ email: email.trim() }))
-        : [{ email: bcc.trim() }];
-    }
-
-    // Add replyTo if provided
-    if (replyTo) {
-      emailPayload.replyTo = {
-        email: replyTo.trim()
+    if (useBrevoTemplate && brevoTemplateId) {
+      // Call Brevo template endpoint
+      const payload: any = {
+        templateId: brevoTemplateId,
+        to: [{ email: to, name: data.userName || '' }],
+        params: data,
+        ...(subject ? { subject } : {}),
+        ...(Array.isArray(data.tags) ? { tags: data.tags } : {})
       };
+
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          "api-key": brevoApiKey,
+        },
+        body: JSON.stringify({
+          templateId: payload.templateId,
+          to: payload.to,
+          params: payload.params,
+          ...(payload.subject ? { subject: payload.subject } : {}),
+          ...(payload.tags ? { tags: payload.tags } : {}),
+          sender: { name: "Vybbi", email: "noreply@vybbi.com" },
+        }),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Brevo API error:", errorData);
+        throw new Error(`Brevo API error: ${errorData.message}`);
+      }
+      emailResult = await response.json();
+    } else {
+      // Fallback: send raw HTML
+  const emailPayload: any = {
+        sender: { name: "Vybbi", email: "noreply@vybbi.com" },
+        to: [{ email: to, name: data.userName || "" }],
+        subject,
+        htmlContent,
+      };
+  if (cc) emailPayload.cc = Array.isArray(cc) ? cc.map((e: string) => ({ email: e.trim() })) : [{ email: (cc as string).trim() }];
+  if (bcc) emailPayload.bcc = Array.isArray(bcc) ? bcc.map((e: string) => ({ email: e.trim() })) : [{ email: (bcc as string).trim() }];
+      if (replyTo) emailPayload.replyTo = { email: replyTo.trim() };
+
+      const response = await fetch("https://api.brevo.com/v3/smtp/email", {
+        method: "POST",
+        headers: {
+          accept: "application/json",
+          "api-key": brevoApiKey,
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(emailPayload),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Brevo API error:", errorData);
+        throw new Error(`Brevo API error: ${errorData.message}`);
+      }
+      emailResult = await response.json();
     }
 
-    const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
-      method: "POST",
-      headers: {
-        "accept": "application/json",
-        "api-key": brevoApiKey,
-        "content-type": "application/json"
-      },
-      body: JSON.stringify(emailPayload)
-    });
-
-    if (!brevoResponse.ok) {
-      const errorData = await brevoResponse.json();
-      console.error('Brevo API error:', errorData);
-      throw new Error(`Brevo API error: ${errorData.message}`);
-    }
-
-    const emailResult = await brevoResponse.json();
     console.log("Email sent successfully:", emailResult);
 
     return new Response(
       JSON.stringify({
         success: true,
-        messageId: emailResult.messageId
+  messageId: emailResult.messageId
       }),
       {
         status: 200,
