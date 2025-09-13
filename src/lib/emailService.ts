@@ -4,7 +4,9 @@ export type EmailNotificationType =
   | 'user_registration' 
   | 'admin_notification' 
   | 'review_notification' 
-  | 'contact_message';
+  | 'contact_message'
+  | 'booking_proposed'
+  | 'booking_status_changed';
 
 interface EmailNotificationData {
   userName?: string;
@@ -17,6 +19,11 @@ interface EmailNotificationData {
   message?: string;
   senderName?: string;
   senderEmail?: string;
+  venueName?: string;
+  eventTitle?: string;
+  eventDate?: string;
+  proposedFee?: string;
+  status?: string;
   [key: string]: any;
 }
 
