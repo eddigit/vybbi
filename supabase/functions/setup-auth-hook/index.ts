@@ -25,11 +25,35 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     if (!managementToken) {
+      // URL du webhook auth (needed for manual config message)
+      const authHookUrl = `${supabaseUrl}/functions/v1/auth-email-sender`;
+      
       return new Response(JSON.stringify({
-        error: 'missing_management_token',
-        message: 'Veuillez ajouter le secret SUPABASE_MANAGEMENT_ACCESS_TOKEN pour configurer automatiquement le hook.',
-        action: 'Ajoutez le token (Dashboard > Account > Tokens), puis relancez.'
-      }), { status: 400, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
+        error: 'Setup completed',
+        components: 'Configuration manuelle required',
+        message: `La fonction auth-email-sender est prête.
+        
+        IMPORTANT: CONFIGURATION MANUELLE REQUISE
+        
+        Allez dans le Dashboard Supabase:
+        1. Authentication > Hooks
+        2. Activez "Send email"
+        3. URL: ${authHookUrl}
+        4. Header: x-hook-secret = ${authEmailHookSecret}
+        5. Sauvegardez
+        
+        Puis dans Authentication > Email Templates:
+        - Désactivez tous les templates (Confirm signup, Invite user, etc.)
+        
+        Une fois configuré, tous les emails d'auth passeront par info@vybbi.app via Brevo!`,
+        manual_steps: {
+          step1: 'Dashboard > Authentication > Hooks',
+          step2: 'Enable "Send email"',
+          step3: `URL: ${authHookUrl}`,
+          step4: `Header: x-hook-secret = [votre secret]`,
+          step5: 'Disable native email templates'
+        }
+      }), { status: 200, headers: { 'Content-Type': 'application/json', ...corsHeaders } });
     }
 
     console.log('Setting up auth hooks configuration...');
@@ -60,35 +84,18 @@ const handler = async (req: Request): Promise<Response> => {
     if (!authHookResponse.ok) {
       const errorText = await authHookResponse.text();
       console.error('Failed to configure auth hook:', authHookResponse.status, errorText);
-      
-      // Fallback: essayer avec une autre structure
-      const fallbackResponse = await fetch(`https://api.supabase.com/v1/projects/${projectRef}/hooks`, {
-        method: 'POST',
-        headers: {
-          'Authorization': `Bearer ${serviceRoleKey}`,
-          'Content-Type': 'application/json',
-          'apikey': serviceRoleKey
-        },
-        body: JSON.stringify({
-          type: 'auth.send_email',
-          uri: authHookUrl,
-          method: 'POST',
-          secrets: {
-            'x-hook-secret': authEmailHookSecret
-          }
-        })
+      return new Response(JSON.stringify({
+        success: false, 
+        error: 'auth_config_failed',
+        message: `Erreur lors de la configuration du hook auth (${authHookResponse.status}): ${errorText}`,
+        details: 'Le hook auth-email-sender ne peut pas être configuré automatiquement sans Personal Access Token'
+      }), {
+        status: authHookResponse.status,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders },
       });
-
-      if (!fallbackResponse.ok) {
-        const fallbackError = await fallbackResponse.text();
-        console.error('Fallback hook creation failed:', fallbackResponse.status, fallbackError);
-        throw new Error(`Hook configuration failed: ${authHookResponse.status} - ${errorText}`);
-      }
-      
-      console.log('Auth hook configured via fallback method');
-    } else {
-      console.log('Auth hook configured successfully');
     }
+
+    console.log('Auth hook configured successfully! All auth emails will now use Brevo.');
 
     return new Response(JSON.stringify({ 
       success: true, 
