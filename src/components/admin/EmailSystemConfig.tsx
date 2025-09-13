@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
 import { useToast } from "@/hooks/use-toast";
 import { 
@@ -13,7 +14,8 @@ import {
   AlertCircle, 
   Loader2,
   Settings,
-  Shield
+  Shield,
+  ExternalLink
 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 
@@ -26,8 +28,111 @@ export function EmailSystemConfig() {
     message: string;
     timestamp: Date;
   } | null>(null);
+  
+  // Brevo mode state
+  const [brevoMode, setBrevoMode] = useState(() => {
+    return localStorage.getItem('brevo-mode') === 'true';
+  });
+  const [brevoTestTemplateId, setBrevoTestTemplateId] = useState('');
+  const [isTestingBrevo, setIsTestingBrevo] = useState(false);
 
-  // Configuration SMTP Brevo (affichage uniquement)
+  const handleToggleBrevoMode = (enabled: boolean) => {
+    setBrevoMode(enabled);
+    localStorage.setItem('brevo-mode', enabled.toString());
+    toast({
+      title: "Mode modifié",
+      description: `Mode ${enabled ? 'Brevo Templates' : 'Templates Internes'} activé`,
+    });
+  };
+
+  const handleTestBrevoTemplate = async () => {
+    if (!testEmail.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez saisir une adresse email de test",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    if (!brevoTestTemplateId.trim()) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez saisir un ID de template Brevo",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(testEmail)) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez saisir une adresse email valide",
+        variant: "destructive"
+      });
+      return;
+    }
+
+    setIsTestingBrevo(true);
+    setLastTestResult(null);
+
+    try {
+      console.log('Testing Brevo template:', brevoTestTemplateId, 'to:', testEmail);
+
+      const { data, error } = await supabase.functions.invoke('brevo-send-template', {
+        body: {
+          templateId: parseInt(brevoTestTemplateId),
+          to: [{ email: testEmail, name: 'Test User' }],
+          params: {
+            contact_name: 'Test User',
+            test_param: 'Valeur test'
+          }
+        }
+      });
+
+      if (error) {
+        console.error('Brevo template test error:', error);
+        setLastTestResult({
+          success: false,
+          message: `Erreur Brevo: ${error.message}`,
+          timestamp: new Date()
+        });
+        toast({
+          title: "Erreur lors du test Brevo",
+          description: error.message,
+          variant: "destructive"
+        });
+        return;
+      }
+
+      console.log('Brevo template response:', data);
+      setLastTestResult({
+        success: true,
+        message: `Template Brevo envoyé avec succès (ID: ${data.messageId})`,
+        timestamp: new Date()
+      });
+      toast({
+        title: "Test Brevo réussi !",
+        description: `Template Brevo envoyé vers ${testEmail}`,
+      });
+
+    } catch (error: any) {
+      console.error('Exception during Brevo test:', error);
+      setLastTestResult({
+        success: false,
+        message: `Exception Brevo: ${error.message}`,
+        timestamp: new Date()
+      });
+      toast({
+        title: "Erreur",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsTestingBrevo(false);
+    }
+  };
   const smtpConfig = {
     provider: "Brevo (SendinBlue)",
     host: "smtp-relay.brevo.com",
@@ -118,12 +223,50 @@ export function EmailSystemConfig() {
 
   return (
     <div className="space-y-6">
+      {/* Switch Mode Brevo */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Mail className="h-5 w-5" />
+            Mode Email
+          </CardTitle>
+          <CardDescription>
+            Choisissez le mode d'envoi des emails
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
+          <div className="flex items-center justify-between">
+            <div className="space-y-1">
+              <Label htmlFor="brevo-mode" className="text-sm font-medium">
+                Utiliser les templates Brevo
+              </Label>
+              <p className="text-sm text-muted-foreground">
+                Basculer vers l'API Brevo pour contourner les bugs du builder interne
+              </p>
+            </div>
+            <Switch
+              id="brevo-mode"
+              checked={brevoMode}
+              onCheckedChange={handleToggleBrevoMode}
+            />
+          </div>
+          {brevoMode && (
+            <div className="mt-4 p-3 bg-blue-50 dark:bg-blue-950/50 rounded-lg">
+              <p className="text-sm text-blue-700 dark:text-blue-300 flex items-center gap-2">
+                <ExternalLink className="h-4 w-4" />
+                Mode Brevo actif - Les templates seront récupérés depuis votre compte Brevo
+              </p>
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Configuration SMTP */}
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Settings className="h-5 w-5" />
-            Configuration SMTP
+            Configuration SMTP {!brevoMode ? '(Active)' : '(Désactivée)'}
           </CardTitle>
           <CardDescription>
             Paramètres de configuration du serveur d'envoi d'emails
@@ -191,25 +334,55 @@ export function EmailSystemConfig() {
                 placeholder="email@exemple.com"
                 value={testEmail}
                 onChange={(e) => setTestEmail(e.target.value)}
-                disabled={isTestingSending}
+                disabled={isTestingSending || isTestingBrevo}
                 className="mt-1"
               />
             </div>
-            <div className="flex items-end">
-              <Button
-                onClick={handleTestEmail}
-                disabled={isTestingSending || !testEmail}
-                className="gap-2"
+          </div>
+          
+          {!brevoMode ? (
+            <Button
+              onClick={handleTestEmail}
+              disabled={isTestingSending || !testEmail}
+              className="gap-2 w-full"
+            >
+              {isTestingSending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+              {isTestingSending ? "Envoi..." : "Tester templates internes"}
+            </Button>
+          ) : (
+            <div className="space-y-3">
+              <div>
+                <Label htmlFor="brevo-template-id" className="text-sm font-medium">
+                  ID du template Brevo
+                </Label>
+                <Input
+                  id="brevo-template-id"
+                  type="number"
+                  value={brevoTestTemplateId}
+                  onChange={(e) => setBrevoTestTemplateId(e.target.value)}
+                  placeholder="1, 2, 3..."
+                  className="mt-1"
+                />
+              </div>
+              <Button 
+                onClick={handleTestBrevoTemplate}
+                disabled={isTestingBrevo || !testEmail || !brevoTestTemplateId}
+                className="gap-2 w-full"
+                variant="outline"
               >
-                {isTestingSending ? (
+                {isTestingBrevo ? (
                   <Loader2 className="h-4 w-4 animate-spin" />
                 ) : (
-                  <Send className="h-4 w-4" />
+                  <ExternalLink className="h-4 w-4" />
                 )}
-                {isTestingSending ? "Envoi..." : "Tester"}
+                {isTestingBrevo ? 'Envoi Brevo...' : 'Tester template Brevo'}
               </Button>
             </div>
-          </div>
+          )}
 
           {/* Résultat du dernier test */}
           {lastTestResult && (

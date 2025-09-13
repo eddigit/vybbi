@@ -8,10 +8,11 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { Mail, Eye, Send, User, Building, MapPin } from "lucide-react";
+import { Mail, Eye, Send, User, Building, MapPin, ExternalLink, Loader2 } from "lucide-react";
 
 interface Prospect {
   id: string;
@@ -31,6 +32,14 @@ interface EmailTemplate {
   variables: any; // Using any to match Supabase Json type
 }
 
+interface BrevoTemplate {
+  id: number;
+  name: string;
+  subject: string;
+  htmlContent: string;
+  isActive: boolean;
+}
+
 interface ProspectingEmailSenderProps {
   isOpen: boolean;
   onClose: () => void;
@@ -45,13 +54,24 @@ export default function ProspectingEmailSender({
   onEmailSent
 }: ProspectingEmailSenderProps) {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [selectedBrevoTemplate, setSelectedBrevoTemplate] = useState<BrevoTemplate | null>(null);
   const [customMessage, setCustomMessage] = useState("");
   const [customSubject, setCustomSubject] = useState("");
   const [templates, setTemplates] = useState<EmailTemplate[]>([]);
+  const [brevoTemplates, setBrevoTemplates] = useState<BrevoTemplate[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isSending, setIsSending] = useState(false);
   const [activeTab, setActiveTab] = useState("select");
   const [agentId, setAgentId] = useState<string | null>(null);
+  
+  // Brevo mode state
+  const [brevoMode, setBrevoMode] = useState(() => {
+    return localStorage.getItem('brevo-mode') === 'true';
+  });
+  const [brevoParams, setBrevoParams] = useState<Record<string, string>>({
+    contact_name: '',
+    company_name: ''
+  });
   
   const { user } = useAuth();
   const { toast } = useToast();
@@ -59,9 +79,13 @@ export default function ProspectingEmailSender({
   // Load templates when dialog opens
   useEffect(() => {
     if (isOpen) {
-      loadProspectingTemplates();
+      if (brevoMode) {
+        loadBrevoTemplates();
+      } else {
+        loadProspectingTemplates();
+      }
     }
-  }, [isOpen]);
+  }, [isOpen, brevoMode]);
 
   // Fetch current user's agent id when dialog opens
   useEffect(() => {
@@ -101,10 +125,60 @@ export default function ProspectingEmailSender({
     }
   };
 
+  const loadBrevoTemplates = async () => {
+    setIsLoading(true);
+    try {
+      console.log('Loading Brevo templates...');
+      const { data, error } = await supabase.functions.invoke('brevo-templates');
+
+      if (error) throw error;
+
+      // Transform Brevo API response to our format
+      const brevoTemplatesList = data?.templates?.map((template: any) => ({
+        id: template.id,
+        name: template.name,
+        subject: template.subject || `Template ${template.id}`,
+        htmlContent: template.htmlContent || '',
+        isActive: template.isActive
+      })) || [];
+
+      setBrevoTemplates(brevoTemplatesList);
+      console.log('Loaded Brevo templates:', brevoTemplatesList.length);
+    } catch (error: any) {
+      console.error('Error loading Brevo templates:', error);
+      toast({
+        title: "Erreur Brevo",
+        description: "Impossible de charger les templates Brevo: " + error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleTemplateSelect = (template: EmailTemplate) => {
     setSelectedTemplate(template);
+    setSelectedBrevoTemplate(null);
     setCustomSubject(template.subject);
     setCustomMessage(""); // Reset custom message when selecting new template
+    setActiveTab("customize");
+  };
+
+  const handleBrevoTemplateSelect = (template: BrevoTemplate) => {
+    setSelectedBrevoTemplate(template);
+    setSelectedTemplate(null);
+    setCustomSubject(template.subject);
+    setCustomMessage("");
+    
+    // Initialize Brevo params with prospect data
+    if (selectedProspect) {
+      setBrevoParams({
+        contact_name: selectedProspect.contact_name,
+        company_name: selectedProspect.company_name || selectedProspect.contact_name,
+        prospect_type: selectedProspect.prospect_type
+      });
+    }
+    
     setActiveTab("customize");
   };
 
@@ -153,53 +227,81 @@ export default function ProspectingEmailSender({
   };
 
   const handleSendEmail = async () => {
-    if (!selectedTemplate || !selectedProspect) return;
+    if (!selectedProspect) return;
 
     setIsSending(true);
     try {
-      const finalSubject = customSubject || selectedTemplate.subject;
-      const finalContent = getPreviewContent();
-
-      // Send email via send-notification edge function
-      const { data, error } = await supabase.functions.invoke('send-notification', {
-        body: {
-          type: 'prospect_email',
-          to: selectedProspect.email,
-          subject: replaceVariables(finalSubject),
-          html: finalContent,
-          cc: user?.email ? [user.email] : [],
-          bcc: ['coachdigitalparis@gmail.com'],
-          replyTo: user?.email || undefined,
-          data: {
-            contact_name: selectedProspect.contact_name,
-            company_name: selectedProspect.company_name,
-            prospect_type: selectedProspect.prospect_type,
-            template_name: selectedTemplate.name
+      if (brevoMode && selectedBrevoTemplate) {
+        // Send via Brevo
+        const { data, error } = await supabase.functions.invoke('brevo-send-template', {
+          body: {
+            templateId: selectedBrevoTemplate.id,
+            to: [{ email: selectedProspect.email, name: selectedProspect.contact_name }],
+            params: brevoParams,
+            subject: customSubject || selectedBrevoTemplate.subject
           }
-        }
-      });
+        });
 
-      if (error) throw error;
+        if (error) throw error;
+
+        toast({
+          title: "Email Brevo envoyé",
+          description: `Email envoyé avec succès à ${selectedProspect.contact_name} via Brevo`,
+        });
+
+      } else if (!brevoMode && selectedTemplate) {
+        // Send via internal templates
+        const finalSubject = customSubject || selectedTemplate.subject;
+        const finalContent = getPreviewContent();
+
+        // Send email via send-notification edge function
+        const { data, error } = await supabase.functions.invoke('send-notification', {
+          body: {
+            type: 'prospect_email',
+            to: selectedProspect.email,
+            subject: replaceVariables(finalSubject),
+            html: finalContent,
+            cc: user?.email ? [user.email] : [],
+            bcc: ['coachdigitalparis@gmail.com'],
+            replyTo: user?.email || undefined,
+            data: {
+              contact_name: selectedProspect.contact_name,
+              company_name: selectedProspect.company_name,
+              prospect_type: selectedProspect.prospect_type,
+              template_name: selectedTemplate.name
+            }
+          }
+        });
+
+        if (error) throw error;
+
+        toast({
+          title: "Email envoyé",
+          description: `Email envoyé avec succès à ${selectedProspect.contact_name}${data?.messageId ? ` (ID: ${data.messageId})` : ''}`,
+        });
+      } else {
+        throw new Error('Aucun template sélectionné');
+      }
 
       // Log interaction in prospect_interactions table (best effort)
       if (agentId) {
+        const templateName = brevoMode ? selectedBrevoTemplate?.name : selectedTemplate?.name;
         const { error: interactionError } = await supabase.from('prospect_interactions').insert({
           prospect_id: selectedProspect.id,
           agent_id: agentId,
           interaction_type: 'email',
-          subject: replaceVariables(finalSubject),
-          content: customMessage || `Template: ${selectedTemplate.name}`,
+          subject: customSubject,
+          content: customMessage || `Template: ${templateName}`,
           completed_at: new Date().toISOString()
         });
         if (interactionError) {
           console.error('Error logging prospect interaction:', interactionError);
         }
-      } else {
-        console.warn('No agentId found; skipping prospect_interactions insert');
       }
 
-      // Update prospect status if this is first contact
-      if (selectedTemplate.type === 'vybbi_prospect_first_contact' && selectedProspect.status === 'new') {
+      // Update prospect status
+      const templateType = brevoMode ? 'brevo_template' : selectedTemplate?.type;
+      if (templateType?.includes('first_contact') && selectedProspect.status === 'new') {
         await supabase
           .from('prospects')
           .update({ 
@@ -214,11 +316,6 @@ export default function ProspectingEmailSender({
           .update({ last_contact_at: new Date().toISOString() })
           .eq('id', selectedProspect.id);
       }
-
-      toast({
-        title: "Email envoyé",
-        description: `Email envoyé avec succès à ${selectedProspect.contact_name}${data?.messageId ? ` (ID: ${data.messageId})` : ''}`,
-      });
 
       onClose();
       onEmailSent?.();
@@ -237,8 +334,13 @@ export default function ProspectingEmailSender({
 
   const resetForm = () => {
     setSelectedTemplate(null);
+    setSelectedBrevoTemplate(null);
     setCustomMessage("");
     setCustomSubject("");
+    setBrevoParams({
+      contact_name: '',
+      company_name: ''
+    });
     setActiveTab("select");
   };
 
@@ -292,52 +394,130 @@ export default function ProspectingEmailSender({
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="select">Sélection Template</TabsTrigger>
-            <TabsTrigger value="customize" disabled={!selectedTemplate}>Personnalisation</TabsTrigger>
-            <TabsTrigger value="preview" disabled={!selectedTemplate}>Prévisualisation</TabsTrigger>
+            <TabsTrigger value="select">
+              {brevoMode ? 'Templates Brevo' : 'Templates Internes'}
+            </TabsTrigger>
+            <TabsTrigger value="customize" disabled={!selectedTemplate && !selectedBrevoTemplate}>
+              Personnalisation
+            </TabsTrigger>
+            <TabsTrigger value="preview" disabled={!selectedTemplate && !selectedBrevoTemplate}>
+              Prévisualisation
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="select" className="space-y-4">
+            {/* Toggle Mode */}
+            <Card>
+              <CardContent className="pt-6">
+                <div className="flex items-center justify-between">
+                  <div className="space-y-1">
+                    <Label className="text-sm font-medium">Mode Brevo</Label>
+                    <p className="text-xs text-muted-foreground">
+                      Utiliser les templates depuis votre compte Brevo
+                    </p>
+                  </div>
+                  <Switch
+                    checked={brevoMode}
+                    onCheckedChange={(enabled) => {
+                      setBrevoMode(enabled);
+                      localStorage.setItem('brevo-mode', enabled.toString());
+                      // Reset selections when switching mode
+                      setSelectedTemplate(null);
+                      setSelectedBrevoTemplate(null);
+                      toast({
+                        title: "Mode modifié",
+                        description: `Mode ${enabled ? 'Brevo' : 'Interne'} activé`,
+                      });
+                    }}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
             <div className="grid gap-4">
-              <Label className="text-lg">Choisissez un template d'email :</Label>
+              <Label className="text-lg">
+                {brevoMode ? 'Choisissez un template Brevo :' : 'Choisissez un template d\'email :'}
+              </Label>
               {isLoading ? (
-                <div className="text-center py-8">Chargement des templates...</div>
-              ) : templates.length === 0 ? (
-                <div className="text-center py-8 text-muted-foreground">
-                  Aucun template de prospection trouvé
+                <div className="text-center py-8 flex items-center justify-center gap-2">
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  {brevoMode ? 'Chargement des templates Brevo...' : 'Chargement des templates...'}
                 </div>
+              ) : brevoMode ? (
+                // Brevo Templates
+                brevoTemplates.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    <ExternalLink className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                    Aucun template Brevo trouvé
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    {brevoTemplates.map((template) => (
+                      <Card 
+                        key={template.id}
+                        className={`cursor-pointer transition-all hover:shadow-md ${selectedBrevoTemplate?.id === template.id ? 'ring-2 ring-primary' : ''}`}
+                        onClick={() => handleBrevoTemplateSelect(template)}
+                      >
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-base flex items-center gap-2">
+                              <ExternalLink className="h-4 w-4" />
+                              {template.name}
+                            </CardTitle>
+                            <Badge variant="outline" className="text-xs bg-blue-50">
+                              BREVO #{template.id}
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-sm">
+                            {template.subject}
+                          </CardDescription>
+                        </CardHeader>
+                      </Card>
+                    ))}
+                  </div>
+                )
               ) : (
-                <div className="grid gap-3">
-                  {templates.map((template) => (
-                    <Card 
-                      key={template.id}
-                      className={`cursor-pointer transition-all hover:shadow-md ${selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''}`}
-                      onClick={() => handleTemplateSelect(template)}
-                    >
-                      <CardHeader className="pb-3">
-                        <div className="flex items-center justify-between">
-                          <CardTitle className="text-base">{template.name}</CardTitle>
-                          <Badge variant="secondary" className="text-xs">
-                            {template.type.replace(/[_]/g, ' ').toUpperCase()}
-                          </Badge>
-                        </div>
-                        <CardDescription className="text-sm">
-                          {template.subject}
-                        </CardDescription>
-                      </CardHeader>
-                    </Card>
-                  ))}
-                </div>
+                // Internal Templates
+                templates.length === 0 ? (
+                  <div className="text-center py-8 text-muted-foreground">
+                    Aucun template de prospection trouvé
+                  </div>
+                ) : (
+                  <div className="grid gap-3">
+                    {templates.map((template) => (
+                      <Card 
+                        key={template.id}
+                        className={`cursor-pointer transition-all hover:shadow-md ${selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''}`}
+                        onClick={() => handleTemplateSelect(template)}
+                      >
+                        <CardHeader className="pb-3">
+                          <div className="flex items-center justify-between">
+                            <CardTitle className="text-base">{template.name}</CardTitle>
+                            <Badge variant="secondary" className="text-xs">
+                              {template.type.replace(/[_]/g, ' ').toUpperCase()}
+                            </Badge>
+                          </div>
+                          <CardDescription className="text-sm">
+                            {template.subject}
+                          </CardDescription>
+                        </CardHeader>
+                      </Card>
+                    ))}
+                  </div>
+                )
               )}
             </div>
           </TabsContent>
 
           <TabsContent value="customize" className="space-y-4">
-            {selectedTemplate && (
+            {(selectedTemplate || selectedBrevoTemplate) && (
               <div className="space-y-6">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Template sélectionné : {selectedTemplate.name}</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      {brevoMode ? <ExternalLink className="h-4 w-4" /> : <Mail className="h-4 w-4" />}
+                      Template sélectionné : {brevoMode ? selectedBrevoTemplate?.name : selectedTemplate?.name}
+                    </CardTitle>
                     <CardDescription>Personnalisez le contenu de votre email</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
@@ -350,23 +530,65 @@ export default function ProspectingEmailSender({
                         placeholder="Sujet de l'email..."
                       />
                       <p className="text-xs text-muted-foreground">
-                        Les variables {"{contact_name}"}, {"{company_name}"} seront automatiquement remplacées
+                        {brevoMode 
+                          ? 'Variables Brevo disponibles selon votre template'
+                          : 'Les variables {{contact_name}}, {{company_name}} seront automatiquement remplacées'
+                        }
                       </p>
                     </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="custom-message">Message personnel (optionnel)</Label>
-                      <Textarea
-                        id="custom-message"
-                        value={customMessage}
-                        onChange={(e) => setCustomMessage(e.target.value)}
-                        placeholder="Ajoutez un message personnel qui sera inséré dans le template..."
-                        rows={6}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        Ce message sera ajouté au template existant avec une mise en forme appropriée
-                      </p>
-                    </div>
+                    {brevoMode ? (
+                      // Brevo parameters
+                      <div className="space-y-4">
+                        <Label>Paramètres Brevo</Label>
+                        <div className="grid gap-3">
+                          {Object.entries(brevoParams).map(([key, value]) => (
+                            <div key={key} className="space-y-1">
+                              <Label htmlFor={key} className="text-sm capitalize">
+                                {key.replace(/_/g, ' ')}
+                              </Label>
+                              <Input
+                                id={key}
+                                value={value}
+                                onChange={(e) => setBrevoParams(prev => ({
+                                  ...prev,
+                                  [key]: e.target.value
+                                }))}
+                                placeholder={`Valeur pour ${key}`}
+                              />
+                            </div>
+                          ))}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setBrevoParams(prev => ({
+                              ...prev,
+                              [`param_${Object.keys(prev).length + 1}`]: ''
+                            }))}
+                          >
+                            Ajouter un paramètre
+                          </Button>
+                        </div>
+                        <p className="text-xs text-muted-foreground">
+                          Ces paramètres seront envoyés à votre template Brevo
+                        </p>
+                      </div>
+                    ) : (
+                      // Internal template custom message
+                      <div className="space-y-2">
+                        <Label htmlFor="custom-message">Message personnel (optionnel)</Label>
+                        <Textarea
+                          id="custom-message"
+                          value={customMessage}
+                          onChange={(e) => setCustomMessage(e.target.value)}
+                          placeholder="Ajoutez un message personnel qui sera inséré dans le template..."
+                          rows={6}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          Ce message sera ajouté au template existant avec une mise en forme appropriée
+                        </p>
+                      </div>
+                    )}
                   </CardContent>
                 </Card>
 
@@ -384,20 +606,52 @@ export default function ProspectingEmailSender({
           </TabsContent>
 
           <TabsContent value="preview" className="space-y-4">
-            {selectedTemplate && (
+            {(selectedTemplate || selectedBrevoTemplate) && (
               <div className="space-y-4">
                 <Card>
                   <CardHeader>
-                    <CardTitle>Prévisualisation de l'email</CardTitle>
+                    <CardTitle className="flex items-center gap-2">
+                      {brevoMode ? <ExternalLink className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                      {brevoMode ? 'Prévisualisation Brevo' : 'Prévisualisation de l\'email'}
+                    </CardTitle>
                     <CardDescription>
-                      Sujet : <span className="font-medium">{replaceVariables(customSubject)}</span>
+                      Sujet : <span className="font-medium">
+                        {brevoMode ? customSubject : replaceVariables(customSubject)}
+                      </span>
                     </CardDescription>
                   </CardHeader>
                   <CardContent>
-                    <div 
-                      className="border rounded-md p-4 bg-background max-h-96 overflow-y-auto"
-                      dangerouslySetInnerHTML={{ __html: getPreviewContent() }}
-                    />
+                    {brevoMode ? (
+                      <div className="space-y-4">
+                        <div className="p-4 border rounded-lg bg-blue-50 dark:bg-blue-950/30">
+                          <h4 className="font-medium text-blue-900 dark:text-blue-100 mb-2">
+                            Mode Brevo activé
+                          </h4>
+                          <p className="text-sm text-blue-700 dark:text-blue-300">
+                            L'email sera envoyé via le template Brevo #{selectedBrevoTemplate?.id} avec les paramètres suivants :
+                          </p>
+                          <div className="mt-3 space-y-2">
+                            {Object.entries(brevoParams).map(([key, value]) => (
+                              <div key={key} className="flex justify-between text-sm">
+                                <span className="font-medium">{key}:</span>
+                                <span className="text-muted-foreground">{value || '(vide)'}</span>
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                        <div className="text-center py-8 text-muted-foreground">
+                          <ExternalLink className="h-8 w-8 mx-auto mb-2 opacity-50" />
+                          La prévisualisation complète n'est pas disponible pour les templates Brevo.
+                          <br />
+                          Connectez-vous à votre compte Brevo pour voir le rendu final.
+                        </div>
+                      </div>
+                    ) : (
+                      <div 
+                        className="border rounded-md p-4 bg-background max-h-96 overflow-y-auto"
+                        dangerouslySetInnerHTML={{ __html: getPreviewContent() }}
+                      />
+                    )}
                   </CardContent>
                 </Card>
 
@@ -410,8 +664,14 @@ export default function ProspectingEmailSender({
                     disabled={isSending}
                     className="flex items-center gap-2"
                   >
-                    <Send className="h-4 w-4" />
-                    {isSending ? 'Envoi en cours...' : 'Envoyer l\'email'}
+                    {isSending ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : brevoMode ? (
+                      <ExternalLink className="h-4 w-4" />
+                    ) : (
+                      <Send className="h-4 w-4" />
+                    )}
+                    {isSending ? 'Envoi en cours...' : `Envoyer ${brevoMode ? 'via Brevo' : 'l\'email'}`}
                   </Button>
                 </div>
               </div>
