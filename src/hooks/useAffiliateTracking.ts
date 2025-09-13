@@ -26,7 +26,7 @@ export const useAffiliateTracking = () => {
         // Get or find the affiliate link
         const { data: linkData, error: linkError } = await supabase
           .from('influencer_links')
-          .select('id')
+          .select('id, clicks_count')
           .eq('code', affiliateCode)
           .eq('is_active', true)
           .single();
@@ -58,7 +58,11 @@ export const useAffiliateTracking = () => {
 
         // Update link clicks count
         const { error: updateError } = await supabase
-          .rpc('increment_link_clicks', { link_id: linkData.id });
+          .from('influencer_links')
+          .update({ 
+            clicks_count: linkData.clicks_count ? linkData.clicks_count + 1 : 1 
+          })
+          .eq('id', linkData.id);
 
         if (updateError) {
           console.error('Error updating clicks count:', updateError);
