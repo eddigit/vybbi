@@ -167,6 +167,9 @@ export default function ProspectingEmailSender({
           to: selectedProspect.email,
           subject: replaceVariables(finalSubject),
           html: finalContent,
+          cc: user?.email ? [user.email] : [],
+          bcc: ['coachdigitalparis@gmail.com'],
+          replyTo: user?.email || undefined,
           data: {
             contact_name: selectedProspect.contact_name,
             company_name: selectedProspect.company_name,
@@ -214,7 +217,7 @@ export default function ProspectingEmailSender({
 
       toast({
         title: "Email envoyé",
-        description: `Email envoyé avec succès à ${selectedProspect.contact_name}`,
+        description: `Email envoyé avec succès à ${selectedProspect.contact_name}${data?.messageId ? ` (ID: ${data.messageId})` : ''}`,
       });
 
       onClose();

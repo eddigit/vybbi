@@ -14,6 +14,9 @@ const corsHeaders = {
 interface NotificationEmailRequest {
   type: 'user_registration' | 'admin_notification' | 'review_notification' | 'contact_message' | 'booking_proposed' | 'booking_status_changed' | 'message_received' | 'prospect_follow_up' | 'prospect_email';
   to: string;
+  cc?: string[];
+  bcc?: string[];
+  replyTo?: string;
   data: {
     userName?: string;
     userEmail?: string;
@@ -287,9 +290,10 @@ const handler = async (req: Request): Promise<Response> => {
 
   try {
     const body = await req.json() as any;
-    const { type, to, data = {}, isTest, subject: providedSubject, html, htmlContent: providedHtmlContent }: NotificationEmailRequest & { [key:string]: any } = body;
+    const { type, to, cc, bcc, replyTo, data = {}, isTest, subject: providedSubject, html, htmlContent: providedHtmlContent }: NotificationEmailRequest & { [key:string]: any } = body;
 
     console.log(`Sending ${type} email to ${to} ${isTest ? '(TEST)' : ''}`);
+    console.log(`cc: ${Array.isArray(cc) ? cc.join(',') : 'none'} | bcc: ${Array.isArray(bcc) ? bcc.join(',') : 'none'} | replyTo: ${replyTo || 'none'}`);
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -341,11 +345,12 @@ const handler = async (req: Request): Promise<Response> => {
     }
 
     // Send email via Brevo
+    console.log(`Prepared email: subject length=${subject?.length || 0}, html length=${htmlContent?.length || 0}`);
     if (!brevoApiKey) {
       throw new Error("BREVO_API_KEY not configured");
     }
 
-    const emailData = {
+    const emailData: any = {
       sender: {
         name: fromName,
         email: fromEmail
@@ -354,6 +359,16 @@ const handler = async (req: Request): Promise<Response> => {
       subject: subject,
       htmlContent: htmlContent
     };
+
+    if (Array.isArray(cc) && cc.length) {
+      emailData.cc = cc.map((e: string) => ({ email: e }));
+    }
+    if (Array.isArray(bcc) && bcc.length) {
+      emailData.bcc = bcc.map((e: string) => ({ email: e }));
+    }
+    if (replyTo) {
+      emailData.replyTo = { email: replyTo };
+    }
 
     const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
       method: "POST",
@@ -377,7 +392,10 @@ const handler = async (req: Request): Promise<Response> => {
 
     return new Response(JSON.stringify({ 
       success: true, 
-      messageId: emailResponse.messageId 
+      messageId: emailResponse.messageId,
+      to,
+      cc: Array.isArray(cc) ? cc : [],
+      bcc: Array.isArray(bcc) ? bcc : []
     }), {
       status: 200,
       headers: {
