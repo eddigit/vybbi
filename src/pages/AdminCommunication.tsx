@@ -9,9 +9,10 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Edit, Trash2, Eye, MessageSquare, Settings } from "lucide-react";
+import { Plus, Edit, Trash2, Eye, MessageSquare, Settings, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { BlogPostDialog } from "@/components/admin/BlogPostDialog";
+import { EmailTemplateManager } from "@/components/admin/EmailTemplateManager";
 
 interface BlogPost {
   id: string;
@@ -307,7 +308,7 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
         <div>
           <h1 className="text-3xl font-bold">Communication</h1>
           <p className="text-muted-foreground mt-2">
-            Gérez les articles de blog et les messages du bandeau défilant
+            Gérez les articles de blog, les messages du bandeau défilant et les templates d'email
           </p>
         </div>
       </div>
@@ -321,6 +322,10 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
           <TabsTrigger value="ticker">
             <Settings className="w-4 h-4 mr-2" />
             Bandeau Défilant
+          </TabsTrigger>
+          <TabsTrigger value="email">
+            <Mail className="w-4 h-4 mr-2" />
+            Templates Email
           </TabsTrigger>
         </TabsList>
 
@@ -781,6 +786,10 @@ L'avenir de la musique se construit en code. Et nous écrivons l'histoire.`,
               </CardContent>
             </Card>
           )}
+        </TabsContent>
+
+        <TabsContent value="email">
+          <EmailTemplateManager />
         </TabsContent>
       </Tabs>
 

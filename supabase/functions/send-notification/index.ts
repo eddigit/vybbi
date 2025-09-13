@@ -1,4 +1,6 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2.57.2';
+
 // Configuration Brevo API
 const brevoApiKey = Deno.env.get("BREVO_API_KEY");
 const fromEmail = Deno.env.get("MAIL_FROM_EMAIL") || "info@vybbi.app";
@@ -29,6 +31,7 @@ interface NotificationEmailRequest {
     proposedFee?: number;
     [key: string]: any;
   };
+  isTest?: boolean;
 }
 
 const getEmailTemplate = (type: string, data: any) => {
@@ -279,11 +282,43 @@ const handler = async (req: Request): Promise<Response> => {
   }
 
   try {
-    const { type, to, data }: NotificationEmailRequest = await req.json();
+    const { type, to, data, isTest }: NotificationEmailRequest = await req.json();
 
-    console.log(`Sending ${type} email to ${to}`);
+    console.log(`Sending ${type} email to ${to} ${isTest ? '(TEST)' : ''}`);
 
-    const emailTemplate = getEmailTemplate(type, data);
+    // Initialize Supabase client
+    const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
+    const supabaseServiceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY')!;
+    const supabase = createClient(supabaseUrl, supabaseServiceRoleKey);
+
+    // Get email template from database
+    const { data: template, error: templateError } = await supabase
+      .from('email_templates')
+      .select('subject, html_content')
+      .eq('type', type)
+      .eq('is_active', true)
+      .single();
+
+    let subject: string;
+    let htmlContent: string;
+
+    if (templateError || !template) {
+      console.log('Template not found in DB, using fallback:', templateError);
+      // Fallback to hardcoded templates
+      const fallback = getEmailTemplate(type, data);
+      subject = fallback.subject;
+      htmlContent = fallback.html;
+    } else {
+      subject = template.subject;
+      htmlContent = template.html_content;
+
+      // Replace variables in template
+      Object.keys(data).forEach(key => {
+        const placeholder = new RegExp(`{{${key}}}`, 'g');
+        subject = subject.replace(placeholder, String(data[key]));
+        htmlContent = htmlContent.replace(placeholder, String(data[key]));
+      });
+    }
 
     // Send email via Brevo
     if (!brevoApiKey) {
@@ -296,8 +331,8 @@ const handler = async (req: Request): Promise<Response> => {
         email: fromEmail
       },
       to: [{ email: to }],
-      subject: emailTemplate.subject,
-      htmlContent: emailTemplate.html
+      subject: subject,
+      htmlContent: htmlContent
     };
 
     const brevoResponse = await fetch("https://api.brevo.com/v3/smtp/email", {
