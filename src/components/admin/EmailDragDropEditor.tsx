@@ -18,13 +18,33 @@ interface EmailDragDropEditorProps {
   onBlocksChange: (blocks: EmailBlockData[]) => void;
   onHtmlChange: (html: string) => void;
   variables?: string[];
+  designSettings?: {
+    backgroundColor: string;
+    containerBackground: string;
+    primaryColor: string;
+    textColor: string;
+    linkColor: string;
+    buttonBackground: string;
+    buttonTextColor: string;
+    borderRadius: string;
+  };
 }
 
 export const EmailDragDropEditor: React.FC<EmailDragDropEditorProps> = ({
   initialBlocks = [],
   onBlocksChange,
   onHtmlChange,
-  variables = []
+  variables = [],
+  designSettings = {
+    backgroundColor: '#f4f4f4',
+    containerBackground: '#ffffff',
+    primaryColor: '#6366f1',
+    textColor: '#333333',
+    linkColor: '#6366f1',
+    buttonBackground: '#6366f1',
+    buttonTextColor: '#ffffff',
+    borderRadius: '6px'
+  }
 }) => {
   const [blocks, setBlocks] = useState<EmailBlockData[]>(initialBlocks);
   const [selectedBlockId, setSelectedBlockId] = useState<string | null>(null);
@@ -90,19 +110,19 @@ export const EmailDragDropEditor: React.FC<EmailDragDropEditorProps> = ({
     const blocksHtml = currentBlocks.map(block => {
       switch (block.type) {
         case 'title':
-          return `<h${block.properties.level || 1} style="color: ${block.properties.color || '#333'}; text-align: ${block.properties.align || 'left'}; font-family: Arial, sans-serif; margin: 20px 0;">${block.content}</h${block.properties.level || 1}>`;
+          return `<h${block.properties.level || 1} style="color: ${block.properties.color || designSettings.textColor}; text-align: ${block.properties.align || 'left'}; font-family: Arial, sans-serif; margin: 20px 0;">${block.content}</h${block.properties.level || 1}>`;
         case 'text':
-          return `<p style="color: ${block.properties.color || '#333'}; text-align: ${block.properties.align || 'left'}; font-family: Arial, sans-serif; font-size: ${block.properties.fontSize || '14px'}; line-height: 1.5; margin: 15px 0;">${block.content}</p>`;
+          return `<p style="color: ${block.properties.color || designSettings.textColor}; text-align: ${block.properties.align || 'left'}; font-family: Arial, sans-serif; font-size: ${block.properties.fontSize || '14px'}; line-height: 1.5; margin: 15px 0;">${block.content}</p>`;
         case 'image':
           return `<img src="${block.content}" alt="${block.properties.alt || ''}" style="max-width: 100%; height: auto; display: block; margin: 20px ${block.properties.align === 'center' ? 'auto' : '0'};" />`;
         case 'button':
-          return `<div style="text-align: ${block.properties.align || 'center'}; margin: 25px 0;"><a href="${block.properties.url || '#'}" style="display: inline-block; padding: ${block.properties.padding || '12px 24px'}; background-color: ${block.properties.backgroundColor || '#007bff'}; color: ${block.properties.textColor || '#ffffff'}; text-decoration: none; border-radius: ${block.properties.borderRadius || '4px'}; font-family: Arial, sans-serif; font-weight: bold;">${block.content}</a></div>`;
+          return `<div style="text-align: ${block.properties.align || 'center'}; margin: 25px 0;"><a href="${block.properties.url || '#'}" style="display: inline-block; padding: ${block.properties.padding || '12px 24px'}; background-color: ${block.properties.backgroundColor || designSettings.buttonBackground}; color: ${block.properties.textColor || designSettings.buttonTextColor}; text-decoration: none; border-radius: ${block.properties.borderRadius || designSettings.borderRadius}; font-family: Arial, sans-serif; font-weight: bold;">${block.content}</a></div>`;
         case 'separator':
           return `<hr style="border: none; height: 1px; background-color: ${block.properties.color || '#e0e0e0'}; margin: ${block.properties.margin || '30px 0'};" />`;
         case 'logo':
           return `<div style="text-align: ${block.properties.align || 'center'}; margin: 30px 0;"><img src="${block.content}" alt="Logo" style="max-width: ${block.properties.maxWidth || '150px'}; height: auto;" /></div>`;
         case 'variable':
-          return `<span style="background-color: #f0f8ff; padding: 2px 6px; border-radius: 3px; font-family: monospace; color: #0066cc;">{{${block.content}}}</span>`;
+          return `<span style="background-color: #f0f8ff; padding: 2px 6px; border-radius: 3px; font-family: monospace; color: ${designSettings.linkColor};">{{${block.content}}}</span>`;
         default:
           return '';
       }
@@ -114,9 +134,15 @@ export const EmailDragDropEditor: React.FC<EmailDragDropEditorProps> = ({
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Email Template</title>
+  <style>
+    body { margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: ${designSettings.backgroundColor}; }
+    .email-container { max-width: 600px; margin: 0 auto; background-color: ${designSettings.containerBackground}; padding: 40px; border-radius: ${designSettings.borderRadius}; }
+    a { color: ${designSettings.linkColor}; }
+    .button { background-color: ${designSettings.buttonBackground} !important; color: ${designSettings.buttonTextColor} !important; border-radius: ${designSettings.borderRadius}; }
+  </style>
 </head>
-<body style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-  <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 40px; border-radius: 8px;">
+<body>
+  <div class="email-container">
     ${blocksHtml}
   </div>
 </body>

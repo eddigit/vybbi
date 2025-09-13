@@ -83,12 +83,24 @@ const DEFAULT_VARIABLES: Record<string, Record<string, string>> = {
 export const EmailTemplateManager: React.FC = () => {
   const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
   const [isEditing, setIsEditing] = useState(false);
-  const [activeTab, setActiveTab] = useState<'list' | 'editor' | 'dragdrop' | 'visual' | 'test' | 'validation'>('list');
+  const [activeTab, setActiveTab] = useState<'list' | 'editor' | 'dragdrop' | 'design' | 'visual' | 'test' | 'validation'>('list');
   const [editorMode, setEditorMode] = useState<'code' | 'split' | 'preview'>('code');
   const [filterCategory, setFilterCategory] = useState<string>('all');
   const [filterLanguage, setFilterLanguage] = useState<string>('all');
   const [emailBlocks, setEmailBlocks] = useState<EmailBlockData[]>([]);
   const [testEmail, setTestEmail] = useState('');
+  
+  // Design global state
+  const [designSettings, setDesignSettings] = useState({
+    backgroundColor: '#f4f4f4',
+    containerBackground: '#ffffff',
+    primaryColor: '#6366f1',
+    textColor: '#333333',
+    linkColor: '#6366f1',
+    buttonBackground: '#6366f1',
+    buttonTextColor: '#ffffff',
+    borderRadius: '6px'
+  });
   
   // Form state
   const [formData, setFormData] = useState({
@@ -622,7 +634,7 @@ export const EmailTemplateManager: React.FC = () => {
 
       <div className="w-full">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-          <TabsList className="grid w-full grid-cols-6">
+          <TabsList className="grid w-full grid-cols-7">
             <TabsTrigger value="list" className="flex items-center gap-2">
               <FileText className="w-4 h-4" />
               Liste
@@ -630,6 +642,10 @@ export const EmailTemplateManager: React.FC = () => {
             <TabsTrigger value="dragdrop" className="flex items-center gap-2">
               <Wand2 className="w-4 h-4" />
               Constructeur
+            </TabsTrigger>
+            <TabsTrigger value="design" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              Design
             </TabsTrigger>
             <TabsTrigger value="editor" className="flex items-center gap-2">
               <Code className="w-4 h-4" />
@@ -888,6 +904,7 @@ export const EmailTemplateManager: React.FC = () => {
                     onBlocksChange={setEmailBlocks}
                     onHtmlChange={(html) => setFormData(prev => ({ ...prev, html_content: html }))}
                     variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
+                    designSettings={designSettings}
                   />
                 </div>
 
@@ -901,6 +918,203 @@ export const EmailTemplateManager: React.FC = () => {
                   >
                     {(updateTemplateMutation.isPending || createTemplateMutation.isPending) ? 'Sauvegarde...' : 'Sauvegarder'}
                   </Button>
+                </div>
+              </CardContent>
+            </Card>
+          </TabsContent>
+
+          <TabsContent value="design" className="space-y-4">
+            <Card className="p-6">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Settings className="w-5 h-5" />
+                  Configuration du design global
+                </CardTitle>
+                <p className="text-sm text-muted-foreground">
+                  Ces paramètres s'appliquent à l'ensemble du template email
+                </p>
+              </CardHeader>
+              <CardContent className="space-y-6">
+                <div className="grid grid-cols-2 gap-6">
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Couleurs de fond</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Arrière-plan</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.backgroundColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, backgroundColor: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.backgroundColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, backgroundColor: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Conteneur</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.containerBackground}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, containerBackground: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.containerBackground}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, containerBackground: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Couleurs du texte</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Texte principal</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.textColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, textColor: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.textColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, textColor: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Liens</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.linkColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, linkColor: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.linkColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, linkColor: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Boutons</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Fond bouton</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.buttonBackground}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, buttonBackground: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.buttonBackground}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, buttonBackground: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Texte bouton</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.buttonTextColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, buttonTextColor: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.buttonTextColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, buttonTextColor: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-4">
+                    <h4 className="font-medium">Styles</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Couleur primaire</Label>
+                        <div className="flex items-center gap-2">
+                          <input
+                            type="color"
+                            value={designSettings.primaryColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, primaryColor: e.target.value }))}
+                            className="w-12 h-8 rounded border cursor-pointer"
+                          />
+                          <Input
+                            value={designSettings.primaryColor}
+                            onChange={(e) => setDesignSettings(prev => ({ ...prev, primaryColor: e.target.value }))}
+                            className="w-24 text-xs"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Label className="w-32">Bordures</Label>
+                        <Input
+                          value={designSettings.borderRadius}
+                          onChange={(e) => setDesignSettings(prev => ({ ...prev, borderRadius: e.target.value }))}
+                          className="w-24 text-xs"
+                          placeholder="6px"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Prévisualisation des couleurs */}
+                <div className="border rounded-lg p-4" style={{ backgroundColor: designSettings.backgroundColor }}>
+                  <div 
+                    className="p-6 rounded" 
+                    style={{ 
+                      backgroundColor: designSettings.containerBackground,
+                      borderRadius: designSettings.borderRadius 
+                    }}
+                  >
+                    <h3 style={{ color: designSettings.textColor, margin: '0 0 10px 0' }}>
+                      Aperçu du design
+                    </h3>
+                    <p style={{ color: designSettings.textColor, margin: '0 0 15px 0' }}>
+                      Ceci est un exemple de texte avec un{' '}
+                      <a href="#" style={{ color: designSettings.linkColor }}>lien coloré</a>.
+                    </p>
+                    <div style={{ textAlign: 'center' }}>
+                      <a 
+                        href="#"
+                        style={{
+                          display: 'inline-block',
+                          backgroundColor: designSettings.buttonBackground,
+                          color: designSettings.buttonTextColor,
+                          padding: '12px 24px',
+                          textDecoration: 'none',
+                          borderRadius: designSettings.borderRadius,
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        Exemple de bouton
+                      </a>
+                    </div>
+                  </div>
                 </div>
               </CardContent>
             </Card>
