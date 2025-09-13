@@ -1,5 +1,5 @@
-export type AppRole = 'admin' | 'artist' | 'agent' | 'lieu' | 'manager';
-export type ProfileType = 'artist' | 'agent' | 'lieu' | 'manager';
+export type AppRole = 'admin' | 'artist' | 'agent' | 'lieu' | 'manager' | 'influenceur';
+export type ProfileType = 'artist' | 'agent' | 'lieu' | 'manager' | 'influenceur';
 export type EventStatus = 'draft' | 'published' | 'cancelled';
 export type BookingStatus = 'draft' | 'proposed' | 'confirmed' | 'cancelled' | 'completed';
 export type AvailabilityStatus = 'available' | 'unavailable' | 'tentative';
@@ -164,4 +164,45 @@ export interface AvailabilitySlot {
   description?: string;
   created_at: string;
   updated_at: string;
+}
+
+export interface InfluencerLink {
+  id: string;
+  influencer_profile_id: string;
+  code: string;
+  name?: string;
+  description?: string;
+  is_active: boolean;
+  clicks_count: number;
+  conversions_count: number;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface AffiliateVisit {
+  id: string;
+  link_id: string;
+  session_id: string;
+  visitor_ip?: string;
+  user_agent?: string;
+  referrer?: string;
+  page_url?: string;
+  country?: string;
+  city?: string;
+  visited_at: string;
+}
+
+export interface AffiliateConversion {
+  id: string;
+  link_id: string;
+  visit_id?: string;
+  user_id?: string;
+  conversion_type: 'registration' | 'subscription' | 'booking';
+  conversion_value?: number;
+  commission_rate?: number;
+  commission_amount?: number;
+  conversion_status: 'pending' | 'confirmed' | 'paid' | 'cancelled';
+  converted_at: string;
+  confirmed_at?: string;
+  paid_at?: string;
 }
