@@ -134,24 +134,29 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    const payload = await req.text();
-    const headers = Object.fromEntries(req.headers);
-    
-    // Verify webhook signature
-    const wh = new Webhook(hookSecret);
-    let webhookData: AuthWebhookPayload;
-    
-    try {
-      webhookData = wh.verify(payload, headers) as AuthWebhookPayload;
-    } catch (error) {
-      console.error('Webhook verification failed:', error);
-      return new Response(JSON.stringify({ error: 'Webhook verification failed' }), {
-        status: 401,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders },
-      });
+    // Prefer simple header secret verification as requested (x-hook-secret)
+    const headerSecret = req.headers.get('x-hook-secret');
+    let webhookData: AuthWebhookPayload | null = null;
+
+    if (headerSecret && headerSecret === hookSecret) {
+      webhookData = await req.json();
+    } else {
+      // Fallback: support Standard Webhooks signature if configured
+      try {
+        const payload = await req.text();
+        const headers = Object.fromEntries(req.headers);
+        const wh = new Webhook(hookSecret);
+        webhookData = wh.verify(payload, headers) as AuthWebhookPayload;
+      } catch (err) {
+        console.error('Webhook verification failed (x-hook-secret and signature):', err);
+        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+          status: 401,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders },
+        });
+      }
     }
 
-    const { user, email_data } = webhookData;
+    const { user, email_data } = webhookData!;
     const { email_action_type } = email_data;
 
     console.log(`Processing auth email: ${email_action_type} for ${user.email}`);
