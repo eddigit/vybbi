@@ -48,7 +48,7 @@ export function Header() {
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/auth');
+    // La redirection est déjà gérée dans useAuth.ts
   };
 
   const handleNotificationClick = (notification: any) => {
