@@ -48,33 +48,39 @@ export default function Landing() {
     gradient: "from-orange-500 to-red-500"
   }];
   const testimonials = [{
-    name: "DJ Luna",
-    role: "DJ / Producer",
+    name: "Alexandre M.",
+    role: "Bêta-testeur • DJ Techno",
     image: "/placeholder.svg",
-    quote: "Vybbi a révolutionné ma façon de trouver des bookings. Plus de 50 événements cette année !",
+    quote: "En phase de test depuis 3 mois, l'interface est vraiment pensée pour nous. Hâte du lancement officiel !",
     rating: 5
   }, {
-    name: "Marc Dubois",
-    role: "Manager @ TechnoVibes",
+    name: "Sarah L.",
+    role: "Early Adopter • Organisatrice événements",
     image: "/placeholder.svg",
-    quote: "La gestion de mes artistes n'a jamais été aussi simple. Un gain de temps énorme.",
+    quote: "J'ai eu accès à la preview et c'est exactement ce qu'il nous manquait dans l'industrie. Révolutionnaire.",
     rating: 5
   }, {
-    name: "Le Warehouse",
-    role: "Club - Paris",
+    name: "Le Studio 404",
+    role: "Partenaire de lancement • Paris",
     image: "/placeholder.svg",
-    quote: "Nous trouvons maintenant les meilleurs DJs en quelques clics. Interface intuitive et efficace.",
+    quote: "Nous avons choisi d'être partenaire fondateur car cette plateforme va changer la donne.",
     rating: 5
   }];
   const stats = [{
     number: "10K+",
-    label: "Artistes"
+    label: "Artistes ciblés"
+  }, {
+    number: "€2M+",
+    label: "Volume d'affaires traité"
   }, {
     number: "5K+",
-    label: "Événements"
+    label: "Opportunités événementielles"
   }, {
     number: "500+",
-    label: "Lieux"
+    label: "Lieux partenaires"
+  }, {
+    number: "150+",
+    label: "Villes couvertes"
   }, {
     number: "24h/24",
     label: "Radio Vybbi"
@@ -155,10 +161,16 @@ export default function Landing() {
               Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
             </p>
 
+            <div className="mb-8">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1">
+                🚀 Accès anticipé • Places limitées • Statut de fondateur
+              </Badge>
+            </div>
+
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button size="lg" className="text-lg px-8 py-6" asChild>
                 <Link to="/auth">
-                  Rejoindre la communauté
+                  Rejoindre les pionniers
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -171,7 +183,7 @@ export default function Landing() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-4xl mx-auto">
               {stats.map((stat, index) => <div key={index} className="text-center">
                   <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
@@ -189,46 +201,52 @@ export default function Landing() {
       {/* Mobile/Tablet Hero Content (visible when grid is hidden) */}
       <div className="xl:hidden text-center">
         <div className="max-w-5xl md:max-w-6xl mx-auto">
-          <div className="mb-6 flex justify-center">
-            <TickerBanner />
-          </div>
-          
-          <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
-            <span className="bg-gradient-primary bg-clip-text text-transparent">
-              Connectez votre
-            </span>
-            <br />
-            <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
-            <span className="text-foreground"> au monde</span>
-          </h1>
-          
-          <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
-            Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
-            Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
-          </p>
+            <div className="mb-6 flex justify-center">
+              <TickerBanner />
+            </div>
+            
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
+              <span className="bg-gradient-primary bg-clip-text text-transparent">
+                Connectez votre
+              </span>
+              <br />
+              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
+              <span className="text-foreground"> au monde</span>
+            </h1>
+            
+            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
+              Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
+              Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
+            </p>
 
-          <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-            <Button size="lg" className="text-lg px-8 py-6" asChild>
-              <Link to="/auth">
-                Rejoindre la communauté
-                <ArrowRight className="ml-2 h-5 w-5" />
-              </Link>
-            </Button>
-            <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
-              <Link to="/demo">
-                <Play className="mr-2 h-5 w-5" />
-                Voir la démo
-              </Link>
-            </Button>
-          </div>
+            <div className="mb-8">
+              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1">
+                🚀 Accès anticipé • Places limitées • Statut de fondateur
+              </Badge>
+            </div>
 
-          {/* Stats */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-2xl mx-auto">
-            {stats.map((stat, index) => <div key={index} className="text-center">
-                <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
-                <div className="text-sm text-muted-foreground">{stat.label}</div>
-              </div>)}
-          </div>
+            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <Button size="lg" className="text-lg px-8 py-6" asChild>
+                <Link to="/auth">
+                  Rejoindre les pionniers
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+                <Link to="/demo">
+                  <Play className="mr-2 h-5 w-5" />
+                  Voir la démo
+                </Link>
+              </Button>
+            </div>
+
+            {/* Stats */}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-4xl mx-auto">
+              {stats.map((stat, index) => <div key={index} className="text-center">
+                  <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
+                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+                </div>)}
+            </div>
         </div>
       </div>
     </div>
@@ -697,9 +715,9 @@ export default function Landing() {
       <section id="testimonials" className="py-16 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Ils nous font confiance</h2>
+            <h2 className="text-4xl font-bold mb-4">Les pionniers témoignent</h2>
             <p className="text-xl text-muted-foreground">
-              Découvrez ce que disent nos utilisateurs
+              Découvrez ce que disent nos early adopters et partenaires
             </p>
           </div>
 
@@ -733,19 +751,19 @@ export default function Landing() {
         <div className="container mx-auto">
           <Card className="bg-gradient-primary border-border shadow-glow">
             <CardContent className="p-12 text-center">
-              <h2 className="text-4xl font-bold mb-4 text-primary-foreground">Prêt à transformer votre carrière ?</h2>
+              <h2 className="text-4xl font-bold mb-4 text-primary-foreground">Devenez membre fondateur</h2>
               <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
-                Rejoignez des milliers de professionnels qui utilisent déjà Vybbi pour développer leur activité
+                Soyez parmi les premiers à façonner l'avenir de l'industrie musicale. Places limitées pour les fondateurs.
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" variant="secondary" className="text-lg px-8 py-6" asChild>
                   <Link to="/auth">
-                    Commencer gratuitement
+                    Réserver ma place
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
                 <Button size="lg" variant="outline" className="text-lg px-8 py-6 border-primary-foreground/20 text-primary-foreground hover:bg-primary-foreground/10">
-                  Planifier une démo
+                  Accès VIP démo
                 </Button>
               </div>
             </CardContent>
