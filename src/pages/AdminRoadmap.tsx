@@ -778,15 +778,17 @@ export default function AdminRoadmap() {
               </section>
 
               <section>
-                <h2 className="text-2xl font-bold mb-4 text-primary">🎯 Roadmap Stratégique 2025</h2>
+                <h2 className="text-2xl font-bold mb-4 text-primary">🎯 Roadmap Stratégique 2026</h2>
                 
                 <div className="space-y-6">
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Q1 2025 - Consolidation</h3>
+                    <h3 className="font-semibold text-lg mb-3">Q1 2026 - Consolidation & Communautés</h3>
                     <div className="bg-muted/30 p-4 rounded-lg">
                       <ul className="space-y-1 text-sm">
-                        <li>✅ Finalisation Radio Vybbi avec abonnements premium</li>
-                        <li>🔄 Lancement Web TV avec studio live intégré</li>
+                        <li>✅ Radio Vybbi avec abonnements premium et chat live</li>
+                        <li>✅ Système de communautés intégré (5 communautés principales)</li>
+                        <li>✅ Affiliation avancée avec QR codes et tracking complet</li>
+                        <li>🔄 Web TV avec studio live intégré</li>
                         <li>🔄 Optimisation système de prospection IA</li>
                         <li>📋 API publique v1.0 pour partenariats</li>
                       </ul>
@@ -794,25 +796,31 @@ export default function AdminRoadmap() {
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Q2-Q3 2025 - Expansion</h3>
+                    <h3 className="font-semibold text-lg mb-3">Q2 2026 - Expansion & Monétisation</h3>
                     <div className="bg-muted/30 p-4 rounded-lg">
                       <ul className="space-y-1 text-sm">
                         <li>📱 Applications mobiles natives iOS/Android</li>
                         <li>🌍 Internationalisation (UK, US, Canada)</li>
-                        <li>🏪 Marketplace services étendu</li>
-                        <li>🤝 Partenariats labels et distributeurs</li>
+                        <li>🏪 Marketplace services étendu avec commissions automatisées</li>
+                        <li>💳 Système d'abonnements premium multi-niveaux</li>
+                        <li>📧 Plateforme emailing avancée avec templates dynamiques</li>
+                        <li>🤝 Partenariats labels et distributeurs majeurs</li>
                       </ul>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="font-semibold text-lg mb-3">Q4 2025 - Innovation</h3>
+                    <h3 className="font-semibold text-lg mb-3">Q4 2026 - Innovation & Écosystème Complet</h3>
                     <div className="bg-muted/30 p-4 rounded-lg">
                       <ul className="space-y-1 text-sm">
-                        <li>🎮 Expériences immersives AR/VR</li>
+                        <li>🎮 Expériences immersives AR/VR pour concerts virtuels</li>
                         <li>🎵 IA générative pour composition assistée</li>
                         <li>🔗 Intégration blockchain et NFTs</li>
-                        <li>📊 Analytics prédictifs avancés</li>
+                        <li>📊 Analytics prédictifs avancés avec IA</li>
+                        <li>🏢 Plateforme tout-en-un unifiée</li>
+                        <li>🌐 Écosystème média intégré (Radio + TV + Streaming + Live)</li>
+                        <li>🤖 IA de prospection unique sur le marché</li>
+                        <li>💰 ROI mesurable et transparent pour tous les acteurs</li>
                       </ul>
                     </div>
                   </div>

@@ -362,6 +362,47 @@ export default function AdminKnowledge() {
           ]
         }
       ]
+    },
+
+    "Communautés & Chat": {
+      title: "Système de Communautés",
+      icon: User,
+      sections: [
+        {
+          title: "Gestion des Communautés",
+          items: [
+            {
+              question: "Comment créer une nouvelle communauté ?",
+              answer: "Admin > Dashboard > Communautés > Nouvelle Communauté. Choisir type (public/privé/invitation), catégorie (genre/radio/professionnel), et configurer les canaux de discussion."
+            },
+            {
+              question: "Comment modérer une communauté ?",
+              answer: "Système de rôles : owner > admin > moderator > member. Les modérateurs peuvent épingler messages, supprimer contenu inapproprié, et muter des utilisateurs temporairement."
+            },
+            {
+              question: "Quelles sont les communautés par défaut ?",
+              answer: "Radio Vybbi Live (chat en direct), Artistes Hip-Hop, Agents & Managers, Lieux & Événements, Salon Influenceurs (privé). Chaque communauté a ses canaux spécialisés."
+            }
+          ]
+        },
+        {
+          title: "Chat en Temps Réel",
+          items: [
+            {
+              question: "Comment fonctionne le chat live radio ?",
+              answer: "Canal dédié 'Radio Vybbi Live' avec type 'live_radio'. Messages en temps réel pendant les diffusions. Intégration avec le player radio pour synchroniser discussions et morceaux."
+            },
+            {
+              question: "Comment rejoindre une communauté ?",
+              answer: "Page /communities > Parcourir les communautés publiques > Bouton 'Rejoindre'. Pour les communautés privées, nécessite invitation d'un admin/owner."
+            },
+            {
+              question: "Notifications et mentions",
+              answer: "Système de notifications push pour nouveaux messages, mentions @username, et messages épinglés. Paramétrable par utilisateur dans les réglages de profil."
+            }
+          ]
+        }
+      ]
     }
   };
 
