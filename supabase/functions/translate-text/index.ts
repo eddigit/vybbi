@@ -1,4 +1,3 @@
-import "https://deno.land/x/xhr@0.1.0/mod.ts";
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
 const corsHeaders = {
@@ -8,7 +7,7 @@ const corsHeaders = {
 
 interface TranslateRequest {
   text: string;
-  targetLanguage: string;
+  targetLanguage?: string;
   sourceLanguage?: string;
 }
 
@@ -18,79 +17,40 @@ serve(async (req) => {
   }
 
   try {
-    const { text, targetLanguage, sourceLanguage }: TranslateRequest = await req.json();
-    
-    if (!text || !targetLanguage) {
+    const bodyText = await req.text();
+    let payload: Partial<TranslateRequest> = {};
+    if (bodyText) {
+      try { payload = JSON.parse(bodyText); } catch { /* ignore bad JSON */ }
+    }
+
+    const text = (payload.text ?? '').toString();
+    const targetLanguage = (payload.targetLanguage ?? 'auto').toString();
+    const sourceLanguage = payload.sourceLanguage?.toString();
+
+    if (!text.trim()) {
       return new Response(
-        JSON.stringify({ error: 'Missing text or targetLanguage' }),
+        JSON.stringify({ error: 'Missing text', translatedText: '', detectedSourceLanguage: sourceLanguage ?? 'auto', targetLanguage }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
 
-    const apiKey = Deno.env.get('GOOGLE_TRANSLATE_API_KEY');
-    if (!apiKey) {
-      console.error('Google Translate API key not found');
-      return new Response(
-        JSON.stringify({ error: 'Translation service unavailable' }),
-        { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const url = `https://translation.googleapis.com/language/translate/v2?key=${apiKey}`;
-    
-    const requestBody: any = {
-      q: text,
-      target: targetLanguage,
-      format: 'text'
-    };
-
-    if (sourceLanguage) {
-      requestBody.source = sourceLanguage;
-    }
-
-    console.log('Translating:', { text: text.substring(0, 100), targetLanguage, sourceLanguage });
-
-    const response = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.error('Google Translate API error:', response.status, errorText);
-      return new Response(
-        JSON.stringify({ error: 'Translation failed', details: errorText }),
-        { status: response.status, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
-      );
-    }
-
-    const result = await response.json();
-    const translatedText = result.data.translations[0].translatedText;
-    const detectedSourceLanguage = result.data.translations[0].detectedSourceLanguage;
-
-    console.log('Translation successful:', { 
-      original: text.substring(0, 50),
-      translated: translatedText.substring(0, 50),
-      detectedSource: detectedSourceLanguage 
-    });
+    // Google Translate has been fully disabled. We return the original text as-is.
+    console.log('translate-text: Google Translate disabled; returning original text.');
 
     return new Response(
       JSON.stringify({
-        translatedText,
-        detectedSourceLanguage,
+        translatedText: text,
+        detectedSourceLanguage: sourceLanguage ?? 'auto',
         originalText: text,
-        targetLanguage
+        targetLanguage,
+        provider: 'disabled'
       }),
       { headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
-
   } catch (error) {
-    console.error('Translation error:', error);
+    console.error('translate-text error:', error);
     return new Response(
-      JSON.stringify({ error: 'Internal server error', details: error.message }),
+      JSON.stringify({ error: 'Internal server error' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   }

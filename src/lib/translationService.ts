@@ -50,41 +50,12 @@ class TranslationService {
     targetLanguage: string, 
     sourceLanguage?: string
   ): Promise<string> {
-    // Don't translate if target is French (original language) or empty text
-    if (targetLanguage === 'fr' || !text.trim()) {
-      return text;
-    }
-
-    // Check cache first
-    const cacheKey = this.getCacheKey(text, targetLanguage, sourceLanguage);
-    if (this.cache[cacheKey]) {
-      return this.cache[cacheKey];
-    }
-
+    // Translation disabled: always return original text
     try {
-      const { data, error } = await supabase.functions.invoke('translate-text', {
-        body: {
-          text: text.trim(),
-          targetLanguage,
-          sourceLanguage
-        }
-      });
-
-      if (error) {
-        console.error('Translation error:', error);
-        return text; // Return original text on error
-      }
-
-      const translatedText = data.translatedText;
-      
-      // Cache the result
-      this.cache[cacheKey] = translatedText;
-      this.saveCacheToStorage();
-
-      return translatedText;
-    } catch (error) {
-      console.error('Translation service error:', error);
-      return text; // Return original text on error
+      if (!text?.trim()) return text;
+      return text;
+    } catch {
+      return text;
     }
   }
 
