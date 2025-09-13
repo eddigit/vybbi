@@ -1,459 +1,397 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Badge } from '@/components/ui/badge';
-import { Checkbox } from '@/components/ui/checkbox';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
-import { Send, Mail, Users, FileText } from 'lucide-react';
-
-interface EmailTemplate {
-  id: string;
-  name: string;
-  subject: string;
-  body: string;
-  target_type?: string;
-}
+import { useState, useEffect } from "react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
+import { Mail, Eye, Send, User, Building, MapPin } from "lucide-react";
 
 interface Prospect {
   id: string;
   contact_name: string;
-  email?: string;
+  email: string;
+  company_name?: string;
   prospect_type: string;
   status: string;
-  company_name?: string;
 }
 
-export default function ProspectingEmailSender() {
-  const { toast } = useToast();
-  const [prospects, setProspects] = useState<Prospect[]>([]);
-  const [selectedProspects, setSelectedProspects] = useState<string[]>([]);
-  const [emailSubject, setEmailSubject] = useState('');
-  const [emailBody, setEmailBody] = useState('');
-  const [emailTemplates] = useState<EmailTemplate[]>([
-    {
-      id: '1',
-      name: 'Introduction Artiste',
-      subject: '🎵 Vybbi - Plateforme révolutionnaire pour artistes',
-      target_type: 'artist',
-      body: `Bonjour {{contact_name}},
+interface EmailTemplate {
+  id: string;
+  name: string;
+  type: string;
+  subject: string;
+  html_content: string;
+  variables: any; // Using any to match Supabase Json type
+}
 
-Je suis {{agent_name}} de Vybbi, la plateforme qui révolutionne la mise en relation dans l'industrie musicale.
+interface ProspectingEmailSenderProps {
+  isOpen: boolean;
+  onClose: () => void;
+  selectedProspect?: Prospect;
+  onEmailSent?: () => void;
+}
 
-Vybbi permet aux artistes comme vous de :
-✨ Être découvert par des agents, managers et lieux d'événements
-🎯 Accéder à des opportunités exclusives
-📈 Développer votre carrière musicale
-💼 Gérer vos bookings et collaborations
-
-{{company_name}} pourrait grandement bénéficier de notre écosystème.
-
-Êtes-vous disponible pour un appel de 15 minutes cette semaine pour découvrir comment Vybbi peut propulser votre carrière ?
-
-Cordialement,
-{{agent_name}}
-Vybbi - Agent Commercial`
-    },
-    {
-      id: '2',
-      name: 'Introduction Lieu',
-      subject: '🏛️ Vybbi - Trouvez les artistes parfaits pour vos événements',
-      target_type: 'venue',
-      body: `Bonjour {{contact_name}},
-
-Je représente Vybbi, la solution de référence pour la découverte et le booking d'artistes.
-
-Pour {{company_name}}, Vybbi offre :
-🎯 Accès à une base d'artistes qualifiés et vérifiés
-⚡ Booking simplifié et sécurisé
-💡 Recommandations personnalisées selon vos besoins
-📊 Outils de gestion d'événements intégrés
-
-Nous travaillons déjà avec de nombreuses salles qui ont augmenté la qualité de leur programmation grâce à notre plateforme.
-
-Pourrions-nous programmer un rendez-vous cette semaine pour vous présenter nos services ?
-
-Cordialement,
-{{agent_name}}
-Vybbi - Agent Commercial`
-    },
-    {
-      id: '3',
-      name: 'Relance Douce',
-      subject: '🔔 Vybbi - Suite à notre échange',
-      target_type: 'all',
-      body: `Bonjour {{contact_name}},
-
-J'espère que vous allez bien.
-
-Je reviens vers vous concernant Vybbi et les opportunités que notre plateforme peut offrir à {{company_name}}.
-
-Depuis notre dernier échange, nous avons :
-📈 Enregistré +50 nouveaux artistes cette semaine
-🎉 Facilité +30 nouveaux bookings
-🌟 Lancé de nouvelles fonctionnalités exclusives
-
-Seriez-vous disponible pour un point rapide cette semaine ?
-
-Cordialement,
-{{agent_name}}
-Vybbi - Agent Commercial`
-    }
-  ]);
+export default function ProspectingEmailSender({
+  isOpen,
+  onClose,
+  selectedProspect,
+  onEmailSent
+}: ProspectingEmailSenderProps) {
+  const [selectedTemplate, setSelectedTemplate] = useState<EmailTemplate | null>(null);
+  const [customMessage, setCustomMessage] = useState("");
+  const [customSubject, setCustomSubject] = useState("");
+  const [templates, setTemplates] = useState<EmailTemplate[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSending, setIsSending] = useState(false);
+  const [activeTab, setActiveTab] = useState("select");
   
-  const [selectedTemplate, setSelectedTemplate] = useState<string>('');
-  const [filterType, setFilterType] = useState<string>('all');
-  const [filterStatus, setFilterStatus] = useState<string>('all');
-  const [sending, setSending] = useState(false);
+  const { toast } = useToast();
 
+  // Load templates when dialog opens
   useEffect(() => {
-    loadProspects();
-  }, []);
+    if (isOpen) {
+      loadProspectingTemplates();
+    }
+  }, [isOpen]);
 
-  const loadProspects = async () => {
+  const loadProspectingTemplates = async () => {
+    setIsLoading(true);
     try {
-      const { data } = await supabase
-        .from('prospects')
-        .select('id, contact_name, email, prospect_type, status, company_name')
-        .not('email', 'is', null)
-        .order('created_at', { ascending: false });
+      const { data, error } = await supabase
+        .from('email_templates')
+        .select('*')
+        .or('type.like.%prospect%,type.like.%vybbi%')
+        .eq('is_active', true)
+        .order('name');
 
-      if (data) {
-        setProspects(data);
-      }
-    } catch (error) {
-      console.error('Error loading prospects:', error);
+      if (error) throw error;
+      setTemplates(data || []);
+    } catch (error: any) {
+      console.error('Error loading templates:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de charger les prospects",
-        variant: "destructive",
-      });
-    }
-  };
-
-  const filteredProspects = prospects.filter(prospect => {
-    const typeMatch = filterType === 'all' || prospect.prospect_type === filterType;
-    const statusMatch = filterStatus === 'all' || prospect.status === filterStatus;
-    return typeMatch && statusMatch;
-  });
-
-  const applyTemplate = (templateId: string) => {
-    const template = emailTemplates.find(t => t.id === templateId);
-    if (template) {
-      setEmailSubject(template.subject);
-      setEmailBody(template.body);
-      setSelectedTemplate(templateId);
-    }
-  };
-
-  const personalizeContent = (content: string, prospect: Prospect, agentName: string = 'Agent Vybbi') => {
-    return content
-      .replace(/{{contact_name}}/g, prospect.contact_name)
-      .replace(/{{company_name}}/g, prospect.company_name || prospect.contact_name)
-      .replace(/{{agent_name}}/g, agentName);
-  };
-
-  const sendEmails = async () => {
-    if (!emailSubject.trim() || !emailBody.trim() || selectedProspects.length === 0) {
-      toast({
-        title: "Erreur",
-        description: "Veuillez remplir tous les champs et sélectionner des prospects",
-        variant: "destructive",
-      });
-      return;
-    }
-
-    setSending(true);
-
-    try {
-      // Get current agent info
-      const { data: agentData } = await supabase
-        .from('vybbi_agents')
-        .select('id, agent_name')
-        .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .single();
-
-      if (!agentData) {
-        throw new Error('Agent non trouvé');
-      }
-
-      const selectedProspectData = prospects.filter(p => selectedProspects.includes(p.id));
-      let successCount = 0;
-      let errorCount = 0;
-
-      for (const prospect of selectedProspectData) {
-        try {
-          const personalizedSubject = personalizeContent(emailSubject, prospect, agentData.agent_name);
-          const personalizedBody = personalizeContent(emailBody, prospect, agentData.agent_name);
-
-          // Call email sending edge function
-          const { error } = await supabase.functions.invoke('send-prospecting-email', {
-            body: {
-              to: prospect.email,
-              subject: personalizedSubject,
-              content: personalizedBody,
-              prospectId: prospect.id,
-              agentId: agentData.id
-            }
-          });
-
-          if (error) {
-            console.error('Email error for prospect', prospect.id, error);
-            errorCount++;
-          } else {
-            successCount++;
-
-            // Log the interaction
-            await supabase.from('prospect_interactions').insert([{
-              prospect_id: prospect.id,
-              agent_id: agentData.id,
-              interaction_type: 'email',
-              subject: personalizedSubject,
-              content: personalizedBody,
-              completed_at: new Date().toISOString()
-            }]);
-
-            // Update prospect's last_contact_at
-            await supabase
-              .from('prospects')
-              .update({ 
-                last_contact_at: new Date().toISOString(),
-                status: (prospect.status === 'new' ? 'contacted' : prospect.status) as 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive'
-              })
-              .eq('id', prospect.id);
-          }
-        } catch (error) {
-          console.error('Error processing prospect', prospect.id, error);
-          errorCount++;
-        }
-      }
-
-      toast({
-        title: "Envoi terminé",
-        description: `${successCount} emails envoyés avec succès${errorCount > 0 ? `, ${errorCount} erreurs` : ''}`,
-        variant: successCount > 0 ? "default" : "destructive",
-      });
-
-      // Clear selection and reload data
-      setSelectedProspects([]);
-      loadProspects();
-
-    } catch (error) {
-      console.error('Error sending emails:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible d'envoyer les emails",
-        variant: "destructive",
+        description: "Impossible de charger les templates d'email",
+        variant: "destructive"
       });
     } finally {
-      setSending(false);
+      setIsLoading(false);
     }
   };
 
-  const handleSelectAll = () => {
-    if (selectedProspects.length === filteredProspects.length) {
-      setSelectedProspects([]);
-    } else {
-      setSelectedProspects(filteredProspects.map(p => p.id));
+  const handleTemplateSelect = (template: EmailTemplate) => {
+    setSelectedTemplate(template);
+    setCustomSubject(template.subject);
+    setCustomMessage(""); // Reset custom message when selecting new template
+    setActiveTab("customize");
+  };
+
+  const replaceVariables = (content: string) => {
+    if (!selectedProspect) return content;
+    
+    let result = content;
+    result = result.replace(/{{contact_name}}/g, selectedProspect.contact_name);
+    result = result.replace(/{{company_name}}/g, selectedProspect.company_name || selectedProspect.contact_name);
+    result = result.replace(/{{prospect_type}}/g, selectedProspect.prospect_type);
+    
+    return result;
+  };
+
+  const getPreviewContent = () => {
+    if (!selectedTemplate) return "";
+    
+    let content = selectedTemplate.html_content;
+    
+    // Replace template variables
+    content = replaceVariables(content);
+    
+    // Add custom message if provided
+    if (customMessage.trim()) {
+      const customSection = `
+        <div style="background: hsl(217.2 32.6% 17.5%); padding: 20px; border-radius: 8px; margin: 30px 0; border-left: 4px solid hsl(221.2 83.2% 53.3%);">
+          <h3 style="color: hsl(221.2 83.2% 53.3%); margin: 0 0 12px; font-size: 18px;">📝 Message Personnalisé | Personal Message</h3>
+          <p style="margin: 0; line-height: 1.6; color: hsl(210 40% 98%); white-space: pre-line;">${customMessage}</p>
+        </div>
+      `;
+      
+      // Insert before the signature section
+      const signatureIndex = content.indexOf('<!-- Signature -->');
+      if (signatureIndex !== -1) {
+        content = content.slice(0, signatureIndex) + customSection + content.slice(signatureIndex);
+      } else {
+        // Fallback: add before closing content div
+        const closingDivIndex = content.lastIndexOf('</div>');
+        if (closingDivIndex !== -1) {
+          content = content.slice(0, closingDivIndex) + customSection + content.slice(closingDivIndex);
+        }
+      }
+    }
+    
+    return content;
+  };
+
+  const handleSendEmail = async () => {
+    if (!selectedTemplate || !selectedProspect) return;
+
+    setIsSending(true);
+    try {
+      const finalSubject = customSubject || selectedTemplate.subject;
+      const finalContent = getPreviewContent();
+
+      // Send email via send-notification edge function
+      const { data, error } = await supabase.functions.invoke('send-notification', {
+        body: {
+          type: 'prospect_email',
+          to: selectedProspect.email,
+          subject: replaceVariables(finalSubject),
+          html: finalContent,
+          data: {
+            contact_name: selectedProspect.contact_name,
+            company_name: selectedProspect.company_name,
+            prospect_type: selectedProspect.prospect_type,
+            template_name: selectedTemplate.name
+          }
+        }
+      });
+
+      if (error) throw error;
+
+      // Log interaction in prospect_interactions table
+      await supabase.from('prospect_interactions').insert({
+        prospect_id: selectedProspect.id,
+        agent_id: null, // We'll need to get the current user's agent ID if applicable
+        interaction_type: 'email',
+        subject: replaceVariables(finalSubject),
+        content: customMessage || `Template: ${selectedTemplate.name}`,
+        completed_at: new Date().toISOString()
+      });
+
+      // Update prospect status if this is first contact
+      if (selectedTemplate.type === 'vybbi_prospect_first_contact' && selectedProspect.status === 'new') {
+        await supabase
+          .from('prospects')
+          .update({ 
+            status: 'contacted', 
+            last_contact_at: new Date().toISOString()
+          })
+          .eq('id', selectedProspect.id);
+      } else {
+        // Update last contact date
+        await supabase
+          .from('prospects')
+          .update({ last_contact_at: new Date().toISOString() })
+          .eq('id', selectedProspect.id);
+      }
+
+      toast({
+        title: "Email envoyé",
+        description: `Email envoyé avec succès à ${selectedProspect.contact_name}`,
+      });
+
+      onClose();
+      onEmailSent?.();
+      
+    } catch (error: any) {
+      console.error('Error sending email:', error);
+      toast({
+        title: "Erreur d'envoi",
+        description: error.message || "Impossible d'envoyer l'email",
+        variant: "destructive"
+      });
+    } finally {
+      setIsSending(false);
     }
   };
 
-  const getTypeBadge = (type: string) => {
-    const styles = {
-      'artist': 'bg-purple-500',
-      'venue': 'bg-indigo-500',
-      'agent': 'bg-cyan-500',
-      'manager': 'bg-teal-500'
-    };
-
-    const labels = {
-      'artist': 'Artiste',
-      'venue': 'Lieu',
-      'agent': 'Agent',
-      'manager': 'Manager'
-    };
-
-    return (
-      <Badge className={`${styles[type as keyof typeof styles]} text-white`}>
-        {labels[type as keyof typeof labels]}
-      </Badge>
-    );
+  const resetForm = () => {
+    setSelectedTemplate(null);
+    setCustomMessage("");
+    setCustomSubject("");
+    setActiveTab("select");
   };
 
   return (
-    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-      {/* Email Composition */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+    <Dialog open={isOpen} onOpenChange={(open) => {
+      if (!open) {
+        onClose();
+        resetForm();
+      }
+    }}>
+      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+        <DialogHeader>
+          <DialogTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5" />
-            Composition d'Email
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Templates */}
-          <div className="space-y-2">
-            <Label>Modèles d'Email</Label>
-            <Select value={selectedTemplate} onValueChange={applyTemplate}>
-              <SelectTrigger>
-                <SelectValue placeholder="Choisir un modèle..." />
-              </SelectTrigger>
-              <SelectContent>
-                {emailTemplates.map((template) => (
-                  <SelectItem key={template.id} value={template.id}>
-                    <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4" />
-                      {template.name}
-                    </div>
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          </div>
+            Envoi d'email de prospection
+          </DialogTitle>
+        </DialogHeader>
 
-          {/* Subject */}
-          <div className="space-y-2">
-            <Label htmlFor="subject">Sujet *</Label>
-            <Input
-              id="subject"
-              value={emailSubject}
-              onChange={(e) => setEmailSubject(e.target.value)}
-              placeholder="Sujet de l'email..."
-            />
-          </div>
-
-          {/* Body */}
-          <div className="space-y-2">
-            <Label htmlFor="body">Contenu de l'Email *</Label>
-            <Textarea
-              id="body"
-              value={emailBody}
-              onChange={(e) => setEmailBody(e.target.value)}
-              placeholder="Contenu de l'email..."
-              rows={12}
-            />
-          </div>
-
-          <div className="text-sm text-muted-foreground">
-            <p><strong>Variables disponibles :</strong></p>
-            <ul className="list-disc list-inside space-y-1">
-              <li>{`{{contact_name}}`} - Nom du contact</li>
-              <li>{`{{company_name}}`} - Nom de l'entreprise</li>
-              <li>{`{{agent_name}}`} - Votre nom d'agent</li>
-            </ul>
-          </div>
-
-          <Button 
-            onClick={sendEmails}
-            disabled={sending || selectedProspects.length === 0}
-            className="w-full"
-          >
-            <Send className="mr-2 h-4 w-4" />
-            {sending 
-              ? `Envoi en cours... (${selectedProspects.length})` 
-              : `Envoyer à ${selectedProspects.length} prospects`
-            }
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Prospect Selection */}
-      <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Users className="h-5 w-5" />
-            Sélection des Prospects ({filteredProspects.length})
-          </CardTitle>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          {/* Filters */}
-          <div className="grid grid-cols-2 gap-4">
-            <Select value={filterType} onValueChange={setFilterType}>
-              <SelectTrigger>
-                <SelectValue placeholder="Type..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les types</SelectItem>
-                <SelectItem value="artist">Artiste</SelectItem>
-                <SelectItem value="venue">Lieu</SelectItem>
-                <SelectItem value="agent">Agent</SelectItem>
-                <SelectItem value="manager">Manager</SelectItem>
-              </SelectContent>
-            </Select>
-
-            <Select value={filterStatus} onValueChange={setFilterStatus}>
-              <SelectTrigger>
-                <SelectValue placeholder="Statut..." />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="all">Tous les statuts</SelectItem>
-                <SelectItem value="new">Nouveau</SelectItem>
-                <SelectItem value="contacted">Contacté</SelectItem>
-                <SelectItem value="qualified">Qualifié</SelectItem>
-                <SelectItem value="interested">Intéressé</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
-
-          {/* Select All */}
-          <div className="flex items-center space-x-2">
-            <Checkbox
-              id="select-all"
-              checked={selectedProspects.length === filteredProspects.length && filteredProspects.length > 0}
-              onCheckedChange={handleSelectAll}
-            />
-            <Label htmlFor="select-all">
-              Sélectionner tout ({filteredProspects.length})
-            </Label>
-          </div>
-
-          {/* Prospects List */}
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {filteredProspects.map((prospect) => (
-              <div
-                key={prospect.id}
-                className={`flex items-center space-x-3 p-3 border rounded-lg cursor-pointer hover:bg-muted/50 ${
-                  selectedProspects.includes(prospect.id) ? 'bg-muted border-primary' : ''
-                }`}
-                onClick={() => {
-                  setSelectedProspects(prev => 
-                    prev.includes(prospect.id)
-                      ? prev.filter(id => id !== prospect.id)
-                      : [...prev, prospect.id]
-                  );
-                }}
-              >
-                <Checkbox
-                  checked={selectedProspects.includes(prospect.id)}
-                  onChange={() => {}}
-                />
-                <div className="flex-1 min-w-0">
+        {selectedProspect && (
+          <Card className="mb-6">
+            <CardHeader>
+              <CardTitle className="text-lg flex items-center gap-2">
+                <User className="h-5 w-5" />
+                Destinataire
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="flex flex-wrap gap-4">
+                <div className="flex items-center gap-2">
+                  <User className="h-4 w-4 text-muted-foreground" />
+                  <span className="font-medium">{selectedProspect.contact_name}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4 text-muted-foreground" />
+                  <span className="text-sm">{selectedProspect.email}</span>
+                </div>
+                {selectedProspect.company_name && (
                   <div className="flex items-center gap-2">
-                    {getTypeBadge(prospect.prospect_type)}
-                    <div className="font-medium truncate">{prospect.contact_name}</div>
+                    <Building className="h-4 w-4 text-muted-foreground" />
+                    <span className="text-sm">{selectedProspect.company_name}</span>
                   </div>
-                  <div className="text-sm text-muted-foreground truncate">
-                    {prospect.company_name}
-                  </div>
-                  <div className="text-sm text-muted-foreground truncate">
-                    {prospect.email}
-                  </div>
+                )}
+                <Badge variant="outline">{selectedProspect.prospect_type}</Badge>
+                <Badge variant={selectedProspect.status === 'new' ? 'destructive' : 'secondary'}>
+                  {selectedProspect.status}
+                </Badge>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-3">
+            <TabsTrigger value="select">Sélection Template</TabsTrigger>
+            <TabsTrigger value="customize" disabled={!selectedTemplate}>Personnalisation</TabsTrigger>
+            <TabsTrigger value="preview" disabled={!selectedTemplate}>Prévisualisation</TabsTrigger>
+          </TabsList>
+
+          <TabsContent value="select" className="space-y-4">
+            <div className="grid gap-4">
+              <Label className="text-lg">Choisissez un template d'email :</Label>
+              {isLoading ? (
+                <div className="text-center py-8">Chargement des templates...</div>
+              ) : templates.length === 0 ? (
+                <div className="text-center py-8 text-muted-foreground">
+                  Aucun template de prospection trouvé
+                </div>
+              ) : (
+                <div className="grid gap-3">
+                  {templates.map((template) => (
+                    <Card 
+                      key={template.id}
+                      className={`cursor-pointer transition-all hover:shadow-md ${selectedTemplate?.id === template.id ? 'ring-2 ring-primary' : ''}`}
+                      onClick={() => handleTemplateSelect(template)}
+                    >
+                      <CardHeader className="pb-3">
+                        <div className="flex items-center justify-between">
+                          <CardTitle className="text-base">{template.name}</CardTitle>
+                          <Badge variant="secondary" className="text-xs">
+                            {template.type.replace(/[_]/g, ' ').toUpperCase()}
+                          </Badge>
+                        </div>
+                        <CardDescription className="text-sm">
+                          {template.subject}
+                        </CardDescription>
+                      </CardHeader>
+                    </Card>
+                  ))}
+                </div>
+              )}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="customize" className="space-y-4">
+            {selectedTemplate && (
+              <div className="space-y-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Template sélectionné : {selectedTemplate.name}</CardTitle>
+                    <CardDescription>Personnalisez le contenu de votre email</CardDescription>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="subject">Sujet de l'email</Label>
+                      <Input
+                        id="subject"
+                        value={customSubject}
+                        onChange={(e) => setCustomSubject(e.target.value)}
+                        placeholder="Sujet de l'email..."
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Les variables {"{contact_name}"}, {"{company_name}"} seront automatiquement remplacées
+                      </p>
+                    </div>
+
+                    <div className="space-y-2">
+                      <Label htmlFor="custom-message">Message personnel (optionnel)</Label>
+                      <Textarea
+                        id="custom-message"
+                        value={customMessage}
+                        onChange={(e) => setCustomMessage(e.target.value)}
+                        placeholder="Ajoutez un message personnel qui sera inséré dans le template..."
+                        rows={6}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        Ce message sera ajouté au template existant avec une mise en forme appropriée
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <div className="flex gap-3">
+                  <Button 
+                    onClick={() => setActiveTab("preview")} 
+                    className="flex items-center gap-2"
+                  >
+                    <Eye className="h-4 w-4" />
+                    Prévisualiser
+                  </Button>
                 </div>
               </div>
-            ))}
+            )}
+          </TabsContent>
 
-            {filteredProspects.length === 0 && (
-              <div className="text-center text-muted-foreground py-8">
-                Aucun prospect trouvé avec les filtres sélectionnés
+          <TabsContent value="preview" className="space-y-4">
+            {selectedTemplate && (
+              <div className="space-y-4">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Prévisualisation de l'email</CardTitle>
+                    <CardDescription>
+                      Sujet : <span className="font-medium">{replaceVariables(customSubject)}</span>
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent>
+                    <div 
+                      className="border rounded-md p-4 bg-background max-h-96 overflow-y-auto"
+                      dangerouslySetInnerHTML={{ __html: getPreviewContent() }}
+                    />
+                  </CardContent>
+                </Card>
+
+                <div className="flex gap-3 justify-end">
+                  <Button variant="outline" onClick={() => setActiveTab("customize")}>
+                    Retour à la personnalisation
+                  </Button>
+                  <Button 
+                    onClick={handleSendEmail} 
+                    disabled={isSending}
+                    className="flex items-center gap-2"
+                  >
+                    <Send className="h-4 w-4" />
+                    {isSending ? 'Envoi en cours...' : 'Envoyer l\'email'}
+                  </Button>
+                </div>
               </div>
             )}
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+          </TabsContent>
+        </Tabs>
+      </DialogContent>
+    </Dialog>
   );
 }

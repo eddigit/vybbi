@@ -11,6 +11,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProspectDialog from '@/components/prospecting/ProspectDialog';
+import ProspectingEmailSender from '@/components/prospecting/ProspectingEmailSender';
 import { 
   Users, 
   TrendingUp, 
@@ -75,6 +76,15 @@ export default function AdminProspecting() {
   const [typeFilter, setTypeFilter] = useState<string>('all');
   const [prospectDialogOpen, setProspectDialogOpen] = useState(false);
   const [selectedProspectId, setSelectedProspectId] = useState<string | undefined>();
+  const [emailSenderOpen, setEmailSenderOpen] = useState(false);
+  const [selectedProspect, setSelectedProspect] = useState<{
+    id: string;
+    contact_name: string;
+    email: string;
+    company_name?: string;
+    prospect_type: string;
+    status: string;
+  } | undefined>();
 
   useEffect(() => {
     if (user) {
@@ -378,7 +388,23 @@ export default function AdminProspecting() {
                           >
                             <Edit className="h-4 w-4" />
                           </Button>
-                          <Button variant="outline" size="sm">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              const prospectForEmail = {
+                                id: prospect.id,
+                                contact_name: prospect.contact_name,
+                                email: prospect.email || '',
+                                company_name: prospect.company_name,
+                                prospect_type: prospect.prospect_type,
+                                status: prospect.status
+                              };
+                              setSelectedProspect(prospectForEmail);
+                              setEmailSenderOpen(true);
+                            }}
+                            disabled={!prospect.email}
+                          >
                             <Mail className="h-4 w-4" />
                           </Button>
                         </div>
@@ -463,6 +489,13 @@ export default function AdminProspecting() {
         onOpenChange={setProspectDialogOpen}
         prospectId={selectedProspectId}
         onProspectUpdated={loadData}
+      />
+
+      <ProspectingEmailSender
+        isOpen={emailSenderOpen}
+        onClose={() => setEmailSenderOpen(false)}
+        selectedProspect={selectedProspect}
+        onEmailSent={loadData}
       />
     </div>
   );
