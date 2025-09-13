@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Layout } from '@/components/layout/Layout';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -263,30 +263,25 @@ const CommunityChat = () => {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Chargement de la communauté...</p>
-          </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement de la communauté...</p>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   if (!community) {
     return (
-      <Layout>
-        <div className="text-center py-12">
-          <p className="text-muted-foreground">Communauté non trouvée</p>
-        </div>
-      </Layout>
+      <div className="text-center py-12">
+        <p className="text-muted-foreground">Communauté non trouvée</p>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="flex h-[calc(100vh-4rem)]">
+    <div className="flex h-[calc(100vh-4rem)]">
         {/* Sidebar */}
         <div className="w-64 border-r bg-card">
           <div className="p-4 border-b">
@@ -405,7 +400,6 @@ const CommunityChat = () => {
           )}
         </div>
       </div>
-    </Layout>
   );
 };
 

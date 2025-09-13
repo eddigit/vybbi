@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { Layout } from '@/components/layout/Layout';
+
 import { Button } from '@/components/ui/button';
 import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -37,8 +37,8 @@ const Communities = () => {
     if (!user) return;
 
     try {
-      // Fetch all public communities and user's private communities
-      const { data: communitiesData, error } = await supabase
+      // First, fetch all communities
+      const { data: communitiesData, error: communitiesError } = await supabase
         .from('communities')
         .select(`
           id,
@@ -47,31 +47,37 @@ const Communities = () => {
           type,
           category,
           avatar_url,
-          member_count,
-          community_members!left (
-            user_id,
-            role
-          )
+          member_count
         `)
         .eq('is_active', true)
         .order('member_count', { ascending: false });
 
-      if (error) throw error;
+      if (communitiesError) throw communitiesError;
 
-      const formattedCommunities: Community[] = communitiesData.map((community: any) => {
-        const membership = community.community_members?.find((m: any) => m.user_id === user.id);
-        return {
-          id: community.id,
-          name: community.name,
-          description: community.description,
-          type: community.type,
-          category: community.category,
-          avatar_url: community.avatar_url,
-          member_count: community.member_count,
-          is_member: !!membership,
-          member_role: membership?.role
-        };
-      });
+      // Then, fetch user's memberships separately
+      const { data: membershipsData, error: membershipsError } = await supabase
+        .from('community_members')
+        .select('community_id, role')
+        .eq('user_id', user.id);
+
+      if (membershipsError) throw membershipsError;
+
+      // Create a map of memberships for quick lookup
+      const membershipMap = new Map(
+        membershipsData?.map(m => [m.community_id, m.role]) || []
+      );
+
+      const formattedCommunities: Community[] = communitiesData.map((community: any) => ({
+        id: community.id,
+        name: community.name,
+        description: community.description,
+        type: community.type,
+        category: community.category,
+        avatar_url: community.avatar_url,
+        member_count: community.member_count,
+        is_member: membershipMap.has(community.id),
+        member_role: membershipMap.get(community.id)
+      }));
 
       setCommunities(formattedCommunities);
     } catch (error) {
@@ -90,15 +96,34 @@ const Communities = () => {
     if (!user) return;
 
     try {
+      // Get user's profile ID
+      const { data: profileData, error: profileError } = await supabase
+        .from('profiles')
+        .select('id')
+        .eq('user_id', user.id)
+        .single();
+
+      if (profileError) throw profileError;
+
       const { error } = await supabase
         .from('community_members')
         .insert({
           community_id: communityId,
           user_id: user.id,
-          profile_id: user.id // Assuming profile_id matches user_id
+          profile_id: profileData.id
         });
 
-      if (error) throw error;
+      if (error) {
+        // Handle unique constraint violation (user already member)
+        if (error.code === '23505') {
+          toast({
+            title: "Information",
+            description: "Vous êtes déjà membre de cette communauté",
+          });
+          return;
+        }
+        throw error;
+      }
 
       await fetchCommunities();
       toast({
@@ -139,108 +164,104 @@ const Communities = () => {
 
   if (loading) {
     return (
-      <Layout>
-        <div className="flex items-center justify-center min-h-[400px]">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-            <p className="text-muted-foreground">Chargement des communautés...</p>
-          </div>
+      <div className="flex items-center justify-center min-h-[400px]">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+          <p className="text-muted-foreground">Chargement des communautés...</p>
         </div>
-      </Layout>
+      </div>
     );
   }
 
   return (
-    <Layout>
-      <div className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Communautés Vybbi</h1>
+    <div className="container mx-auto px-4 py-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold mb-2">Communautés Vybbi</h1>
+        <p className="text-muted-foreground">
+          Rejoignez des communautés passionnées et échangez avec d'autres artistes, agents et professionnels de l'industrie musicale.
+        </p>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {communities.map((community) => (
+          <Card key={community.id} className="p-6 hover:shadow-lg transition-shadow">
+            <div className="flex items-start gap-4 mb-4">
+              <Avatar className="h-12 w-12">
+                <AvatarImage src={community.avatar_url || undefined} />
+                <AvatarFallback>
+                  {getCategoryIcon(community.category)}
+                </AvatarFallback>
+              </Avatar>
+              
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2 mb-1">
+                  <h3 className="font-semibold truncate">{community.name}</h3>
+                  {community.type !== 'public' && (
+                    <Lock className="h-4 w-4 text-muted-foreground" />
+                  )}
+                </div>
+                <Badge variant="secondary" className={getCategoryColor(community.category)}>
+                  {community.category}
+                </Badge>
+              </div>
+            </div>
+
+            <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
+              {community.description}
+            </p>
+
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-1 text-sm text-muted-foreground">
+                <Users className="h-4 w-4" />
+                <span>{community.member_count} membres</span>
+              </div>
+
+              {community.is_member ? (
+                <Button 
+                  onClick={() => navigate(`/community/${community.id}`)}
+                  variant="default"
+                  size="sm"
+                  className="gap-1"
+                >
+                  <MessageCircle className="h-4 w-4" />
+                  Ouvrir
+                </Button>
+              ) : (
+                <Button
+                  onClick={() => joinCommunity(community.id)}
+                  variant="outline"
+                  size="sm"
+                  disabled={community.type === 'invite_only'}
+                >
+                  {community.type === 'invite_only' ? 'Sur invitation' : 'Rejoindre'}
+                </Button>
+              )}
+            </div>
+
+            {community.is_member && community.member_role && (
+              <div className="mt-3 pt-3 border-t">
+                <Badge variant="outline" className="text-xs">
+                  {community.member_role === 'owner' && 'Propriétaire'}
+                  {community.member_role === 'admin' && 'Administrateur'}
+                  {community.member_role === 'moderator' && 'Modérateur'}
+                  {community.member_role === 'member' && 'Membre'}
+                </Badge>
+              </div>
+            )}
+          </Card>
+        ))}
+      </div>
+
+      {communities.length === 0 && (
+        <div className="text-center py-12">
+          <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+          <h3 className="text-lg font-semibold mb-2">Aucune communauté disponible</h3>
           <p className="text-muted-foreground">
-            Rejoignez des communautés passionnées et échangez avec d'autres artistes, agents et professionnels de l'industrie musicale.
+            Les communautés seront bientôt disponibles. Revenez plus tard !
           </p>
         </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {communities.map((community) => (
-            <Card key={community.id} className="p-6 hover:shadow-lg transition-shadow">
-              <div className="flex items-start gap-4 mb-4">
-                <Avatar className="h-12 w-12">
-                  <AvatarImage src={community.avatar_url || undefined} />
-                  <AvatarFallback>
-                    {getCategoryIcon(community.category)}
-                  </AvatarFallback>
-                </Avatar>
-                
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-center gap-2 mb-1">
-                    <h3 className="font-semibold truncate">{community.name}</h3>
-                    {community.type !== 'public' && (
-                      <Lock className="h-4 w-4 text-muted-foreground" />
-                    )}
-                  </div>
-                  <Badge variant="secondary" className={getCategoryColor(community.category)}>
-                    {community.category}
-                  </Badge>
-                </div>
-              </div>
-
-              <p className="text-sm text-muted-foreground mb-4 line-clamp-2">
-                {community.description}
-              </p>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                  <Users className="h-4 w-4" />
-                  <span>{community.member_count} membres</span>
-                </div>
-
-                {community.is_member ? (
-                  <Button 
-                    onClick={() => navigate(`/community/${community.id}`)}
-                    variant="default"
-                    size="sm"
-                    className="gap-1"
-                  >
-                    <MessageCircle className="h-4 w-4" />
-                    Ouvrir
-                  </Button>
-                ) : (
-                  <Button
-                    onClick={() => joinCommunity(community.id)}
-                    variant="outline"
-                    size="sm"
-                    disabled={community.type === 'invite_only'}
-                  >
-                    {community.type === 'invite_only' ? 'Sur invitation' : 'Rejoindre'}
-                  </Button>
-                )}
-              </div>
-
-              {community.is_member && community.member_role && (
-                <div className="mt-3 pt-3 border-t">
-                  <Badge variant="outline" className="text-xs">
-                    {community.member_role === 'owner' && 'Propriétaire'}
-                    {community.member_role === 'admin' && 'Administrateur'}
-                    {community.member_role === 'moderator' && 'Modérateur'}
-                    {community.member_role === 'member' && 'Membre'}
-                  </Badge>
-                </div>
-              )}
-            </Card>
-          ))}
-        </div>
-
-        {communities.length === 0 && (
-          <div className="text-center py-12">
-            <Users className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">Aucune communauté disponible</h3>
-            <p className="text-muted-foreground">
-              Les communautés seront bientôt disponibles. Revenez plus tard !
-            </p>
-          </div>
-        )}
-      </div>
-    </Layout>
+      )}
+    </div>
   );
 };
 
