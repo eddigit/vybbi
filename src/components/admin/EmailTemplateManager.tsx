@@ -30,7 +30,7 @@ interface EmailTemplate {
   language?: string;
   is_active: boolean;
   variables?: Json | null;
-  provider?: 'internal' | 'brevo';
+  
   brevo_template_id?: number | null;
   created_at: string;
   updated_at: string;
@@ -123,9 +123,7 @@ export const EmailTemplateManager: React.FC = () => {
     type: '',
     category: 'notifications',
     language: 'fr',
-  is_active: true,
-  provider: 'internal' as 'internal' | 'brevo',
-  brevo_template_id: null as number | null
+  is_active: true
   });
 
   const queryClient = useQueryClient();
@@ -136,7 +134,7 @@ export const EmailTemplateManager: React.FC = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('email_templates')
-  .select('id, name, subject, html_content, type, category, language, is_active, variables, provider, brevo_template_id, created_at, updated_at')
+  .select('id, name, subject, html_content, type, category, language, is_active, variables, brevo_template_id, created_at, updated_at')
         .order('category', { ascending: true })
         .order('language', { ascending: true })
         .order('created_at', { ascending: false });
@@ -476,9 +474,7 @@ export const EmailTemplateManager: React.FC = () => {
       type: template.type,
       category: template.category || 'notifications',
       language: template.language || 'fr',
-  is_active: template.is_active,
-  provider: (template.provider as 'internal' | 'brevo') || 'internal',
-  brevo_template_id: template.brevo_template_id || null
+      is_active: template.is_active
     });
     
     // Convertir le HTML existant en blocs
@@ -508,10 +504,8 @@ export const EmailTemplateManager: React.FC = () => {
         setBrevoLoading(false);
       }
     };
-    if (formData.provider === 'brevo' && brevoTemplates.length === 0) {
-      loadBrevoTemplates();
-    }
-  }, [formData.provider, brevoTemplates.length]);
+    // Always load templates (removed provider check)
+  }, [brevoTemplates.length]);
 
   // Créer des templates par défaut si aucun n'existe
   const createDefaultTemplates = () => {
@@ -610,8 +604,6 @@ export const EmailTemplateManager: React.FC = () => {
       category: 'notifications',
       language: 'fr',
   is_active: true,
-  provider: 'internal',
-  brevo_template_id: null
     });
     setEmailBlocks([]);
     setIsEditing(true);
@@ -946,58 +938,50 @@ export const EmailTemplateManager: React.FC = () => {
 
                 <div className="grid grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label>Provider</Label>
+                    <Label>Language</Label>
                     <Select
-                      value={formData.provider}
-                      onValueChange={(value) => setFormData(prev => ({ ...prev, provider: value as 'internal' | 'brevo' }))}
+                      value={formData.language}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, language: value }))}
                     >
                       <SelectTrigger>
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="internal">Interne (HTML)</SelectItem>
-                        <SelectItem value="brevo">Brevo (Template)</SelectItem>
+                        {TEMPLATE_LANGUAGES.map(lang => (
+                          <SelectItem key={lang.value} value={lang.value}>
+                            {lang.flag} {lang.label}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </div>
-                  {formData.provider === 'brevo' && (
-                    <div className="space-y-2">
-                      <Label>Template Brevo</Label>
-                      <Select
-                        value={formData.brevo_template_id ? String(formData.brevo_template_id) : ''}
-                        onValueChange={(value) => setFormData(prev => ({ ...prev, brevo_template_id: Number(value) }))}
-                      >
-                        <SelectTrigger>
-                          <SelectValue placeholder={brevoLoading ? 'Chargement...' : 'Sélectionner un template'} />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {brevoTemplates.map(t => (
-                            <SelectItem key={t.id} value={String(t.id)}>
-                              {t.name} {t.subject ? `— ${t.subject}` : ''}
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  )}
+                  <div className="space-y-2">
+                    <Label>Status</Label>
+                    <Select
+                      value={formData.is_active ? 'active' : 'inactive'}
+                      onValueChange={(value) => setFormData(prev => ({ ...prev, is_active: value === 'active' }))}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="active">Actif</SelectItem>
+                        <SelectItem value="inactive">Inactif</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
 
                 {/* Drag & Drop Editor */}
-                {formData.provider === 'internal' ? (
-                  <div className="border rounded-lg" style={{ height: '600px' }}>
-                    <EmailDragDropEditor
-                      initialBlocks={emailBlocks}
-                      onBlocksChange={setEmailBlocks}
-                      onHtmlChange={(html) => setFormData(prev => ({ ...prev, html_content: html }))}
-                      variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
-                      designSettings={designSettings}
-                    />
-                  </div>
-                ) : (
-                  <div className="rounded-md border p-4 text-sm text-muted-foreground">
-                    Ce template est géré dans Brevo. Vous pouvez éditer le sujet ici et choisir un template Brevo. Les variables seront injectées via les paramètres Brevo.
-                  </div>
-                )}
+                <div className="border rounded-lg" style={{ height: '600px' }}>
+                  <EmailDragDropEditor
+                    initialBlocks={emailBlocks}
+                    onBlocksChange={setEmailBlocks}
+                    onHtmlChange={(html) => setFormData(prev => ({ ...prev, html_content: html }))}
+                    variables={Object.keys(DEFAULT_VARIABLES[formData.type] || {})}
+                    designSettings={designSettings}
+                  />
+                </div>
 
                 <div className="flex justify-end space-x-2">
                   <Button variant="outline" onClick={() => setIsEditing(false)}>
