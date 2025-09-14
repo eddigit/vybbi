@@ -51,10 +51,10 @@ export const AuthHookSetup = () => {
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <CheckCircle className="h-5 w-5 text-primary" />
-          Configuration Auth Hook Brevo
+          Configuration Auth Hook Gmail SMTP
         </CardTitle>
         <CardDescription>
-          Configure automatiquement l'envoi d'emails d'authentification via Brevo
+          Configure automatiquement l'envoi d'emails d'authentification via Gmail SMTP
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -65,8 +65,8 @@ export const AuthHookSetup = () => {
             <li>• Réinitialisation de mot de passe</li>
             <li>• Changement d'adresse email</li>
             <li>• Invitations utilisateur</li>
-            <li>• Envoi via Brevo SMTP (info@vybbi.app)</li>
-            <li>• Branding Vybbi avec logo et couleurs</li>
+            <li>• Envoi via Gmail SMTP</li>
+            <li>• Templates HTML personnalisés avec branding Vybbi</li>
           </ul>
         </div>
 
@@ -95,7 +95,7 @@ export const AuthHookSetup = () => {
               Configuration en cours...
             </>
           ) : (
-            "Configurer Auth Hook Brevo"
+            "Configurer Auth Hook Gmail SMTP"
           )}
         </Button>
 
