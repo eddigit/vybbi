@@ -195,18 +195,20 @@ let verifyUrlOverride: string | undefined = undefined;
 
 try {
   const adminClient = createClient(supabaseUrl, serviceRoleKey);
+  // Map signup -> magiclink to avoid password requirement and ensure a valid action link
+  const mappedType = (emailActionType === 'signup') ? 'magiclink' : emailActionType as any;
   // @ts-ignore - broad type for emailActionType
   const { data: linkData, error: linkError } = await (adminClient.auth as any).admin.generateLink({
-    type: emailActionType,
+    type: mappedType,
     email: user.email,
     options: { redirectTo: callbackUrl }
   });
 
   if (linkError) {
-    logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message });
+    logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message, emailActionType, mappedType });
   } else {
     verifyUrlOverride = (linkData?.properties?.action_link) || (linkData?.action_link);
-    logWithTimestamp('INFO', 'Generated action link via Admin API');
+    logWithTimestamp('INFO', 'Generated action link via Admin API', { emailActionType, mappedType });
   }
 } catch (genErr: any) {
   logWithTimestamp('ERROR', 'Exception during generateLink', { error: genErr?.message });
