@@ -30,7 +30,15 @@ function logWithTimestamp(level: string, message: string, data?: any) {
 }
 
 function getEmailTemplate(type: string, data: any): string {
-  const { token, token_hash, redirect_to, site_url, email_action_type } = data;
+  const { token_hash, redirect_to, site_url, email_action_type } = data;
+
+  // Build a correct public confirmation URL using Supabase verify endpoint
+  // Normalize bases to avoid duplicates like /auth/v1/auth/confirm
+  const envSupabaseUrl = (Deno.env.get('SUPABASE_URL') || '').replace(/\/$/, '');
+  const supabaseBase = envSupabaseUrl.replace(/\/rest\/v1$/, '');
+  const siteBase = (site_url || supabaseBase).replace(/\/auth\/v1$/, '').replace(/\/$/, '');
+
+  const verifyUrl = `${supabaseBase}/auth/v1/verify?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || siteBase)}`;
   
   const baseTemplate = `
     <!DOCTYPE html>
@@ -72,36 +80,36 @@ function getEmailTemplate(type: string, data: any): string {
       content = `
         <h2>Bienvenue sur Vybbi !</h2>
         <p>Merci de vous être inscrit sur notre plateforme. Pour activer votre compte, cliquez sur le lien ci-dessous :</p>
-        <p><a href="${site_url}/auth/confirm?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || site_url)}" class="button">Confirmer mon compte</a></p>
-        <p>Ou copiez ce lien dans votre navigateur :<br><small>${site_url}/auth/confirm?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || site_url)}</small></p>
+        <p><a href="${verifyUrl}" class="button">Confirmer mon compte</a></p>
+        <p>Ou copiez ce lien dans votre navigateur :<br><small>${verifyUrl}</small></p>
       `;
       break;
     case 'recovery':
       content = `
         <h2>Réinitialisation de mot de passe</h2>
         <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien ci-dessous :</p>
-        <p><a href="${site_url}/auth/confirm?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || site_url)}" class="button">Réinitialiser mon mot de passe</a></p>
+        <p><a href="${verifyUrl}" class="button">Réinitialiser mon mot de passe</a></p>
       `;
       break;
     case 'email_change':
       content = `
         <h2>Confirmation de changement d'email</h2>
         <p>Vous avez demandé à changer votre adresse email. Cliquez sur le lien ci-dessous pour confirmer :</p>
-        <p><a href="${site_url}/auth/confirm?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || site_url)}" class="button">Confirmer le changement</a></p>
+        <p><a href="${verifyUrl}" class="button">Confirmer le changement</a></p>
       `;
       break;
     case 'invite':
       content = `
         <h2>Invitation à rejoindre Vybbi</h2>
         <p>Vous avez été invité à rejoindre notre plateforme. Cliquez sur le lien ci-dessous :</p>
-        <p><a href="${site_url}/auth/confirm?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || site_url)}" class="button">Accepter l'invitation</a></p>
+        <p><a href="${verifyUrl}" class="button">Accepter l'invitation</a></p>
       `;
       break;
     default:
       content = `
         <h2>Action requise</h2>
         <p>Cliquez sur le lien ci-dessous pour continuer :</p>
-        <p><a href="${site_url}/auth/confirm?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || site_url)}" class="button">Continuer</a></p>
+        <p><a href="${verifyUrl}" class="button">Continuer</a></p>
       `;
   }
   
