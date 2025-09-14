@@ -63,6 +63,7 @@ import InfluenceurDashboard from './pages/InfluenceurDashboard';
 import AdminInfluenceurs from './pages/AdminInfluenceurs';
 import AdminKnowledge from './pages/AdminKnowledge';
 import AdminEmailDiagnostics from './pages/AdminEmailDiagnostics';
+import AuthCallback from './pages/AuthCallback';
 
 const queryClient = new QueryClient();
 
@@ -93,6 +94,7 @@ const App = () => (
               <Route path="/commissions" element={<Commissions />} />
               <Route path="/reports" element={<Reports />} />
               <Route path="/auth" element={<Auth />} />
+              <Route path="/auth/callback" element={<AuthCallback />} />
               <Route path="/inscription/confirmation" element={<InscriptionConfirmation />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profiles" element={<Profiles />} />

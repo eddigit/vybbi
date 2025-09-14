@@ -41,7 +41,10 @@ function getEmailTemplate(type: string, data: any): string {
   const useHash = email_action_type === 'email_change';
   const paramName = useHash ? 'token_hash' : 'token';
   const paramValue = useHash ? token_hash : token;
-  const verifyUrl = `${supabaseBase}/auth/v1/verify?${paramName}=${paramValue}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || siteBase)}`;
+  
+  // Use callback URL for proper client-side handling
+  const callbackUrl = `${siteBase}/auth/callback`;
+  const verifyUrl = `${supabaseBase}/auth/v1/verify?${paramName}=${paramValue}&type=${email_action_type}&redirect_to=${encodeURIComponent(callbackUrl)}`;
   
   const baseTemplate = `
     <!DOCTYPE html>
