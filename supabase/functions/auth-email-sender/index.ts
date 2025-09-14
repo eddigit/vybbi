@@ -30,7 +30,7 @@ function logWithTimestamp(level: string, message: string, data?: any) {
 }
 
 function getEmailTemplate(type: string, data: any): string {
-  const { token, token_hash, redirect_to, site_url, email_action_type } = data;
+  const { token, token_hash, redirect_to, site_url, email_action_type, verifyUrl: overrideVerifyUrl } = data;
 
   // Build a correct public verification URL using Supabase verify endpoint
   // Use token for signup/recovery/invite/magic_link, token_hash for email_change
@@ -38,14 +38,19 @@ function getEmailTemplate(type: string, data: any): string {
   const supabaseBase = envSupabaseUrl.replace(/\/rest\/v1$/, '');
   const siteBase = (site_url || supabaseBase).replace(/\/auth\/v1$/, '').replace(/\/$/, '');
 
-  // Prefer token_hash when available (GoTrue v2); fallback to token
-  const useHash = !!token_hash;
-  const paramName = useHash ? 'token_hash' : 'token';
-  const paramValue = useHash ? token_hash : token;
-  
-  // Use callback URL for proper client-side handling
-  const callbackUrl = `${siteBase}/auth/callback`;
-  const verifyUrl = `${supabaseBase}/auth/v1/verify?${paramName}=${paramValue}&type=${email_action_type}&redirect_to=${encodeURIComponent(callbackUrl)}`;
+  // Prefer provided verifyUrl (generated via Admin API) when available
+  let verifyUrl = overrideVerifyUrl;
+
+  if (!verifyUrl) {
+    // Prefer token_hash when available (GoTrue v2); fallback to token
+    const useHash = !!token_hash;
+    const paramName = useHash ? 'token_hash' : 'token';
+    const paramValue = useHash ? token_hash : token;
+    
+    // Use callback URL for proper client-side handling
+    const callbackUrl = `${siteBase}/auth/callback`;
+    verifyUrl = `${supabaseBase}/auth/v1/verify?${paramName}=${paramValue}&type=${email_action_type}&redirect_to=${encodeURIComponent(callbackUrl)}`;
+  }
   
   const baseTemplate = `
     <!DOCTYPE html>
@@ -181,11 +186,41 @@ const handler = async (req: Request): Promise<Response> => {
     };
     const subject = subjectMap[emailActionType] || 'Vybbi - Action requise';
 
-    // Generate HTML content
-    const htmlContent = getEmailTemplate(emailActionType, {
-      ...payload.email_data,
-      site_url: payload.email_data.site_url || supabaseUrl?.replace('/rest/v1', '')
+// Prepare callback URL and generate verify link if tokens are missing
+const siteUrl = payload.email_data.site_url || supabaseUrl?.replace('/rest/v1', '');
+const siteBase = (siteUrl || '').replace(/\/auth\/v1$/, '').replace(/\/$/, '');
+const callbackUrl = `${siteBase}/auth/callback`;
+
+let verifyUrlOverride: string | undefined = undefined;
+const hasTokens = !!(payload.email_data.token || payload.email_data.token_hash);
+
+if (!hasTokens) {
+  try {
+    const adminClient = createClient(supabaseUrl, serviceRoleKey);
+    // @ts-ignore - broad type for emailActionType
+    const { data: linkData, error: linkError } = await (adminClient.auth as any).admin.generateLink({
+      type: emailActionType,
+      email: user.email,
+      options: { redirectTo: callbackUrl }
     });
+
+    if (linkError) {
+      logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message });
+    } else {
+      verifyUrlOverride = (linkData?.properties?.action_link) || (linkData?.action_link);
+      logWithTimestamp('INFO', 'Generated action link via Admin API');
+    }
+  } catch (genErr: any) {
+    logWithTimestamp('ERROR', 'Exception during generateLink', { error: genErr?.message });
+  }
+}
+
+// Generate HTML content
+const htmlContent = getEmailTemplate(emailActionType, {
+  ...payload.email_data,
+  site_url: siteUrl,
+  verifyUrl: verifyUrlOverride
+});
 
     // Send via Gmail function
     const supabase = createClient(supabaseUrl, serviceRoleKey);
