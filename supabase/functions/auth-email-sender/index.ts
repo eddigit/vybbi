@@ -30,15 +30,18 @@ function logWithTimestamp(level: string, message: string, data?: any) {
 }
 
 function getEmailTemplate(type: string, data: any): string {
-  const { token_hash, redirect_to, site_url, email_action_type } = data;
+  const { token, token_hash, redirect_to, site_url, email_action_type } = data;
 
-  // Build a correct public confirmation URL using Supabase verify endpoint
-  // Normalize bases to avoid duplicates like /auth/v1/auth/confirm
+  // Build a correct public verification URL using Supabase verify endpoint
+  // Use token for signup/recovery/invite/magic_link, token_hash for email_change
   const envSupabaseUrl = (Deno.env.get('SUPABASE_URL') || '').replace(/\/$/, '');
   const supabaseBase = envSupabaseUrl.replace(/\/rest\/v1$/, '');
   const siteBase = (site_url || supabaseBase).replace(/\/auth\/v1$/, '').replace(/\/$/, '');
 
-  const verifyUrl = `${supabaseBase}/auth/v1/verify?token_hash=${token_hash}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || siteBase)}`;
+  const useHash = email_action_type === 'email_change';
+  const paramName = useHash ? 'token_hash' : 'token';
+  const paramValue = useHash ? token_hash : token;
+  const verifyUrl = `${supabaseBase}/auth/v1/verify?${paramName}=${paramValue}&type=${email_action_type}&redirect_to=${encodeURIComponent(redirect_to || siteBase)}`;
   
   const baseTemplate = `
     <!DOCTYPE html>
