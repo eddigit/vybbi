@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2.57.2";
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
@@ -26,84 +27,7 @@ interface AuthWebhookPayload {
 // Enhanced logging function
 function logWithTimestamp(level: string, message: string, data?: any) {
   const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] [${level}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
-}
-
-// Send email via Brevo (preferred method)
-async function sendViaBrevo(to: string, subject: string, htmlContent: string): Promise<{ success: boolean; messageId?: string; error?: string }> {
-  const brevoApiKey = Deno.env.get('BREVO_API_KEY');
-  const senderEmail = Deno.env.get('BREVO_SENDER_EMAIL') || 'noreply@vybbi.com';
-  const senderName = Deno.env.get('BREVO_SENDER_NAME') || 'Vybbi';
-  
-  if (!brevoApiKey) {
-    logWithTimestamp('ERROR', 'BREVO_API_KEY not found in environment');
-    return { success: false, error: 'Brevo API key not configured' };
-  }
-
-  try {
-    logWithTimestamp('INFO', 'Sending email via Brevo', { to, subject, senderEmail });
-    
-    const response = await fetch('https://api.brevo.com/v3/smtp/email', {
-      method: 'POST',
-      headers: {
-        'accept': 'application/json',
-        'content-type': 'application/json',
-        'api-key': brevoApiKey,
-      },
-      body: JSON.stringify({
-        sender: { email: senderEmail, name: senderName },
-        to: [{ email: to }],
-        subject,
-        htmlContent,
-      }),
-    });
-
-    if (response.ok) {
-      const result = await response.json();
-      logWithTimestamp('SUCCESS', 'Email sent via Brevo', { messageId: result.messageId });
-      return { success: true, messageId: result.messageId };
-    } else {
-      const errorText = await response.text();
-      logWithTimestamp('ERROR', 'Brevo API error', { status: response.status, error: errorText });
-      return { success: false, error: `Brevo error: ${response.status} - ${errorText}` };
-    }
-  } catch (error) {
-    logWithTimestamp('ERROR', 'Exception in Brevo send', { error: error.message });
-    return { success: false, error: `Brevo exception: ${error.message}` };
-  }
-}
-
-// Fallback to Gmail
-async function sendViaGmail(supabaseUrl: string, serviceRoleKey: string, to: string, subject: string, html: string, templateData: any): Promise<{ success: boolean; error?: string }> {
-  try {
-    logWithTimestamp('INFO', 'Attempting Gmail fallback', { to, subject });
-    
-    const gmailResponse = await fetch(`${supabaseUrl}/functions/v1/gmail-send-email`, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${serviceRoleKey}`,
-      },
-      body: JSON.stringify({
-        to,
-        subject,
-        html,
-        templateData
-      }),
-    });
-
-    if (gmailResponse.ok) {
-      logWithTimestamp('SUCCESS', 'Email sent via Gmail fallback');
-      return { success: true };
-    } else {
-      const errorText = await gmailResponse.text();
-      logWithTimestamp('ERROR', 'Gmail fallback failed', { status: gmailResponse.status, error: errorText });
-      return { success: false, error: `Gmail error: ${gmailResponse.status} - ${errorText}` };
-    }
-  } catch (error) {
-    logWithTimestamp('ERROR', 'Exception in Gmail send', { error: error.message });
-    return { success: false, error: `Gmail exception: ${error.message}` };
-  }
+  console.log(`[${timestamp}] [AUTH-EMAIL] [${level}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
 }
 
 function getEmailTemplate(type: string, data: any): string {
@@ -315,50 +239,46 @@ const handler = async (req: Request): Promise<Response> => {
 
     logWithTimestamp('INFO', 'HTML template generated', { contentLength: htmlContent.length });
 
-    // Try Brevo first
-    logWithTimestamp('INFO', '🟦 TRYING BREVO FIRST (Preferred Method)');
-    const brevoResult = await sendViaBrevo(payload.user.email, subject, htmlContent);
+    // Create Supabase client and send via Gmail
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
     
-    if (brevoResult.success) {
-      logWithTimestamp('SUCCESS', '✅ EMAIL SENT SUCCESSFULLY VIA BREVO', { messageId: brevoResult.messageId });
-      return new Response(JSON.stringify({ 
-        success: true, 
-        method: 'brevo', 
-        messageId: brevoResult.messageId 
-      }), {
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
-    }
-
-    // Fallback to Gmail
-    logWithTimestamp('WARNING', '🟨 BREVO FAILED - TRYING GMAIL FALLBACK', { brevoError: brevoResult.error });
-    const gmailResult = await sendViaGmail(supabaseUrl, serviceRoleKey, payload.user.email, subject, htmlContent, {
-      action_type: emailActionType,
-      ...payload.email_data
+    logWithTimestamp('INFO', '📧 SENDING EMAIL VIA GMAIL FUNCTION');
+    
+    const { data, error } = await supabase.functions.invoke('gmail-send-email', {
+      body: {
+        to: payload.user.email,
+        subject: subject,
+        html: htmlContent,
+        templateData: {
+          action_type: emailActionType,
+          ...payload.email_data
+        }
+      }
     });
     
-    if (gmailResult.success) {
-      logWithTimestamp('SUCCESS', '✅ EMAIL SENT VIA GMAIL FALLBACK');
+    if (error) {
+      logWithTimestamp('ERROR', '❌ GMAIL SEND FAILED', { error: error.message });
       return new Response(JSON.stringify({ 
-        success: true, 
-        method: 'gmail_fallback' 
+        error: 'Gmail send failed', 
+        message: error.message 
       }), {
+        status: 500,
         headers: { 'Content-Type': 'application/json', ...corsHeaders }
       });
     }
 
-    // Both methods failed
-    logWithTimestamp('ERROR', '❌ BOTH BREVO AND GMAIL FAILED', { 
-      brevoError: brevoResult.error, 
-      gmailError: gmailResult.error 
+    logWithTimestamp('SUCCESS', '✅ EMAIL SENT SUCCESSFULLY VIA GMAIL', { 
+      messageId: data?.messageId,
+      to: payload.user.email,
+      accepted: data?.accepted
     });
     
     return new Response(JSON.stringify({ 
-      error: 'Both email services failed', 
-      brevoError: brevoResult.error, 
-      gmailError: gmailResult.error 
+      success: true, 
+      method: 'gmail', 
+      messageId: data?.messageId,
+      accepted: data?.accepted
     }), {
-      status: 500,
       headers: { 'Content-Type': 'application/json', ...corsHeaders }
     });
 

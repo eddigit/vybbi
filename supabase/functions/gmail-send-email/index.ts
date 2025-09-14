@@ -6,6 +6,9 @@ interface GmailSendRequest {
   html?: string;
   text?: string;
   from?: string;
+  cc?: string | string[];
+  bcc?: string | string[];
+  replyTo?: string;
   templateData?: any;
 }
 
@@ -58,7 +61,10 @@ serve(async (req) => {
       subject: emailData.subject,
       hasHtml: !!emailData.html,
       hasText: !!emailData.text,
-      from: emailData.from
+      from: emailData.from,
+      cc: emailData.cc,
+      bcc: emailData.bcc,
+      replyTo: emailData.replyTo
     });
     
     // Validate required fields
@@ -115,6 +121,9 @@ serve(async (req) => {
     const mailOptions = {
       from: emailData.from || `"Vybbi" <${gmailUser}>`,
       to: emailData.to,
+      cc: emailData.cc,
+      bcc: emailData.bcc,
+      replyTo: emailData.replyTo,
       subject: emailData.subject,
       html: processedHtml,
       text: processedText,
@@ -125,7 +134,7 @@ serve(async (req) => {
     // Send email using dynamic import of nodemailer
     logWithTimestamp('INFO', 'Importing nodemailer and creating transporter...');
     const { default: nodemailer } = await import('npm:nodemailer@6.9.7');
-    const transporterInstance = nodemailer.createTransporter(transporter);
+    const transporterInstance = nodemailer.createTransport(transporter);
     
     logWithTimestamp('INFO', 'Sending email via SMTP...');
     const info = await transporterInstance.sendMail(mailOptions);

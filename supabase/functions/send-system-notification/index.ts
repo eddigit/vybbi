@@ -15,7 +15,7 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Email templates système (toujours en dur, jamais Brevo)
+// Email templates système (toujours en dur, Gmail uniquement)
 const getSystemEmailTemplate = (type: string, data: any): { subject: string, html: string } => {
   const templates = {
     user_registration: {
@@ -468,6 +468,108 @@ const getSystemEmailTemplate = (type: string, data: any): { subject: string, htm
 
 const handler = async (req: Request): Promise<Response> => {
   // Handle CORS preflight requests
+  if (req.method === 'OPTIONS') {
+    return new Response(null, { headers: corsHeaders });
+  }
+
+  if (req.method !== 'POST') {
+    return new Response('Method not allowed', { status: 405, headers: corsHeaders });
+  }
+
+  try {
+    const notificationRequest: SystemNotificationRequest = await req.json();
+    console.log('Notification request:', JSON.stringify(notificationRequest, null, 2));
+
+    // Get email template
+    const template = getSystemEmailTemplate(notificationRequest.type, notificationRequest.data || {});
+    
+    // Replace placeholders in subject and HTML with actual data
+    let finalSubject = template.subject;
+    let finalHtml = template.html;
+    
+    if (notificationRequest.data) {
+      Object.entries(notificationRequest.data).forEach(([key, value]) => {
+        const placeholder = new RegExp(`{{${key}}}`, 'g');
+        finalSubject = finalSubject.replace(placeholder, String(value));
+        finalHtml = finalHtml.replace(placeholder, String(value));
+      });
+    }
+
+    // Get Supabase environment variables
+    const supabaseUrl = Deno.env.get('SUPABASE_URL');
+    const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+    
+    if (!supabaseUrl || !serviceRoleKey) {
+      console.error('Missing Supabase environment variables');
+      return new Response(
+        JSON.stringify({ error: 'Supabase configuration not found' }),
+        { 
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
+
+    // Create Supabase client and send via Gmail
+    const supabase = createClient(supabaseUrl, serviceRoleKey);
+    
+    console.log('📧 SENDING SYSTEM EMAIL VIA GMAIL FUNCTION');
+    
+    const { data, error } = await supabase.functions.invoke('gmail-send-email', {
+      body: {
+        to: notificationRequest.to,
+        cc: notificationRequest.cc,
+        bcc: notificationRequest.bcc,
+        replyTo: notificationRequest.replyTo,
+        subject: finalSubject,
+        html: finalHtml,
+        templateData: notificationRequest.data
+      }
+    });
+    
+    if (error) {
+      console.error('Gmail send failed:', error.message);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to send email via Gmail',
+          message: error.message
+        }),
+        { 
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
+
+    console.log('✅ System email sent successfully via Gmail:', data);
+    
+    return new Response(
+      JSON.stringify({ 
+        success: true, 
+        messageId: data?.messageId,
+        provider: 'gmail',
+        accepted: data?.accepted
+      }),
+      { 
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      }
+    );
+
+  } catch (error: any) {
+    console.error('Error in send-system-notification:', error);
+    return new Response(
+      JSON.stringify({ 
+        error: 'Internal server error',
+        message: error.message
+      }),
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      }
+    );
+  }
+};
+  // Handle CORS preflight requests
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
@@ -582,7 +684,4 @@ const handler = async (req: Request): Promise<Response> => {
         headers: { "Content-Type": "application/json", ...corsHeaders }
       }
     );
-  }
-};
-
 serve(handler);
