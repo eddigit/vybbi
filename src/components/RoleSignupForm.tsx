@@ -46,8 +46,8 @@ export default function RoleSignupForm({ profileType, title, description }: Role
         title: "Inscription réussie!",
         description: "Vérifiez votre email pour confirmer votre compte.",
       });
-      // Navigate to auth or dashboard after successful signup
-      navigate('/dashboard');
+      // Rediriger vers la page d'instructions de confirmation
+      navigate('/inscription/confirmation');
     } catch (error: any) {
       toast({
         title: "Erreur",

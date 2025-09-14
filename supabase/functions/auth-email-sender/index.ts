@@ -221,10 +221,10 @@ const htmlContent = getEmailTemplate(emailActionType, {
   verifyUrl: verifyUrlOverride
 });
 
-    // Send via Gmail function
+    // Send via Gmail function with 4s watchdog to satisfy 5s auth hook SLA
     const supabase = createClient(supabaseUrl, serviceRoleKey);
-    
-    const { data, error } = await supabase.functions.invoke('gmail-send-email', {
+
+    const sendPromise = supabase.functions.invoke('gmail-send-email', {
       body: {
         to: payload.user.email,
         subject: subject,
@@ -234,8 +234,28 @@ const htmlContent = getEmailTemplate(emailActionType, {
           ...payload.email_data
         }
       }
+    }).then((res) => ({ kind: 'result', ...res })) as Promise<{ kind: 'result', data: any, error: any }>;
+
+    const watchdog = new Promise<{ kind: 'timeout' }>((resolve) => {
+      setTimeout(() => resolve({ kind: 'timeout' }), 4000);
     });
-    
+
+    const raced = await Promise.race([sendPromise, watchdog]);
+
+    if ((raced as any).kind === 'timeout') {
+      logWithTimestamp('WARN', 'Email send taking too long, returning early (queued).');
+      return new Response(JSON.stringify({ 
+        success: true, 
+        method: 'gmail', 
+        queued: true
+      }), {
+        status: 202,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      });
+    }
+
+    const { data, error } = raced as { kind: 'result', data: any, error: any };
+
     if (error) {
       logWithTimestamp('ERROR', 'Gmail send failed', { error: error.message });
       return new Response(JSON.stringify({ 

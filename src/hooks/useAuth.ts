@@ -17,6 +17,11 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  // Local rate-limit to avoid 429 from Supabase (60s between attempts)
+  const [lastSignUpAttempt, setLastSignUpAttempt] = useState<number | null>(() => {
+    const saved = sessionStorage.getItem('lastSignUpAttempt');
+    return saved ? parseInt(saved) : null;
+  });
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -91,6 +96,16 @@ export function useAuth() {
 
   const signUp = async (email: string, password: string, displayName: string, profileType: string, roleDetail?: string) => {
     try {
+      const now = Date.now();
+      if (lastSignUpAttempt && now - lastSignUpAttempt < 60000) {
+        const remaining = Math.ceil((60000 - (now - lastSignUpAttempt)) / 1000);
+        const message = `Veuillez attendre ${remaining} secondes avant de réessayer`;
+        toast({ title: 'Trop de tentatives', description: message, variant: 'destructive' });
+        throw new Error(message);
+      }
+      setLastSignUpAttempt(now);
+      sessionStorage.setItem('lastSignUpAttempt', String(now));
+
       const redirectUrl = `${window.location.origin}/auth/callback`;
       
       const { data, error } = await supabase.auth.signUp({
@@ -108,7 +123,7 @@ export function useAuth() {
 
       if (error) throw error;
       
-      // Envoyer l'email de bienvenue
+      // Envoyer l'email de bienvenue (asynchrone, hors chemin critique)
       setTimeout(async () => {
         try {
           await sendWelcomeEmail(email, displayName, profileType);
@@ -124,17 +139,17 @@ export function useAuth() {
         } catch (adminEmailError) {
           console.error('Erreur lors de l\'envoi de la notification admin:', adminEmailError);
         }
-      }, 2000); // Délai pour laisser le temps à l'utilisateur de se créer
+      }, 2000);
       
       toast({
-        title: "Compte créé avec succès !",
-        description: "Vérifiez votre email pour confirmer votre compte.",
+        title: 'Compte créé avec succès !',
+        description: 'Vérifiez votre email pour confirmer votre compte.',
       });
     } catch (error: any) {
       toast({
         title: "Erreur lors de l'inscription",
         description: error.message,
-        variant: "destructive",
+        variant: 'destructive',
       });
       throw error;
     }
