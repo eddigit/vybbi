@@ -136,11 +136,21 @@ const handler = async (req: Request): Promise<Response> => {
     // Accept either Authorization: Bearer <secret>, x-hook-secret header, or Standard Webhooks signature
     const bearer = req.headers.get('authorization') || req.headers.get('Authorization');
     const headerSecret = req.headers.get('x-hook-secret');
+    const whSig = req.headers.get('webhook-signature') || req.headers.get('Webhook-Signature');
+    const svixSig = req.headers.get('svix-signature') || req.headers.get('Svix-Signature');
     let webhookData: AuthWebhookPayload | null = null;
 
     const bearerToken = bearer?.toLowerCase().startsWith('bearer ')
       ? bearer.split(' ')[1]
       : undefined;
+
+    // Debug headers present (no sensitive values logged)
+    console.log('Auth hook headers present:', {
+      hasAuthorization: Boolean(bearerToken),
+      hasXHookSecret: Boolean(headerSecret),
+      hasWebhookSignature: Boolean(whSig),
+      hasSvixSignature: Boolean(svixSig)
+    });
 
     if ((bearerToken && bearerToken === hookSecret) || (headerSecret && headerSecret === hookSecret)) {
       // If verified via token/secret, parse body as JSON
@@ -154,7 +164,7 @@ const handler = async (req: Request): Promise<Response> => {
         webhookData = wh.verify(payload, headers) as AuthWebhookPayload;
       } catch (err) {
         console.error('Webhook verification failed (bearer/x-hook-secret/signature):', err);
-        return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+        return new Response(JSON.stringify({ error: 'Unauthorized: invalid hook signature or token' }), {
           status: 401,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
         });
