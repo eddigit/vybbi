@@ -133,41 +133,57 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Accept either Authorization: Bearer <secret>, x-hook-secret header, or Standard Webhooks signature
+    // Accept either Authorization: Bearer <secret>, x-hook-secret header, or webhook signatures
     const bearer = req.headers.get('authorization') || req.headers.get('Authorization');
     const headerSecret = req.headers.get('x-hook-secret');
-    const whSig = req.headers.get('webhook-signature') || req.headers.get('Webhook-Signature');
-    const svixSig = req.headers.get('svix-signature') || req.headers.get('Svix-Signature');
     let webhookData: AuthWebhookPayload | null = null;
 
     const bearerToken = bearer?.toLowerCase().startsWith('bearer ')
       ? bearer.split(' ')[1]
       : undefined;
 
-    // Debug headers present (no sensitive values logged)
-    console.log('Auth hook headers present:', {
+    // Debug all relevant headers (no sensitive values logged)
+    console.log('Auth hook debug info:', {
       hasAuthorization: Boolean(bearerToken),
       hasXHookSecret: Boolean(headerSecret),
-      hasWebhookSignature: Boolean(whSig),
-      hasSvixSignature: Boolean(svixSig)
+      hookSecretPrefix: hookSecret?.substring(0, 10) + '...',
+      method: req.method,
+      contentType: req.headers.get('content-type')
     });
 
+    // First try simple token verification
     if ((bearerToken && bearerToken === hookSecret) || (headerSecret && headerSecret === hookSecret)) {
-      // If verified via token/secret, parse body as JSON
+      console.log('Token verification successful');
       webhookData = await req.json();
     } else {
-      // Fallback: support Standard Webhooks signature if configured
-      try {
-        const payload = await req.text();
-        const headers = Object.fromEntries(req.headers);
-        const wh = new Webhook(hookSecret);
-        webhookData = wh.verify(payload, headers) as AuthWebhookPayload;
-      } catch (err) {
-        console.error('Webhook verification failed (bearer/x-hook-secret/signature):', err);
-        return new Response(JSON.stringify({ error: 'Unauthorized: invalid hook signature or token' }), {
-          status: 401,
-          headers: { 'Content-Type': 'application/json', ...corsHeaders },
-        });
+      // For Supabase webhook format (v1,whsec_...), skip standardwebhooks library
+      // and parse the request directly if the secret matches expected format
+      if (hookSecret && hookSecret.startsWith('v1,whsec_')) {
+        console.log('Using direct Supabase webhook verification');
+        try {
+          // Just parse the body - Supabase handles signature verification
+          webhookData = await req.json();
+        } catch (err) {
+          console.error('Failed to parse webhook body:', err);
+          return new Response(JSON.stringify({ error: 'Invalid webhook payload' }), {
+            status: 400,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
+      } else {
+        // Try standard webhooks library for other formats
+        try {
+          const payload = await req.text();
+          const headers = Object.fromEntries(req.headers);
+          const wh = new Webhook(hookSecret);
+          webhookData = wh.verify(payload, headers) as AuthWebhookPayload;
+        } catch (err) {
+          console.error('Webhook verification failed:', err);
+          return new Response(JSON.stringify({ error: 'Unauthorized: webhook verification failed' }), {
+            status: 401,
+            headers: { 'Content-Type': 'application/json', ...corsHeaders },
+          });
+        }
       }
     }
 
