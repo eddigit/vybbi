@@ -62,6 +62,7 @@ import RechercheAvancee from './pages/RechercheAvancee';
 import InfluenceurDashboard from './pages/InfluenceurDashboard';
 import AdminInfluenceurs from './pages/AdminInfluenceurs';
 import AdminKnowledge from './pages/AdminKnowledge';
+import AdminEmailDiagnostics from './pages/AdminEmailDiagnostics';
 
 const queryClient = new QueryClient();
 
@@ -126,6 +127,7 @@ const App = () => (
               <Route path="/admin/ads" element={<AdminAds />} />
               <Route path="/admin/influenceurs" element={<AdminInfluenceurs />} />
               <Route path="/admin/knowledge" element={<AdminKnowledge />} />
+              <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
               <Route path="/affiliation" element={<InfluenceurDashboard />} />
               <Route path="/influenceurs/:slug" element={<ArtisteProfile />} />
               <Route path="/blog" element={<Blog />} />

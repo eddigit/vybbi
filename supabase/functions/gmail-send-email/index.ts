@@ -1,122 +1,171 @@
 import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
-import { createTransport } from "npm:nodemailer@6.9.8";
+
+interface GmailSendRequest {
+  to: string;
+  subject: string;
+  html?: string;
+  text?: string;
+  from?: string;
+  templateData?: any;
+}
 
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Headers': 'authorization, x-client-info, apikey, content-type',
 };
 
-interface GmailSendRequest {
-  to: string | string[];
-  subject: string;
-  html?: string;
-  text?: string;
-  from?: string;
-  templateData?: Record<string, any>;
+// Enhanced logging function
+function logWithTimestamp(level: string, message: string, data?: any) {
+  const timestamp = new Date().toISOString();
+  console.log(`[${timestamp}] [GMAIL] [${level}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
 }
 
 serve(async (req) => {
+  logWithTimestamp('INFO', '=== GMAIL SEND EMAIL FUNCTION CALLED ===');
+  
+  // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
+    logWithTimestamp('INFO', 'CORS preflight request handled');
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
+    // Get Gmail credentials from environment variables
     const gmailUser = Deno.env.get('GMAIL_USER');
-    const gmailPassword = Deno.env.get('GMAIL_APP_PASSWORD');
-    
-    if (!gmailUser || !gmailPassword) {
-      console.error('Gmail configuration missing:', { 
-        hasUser: !!gmailUser, 
-        hasPassword: !!gmailPassword 
-      });
-      return new Response(JSON.stringify({ error: 'Gmail SMTP configuration incomplete' }), {
-        status: 500,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
+    const gmailAppPassword = Deno.env.get('GMAIL_APP_PASSWORD');
 
-    const { to, subject, html, text, from, templateData }: GmailSendRequest = await req.json();
-
-    if (!to || !subject || (!html && !text)) {
-      return new Response(JSON.stringify({ 
-        error: 'Missing required fields: to, subject, and html or text' 
-      }), {
-        status: 400,
-        headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-      });
-    }
-
-    // Create Gmail SMTP transporter
-    const transporter = createTransport({
-      service: 'gmail',
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, // Use TLS
-      auth: {
-        user: gmailUser,
-        pass: gmailPassword,
-      },
-      tls: {
-        rejectUnauthorized: false
-      }
+    logWithTimestamp('INFO', 'Environment check', { 
+      hasGmailUser: !!gmailUser, 
+      hasGmailAppPassword: !!gmailAppPassword 
     });
 
-    // Process template data if provided
-    let processedHtml = html;
-    let processedText = text;
-    let processedSubject = subject;
-
-    if (templateData && html) {
-      // Simple template replacement
-      for (const [key, value] of Object.entries(templateData)) {
-        const placeholder = `{{${key}}}`;
-        processedHtml = processedHtml?.replace(new RegExp(placeholder, 'g'), String(value));
-        processedText = processedText?.replace(new RegExp(placeholder, 'g'), String(value));
-        processedSubject = processedSubject.replace(new RegExp(placeholder, 'g'), String(value));
-      }
+    if (!gmailUser || !gmailAppPassword) {
+      logWithTimestamp('ERROR', 'Gmail credentials not found in environment variables');
+      return new Response(
+        JSON.stringify({ error: 'Gmail credentials not configured' }),
+        { 
+          status: 500,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
     }
 
+    // Parse request body
+    const emailData: GmailSendRequest = await req.json();
+    
+    logWithTimestamp('INFO', 'Email data received', {
+      to: emailData.to,
+      subject: emailData.subject,
+      hasHtml: !!emailData.html,
+      hasText: !!emailData.text,
+      from: emailData.from
+    });
+    
+    // Validate required fields
+    if (!emailData.to || !emailData.subject || (!emailData.html && !emailData.text)) {
+      logWithTimestamp('ERROR', 'Missing required fields', { 
+        hasTo: !!emailData.to, 
+        hasSubject: !!emailData.subject, 
+        hasHtml: !!emailData.html, 
+        hasText: !!emailData.text 
+      });
+      return new Response(
+        JSON.stringify({ error: 'Missing required fields: to, subject, and html or text' }),
+        { 
+          status: 400,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
+
+    logWithTimestamp('INFO', 'Preparing to send email via Gmail SMTP');
+
+    // Configure nodemailer transporter for Gmail
+    const transporter = {
+      host: 'smtp.gmail.com',
+      port: 587,
+      secure: false,
+      auth: {
+        user: gmailUser,
+        pass: gmailAppPassword,
+      },
+    };
+
+    // Process template data for simple replacements
+    let processedHtml = emailData.html;
+    let processedText = emailData.text;
+    
+    if (emailData.templateData && processedHtml) {
+      logWithTimestamp('INFO', 'Processing HTML template data', { keys: Object.keys(emailData.templateData) });
+      Object.entries(emailData.templateData).forEach(([key, value]) => {
+        const placeholder = `{{${key}}}`;
+        processedHtml = processedHtml?.replace(new RegExp(placeholder, 'g'), String(value));
+      });
+    }
+    
+    if (emailData.templateData && processedText) {
+      logWithTimestamp('INFO', 'Processing text template data', { keys: Object.keys(emailData.templateData) });
+      Object.entries(emailData.templateData).forEach(([key, value]) => {
+        const placeholder = `{{${key}}}`;
+        processedText = processedText?.replace(new RegExp(placeholder, 'g'), String(value));
+      });
+    }
+
+    // Prepare email options
     const mailOptions = {
-      from: from || `"Vybbi" <${gmailUser}>`,
-      to: Array.isArray(to) ? to.join(', ') : to,
-      subject: processedSubject,
+      from: emailData.from || `"Vybbi" <${gmailUser}>`,
+      to: emailData.to,
+      subject: emailData.subject,
       html: processedHtml,
       text: processedText,
     };
 
-    console.log('Sending email via Gmail SMTP:', {
-      to: mailOptions.to,
-      subject: mailOptions.subject,
-      from: mailOptions.from
-    });
+    logWithTimestamp('INFO', 'Mail options prepared', { from: mailOptions.from, to: mailOptions.to });
 
-    // Send email
-    const info = await transporter.sendMail(mailOptions);
+    // Send email using dynamic import of nodemailer
+    logWithTimestamp('INFO', 'Importing nodemailer and creating transporter...');
+    const { default: nodemailer } = await import('npm:nodemailer@6.9.7');
+    const transporterInstance = nodemailer.createTransporter(transporter);
     
-    console.log('Email sent successfully via Gmail:', {
+    logWithTimestamp('INFO', 'Sending email via SMTP...');
+    const info = await transporterInstance.sendMail(mailOptions);
+    
+    logWithTimestamp('SUCCESS', '✅ EMAIL SENT SUCCESSFULLY VIA GMAIL', {
       messageId: info.messageId,
+      to: emailData.to,
       accepted: info.accepted,
       rejected: info.rejected
     });
 
-    return new Response(JSON.stringify({
-      success: true,
-      messageId: info.messageId,
-      accepted: info.accepted,
-      rejected: info.rejected
-    }), {
-      status: 200,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
-    });
+    return new Response(
+      JSON.stringify({ 
+        success: true,
+        messageId: info.messageId,
+        to: emailData.to,
+        accepted: info.accepted
+      }),
+      { 
+        status: 200,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      }
+    );
 
-  } catch (error) {
-    console.error('Error in gmail-send-email function:', error);
-    return new Response(JSON.stringify({ 
-      error: 'Failed to send email via Gmail SMTP',
-      details: error.message 
-    }), {
-      status: 500,
-      headers: { ...corsHeaders, 'Content-Type': 'application/json' }
+  } catch (error: any) {
+    logWithTimestamp('ERROR', '❌ CRITICAL ERROR in Gmail send', { 
+      error: error.message, 
+      stack: error.stack,
+      name: error.name 
     });
+    return new Response(
+      JSON.stringify({ 
+        error: 'Failed to send email',
+        message: error.message,
+        type: error.name
+      }),
+      { 
+        status: 500,
+        headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      }
+    );
   }
 });
