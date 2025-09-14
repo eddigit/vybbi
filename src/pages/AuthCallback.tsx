@@ -28,8 +28,17 @@ const AuthCallback = () => {
       const type = searchParams.get('type');
       const accessToken = searchParams.get('access_token');
       const refreshToken = searchParams.get('refresh_token');
+      const code = searchParams.get('code');
+      const urlError = searchParams.get('error');
+      const urlErrorDescription = searchParams.get('error_description');
+      const state = searchParams.get('state');
 
-      console.log('Auth callback params:', { token, tokenHash, type, accessToken, refreshToken });
+      console.log('Auth callback params:', { token, tokenHash, type, accessToken, refreshToken, code, urlError, urlErrorDescription, state });
+
+      // URL-level error from provider
+      if (urlError) {
+        throw new Error(`${urlError}: ${urlErrorDescription || 'Unknown error'}`);
+      }
 
       // If we have access_token and refresh_token, set the session directly
       if (accessToken && refreshToken) {
@@ -48,6 +57,38 @@ const AuthCallback = () => {
           navigate('/dashboard');
         }, 1200);
         return;
+      }
+
+      // If we have an OAuth/PKCE code, try exchanging it for a session
+      if (code) {
+        console.log('Attempting exchangeCodeForSession with code');
+        try {
+          // Try v2 signature with object
+          // @ts-ignore - support multiple SDK signatures
+          const { data, error } = await (supabase.auth as any).exchangeCodeForSession({ code });
+          if (error) throw error;
+          console.log('exchangeCodeForSession success:', data);
+          setSuccess(true);
+          toast.success("Email confirmé avec succès !");
+          setTimeout(() => navigate('/dashboard'), 1200);
+          return;
+        } catch (e1: any) {
+          console.warn('exchangeCodeForSession({ code }) failed, retrying with URL:', e1);
+          try {
+            // Some SDK versions accept the full URL
+            // @ts-ignore
+            const { data, error } = await (supabase.auth as any).exchangeCodeForSession(window.location.href);
+            if (error) throw error;
+            console.log('exchangeCodeForSession with URL success:', data);
+            setSuccess(true);
+            toast.success("Email confirmé avec succès !");
+            setTimeout(() => navigate('/dashboard'), 1200);
+            return;
+          } catch (e2: any) {
+            console.error('exchangeCodeForSession failed:', e2);
+            // Continue with token_hash flow
+          }
+        }
       }
 
       // If we have a token_hash from email link, verify it explicitly

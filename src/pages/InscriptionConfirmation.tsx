@@ -22,7 +22,7 @@ export default function InscriptionConfirmation() {
     }
     setIsSending(true);
     try {
-      const redirectUrl = `${window.location.origin}/auth`;
+      const redirectUrl = `${window.location.origin}/auth/callback`;
       const { error } = await supabase.auth.resend({
         type: "signup",
         email,
