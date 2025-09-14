@@ -186,33 +186,30 @@ const handler = async (req: Request): Promise<Response> => {
     };
     const subject = subjectMap[emailActionType] || 'Vybbi - Action requise';
 
-// Prepare callback URL and generate verify link if tokens are missing
+// Prepare callback URL and ALWAYS generate a fresh verify link via Admin API
 const siteUrl = payload.email_data.site_url || supabaseUrl?.replace('/rest/v1', '');
 const siteBase = (siteUrl || '').replace(/\/auth\/v1$/, '').replace(/\/$/, '');
 const callbackUrl = `${siteBase}/auth/callback`;
 
 let verifyUrlOverride: string | undefined = undefined;
-const hasTokens = !!(payload.email_data.token || payload.email_data.token_hash);
 
-if (!hasTokens) {
-  try {
-    const adminClient = createClient(supabaseUrl, serviceRoleKey);
-    // @ts-ignore - broad type for emailActionType
-    const { data: linkData, error: linkError } = await (adminClient.auth as any).admin.generateLink({
-      type: emailActionType,
-      email: user.email,
-      options: { redirectTo: callbackUrl }
-    });
+try {
+  const adminClient = createClient(supabaseUrl, serviceRoleKey);
+  // @ts-ignore - broad type for emailActionType
+  const { data: linkData, error: linkError } = await (adminClient.auth as any).admin.generateLink({
+    type: emailActionType,
+    email: user.email,
+    options: { redirectTo: callbackUrl }
+  });
 
-    if (linkError) {
-      logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message });
-    } else {
-      verifyUrlOverride = (linkData?.properties?.action_link) || (linkData?.action_link);
-      logWithTimestamp('INFO', 'Generated action link via Admin API');
-    }
-  } catch (genErr: any) {
-    logWithTimestamp('ERROR', 'Exception during generateLink', { error: genErr?.message });
+  if (linkError) {
+    logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message });
+  } else {
+    verifyUrlOverride = (linkData?.properties?.action_link) || (linkData?.action_link);
+    logWithTimestamp('INFO', 'Generated action link via Admin API');
   }
+} catch (genErr: any) {
+  logWithTimestamp('ERROR', 'Exception during generateLink', { error: genErr?.message });
 }
 
 // Generate HTML content
