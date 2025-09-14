@@ -133,11 +133,17 @@ const handler = async (req: Request): Promise<Response> => {
       });
     }
 
-    // Prefer simple header secret verification as requested (x-hook-secret)
+    // Accept either Authorization: Bearer <secret>, x-hook-secret header, or Standard Webhooks signature
+    const bearer = req.headers.get('authorization') || req.headers.get('Authorization');
     const headerSecret = req.headers.get('x-hook-secret');
     let webhookData: AuthWebhookPayload | null = null;
 
-    if (headerSecret && headerSecret === hookSecret) {
+    const bearerToken = bearer?.toLowerCase().startsWith('bearer ')
+      ? bearer.split(' ')[1]
+      : undefined;
+
+    if ((bearerToken && bearerToken === hookSecret) || (headerSecret && headerSecret === hookSecret)) {
+      // If verified via token/secret, parse body as JSON
       webhookData = await req.json();
     } else {
       // Fallback: support Standard Webhooks signature if configured
@@ -147,7 +153,7 @@ const handler = async (req: Request): Promise<Response> => {
         const wh = new Webhook(hookSecret);
         webhookData = wh.verify(payload, headers) as AuthWebhookPayload;
       } catch (err) {
-        console.error('Webhook verification failed (x-hook-secret and signature):', err);
+        console.error('Webhook verification failed (bearer/x-hook-secret/signature):', err);
         return new Response(JSON.stringify({ error: 'Unauthorized' }), {
           status: 401,
           headers: { 'Content-Type': 'application/json', ...corsHeaders },
