@@ -7,7 +7,7 @@ import { useToast } from '@/hooks/use-toast';
 import { sendWelcomeEmail, sendAdminNotification } from '@/lib/emailService';
 
 // Email de l'administrateur - à configurer selon vos besoins
-const ADMIN_EMAIL = 'admin@vybbi.app';
+const ADMIN_EMAIL = 'info@vybbi.app';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
