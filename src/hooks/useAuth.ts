@@ -91,7 +91,7 @@ export function useAuth() {
 
   const signUp = async (email: string, password: string, displayName: string, profileType: string, roleDetail?: string) => {
     try {
-      const redirectUrl = `${window.location.origin}/auth`;
+      const redirectUrl = `${window.location.origin}/auth/callback`;
       
       const { data, error } = await supabase.auth.signUp({
         email,

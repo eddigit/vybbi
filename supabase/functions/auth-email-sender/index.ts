@@ -38,7 +38,8 @@ function getEmailTemplate(type: string, data: any): string {
   const supabaseBase = envSupabaseUrl.replace(/\/rest\/v1$/, '');
   const siteBase = (site_url || supabaseBase).replace(/\/auth\/v1$/, '').replace(/\/$/, '');
 
-  const useHash = email_action_type === 'email_change';
+  // Prefer token_hash when available (GoTrue v2); fallback to token
+  const useHash = !!token_hash;
   const paramName = useHash ? 'token_hash' : 'token';
   const paramValue = useHash ? token_hash : token;
   

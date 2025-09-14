@@ -44,16 +44,50 @@ const AuthCallback = () => {
         setSuccess(true);
         toast.success("Email confirmé avec succès !");
         
-        // Wait a moment then redirect
         setTimeout(() => {
           navigate('/dashboard');
-        }, 2000);
+        }, 1200);
         return;
       }
 
-      // Otherwise, get the current session (should be available after email confirmation)
+      // If we have a token_hash from email link, verify it explicitly
+      if (tokenHash && type) {
+        const normalizedType = ['signup','magiclink'].includes(type) ? 'email' : type;
+
+        // Try verify with provided type
+        let verifyError: any = null;
+        let verifyData: any = null;
+        try {
+          const { data, error } = await supabase.auth.verifyOtp({
+            type: normalizedType as any,
+            token_hash: tokenHash,
+          });
+          verifyData = data;
+          verifyError = error;
+        } catch (e: any) {
+          verifyError = e;
+        }
+
+        // Fallback: try with type 'email' if first attempt failed
+        if (verifyError) {
+          console.warn('verifyOtp failed with type', normalizedType, verifyError);
+          const { data, error } = await supabase.auth.verifyOtp({
+            type: 'email' as any,
+            token_hash: tokenHash,
+          });
+          verifyData = data;
+          verifyError = error;
+        }
+
+        if (verifyError) {
+          throw verifyError;
+        }
+
+        console.log('verifyOtp success:', verifyData);
+      }
+
+      // Retrieve (or refresh) the session after verification
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      
       if (sessionError) {
         console.error('Session error:', sessionError);
         throw new Error(sessionError.message);
@@ -63,15 +97,13 @@ const AuthCallback = () => {
         console.log('User session found:', session.user);
         setSuccess(true);
         toast.success("Email confirmé avec succès !");
-        
-        // Wait a moment then redirect
         setTimeout(() => {
           navigate('/dashboard');
-        }, 2000);
+        }, 1200);
       } else {
         console.log('No session found, user may need to log in');
         setSuccess(false);
-        setError("Veuillez vous connecter pour continuer.");
+        setError("Lien invalide ou expiré. Essayez de vous reconnecter ou de renvoyer l'email de confirmation.");
       }
 
     } catch (err: any) {
