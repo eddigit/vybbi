@@ -220,8 +220,49 @@ npx supabase gen types typescript --local > ../src/integrations/supabase/types.t
 
 ## 💰 Système d'Affiliation
 
-### Architecture du Système
-Le système d'affiliation Vybbi permet aux influenceurs de générer des revenus récurrents en recommandant la plateforme.
+### Architecture du Système d'Affiliation
+Le système d'affiliation Vybbi permet aux influenceurs de générer des revenus en recommandant la plateforme.
+
+#### Tables de Base de Données
+- `influencer_links` : Liens d'affiliation personnalisés
+- `affiliate_visits` : Suivi des visites sur les liens
+- `affiliate_conversions` : Conversions et commissions
+- `recurring_commissions` : Commissions mensuelles récurrentes
+
+#### Modèle de Commission
+- **Commission One-Shot** : 2€ par inscription réussie
+- **Commission Récurrente** : 0,50€ par mois par utilisateur actif
+- **Exclusivité** : Programme exclusif jusqu'au 31 janvier 2026
+- **Potentiel Maximum** : Jusqu'à 7000€/an pour les top performers
+
+#### Processus d'Inscription Influenceur
+1. **SIRET Obligatoire** : Numéro SIRET valide requis pour la conformité légale française
+2. **Génération de Liens** : Liens de parrainage uniques automatiquement générés
+3. **Suivi Transparent** : Dashboard en temps réel avec analytics détaillées
+4. **Paiements Mensuels** : Commissions versées chaque mois
+
+#### Edge Function `calculate-monthly-commissions`
+Fonction automatique qui :
+- Calcule les commissions récurrentes mensuelles
+- Met à jour les statuts de paiement
+- Génère les rapports de commissions
+- Envoie les notifications de paiement
+
+#### Dashboard et Analytics
+- **Métriques en Temps Réel** : Clics, conversions, revenus
+- **Calculateur de Revenus** : Projection des gains potentiels
+- **Suivi des Liens** : Performance de chaque lien d'affiliation
+- **Historique des Paiements** : Transparence totale des commissions
+
+#### Conformité Légale
+- **SIRET Obligatoire** : Conforme à la législation française
+- **Contrat d'Affiliation** : Cadre juridique clair
+- **Facturation Automatique** : Génération des factures pour les commissions
+- **Déclaration Fiscale** : Support pour les obligations fiscales
+
+---
+
+*Dernière mise à jour : 15 septembre 2025*
 
 #### Modèle de Commission
 - **Commission One-Shot** : 2€ par inscription réussie
