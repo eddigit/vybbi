@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 
 export function RadioPlayer() {
+  const location = useLocation();
   const {
     currentTrack,
     isPlaying,
@@ -22,6 +23,14 @@ export function RadioPlayer() {
 
   if (!currentTrack) return null;
 
+  // Determine if MobileTabBar is present based on current route
+  const isLanding = location.pathname === '/';
+  const isAuth = location.pathname === '/auth';
+  const isArtistProfile = location.pathname.match(/^\/artists\/[^\/]+$/) && !location.pathname.includes('/edit');
+  const isVenueProfile = location.pathname.match(/^\/lieux\/[^\/]+$/) && !location.pathname.includes('/edit');
+  const isPartnerProfile = location.pathname.match(/^\/partners\/[^\/]+$/) && !location.pathname.includes('/edit');
+  const hasMobileTabBar = !(isLanding || isAuth || isArtistProfile || isVenueProfile || isPartnerProfile);
+
   const formatTime = (seconds: number) => {
     const total = Math.max(0, Math.floor(seconds || 0));
     const mins = Math.floor(total / 60);
@@ -33,8 +42,18 @@ export function RadioPlayer() {
   const durationVal = Math.floor(duration || 0);
 
   return (
-    <div className="fixed left-0 right-0 bottom-16 md:bottom-0 z-50 animate-slide-up" aria-label="Lecteur Radio Vybbi">
-      <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl">
+    <div 
+      className="fixed left-0 right-0 z-[60] md:bottom-0 animate-slide-up" 
+      style={{
+        bottom: window.innerWidth >= 768 
+          ? 0 
+          : hasMobileTabBar 
+            ? 'calc(64px + env(safe-area-inset-bottom))' 
+            : 'env(safe-area-inset-bottom)'
+      }}
+      aria-label="Lecteur Radio Vybbi"
+    >
+      <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center gap-4">
             {/* Pochette / Avatar artiste */}
