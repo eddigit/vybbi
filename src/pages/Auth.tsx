@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Navigate, useNavigate, useSearchParams } from 'react-router-dom';
+import { Navigate, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { PasswordInput } from '@/components/ui/password-input';
 import { Loader2, Music, Users, MapPin, Briefcase } from 'lucide-react';
 import wolfLogo from '@/assets/wolf-logo.png';
 
@@ -113,15 +114,22 @@ export default function Auth() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signin-password">Mot de passe</Label>
-                    <Input
+                    <PasswordInput
                       id="signin-password"
-                      type="password"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
+                  </div>
+                  <div className="text-right">
+                    <Link 
+                      to="/forgot-password" 
+                      className="text-sm text-primary hover:text-primary/80 transition-colors"
+                    >
+                      Mot de passe oublié ?
+                    </Link>
                   </div>
                   <Button 
                     type="submit" 
@@ -270,9 +278,8 @@ export default function Auth() {
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Mot de passe</Label>
-                    <Input
+                    <PasswordInput
                       id="signup-password"
-                      type="password"
                       placeholder="••••••••"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
@@ -280,6 +287,9 @@ export default function Auth() {
                       minLength={6}
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      Minimum 6 caractères
+                    </p>
                   </div>
                   <Button 
                     type="submit" 

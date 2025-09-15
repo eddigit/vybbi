@@ -65,6 +65,8 @@ import AdminInfluenceurs from './pages/AdminInfluenceurs';
 import AdminKnowledge from './pages/AdminKnowledge';
 import AdminEmailDiagnostics from './pages/AdminEmailDiagnostics';
 import AuthCallback from './pages/AuthCallback';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 const queryClient = new QueryClient();
 
@@ -112,6 +114,8 @@ const App = () => (
               <Route path="/reports" element={<Reports />} />
               <Route path="/auth" element={<Auth />} />
               <Route path="/auth/callback" element={<AuthCallback />} />
+              <Route path="/forgot-password" element={<ForgotPassword />} />
+              <Route path="/reset-password" element={<ResetPassword />} />
               <Route path="/inscription/confirmation" element={<InscriptionConfirmation />} />
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profiles" element={<Profiles />} />

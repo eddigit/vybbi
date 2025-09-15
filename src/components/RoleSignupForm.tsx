@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PasswordInput } from "@/components/ui/password-input";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
@@ -102,14 +103,17 @@ export default function RoleSignupForm({ profileType, title, description }: Role
             
             <div className="space-y-2">
               <Label htmlFor="password">Mot de passe</Label>
-              <Input
+              <PasswordInput
                 id="password"
-                type="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
                 required
+                minLength={6}
               />
+              <p className="text-xs text-muted-foreground">
+                Minimum 6 caractères
+              </p>
             </div>
             
             <Button 
