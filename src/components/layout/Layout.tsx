@@ -34,9 +34,9 @@ export function Layout({ children }: LayoutProps) {
   // For profile pages, use a simpler layout without sidebar
   if (isArtistProfilePage || isVenueProfilePage || isPartnerProfilePage) {
     return (
-      <div className="min-h-screen bg-background">
+      <div className="min-h-screen bg-background relative overflow-x-hidden">
         <Header />
-        <main className="flex-1 pb-10">
+        <main className="flex-1 pb-10 relative overflow-x-hidden">
           {children}
         </main>
         <Footer />
@@ -46,13 +46,13 @@ export function Layout({ children }: LayoutProps) {
 
   // For all other pages (dashboard, agent pages, etc.), use responsive navigation
   return (
-    <div className="min-h-screen flex flex-col w-full bg-background">
+    <div className="min-h-screen flex flex-col w-full bg-background relative overflow-x-hidden">
       <Header />
       {/* Desktop horizontal nav, hidden on mobile */}
       <div className="hidden md:block">
         <TopNav />
       </div>
-      <main className="flex-1 p-3 sm:p-4 md:p-6 pb-20 md:pb-16 max-w-7xl mx-auto w-full">
+      <main className="flex-1 p-3 sm:p-4 md:p-6 pb-20 md:pb-16 max-w-7xl mx-auto w-full relative overflow-x-hidden">
         {children}
       </main>
       {/* Mobile tab bar, hidden on desktop */}

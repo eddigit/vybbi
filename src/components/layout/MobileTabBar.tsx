@@ -75,7 +75,7 @@ export function MobileTabBar() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border pb-safe-bottom md:hidden">
+    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border pb-safe-bottom md:hidden touch-target">
       <div className="flex items-center justify-around px-2 py-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;
@@ -86,14 +86,15 @@ export function MobileTabBar() {
               key={tab.name}
               to={tab.href}
               className={cn(
-                "flex flex-col items-center justify-center min-h-[48px] px-2 py-1 rounded-lg transition-all duration-200",
+                "flex flex-col items-center justify-center min-h-[48px] px-2 py-1 rounded-lg transition-all duration-200 touch-target select-none",
                 active
                   ? "text-primary bg-primary/10"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
               )}
+              style={{ touchAction: 'manipulation' }}
             >
               <Icon className={cn("h-5 w-5 mb-1", active && "text-primary")} />
-              <span className="text-xs font-medium truncate max-w-[60px]">
+              <span className="text-xs font-medium truncate max-w-[60px] select-none">
                 {tab.name}
               </span>
             </Link>

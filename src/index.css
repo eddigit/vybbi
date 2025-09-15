@@ -71,13 +71,44 @@ All colors MUST be HSL.
     @apply border-border;
   }
 
+  html {
+    /* Prevent horizontal scrolling and overscroll */
+    overflow-x: hidden;
+    overscroll-behavior: none;
+    overscroll-behavior-x: none;
+    
+    /* Prevent pull-to-refresh and bounce effects */
+    -webkit-overflow-scrolling: touch;
+    
+    /* Mobile-first stabilization */
+    position: relative;
+    width: 100%;
+  }
+
   body {
     @apply bg-background text-foreground;
     /* Mobile-first typography and interactions */
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     text-size-adjust: 100%;
-    touch-action: manipulation;
+    
+    /* Prevent navigation gestures and overscroll */
+    touch-action: pan-y;
+    overscroll-behavior: none;
+    overscroll-behavior-x: none;
+    
+    /* Prevent horizontal movement */
+    overflow-x: hidden;
+    position: relative;
+    width: 100%;
+    
+    /* iOS Safari specific fixes */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    
+    /* Prevent text selection on UI elements */
+    user-select: none;
   }
 
   /* Mobile-first touch targets */
@@ -108,6 +139,18 @@ All colors MUST be HSL.
   /* Mobile-first interactive elements */
   .touch-target {
     @apply min-h-[44px] min-w-[44px] flex items-center justify-center;
+    touch-action: manipulation;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  
+  /* Prevent text selection on interactive elements */
+  .select-none {
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;
   }
 
   .mobile-card {
