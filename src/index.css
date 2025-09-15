@@ -252,8 +252,6 @@ All colors MUST be HSL.
     }
     
     body {
-      padding-top: env(safe-area-inset-top);
-      padding-bottom: env(safe-area-inset-bottom);
       padding-left: env(safe-area-inset-left);
       padding-right: env(safe-area-inset-right);
     }
@@ -262,6 +260,16 @@ All colors MUST be HSL.
     .fullscreen-content {
       min-height: calc(100vh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
       min-height: calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    }
+    
+    /* Fix fixed elements positioning in fullscreen mode */
+    nav[class*="fixed"][class*="top-0"] {
+      padding-top: env(safe-area-inset-top);
+    }
+    
+    /* Additional spacing for fullscreen hero sections */
+    .fullscreen-hero {
+      padding-top: calc(6rem + env(safe-area-inset-top));
     }
   }
 }

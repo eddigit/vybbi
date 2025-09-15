@@ -43,14 +43,11 @@ export function RadioPlayer() {
 
   return (
     <div 
-      className="fixed left-0 right-0 z-[60] md:bottom-0 animate-slide-up" 
-      style={{
-        bottom: window.innerWidth >= 768 
-          ? 0 
-          : hasMobileTabBar 
-            ? 'calc(64px + env(safe-area-inset-bottom))' 
-            : 'env(safe-area-inset-bottom)'
-      }}
+      className={`fixed left-0 right-0 z-[60] animate-slide-up ${
+        hasMobileTabBar 
+          ? 'bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-0' 
+          : 'bottom-[env(safe-area-inset-bottom)] md:bottom-0'
+      }`}
       aria-label="Lecteur Radio Vybbi"
     >
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">

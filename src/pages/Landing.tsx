@@ -93,7 +93,7 @@ export default function Landing() {
   }];
   return <div className="min-h-screen bg-background">
       {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50">
+      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50 pt-safe-top">
         <div className="container mx-auto px-2 sm:px-6 py-4">
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
@@ -138,7 +138,7 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-20 sm:pt-24 pb-4 px-3 sm:px-6">
+      <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{ paddingTop: `calc(6rem + env(safe-area-inset-top))` }}>
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-2 sm:px-4">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
