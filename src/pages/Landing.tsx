@@ -930,28 +930,28 @@ export default function Landing() {
             <div>
               <h4 className="font-semibold mb-4">Produit</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#features" className="hover:text-foreground transition-colors">Fonctionnalités</a></li>
-                <li><a href="#pricing" className="hover:text-foreground transition-colors">Tarifs</a></li>
-                <li><Link to="/artists" className="hover:text-foreground transition-colors">Artistes</Link></li>
-                <li><Link to="/lieux" className="hover:text-foreground transition-colors">Lieux</Link></li>
+                <li><Link to="/fonctionnalites" className="hover:text-foreground transition-colors">Fonctionnalités</Link></li>
+                <li><Link to="/tarifs" className="hover:text-foreground transition-colors">Tarifs</Link></li>
+                <li><Link to="/pour-artistes" className="hover:text-foreground transition-colors">Artistes</Link></li>
+                <li><Link to="/pour-lieux-evenements" className="hover:text-foreground transition-colors">Lieux</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Centre d'aide</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Contact</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Blog</a></li>
+                <li><Link to="/centre-aide" className="hover:text-foreground transition-colors">Centre d'aide</Link></li>
+                <li><a href="mailto:contact@vybbi.com" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
               </ul>
             </div>
             
             <div>
               <h4 className="font-semibold mb-4">Légal</h4>
               <ul className="space-y-2 text-muted-foreground">
-                <li><a href="#" className="hover:text-foreground transition-colors">Confidentialité</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Conditions</a></li>
-                <li><a href="#" className="hover:text-foreground transition-colors">Cookies</a></li>
+                <li><Link to="/confidentialite" className="hover:text-foreground transition-colors">Confidentialité</Link></li>
+                <li><Link to="/conditions" className="hover:text-foreground transition-colors">Conditions</Link></li>
+                <li><Link to="/cookies" className="hover:text-foreground transition-colors">Cookies</Link></li>
               </ul>
             </div>
           </div>

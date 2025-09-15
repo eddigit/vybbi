@@ -75,6 +75,12 @@ import AuthCallback from './pages/AuthCallback';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
 import Notifications from './pages/Notifications';
+import Fonctionnalites from './pages/Fonctionnalites';
+import Tarifs from './pages/Tarifs';
+import CentreAide from './pages/CentreAide';
+import Confidentialite from './pages/Confidentialite';
+import Conditions from './pages/Conditions';
+import CookiesPage from './pages/Cookies';
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
@@ -198,6 +204,12 @@ const App = () => (
                       <Route path="/a-propos" element={<APropos />} />
                       <Route path="/top-artistes" element={<TopArtistes />} />
                       <Route path="/recherche-avancee" element={<RechercheAvancee />} />
+                      <Route path="/fonctionnalites" element={<Fonctionnalites />} />
+                      <Route path="/tarifs" element={<Tarifs />} />
+                      <Route path="/centre-aide" element={<CentreAide />} />
+                      <Route path="/confidentialite" element={<Confidentialite />} />
+                      <Route path="/conditions" element={<Conditions />} />
+                      <Route path="/cookies" element={<CookiesPage />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
