@@ -3162,6 +3162,10 @@ export type Database = {
         }
         Returns: string
       }
+      trigger_trial_offer_update: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
     }
     Enums: {
       annonce_status: "draft" | "published" | "closed" | "cancelled"

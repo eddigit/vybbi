@@ -8,11 +8,13 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { MapPin, Users, Briefcase, Calendar, ArrowRight } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
+import { useTrialConfig } from "@/hooks/useTrialConfig";
 import { useAuth } from '@/hooks/useAuth';
 import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 export default function NosArtistes() {
   const { user, loading: authLoading } = useAuth();
+  const { trialDays, isPromotionalActive, isLoading: trialLoading } = useTrialConfig();
   const [artists, setArtists] = useState<Profile[]>([]);
   const [agents, setAgents] = useState<Profile[]>([]);
   const [venues, setVenues] = useState<Profile[]>([]);
@@ -229,7 +231,10 @@ export default function NosArtistes() {
         
         <div className="bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-6 max-w-4xl mx-auto">
           <p className="text-lg text-foreground font-medium mb-4">
-            ✨ Inscription gratuite • 30 jours d'essai offerts
+            ✨ Inscription gratuite • {trialLoading ? '...' : trialDays} jours d'essai offerts
+            {isPromotionalActive && !trialLoading && (
+              <span className="text-sm ml-2 text-green-600">(Offre limitée)</span>
+            )}
           </p>
           <p className="text-muted-foreground">
             Rejoignez gratuitement notre plateforme et connectez-vous avec les meilleurs professionnels de l'industrie musicale.

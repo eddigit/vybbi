@@ -5,9 +5,11 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from 'react-router-dom';
+import { useTrialConfig } from "@/hooks/useTrialConfig";
 
 export default function Demo() {
   const [activeDemo, setActiveDemo] = useState(0);
+  const { trialDays, isPromotionalActive, isLoading } = useTrialConfig();
 
   const demoScenarios = [
     {
@@ -83,7 +85,8 @@ export default function Demo() {
           <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
             <Button size="lg" className="text-lg px-8 py-6" asChild>
               <Link to="/auth">
-                Essai gratuit 30 jours
+                Essai gratuit {isLoading ? '...' : trialDays} jours
+                {isPromotionalActive && !isLoading && ' 🎉'}
                 <ArrowRight className="ml-2 h-5 w-5" />
               </Link>
             </Button>
@@ -159,8 +162,13 @@ export default function Demo() {
                       <span className="font-semibold text-foreground">Inclus dans l'essai gratuit</span>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      Testez cette fonctionnalité pendant 30 jours sans engagement. 
+                      Testez cette fonctionnalité pendant {isLoading ? '...' : trialDays} jours sans engagement. 
                       Accès complet à tous les outils et support prioritaire.
+                      {isPromotionalActive && !isLoading && (
+                        <span className="block mt-1 text-green-600 font-medium">
+                          🎉 Offre limitée : {trialDays} jours d'essai pour les premiers inscrits !
+                        </span>
+                      )}
                     </p>
                   </div>
                 </CardContent>

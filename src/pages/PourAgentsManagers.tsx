@@ -4,8 +4,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import RoleSignupForm from "@/components/RoleSignupForm";
+import { useTrialConfig } from "@/hooks/useTrialConfig";
 
 export default function PourAgentsManagers() {
+  const { trialDays, isPromotionalActive, isLoading } = useTrialConfig();
   const benefits = [
     {
       icon: Users,
@@ -421,7 +423,7 @@ export default function PourAgentsManagers() {
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />
-                  <span>Essai gratuit de 30 jours</span>
+                  <span>Essai gratuit de {isLoading ? '...' : trialDays} jours{isPromotionalActive && !isLoading ? ' 🎉' : ''}</span>
                 </div>
                 <div className="flex items-center gap-3">
                   <CheckCircle className="w-5 h-5 text-success" />

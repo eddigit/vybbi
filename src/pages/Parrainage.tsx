@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Link } from 'react-router-dom';
+import { useTrialConfig } from "@/hooks/useTrialConfig";
 
 export default function Parrainage() {
+  const { trialDays, isPromotionalActive, isLoading } = useTrialConfig();
   const referralTiers = [
     {
       title: "Niveau Bronze",
@@ -60,7 +62,7 @@ export default function Parrainage() {
     {
       step: "2",
       title: "Vos contacts s'inscrivent",
-      description: "Ils bénéficient de 30 jours gratuits + 20% de réduction sur leur premier abonnement",
+      description: "Ils bénéficient de {isLoading ? '...' : trialDays} jours gratuits + 20% de réduction sur leur premier abonnement{isPromotionalActive && !isLoading ? ' (Offre limitée)' : ''}",
       icon: Gift
     },
     {
@@ -187,7 +189,10 @@ export default function Parrainage() {
                   <Gift className="w-8 h-8 text-success-foreground" />
                 </div>
                 <div className="text-left">
-                  <div className="text-xl font-bold text-foreground">30 jours gratuits</div>
+                  <div className="text-xl font-bold text-foreground">
+                    {isLoading ? '...' : trialDays} jours gratuits
+                    {isPromotionalActive && !isLoading && ' 🎉'}
+                  </div>
                   <div className="text-muted-foreground">Accès complet sans engagement</div>
                 </div>
               </div>

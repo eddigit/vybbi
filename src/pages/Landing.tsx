@@ -5,6 +5,7 @@ import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, Tr
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { TickerBanner } from "@/components/TickerBanner";
+import { useTrialConfig } from "@/hooks/useTrialConfig";
 
 // Define Blockchain icon component
 const Blockchain = ({ className }: { className?: string }) => (
@@ -26,6 +27,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
+  const { trialDays, isPromotionalActive, isLoading } = useTrialConfig();
   const features = [{
     icon: Users,
     title: "Marketplace Unifiée",
@@ -509,7 +511,10 @@ export default function Landing() {
                 <div className="w-16 h-16 rounded-full bg-gradient-success flex items-center justify-center mx-auto mb-4 shadow-glow group-hover:scale-110 transition-transform">
                   <CheckCircle className="w-8 h-8 text-success-foreground" />
                 </div>
-                <h3 className="text-lg font-bold mb-2 text-foreground">30 jours gratuits</h3>
+                <h3 className="text-lg font-bold mb-2 text-foreground">
+                  {isLoading ? '...' : trialDays} jours gratuits
+                  {isPromotionalActive && !isLoading && ' 🎉'}
+                </h3>
                 <p className="text-sm text-muted-foreground mb-4">
                   Testez toutes nos fonctionnalités premium sans engagement ni carte bancaire.
                 </p>
@@ -623,12 +628,18 @@ export default function Landing() {
               </h3>
               <p className="text-muted-foreground mb-6">
                 Rejoignez plus de 10 000 professionnels qui utilisent déjà Vybbi pour développer 
-                leur réseau et augmenter leurs bookings. Essai gratuit de 30 jours, puis seulement 49€/mois.
+                leur réseau et augmenter leurs bookings. Essai gratuit de {isLoading ? '...' : trialDays} jours, puis seulement 49€/mois.
+                {isPromotionalActive && !isLoading && (
+                  <span className="block mt-2 text-green-600 font-medium">
+                    🎉 Offre limitée : {trialDays} jours d'essai pour les premiers inscrits !
+                  </span>
+                )}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="text-lg px-8 py-6" asChild>
                   <Link to="/auth">
-                    Essai gratuit 30 jours
+                    Essai gratuit {isLoading ? '...' : trialDays} jours
+                    {isPromotionalActive && !isLoading && ' 🎉'}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>

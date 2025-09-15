@@ -3,8 +3,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Sparkles, Users, MessageSquare, Calendar, Shield, ArrowLeft } from "lucide-react";
+import { useTrialConfig } from "@/hooks/useTrialConfig";
 
 export default function AccesComplet() {
+  const { trialDays, isPromotionalActive, isLoading } = useTrialConfig();
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
@@ -47,7 +49,10 @@ export default function AccesComplet() {
               </Badge>
             </div>
             <p className="text-xl font-semibold text-foreground mb-2">
-              Inscription gratuite • 30 jours d'essai offerts
+              Inscription gratuite • {isLoading ? '...' : trialDays} jours d'essai offerts
+              {isPromotionalActive && !isLoading && (
+                <span className="text-sm ml-2 text-muted-foreground">(Offre limitée)</span>
+              )}
             </p>
             <p className="text-muted-foreground">
               Pour artistes, agents, managers et lieux d'événements
@@ -146,7 +151,12 @@ export default function AccesComplet() {
         <div className="mt-16 text-center">
           <p className="text-xs text-muted-foreground max-w-2xl mx-auto">
             En créant un compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité. 
-            L'essai gratuit de 30 jours vous permet de découvrir toutes les fonctionnalités sans restriction.
+            L'essai gratuit de {isLoading ? '...' : trialDays} jours vous permet de découvrir toutes les fonctionnalités sans restriction.
+            {isPromotionalActive && !isLoading && (
+              <span className="block mt-1 text-green-600">
+                🎉 Offre limitée : {trialDays} jours d'essai gratuit pour les premiers inscrits !
+              </span>
+            )}
           </p>
         </div>
       </div>
