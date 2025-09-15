@@ -67,21 +67,21 @@ export default function PourArtistes() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="border-b bg-background/95 backdrop-blur-sm sticky top-0 z-50">
-        <div className="container mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" size="sm" asChild>
+        <div className="container mx-auto px-4 sm:px-6 py-4">
+          <div className="flex items-center justify-between gap-2">
+            <div className="flex items-center gap-2 sm:gap-4">
+              <Button variant="ghost" size="sm" asChild className="px-2 sm:px-3">
                 <Link to="/">
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Retour
+                  <ArrowLeft className="w-4 h-4 sm:mr-2" />
+                  <span className="hidden sm:inline">Retour</span>
                 </Link>
               </Button>
               <div className="flex items-center gap-2">
-                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-8 h-8" />
-                <span className="font-bold text-lg">Vybbi</span>
+                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+                <span className="font-bold text-base sm:text-lg">Vybbi</span>
               </div>
             </div>
-            <Button asChild>
+            <Button size="sm" asChild className="text-xs sm:text-sm">
               <Link to="/auth">Se connecter</Link>
             </Button>
           </div>

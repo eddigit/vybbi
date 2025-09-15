@@ -8,6 +8,7 @@ import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-ro
 import { HelmetProvider } from "react-helmet-async";
 import { useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
+import { ScrollToTop } from "@/components/ScrollToTop";
 import { RadioPlayer } from "@/components/RadioPlayer";
 import { PerformanceOptimizer, ConnectionOptimizer } from './components/PerformanceOptimizer';
 import { ErrorBoundary } from './components/ErrorBoundary';
@@ -126,6 +127,7 @@ const App = () => (
                 <Sonner />
                 <BrowserRouter>
                   <AuthHashRedirect />
+                  <ScrollToTop />
                   <Layout>
                     <Routes>
                       {/* SEO-friendly slug URLs */}
