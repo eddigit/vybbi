@@ -1,17 +1,10 @@
-import { useEffect } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { useProfileResolver } from '@/hooks/useProfileResolver';
+import PartnerProfile from './PartnerProfile';
 
 export default function PartnerProfileBySlug() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   const { profile, loading, error } = useProfileResolver(slug);
-
-  useEffect(() => {
-    if (profile?.id) {
-      navigate(`/partners/${profile.id}`, { replace: true });
-    }
-  }, [profile?.id, navigate]);
 
   if (loading) {
     return (
@@ -34,6 +27,19 @@ export default function PartnerProfileBySlug() {
     );
   }
 
-  // Une fois le profil résolu, on redirige; ce rendu ne devrait pas s'afficher
-  return null;
+  if (profile.profile_type !== 'agent' && profile.profile_type !== 'manager') {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold text-foreground mb-4">Profil invalide</h1>
+          <p className="text-muted-foreground">
+            Ce profil n'est pas un agent ou un manager.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  // Render the partner profile directly with the resolved profile ID
+  return <PartnerProfile partnerId={profile.id} />;
 }

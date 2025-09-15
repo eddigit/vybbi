@@ -9,8 +9,13 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 
-export default function PartnerProfile() {
-  const { id } = useParams<{ id: string }>();
+interface PartnerProfileProps {
+  partnerId?: string;
+}
+
+export default function PartnerProfile({ partnerId }: PartnerProfileProps) {
+  const { id: paramId } = useParams<{ id: string }>();
+  const id = partnerId || paramId;
   const { user } = useAuth();
   const [partner, setPartner] = useState<Profile | null>(null);
   const [artists, setArtists] = useState<Profile[]>([]);
@@ -30,7 +35,7 @@ export default function PartnerProfile() {
         .select('*')
         .eq('id', id)
         .in('profile_type', ['agent', 'manager'])
-        .single();
+        .maybeSingle();
 
       if (partnerError || !partnerData) {
         console.error('Partner not found:', partnerError);
