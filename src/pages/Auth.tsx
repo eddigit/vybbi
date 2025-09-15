@@ -10,6 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { PasswordInput } from '@/components/ui/password-input';
 import { Loader2, Music, Users, MapPin, Briefcase } from 'lucide-react';
 import { TALENTS } from '@/lib/talents';
+import { SiretField } from '@/components/SiretField';
 
 export default function Auth() {
   const { user, loading, signUp, signIn } = useAuth();
@@ -280,6 +281,15 @@ export default function Auth() {
                         </SelectContent>
                       </Select>
                     </div>
+                  )}
+
+                  {profileType === 'influenceur' && (
+                    <SiretField
+                      value={roleDetail}
+                      onChange={setRoleDetail}
+                      required
+                      className="space-y-2"
+                    />
                   )}
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>

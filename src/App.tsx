@@ -52,6 +52,7 @@ import AdminModeration from "./pages/AdminModeration";
 import Demo from "./pages/Demo";
 import Partenariats from "./pages/Partenariats";
 import Parrainage from "./pages/Parrainage";
+import Influenceurs from "./pages/Influenceurs";
 import AdminCommunication from "./pages/AdminCommunication";
 import AdminDashboard from "./pages/AdminDashboard";
 import Blog from "./pages/Blog";
@@ -178,6 +179,7 @@ const App = () => (
                       <Route path="/demo" element={<Demo />} />
                       <Route path="/partenariats" element={<Partenariats />} />
                       <Route path="/parrainage" element={<Parrainage />} />
+                      <Route path="/influenceurs" element={<Influenceurs />} />
                       <Route path="/admin/communication" element={<AdminCommunication />} />
                       <Route path="/admin/dashboard" element={<AdminDashboard />} />
                       <Route path="/admin/ads" element={<AdminAds />} />

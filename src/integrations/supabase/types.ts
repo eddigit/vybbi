@@ -328,8 +328,13 @@ export type Database = {
           conversion_value: number | null
           converted_at: string
           id: string
+          is_exclusive_program: boolean | null
+          is_recurring: boolean | null
           link_id: string
+          monthly_commission_amount: number | null
           paid_at: string | null
+          recurring_end_date: string | null
+          recurring_start_date: string | null
           user_id: string | null
           visit_id: string | null
         }
@@ -342,8 +347,13 @@ export type Database = {
           conversion_value?: number | null
           converted_at?: string
           id?: string
+          is_exclusive_program?: boolean | null
+          is_recurring?: boolean | null
           link_id: string
+          monthly_commission_amount?: number | null
           paid_at?: string | null
+          recurring_end_date?: string | null
+          recurring_start_date?: string | null
           user_id?: string | null
           visit_id?: string | null
         }
@@ -356,8 +366,13 @@ export type Database = {
           conversion_value?: number | null
           converted_at?: string
           id?: string
+          is_exclusive_program?: boolean | null
+          is_recurring?: boolean | null
           link_id?: string
+          monthly_commission_amount?: number | null
           paid_at?: string | null
+          recurring_end_date?: string | null
+          recurring_start_date?: string | null
           user_id?: string | null
           visit_id?: string | null
         }
@@ -1723,6 +1738,9 @@ export type Database = {
           secondary_profile_type:
             | Database["public"]["Enums"]["profile_type"]
             | null
+          siret_number: string | null
+          siret_verified: boolean | null
+          siret_verified_at: string | null
           slug: string | null
           soundcloud_url: string | null
           spotify_url: string | null
@@ -1760,6 +1778,9 @@ export type Database = {
           secondary_profile_type?:
             | Database["public"]["Enums"]["profile_type"]
             | null
+          siret_number?: string | null
+          siret_verified?: boolean | null
+          siret_verified_at?: string | null
           slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
@@ -1797,6 +1818,9 @@ export type Database = {
           secondary_profile_type?:
             | Database["public"]["Enums"]["profile_type"]
             | null
+          siret_number?: string | null
+          siret_verified?: boolean | null
+          siret_verified_at?: string | null
           slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
@@ -2235,6 +2259,60 @@ export type Database = {
         }
         Relationships: []
       }
+      recurring_commissions: {
+        Row: {
+          amount: number
+          conversion_id: string | null
+          created_at: string
+          id: string
+          influencer_profile_id: string
+          is_exclusive_program: boolean | null
+          month_year: string
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount?: number
+          conversion_id?: string | null
+          created_at?: string
+          id?: string
+          influencer_profile_id: string
+          is_exclusive_program?: boolean | null
+          month_year: string
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          conversion_id?: string | null
+          created_at?: string
+          id?: string
+          influencer_profile_id?: string
+          is_exclusive_program?: boolean | null
+          month_year?: string
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "recurring_commissions_conversion_id_fkey"
+            columns: ["conversion_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_conversions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recurring_commissions_influencer_profile_id_fkey"
+            columns: ["influencer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -2581,6 +2659,10 @@ export type Database = {
       assign_prospect_to_agent: {
         Args: { prospect_id: string }
         Returns: string
+      }
+      calculate_monthly_recurring_commissions: {
+        Args: Record<PropertyKey, never>
+        Returns: undefined
       }
       calculate_profile_completion: {
         Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
