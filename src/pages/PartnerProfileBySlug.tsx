@@ -1,10 +1,10 @@
 import { useParams } from 'react-router-dom';
-import { useProfileResolver } from '@/hooks/useProfileResolver';
+import { useProfileResolverOptimized } from '@/hooks/useProfileResolverOptimized';
 import PartnerProfile from './PartnerProfile';
 
 export default function PartnerProfileBySlug() {
   const { slug } = useParams<{ slug: string }>();
-  const { profile, loading, error } = useProfileResolver(slug);
+  const { profile, loading, error } = useProfileResolverOptimized(slug);
 
   if (loading) {
     return (

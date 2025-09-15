@@ -14,6 +14,8 @@ export function Layout({ children }: LayoutProps) {
   const isLandingPage = location.pathname === '/';
   const isAuthPage = location.pathname === '/auth';
   const isArtistProfilePage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
+  const isVenueProfilePage = location.pathname.includes('/lieux/') && !location.pathname.includes('/edit');
+  const isPartnerProfilePage = location.pathname.includes('/partners/') && !location.pathname.includes('/edit');
   
   // Initialize global affiliate tracking
   useAffiliateTracking();
@@ -29,8 +31,8 @@ export function Layout({ children }: LayoutProps) {
     );
   }
 
-  // For artist profile pages, use a simpler layout without sidebar
-  if (isArtistProfilePage) {
+  // For profile pages, use a simpler layout without sidebar
+  if (isArtistProfilePage || isVenueProfilePage || isPartnerProfilePage) {
     return (
       <div className="min-h-screen bg-background">
         <Header />
