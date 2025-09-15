@@ -8,8 +8,11 @@ import { TickerBanner } from "@/components/TickerBanner";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
 
 // Define Blockchain icon component
-const Blockchain = ({ className }: { className?: string }) => (
-  <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+const Blockchain = ({
+  className
+}: {
+  className?: string;
+}) => <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <rect x="3" y="3" width="7" height="7" />
     <rect x="14" y="3" width="7" height="7" />
     <rect x="14" y="14" width="7" height="7" />
@@ -18,16 +21,17 @@ const Blockchain = ({ className }: { className?: string }) => (
     <path d="m5 9 2 2" />
     <path d="m15 19 2-2" />
     <path d="m15 5 2 2" />
-  </svg>
-);
-
+  </svg>;
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-
 export default function Landing() {
   const [activeFeature, setActiveFeature] = useState(0);
-  const { trialDays, isPromotionalActive, isLoading } = useTrialConfig();
+  const {
+    trialDays,
+    isPromotionalActive,
+    isLoading
+  } = useTrialConfig();
   const features = [{
     icon: Users,
     title: "Marketplace Unifiée",
@@ -272,11 +276,7 @@ export default function Landing() {
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img 
-                    src="/lovable-uploads/ffb981ca-4640-4145-8e4a-6436a01f2401.png" 
-                    alt="DJ Wolf Artist" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="/lovable-uploads/ffb981ca-4640-4145-8e4a-6436a01f2401.png" alt="DJ Wolf Artist" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
             <p className="text-muted-foreground mb-6">
@@ -330,11 +330,7 @@ export default function Landing() {
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img 
-                    src="/lovable-uploads/019274cb-5be3-4748-891a-56febf29aa09.png" 
-                    alt="Wolf Agent Manager" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="/lovable-uploads/019274cb-5be3-4748-891a-56febf29aa09.png" alt="Wolf Agent Manager" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
@@ -388,11 +384,7 @@ export default function Landing() {
           <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img 
-                    src="/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png" 
-                    alt="Wolf DJ at Festival Venue" 
-                    className="w-full h-full object-cover"
-                  />
+                  <img src="/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png" alt="Wolf DJ at Festival Venue" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
@@ -478,8 +470,8 @@ export default function Landing() {
                 <CardContent className="text-center p-8">
                   <div className="w-24 h-24 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-4 animate-pulse shadow-glow">
                     {features[activeFeature].icon && React.createElement(features[activeFeature].icon, {
-                      className: "w-12 h-12 text-primary-foreground"
-                    })}
+                    className: "w-12 h-12 text-primary-foreground"
+                  })}
                   </div>
                   <h3 className="text-2xl font-bold mb-2 text-foreground">{features[activeFeature].title}</h3>
                   <p className="text-muted-foreground max-w-xs">{features[activeFeature].description}</p>
@@ -629,11 +621,9 @@ export default function Landing() {
               <p className="text-muted-foreground mb-6">
                 Rejoignez plus de 10 000 professionnels qui utilisent déjà Vybbi pour développer 
                 leur réseau et augmenter leurs bookings. Essai gratuit de {isLoading ? '...' : trialDays} jours, puis seulement 49€/mois.
-                {isPromotionalActive && !isLoading && (
-                  <span className="block mt-2 text-green-600 font-medium">
+                {isPromotionalActive && !isLoading && <span className="block mt-2 text-green-600 font-medium">
                     🎉 Offre limitée : {trialDays} jours d'essai pour les premiers inscrits !
-                  </span>
-                )}
+                  </span>}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <Button size="lg" className="text-lg px-8 py-6" asChild>
@@ -656,7 +646,7 @@ export default function Landing() {
         </section>
 
         {/* Affiliate Program Section */}
-        <section className="py-16 px-2 sm:px-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-y border-border">
+        <section className="py-16 px-2 sm:px-6 bg-gradient-to-br from-green-500/10 to-emerald-500/10 border-y border-border bg-slate-950">
           <div className="container mx-auto">
             <div className="text-center mb-12">
               <Badge className="mb-6 text-sm px-4 py-2 bg-gradient-primary">
