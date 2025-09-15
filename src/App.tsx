@@ -14,6 +14,8 @@ import { PerformanceOptimizer, ConnectionOptimizer } from './components/Performa
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
+import { usePWAUpdate } from '@/hooks/usePWAUpdate';
+import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
 import Campaigns from "./pages/Campaigns";
@@ -220,6 +222,7 @@ const App = () => (
                   <RadioPlayer />
                   <PWAInstallPrompt />
                   <OfflineIndicator />
+                  <PWAUpdateHandler />
                 </BrowserRouter>
               </TooltipProvider>
             </PerformanceOptimizer>
