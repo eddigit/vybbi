@@ -58,11 +58,12 @@ export function MobileTabBar() {
           { name: "Profil", href: `/lieux/${profile.id}`, icon: User },
         ];
       default:
+        // Inclut les admins et autres types
         return [
-          { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Communautés", href: "/communities", icon: Hash },
-          { name: "Profil", href: "/profiles", icon: User },
+          { name: "Profil", href: `/profiles`, icon: User },
         ];
     }
   };

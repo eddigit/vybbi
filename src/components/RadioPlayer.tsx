@@ -48,11 +48,11 @@ export function RadioPlayer() {
       aria-label="Lecteur Radio Vybbi"
     >
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">
-        <div className="container mx-auto px-3 py-2 sm:px-4 sm:py-3">
-          <div className="flex items-center gap-4">
+        <div className="container mx-auto px-2 py-1.5 sm:px-4 sm:py-3">
+          <div className="flex items-center gap-2 sm:gap-4">
             {/* Pochette / Avatar artiste */}
             <div className="flex-shrink-0">
-              <Avatar className="w-10 h-10 sm:w-12 sm:h-12 ring-2 ring-primary/20">
+              <Avatar className="w-8 h-8 sm:w-12 sm:h-12 ring-1 sm:ring-2 ring-primary/20">
                 <AvatarImage
                   src={currentTrack.artist.avatar_url || ''}
                   alt={`Avatar ${currentTrack.artist.display_name}`}
@@ -67,13 +67,13 @@ export function RadioPlayer() {
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-2">
-                    <p className="text-sm font-medium text-foreground truncate">
+                  <div className="flex items-center gap-1 sm:gap-2">
+                    <p className="text-xs sm:text-sm font-medium text-foreground truncate">
                       {currentTrack.title}
                     </p>
                     <Link
                       to={`/artists/${currentTrack.artist.id}`}
-                      className="flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
+                      className="hidden sm:flex flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
                       aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
                     >
                       <ExternalLink className="w-3 h-3" />
@@ -83,7 +83,7 @@ export function RadioPlayer() {
                     {currentTrack.artist.display_name}
                   </p>
                 </div>
-                <div className="text-xs text-muted-foreground ml-2">
+                <div className="hidden sm:block text-xs text-muted-foreground ml-2">
                   {formatTime(progressVal)} / {formatTime(durationVal)}
                 </div>
               </div>
@@ -100,8 +100,8 @@ export function RadioPlayer() {
               </div>
             </div>
 
-            {/* Contrôles */}
-            <div className="flex items-center gap-2 sm:gap-3">
+              {/* Contrôles */}
+            <div className="flex items-center gap-1 sm:gap-3">
               <Button
                 variant="ghost"
                 size="sm"
@@ -115,7 +115,7 @@ export function RadioPlayer() {
               <Button
                 onClick={isPlaying ? pause : play}
                 size="sm"
-                className="w-9 h-9 sm:w-10 sm:h-10 p-0 bg-gradient-primary hover:opacity-90 transition-all duration-200 hover-glow"
+                className="w-8 h-8 sm:w-10 sm:h-10 p-0 bg-gradient-primary hover:opacity-90 transition-all duration-200 hover-glow"
                 aria-label={isPlaying ? 'Pause' : 'Lecture'}
               >
                 {isPlaying ? (
