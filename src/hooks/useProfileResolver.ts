@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useNavigate } from 'react-router-dom';
 import { useProfileTracking } from './useProfileTracking';
 
-interface ResolvedProfile {
+export interface ResolvedProfile {
   id: string;
   user_id: string;
   display_name: string;

@@ -1,7 +1,16 @@
 import { useParams } from 'react-router-dom';
-import { useProfileResolver, generateProfileStructuredData, getProfileUrl } from '@/hooks/useProfileResolver';
+import { useProfileResolver, generateProfileStructuredData, getProfileUrl, ResolvedProfile } from '@/hooks/useProfileResolver';
 import { SEOHead } from '@/components/SEOHead';
 import ArtistProfile from './ArtistProfile';
+import { Profile, ProfileType } from '@/lib/types';
+
+// Convert ResolvedProfile to Profile with proper typing
+const convertResolvedProfile = (resolvedProfile: ResolvedProfile): Profile => {
+  return {
+    ...resolvedProfile,
+    profile_type: resolvedProfile.profile_type as ProfileType
+  };
+};
 
 export default function ArtisteProfile() {
   const { slug } = useParams<{ slug: string }>();
@@ -55,7 +64,7 @@ export default function ArtisteProfile() {
         ogImage={profile.avatar_url || undefined}
         structuredData={generateProfileStructuredData(profile)}
       />
-      <ArtistProfile />
+      <ArtistProfile resolvedProfile={convertResolvedProfile(profile)} />
     </>
   );
 }

@@ -15,7 +15,11 @@ import { ImageGallerySlider } from '@/components/ImageGallerySlider';
 import RadioStatsDisplay from '@/components/RadioStatsDisplay';
 import { ProfileEvents } from '@/components/ProfileEvents';
 
-export default function ArtistProfile() {
+interface ArtistProfileProps {
+  resolvedProfile?: Profile | null;
+}
+
+export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   const { id } = useParams<{ id: string }>();
   const { user, profile } = useAuth();
   const [artist, setArtist] = useState<Profile | null>(null);
@@ -29,10 +33,81 @@ export default function ArtistProfile() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
 
   useEffect(() => {
-    if (id) {
+    if (resolvedProfile) {
+      // Use the resolved profile from parent component
+      setArtist(resolvedProfile as Profile);
+      fetchRelatedData(resolvedProfile.id);
+    } else if (id) {
+      // Fallback to original logic for direct ID access
       fetchArtistData();
     }
-  }, [id]);
+  }, [id, resolvedProfile]);
+
+  const fetchRelatedData = async (profileId: string) => {
+    try {
+      // Fetch preferred contact if exists
+      if (resolvedProfile?.preferred_contact_profile_id) {
+        const { data: contactData } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', resolvedProfile.preferred_contact_profile_id)
+          .single();
+        
+        setPreferredContact(contactData);
+      }
+
+      // Fetch media assets
+      const { data: mediaData } = await supabase
+        .from('media_assets')
+        .select('*')
+        .eq('profile_id', profileId)
+        .order('created_at', { ascending: false });
+      
+      setMedia(mediaData || []);
+
+      // Fetch reviews
+      const { data: reviewsData } = await supabase
+        .from('reviews')
+        .select('*')
+        .eq('reviewed_profile_id', profileId)
+        .order('created_at', { ascending: false })
+        .limit(10);
+      
+      setReviews(reviewsData || []);
+
+      // Fetch reviewer profiles if there are reviews
+      if (reviewsData && reviewsData.length > 0) {
+        const reviewerIds = [...new Set(reviewsData.map(review => review.reviewer_id))];
+        const { data: reviewerProfiles } = await supabase
+          .from('profiles')
+          .select('*')
+          .in('user_id', reviewerIds);
+        
+        const reviewerMap: { [key: string]: Profile } = {};
+        reviewerProfiles?.forEach(reviewer => {
+          reviewerMap[reviewer.user_id] = reviewer;
+        });
+        setReviewers(reviewerMap);
+      }
+
+      // Check if current user has already reviewed this artist
+      if (user) {
+        const { data: existingReview } = await supabase
+          .from('reviews')
+          .select('id')
+          .eq('reviewer_id', user.id)
+          .eq('reviewed_profile_id', profileId)
+          .single();
+        
+        setUserHasReview(!!existingReview);
+      }
+
+    } catch (error) {
+      console.error('Error fetching related data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const fetchArtistData = async () => {
     try {
