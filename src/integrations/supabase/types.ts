@@ -1213,6 +1213,51 @@ export type Database = {
         }
         Relationships: []
       }
+      event_attendees: {
+        Row: {
+          created_at: string
+          event_id: string
+          id: string
+          profile_id: string | null
+          status: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          event_id: string
+          id?: string
+          profile_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          event_id?: string
+          id?: string
+          profile_id?: string | null
+          status?: string
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "event_attendees_event_id_fkey"
+            columns: ["event_id"]
+            isOneToOne: false
+            referencedRelation: "events"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "event_attendees_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       events: {
         Row: {
           budget_max: number | null
@@ -1221,6 +1266,8 @@ export type Database = {
           description: string | null
           event_date: string
           event_time: string | null
+          flyer_position_y: number | null
+          flyer_url: string | null
           genres: string[] | null
           id: string
           image_position_y: number | null
@@ -1238,6 +1285,8 @@ export type Database = {
           description?: string | null
           event_date: string
           event_time?: string | null
+          flyer_position_y?: number | null
+          flyer_url?: string | null
           genres?: string[] | null
           id?: string
           image_position_y?: number | null
@@ -1255,6 +1304,8 @@ export type Database = {
           description?: string | null
           event_date?: string
           event_time?: string | null
+          flyer_position_y?: number | null
+          flyer_url?: string | null
           genres?: string[] | null
           id?: string
           image_position_y?: number | null
@@ -2475,6 +2526,10 @@ export type Database = {
           reply_received: boolean
         }[]
       }
+      get_event_attendees_count: {
+        Args: { event_uuid: string }
+        Returns: number
+      }
       get_profile_view_stats: {
         Args: { p_profile_id: string }
         Returns: {
@@ -2518,6 +2573,10 @@ export type Database = {
           total_plays: number
           total_reviews: number
         }[]
+      }
+      get_user_event_status: {
+        Args: { event_uuid: string; user_uuid: string }
+        Returns: string
       }
       has_role: {
         Args: {

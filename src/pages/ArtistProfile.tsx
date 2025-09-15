@@ -13,6 +13,7 @@ import { getTalentById } from '@/lib/talents';
 import EnhancedReviewForm from '@/components/EnhancedReviewForm';
 import { ImageGallerySlider } from '@/components/ImageGallerySlider';
 import RadioStatsDisplay from '@/components/RadioStatsDisplay';
+import { ProfileEvents } from '@/components/ProfileEvents';
 
 export default function ArtistProfile() {
   const { id } = useParams<{ id: string }>();
@@ -275,6 +276,13 @@ export default function ArtistProfile() {
               <RadioStatsDisplay artistId={id!} />
             </CardContent>
           </Card>
+
+          {/* Events */}
+          <ProfileEvents 
+            profileId={id!}
+            profileType="artist"
+            className="mb-8"
+          />
 
           {/* Bio & Genres */}
           <Card>

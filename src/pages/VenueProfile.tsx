@@ -8,7 +8,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { MapPin, MessageSquare, ExternalLink, Calendar, Users, Music, Building2, UserCheck } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
-import { VenueAgenda } from '@/components/VenueAgenda';
+import { ProfileEvents } from '@/components/ProfileEvents';
 import { VenueGallery } from '@/components/VenueGallery';
 import { VenueCalendar } from '@/components/VenueCalendar';
 import { VenuePartners } from '@/components/VenuePartners';
@@ -258,17 +258,10 @@ export default function VenueProfile() {
             </TabsContent>
             
             <TabsContent value="events">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Événements à venir</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <VenueAgenda 
-                    venueProfileId={venue.id} 
-                    showBookingButton={!!user && profile?.profile_type === 'artist'}
-                  />
-                </CardContent>
-              </Card>
+              <ProfileEvents 
+                profileId={venue.id}
+                profileType="lieu"
+              />
             </TabsContent>
 
             <TabsContent value="gallery">

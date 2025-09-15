@@ -12,6 +12,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { useToast } from '@/hooks/use-toast';
 import ImageUpload from '@/components/ImageUpload';
+import { EventFlyerUpload } from '@/components/EventFlyerUpload';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 interface Event {
@@ -27,6 +28,8 @@ interface Event {
   status: 'draft' | 'published' | 'cancelled' | 'completed';
   image_url: string | null;
   image_position_y: number | null;
+  flyer_url: string | null;
+  flyer_position_y: number | null;
   created_at: string;
   venue_profile_id: string;
   profiles?: {
@@ -592,6 +595,15 @@ export default function EventsManager() {
                   folder="events"
                 />
               </div>
+
+              <EventFlyerUpload
+                onFlyerUploaded={(flyerUrl, positionY) => {
+                  // This will be handled after event creation
+                }}
+                onFlyerRemoved={() => {
+                  // This will be handled after event creation
+                }}
+              />
 
               <div className="flex justify-end space-x-2">
                 <Button variant="outline" onClick={() => setIsCreateModalOpen(false)}>
