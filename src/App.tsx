@@ -22,6 +22,7 @@ import CommunityChat from "./pages/CommunityChat";
 import Artists from "./pages/Artists";
 import Lieux from "./pages/Lieux";
 import ArtistProfile from "./pages/ArtistProfile";
+import ArtistProfileBySlug from "./pages/ArtistProfileBySlug";
 import ArtistProfileEdit from "./pages/ArtistProfileEdit";
 import { AgentProfileEdit } from "./pages/AgentProfileEdit";
 import { ManagerProfileEdit } from "./pages/ManagerProfileEdit";
@@ -30,10 +31,9 @@ import { AnnoncesWall } from "./pages/AnnoncesWall";
 import Landing from "./pages/Landing";
 import Promotion from "./pages/Promotion";
 import VenueProfile from "./pages/VenueProfile";
+import VenueProfileBySlug from "./pages/VenueProfileBySlug";
 import PartnerProfile from "./pages/PartnerProfile";
 import PartnerProfileBySlug from "./pages/PartnerProfileBySlug";
-import ArtisteProfile from "./pages/ArtisteProfile";
-import LieuProfile from "./pages/LieuProfile";
 import AgentProfile from "./pages/AgentProfile";
 import ManagerProfile from "./pages/ManagerProfile";
 import PourArtistes from "./pages/PourArtistes";
@@ -99,8 +99,8 @@ const App = () => (
           <Layout>
             <Routes>
               {/* SEO-friendly slug URLs */}
-              <Route path="/artistes/:slug" element={<ArtisteProfile />} />
-              <Route path="/lieux/:slug" element={<LieuProfile />} />
+              <Route path="/artistes/:slug" element={<ArtistProfileBySlug />} />
+              <Route path="/lieux/:slug" element={<VenueProfileBySlug />} />
               <Route path="/partners/:slug" element={<PartnerProfileBySlug />} />
               
               {/* Legacy UUID URLs for backwards compatibility */}
