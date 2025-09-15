@@ -107,13 +107,11 @@ export function TopNav() {
 
   // Public navigation items (visible only for non-authenticated users)
   const publicItems = !profile ? [
+    { title: "Top Artistes", url: "/top-artistes" },
+    { title: "Nos Artistes", url: "/artists" },
+    { title: "Nos Partenaires", url: "/partners" },
+    { title: "Nos Lieux", url: "/lieux" },
     { title: "À propos", url: "/a-propos" },
-    { title: "Pour Artistes", url: "/pour-artistes" },
-    { title: "Pour Agents", url: "/pour-agents-managers" },
-    { title: "Pour Lieux", url: "/pour-lieux-evenements" },
-    { title: "Nos Artistes", url: "/nos-artistes" },
-    { title: "Technologie", url: "/technologie" },
-    { title: "Partenariats", url: "/partenariats" },
     { title: "Blog", url: "/blog" },
   ] : [];
 

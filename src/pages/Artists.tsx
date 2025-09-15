@@ -60,9 +60,9 @@ export default function Artists() {
       
       <div className="container mx-auto p-6">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Artists Directory</h1>
+          <h1 className="text-3xl font-bold mb-4">Nos Artistes</h1>
           <p className="text-muted-foreground mb-6">
-            Discover talented artists, DJs, musicians, and performers
+            Découvrez les artistes talentueux, DJs, musiciens et performers
           </p>
           
           <div className="relative max-w-md">

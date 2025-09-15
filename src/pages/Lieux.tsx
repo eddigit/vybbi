@@ -46,7 +46,7 @@ export default function Lieux() {
       <div className="flex items-center justify-center min-h-[50vh]">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
-          <p className="text-muted-foreground">Loading venues...</p>
+          <p className="text-muted-foreground">Chargement des lieux...</p>
         </div>
       </div>
     );
@@ -55,15 +55,15 @@ export default function Lieux() {
   return (
     <div className="container mx-auto p-6">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-4">Venues Directory</h1>
+        <h1 className="text-3xl font-bold mb-4">Nos Lieux</h1>
         <p className="text-muted-foreground mb-6">
-          Discover clubs, festivals, bars, restaurants, and event spaces
+          Découvrez clubs, festivals, bars, restaurants et espaces événementiels
         </p>
         
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
           <Input
-            placeholder="Search venues, events, or locations..."
+            placeholder="Rechercher lieux, événements ou localisations..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="pl-10"
@@ -125,9 +125,9 @@ export default function Lieux() {
       {filteredLieux.length === 0 && (
         <div className="text-center py-12">
           <Building2 className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No venues found</h3>
+          <h3 className="text-lg font-semibold mb-2">Aucun lieu trouvé</h3>
           <p className="text-muted-foreground">
-            Try adjusting your search terms or browse all venues
+            Essayez d'ajuster vos termes de recherche
           </p>
         </div>
       )}
