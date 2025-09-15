@@ -87,6 +87,7 @@ const AuthHashRedirect = () => {
   return null;
 };
 
+// App component - fixed routing system
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
