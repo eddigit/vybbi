@@ -15,16 +15,17 @@ export default function Auth() {
   const { user, loading, signUp, signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const initialTab = searchParams.get('tab') === 'signin' ? 'signin' : 'signup';
+  const [activeTab, setActiveTab] = useState(initialTab);
+  
   // Form states
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');
   const [profileType, setProfileType] = useState('');
   const [roleDetail, setRoleDetail] = useState('');
-
-  const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
-  const initialTab = searchParams.get('tab') === 'signin' ? 'signin' : 'signup';
 
   if (loading) {
     return (
@@ -86,13 +87,15 @@ export default function Auth() {
 
         <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl text-center">Accéder à votre compte</CardTitle>
+            <CardTitle className="text-2xl text-center">
+              {activeTab === 'signin' ? 'Accéder à votre compte' : 'Créer votre compte'}
+            </CardTitle>
             <CardDescription className="text-center">
-              Connectez-vous ou créez votre profil artistique
+              {activeTab === 'signin' ? 'Connectez-vous à votre profil artistique' : 'Rejoignez notre communauté de talents'}
             </CardDescription>
           </CardHeader>
           <CardContent>
-            <Tabs defaultValue={initialTab} className="space-y-4">
+            <Tabs defaultValue={initialTab} className="space-y-4" onValueChange={setActiveTab}>
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="signin">Connexion</TabsTrigger>
                 <TabsTrigger value="signup">Inscription</TabsTrigger>
