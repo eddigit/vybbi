@@ -67,6 +67,7 @@ import AdminEmailDiagnostics from './pages/AdminEmailDiagnostics';
 import AuthCallback from './pages/AuthCallback';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
+import Notifications from './pages/Notifications';
 
 const queryClient = new QueryClient();
 
@@ -121,6 +122,7 @@ const App = () => (
               <Route path="/onboarding" element={<Onboarding />} />
               <Route path="/profiles" element={<Profiles />} />
               <Route path="/messages" element={<Messages />} />
+              <Route path="/notifications" element={<Notifications />} />
               <Route path="/communities" element={<Communities />} />
               <Route path="/community/:communityId" element={<CommunityChat />} />
               <Route path="/artists" element={<Artists />} />

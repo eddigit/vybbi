@@ -7,7 +7,6 @@ import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useNotifications } from "@/hooks/useNotifications";
-import { NotificationPreferences } from "@/components/NotificationPreferences";
 import { Bell, Check, X, Trash2, MessageSquare, User, Calendar, Star } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -110,7 +109,7 @@ export default function Notifications() {
         <SEOHead 
           title={pageTitle}
           description="Gérez vos notifications sur Vybbi"
-          canonical="/notifications"
+          canonicalUrl="/notifications"
         />
         <div className="animate-pulse">
           <div className="h-8 bg-muted rounded w-48 mb-6"></div>
@@ -129,7 +128,7 @@ export default function Notifications() {
       <SEOHead 
         title={pageTitle}
         description="Gérez vos notifications et préférences sur Vybbi"
-        canonical="/notifications"
+        canonicalUrl="/notifications"
       />
 
       <div className="flex items-center justify-between mb-6">
@@ -242,7 +241,11 @@ export default function Notifications() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <NotificationPreferences />
+              <div className="space-y-6">
+                <p className="text-muted-foreground">
+                  <AutoTranslate text="Les préférences de notification seront bientôt disponibles." />
+                </p>
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
