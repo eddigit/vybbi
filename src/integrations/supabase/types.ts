@@ -2667,6 +2667,10 @@ export type Database = {
         | "manager"
         | "lieu"
         | "influenceur"
+        | "academie"
+        | "sponsors"
+        | "media"
+        | "agence"
       application_status: "pending" | "accepted" | "rejected"
       availability_status: "available" | "busy" | "unavailable"
       booking_status: "pending" | "confirmed" | "cancelled" | "completed"
@@ -2675,7 +2679,16 @@ export type Database = {
       event_status: "draft" | "published" | "cancelled" | "completed"
       interaction_type: "email" | "call" | "meeting" | "message" | "note"
       media_type: "image" | "video" | "audio"
-      profile_type: "artist" | "agent" | "manager" | "lieu" | "influenceur"
+      profile_type:
+        | "artist"
+        | "agent"
+        | "manager"
+        | "lieu"
+        | "influenceur"
+        | "academie"
+        | "sponsors"
+        | "media"
+        | "agence"
       prospect_status:
         | "new"
         | "contacted"
@@ -2823,7 +2836,18 @@ export const Constants = {
   public: {
     Enums: {
       annonce_status: ["draft", "published", "closed", "cancelled"],
-      app_role: ["admin", "artist", "agent", "manager", "lieu", "influenceur"],
+      app_role: [
+        "admin",
+        "artist",
+        "agent",
+        "manager",
+        "lieu",
+        "influenceur",
+        "academie",
+        "sponsors",
+        "media",
+        "agence",
+      ],
       application_status: ["pending", "accepted", "rejected"],
       availability_status: ["available", "busy", "unavailable"],
       booking_status: ["pending", "confirmed", "cancelled", "completed"],
@@ -2832,7 +2856,17 @@ export const Constants = {
       event_status: ["draft", "published", "cancelled", "completed"],
       interaction_type: ["email", "call", "meeting", "message", "note"],
       media_type: ["image", "video", "audio"],
-      profile_type: ["artist", "agent", "manager", "lieu", "influenceur"],
+      profile_type: [
+        "artist",
+        "agent",
+        "manager",
+        "lieu",
+        "influenceur",
+        "academie",
+        "sponsors",
+        "media",
+        "agence",
+      ],
       prospect_status: [
         "new",
         "contacted",

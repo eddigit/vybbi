@@ -36,7 +36,7 @@ interface ProspectingStats {
 
 interface Prospect {
   id: string;
-  prospect_type: 'artist' | 'venue' | 'agent' | 'manager';
+  prospect_type: 'artist' | 'venue' | 'agent' | 'manager' | 'academie' | 'sponsors' | 'media' | 'agence' | 'influenceur';
   company_name?: string;
   contact_name: string;
   email?: string;
@@ -178,14 +178,24 @@ export default function AdminProspecting() {
       'artist': 'bg-purple-500',
       'venue': 'bg-indigo-500',
       'agent': 'bg-cyan-500',
-      'manager': 'bg-teal-500'
+      'manager': 'bg-teal-500',
+      'academie': 'bg-green-500',
+      'sponsors': 'bg-yellow-600',
+      'media': 'bg-red-500',
+      'agence': 'bg-blue-600',
+      'influenceur': 'bg-pink-500'
     };
 
     const typeLabels = {
       'artist': 'Artiste',
       'venue': 'Lieu',
       'agent': 'Agent',
-      'manager': 'Manager'
+      'manager': 'Manager',
+      'academie': 'Académie',
+      'sponsors': 'Sponsors',
+      'media': 'Média',
+      'agence': 'Agence',
+      'influenceur': 'Influenceur'
     };
 
     return (
@@ -311,6 +321,11 @@ export default function AdminProspecting() {
                 <SelectItem value="venue">Lieu</SelectItem>
                 <SelectItem value="agent">Agent</SelectItem>
                 <SelectItem value="manager">Manager</SelectItem>
+                <SelectItem value="academie">Académie</SelectItem>
+                <SelectItem value="sponsors">Sponsors</SelectItem>
+                <SelectItem value="media">Média</SelectItem>
+                <SelectItem value="agence">Agence</SelectItem>
+                <SelectItem value="influenceur">Influenceur</SelectItem>
               </SelectContent>
             </Select>
           </div>

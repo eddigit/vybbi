@@ -79,11 +79,7 @@ export default function Profiles() {
     if (typeFilter === 'all') {
       matchesType = true;
     } else if (typeFilter === 'partner') {
-      matchesType = profile.profile_type === 'agent' || profile.profile_type === 'manager';
-    } else if (typeFilter === 'agent') {
-      matchesType = profile.profile_type === 'agent';
-    } else if (typeFilter === 'manager') {
-      matchesType = profile.profile_type === 'manager';
+      matchesType = ['agent', 'manager', 'academie', 'sponsors', 'media', 'agence', 'influenceur'].includes(profile.profile_type);
     } else {
       matchesType = profile.profile_type === typeFilter;
     }
@@ -98,6 +94,16 @@ export default function Profiles() {
       case 'agent':
       case 'manager':
         return <Users className="w-4 h-4" />;
+      case 'academie':
+        return <Users className="w-4 h-4" />;
+      case 'sponsors':
+        return <Users className="w-4 h-4" />;
+      case 'media':
+        return <Users className="w-4 h-4" />;
+      case 'agence':
+        return <Users className="w-4 h-4" />;
+      case 'influenceur':
+        return <Users className="w-4 h-4" />;
       case 'lieu':
         return <Calendar className="w-4 h-4" />;
       default:
@@ -110,8 +116,19 @@ export default function Profiles() {
       case 'artist':
         return 'bg-primary/10 text-primary border-primary/20';
       case 'agent':
-      case 'manager':
         return 'bg-purple-500/10 text-purple-500 border-purple-500/20';
+      case 'manager':
+        return 'bg-blue-500/10 text-blue-500 border-blue-500/20';
+      case 'academie':
+        return 'bg-green-500/10 text-green-500 border-green-500/20';
+      case 'sponsors':
+        return 'bg-yellow-600/10 text-yellow-600 border-yellow-600/20';
+      case 'media':
+        return 'bg-red-500/10 text-red-500 border-red-500/20';
+      case 'agence':
+        return 'bg-indigo-500/10 text-indigo-500 border-indigo-500/20';
+      case 'influenceur':
+        return 'bg-pink-500/10 text-pink-500 border-pink-500/20';
       case 'lieu':
         return 'bg-orange-500/10 text-orange-500 border-orange-500/20';
       default:
@@ -160,9 +177,14 @@ export default function Profiles() {
           <SelectContent>
             <SelectItem value="all">Tous les profils</SelectItem>
             <SelectItem value="artist">Artistes</SelectItem>
-            <SelectItem value="agent">Agents</SelectItem>
-            <SelectItem value="manager">Managers</SelectItem>
-            <SelectItem value="partner">Agents & Managers</SelectItem>
+            <SelectItem value="partner">Partenaires</SelectItem>
+            <SelectItem value="agent">• Agents</SelectItem>
+            <SelectItem value="manager">• Managers</SelectItem>
+            <SelectItem value="academie">• Académies</SelectItem>
+            <SelectItem value="sponsors">• Sponsors</SelectItem>
+            <SelectItem value="media">• Média</SelectItem>
+            <SelectItem value="agence">• Agences</SelectItem>
+            <SelectItem value="influenceur">• Influenceurs</SelectItem>
             <SelectItem value="lieu">Lieux & Établissements</SelectItem>
           </SelectContent>
         </Select>
@@ -184,12 +206,17 @@ export default function Profiles() {
                   <div className="flex items-center gap-2 mt-1">
                      <Badge variant="outline" className={getProfileColor(profile.profile_type)}>
                        {getProfileIcon(profile.profile_type)}
-                       <span className="ml-1 capitalize">
-                         {profile.profile_type === 'lieu' ? 'Lieu' : 
-                          profile.profile_type === 'agent' ? 'Agent' :
-                          profile.profile_type === 'manager' ? 'Manager' :
-                          profile.profile_type}
-                       </span>
+                        <span className="ml-1 capitalize">
+                          {profile.profile_type === 'lieu' ? 'Lieu' : 
+                           profile.profile_type === 'agent' ? 'Agent' :
+                           profile.profile_type === 'manager' ? 'Manager' :
+                           profile.profile_type === 'academie' ? 'Académie' :
+                           profile.profile_type === 'sponsors' ? 'Sponsors' :
+                           profile.profile_type === 'media' ? 'Média' :
+                           profile.profile_type === 'agence' ? 'Agence' :
+                           profile.profile_type === 'influenceur' ? 'Influenceur' :
+                           profile.profile_type}
+                        </span>
                      </Badge>
                   </div>
                 </div>
@@ -235,7 +262,7 @@ export default function Profiles() {
                 <Button size="sm" className="flex-1" asChild>
                   <Link to={
                     profile.profile_type === 'artist' ? `/artists/${profile.id}` :
-                    profile.profile_type === 'agent' || profile.profile_type === 'manager' ? `/partners/${profile.id}` :
+                    ['agent', 'manager', 'academie', 'sponsors', 'media', 'agence', 'influenceur'].includes(profile.profile_type) ? `/partners/${profile.id}` :
                     profile.profile_type === 'lieu' ? `/lieux/${profile.id}` :
                     `/profiles/${profile.id}`
                   }>

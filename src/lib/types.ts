@@ -1,5 +1,5 @@
-export type AppRole = 'admin' | 'artist' | 'agent' | 'lieu' | 'manager' | 'influenceur';
-export type ProfileType = 'artist' | 'agent' | 'lieu' | 'manager' | 'influenceur';
+export type AppRole = 'admin' | 'artist' | 'agent' | 'lieu' | 'manager' | 'influenceur' | 'academie' | 'sponsors' | 'media' | 'agence';
+export type ProfileType = 'artist' | 'agent' | 'lieu' | 'manager' | 'influenceur' | 'academie' | 'sponsors' | 'media' | 'agence';
 export type EventStatus = 'draft' | 'published' | 'cancelled';
 export type BookingStatus = 'draft' | 'proposed' | 'confirmed' | 'cancelled' | 'completed';
 export type AvailabilityStatus = 'available' | 'unavailable' | 'tentative';
