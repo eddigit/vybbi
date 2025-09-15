@@ -148,7 +148,47 @@ const handler = async (req: Request): Promise<Response> => {
       return new Response('Invalid JSON payload', { status: 400, headers: corsHeaders });
     }
 
-    // Only process email-related webhooks
+    // Handle user confirmation (send welcome email after validation)
+    if (payload.type === 'user' && payload.table === 'users' && payload.record) {
+      const user = payload.record;
+      if (user.email_confirmed_at && !payload.old_record?.email_confirmed_at) {
+        logWithTimestamp('INFO', `User confirmed email, sending welcome email to ${user.email}`);
+        
+        // Get user metadata for welcome email
+        const displayName = user.raw_user_meta_data?.display_name || 'Utilisateur';
+        const profileType = user.raw_user_meta_data?.profile_type || 'artist';
+        
+        try {
+          // Send welcome email via external service
+          const supabaseUrl = Deno.env.get('SUPABASE_URL');
+          const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
+          const supa = createClient(supabaseUrl!, serviceRoleKey!);
+          
+          const { error: welcomeError } = await supa.functions.invoke('send-notification', {
+            body: {
+              type: 'welcome',
+              recipientEmail: user.email,
+              data: {
+                userName: displayName,
+                userType: profileType
+              }
+            }
+          });
+          
+          if (welcomeError) {
+            logWithTimestamp('ERROR', 'Failed to send welcome email', { error: welcomeError.message });
+          } else {
+            logWithTimestamp('SUCCESS', 'Welcome email sent after confirmation', { email: user.email });
+          }
+        } catch (error: any) {
+          logWithTimestamp('ERROR', 'Welcome email send failed', { error: error.message });
+        }
+        
+        return new Response('OK - Welcome email sent', { headers: corsHeaders });
+      }
+    }
+
+    // Only process email-related webhooks for validation emails
     if (!payload.email_data || !payload.user?.email) {
       return new Response('OK - No email action required', { headers: corsHeaders });
     }

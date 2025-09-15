@@ -123,16 +123,9 @@ export function useAuth() {
 
       if (error) throw error;
       
-      // Envoyer l'email de bienvenue (asynchrone, hors chemin critique)
+      // L'email de bienvenue sera envoyé après validation via auth-email-sender
+      // Notifier l'administrateur (immédiat)
       setTimeout(async () => {
-        try {
-          await sendWelcomeEmail(email, displayName, profileType);
-          console.log('Email de bienvenue envoyé');
-        } catch (emailError) {
-          console.error('Erreur lors de l\'envoi de l\'email de bienvenue:', emailError);
-        }
-
-        // Notifier l'administrateur
         try {
           await sendAdminNotification(ADMIN_EMAIL, displayName, email, profileType);
           console.log('Notification admin envoyée');
