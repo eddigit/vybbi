@@ -268,7 +268,7 @@ export default function Messages() {
   // Desktop layout (lg and above)
   if (!isMobile) {
     return (
-      <div className="h-screen flex">
+      <div className="h-screen flex pb-20">
         {/* Left Sidebar - Conversations */}
         <div className="w-80 flex-shrink-0">
           <ConversationList
@@ -292,18 +292,22 @@ export default function Messages() {
             onBlockUser={handleBlockUser}
           />
           
-          <MessageList messages={messages} loading={messagesLoading} />
+          <div className="flex-1 overflow-hidden">
+            <MessageList messages={messages} loading={messagesLoading} />
+          </div>
           
-          <Composer
-            conversationId={selectedConversationId}
-            onSendMessage={handleSendMessage}
-            disabled={!canSendMessage}
-            placeholder={
-              selectedConversation?.is_blocked
-                ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
-                : "Tapez votre message..."
-            }
-          />
+          <div className="relative z-40">
+            <Composer
+              conversationId={selectedConversationId}
+              onSendMessage={handleSendMessage}
+              disabled={!canSendMessage}
+              placeholder={
+                selectedConversation?.is_blocked
+                  ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
+                  : "Tapez votre message..."
+              }
+            />
+          </div>
         </div>
 
         {/* Right Sidebar - Info Panel */}
@@ -325,7 +329,7 @@ export default function Messages() {
 
   // Mobile layout
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col pb-32">
       {/* Mobile: Show conversation list OR chat */}
       {showConversationList ? (
         <ConversationList
@@ -348,18 +352,22 @@ export default function Messages() {
             showBackButton={true}
           />
           
-          <MessageList messages={messages} loading={messagesLoading} />
+          <div className="flex-1 overflow-hidden">
+            <MessageList messages={messages} loading={messagesLoading} />
+          </div>
           
-          <Composer
-            conversationId={selectedConversationId}
-            onSendMessage={handleSendMessage}
-            disabled={!canSendMessage}
-            placeholder={
-              selectedConversation?.is_blocked
-                ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
-                : "Tapez votre message..."
-            }
-          />
+          <div className="relative z-40">
+            <Composer
+              conversationId={selectedConversationId}
+              onSendMessage={handleSendMessage}
+              disabled={!canSendMessage}
+              placeholder={
+                selectedConversation?.is_blocked
+                  ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
+                  : "Tapez votre message..."
+              }
+            />
+          </div>
         </div>
       )}
 

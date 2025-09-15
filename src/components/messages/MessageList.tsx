@@ -81,7 +81,7 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   return (
     <div className="flex-1 flex flex-col">
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
-        <div className="p-4 space-y-4">
+        <div className="p-4 space-y-4 pb-20">
           {Object.entries(groupedMessages).map(([date, dayMessages]) => (
             <div key={date}>
               {/* Date separator */}
