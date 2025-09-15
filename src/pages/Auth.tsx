@@ -8,7 +8,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PasswordInput } from '@/components/ui/password-input';
-import { Loader2, Music, Users, MapPin, Briefcase } from 'lucide-react';
+import { Loader2, Music, Users, MapPin, Briefcase, Star, GraduationCap, Coins, Camera, Building2 } from 'lucide-react';
 import { TALENTS } from '@/lib/talents';
 import { SiretField } from '@/components/SiretField';
 
@@ -72,6 +72,11 @@ export default function Auth() {
       case 'agent': return <Briefcase className="h-4 w-4" />;
       case 'manager': return <Users className="h-4 w-4" />;
       case 'lieu': return <MapPin className="h-4 w-4" />;
+      case 'influenceur': return <Star className="h-4 w-4" />;
+      case 'academie': return <GraduationCap className="h-4 w-4" />;
+      case 'sponsors': return <Coins className="h-4 w-4" />;
+      case 'media': return <Camera className="h-4 w-4" />;
+      case 'agence': return <Building2 className="h-4 w-4" />;
       default: return <Music className="h-4 w-4" />;
     }
   };
@@ -202,6 +207,36 @@ export default function Auth() {
                             <span>Lieu & Établissement</span>
                           </div>
                         </SelectItem>
+                        <SelectItem value="influenceur">
+                          <div className="flex items-center space-x-2">
+                            {getProfileIcon('influenceur')}
+                            <span>Influenceur</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="academie">
+                          <div className="flex items-center space-x-2">
+                            {getProfileIcon('academie')}
+                            <span>Académie</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="sponsors">
+                          <div className="flex items-center space-x-2">
+                            {getProfileIcon('sponsors')}
+                            <span>Sponsors</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="media">
+                          <div className="flex items-center space-x-2">
+                            {getProfileIcon('media')}
+                            <span>Média</span>
+                          </div>
+                        </SelectItem>
+                        <SelectItem value="agence">
+                          <div className="flex items-center space-x-2">
+                            {getProfileIcon('agence')}
+                            <span>Agence</span>
+                          </div>
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -291,6 +326,79 @@ export default function Auth() {
                       className="space-y-2"
                     />
                   )}
+
+                  {profileType === 'academie' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Spécialité</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez votre spécialité" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="formation_musicale">Formation musicale</SelectItem>
+                          <SelectItem value="formation_technique">Formation technique</SelectItem>
+                          <SelectItem value="formation_business">Formation business</SelectItem>
+                          <SelectItem value="ecole_musique">École de musique</SelectItem>
+                          <SelectItem value="conservatoire">Conservatoire</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {profileType === 'sponsors' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Type de sponsoring</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez un type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="evenementiel">Sponsoring événementiel</SelectItem>
+                          <SelectItem value="artistique">Sponsoring artistique</SelectItem>
+                          <SelectItem value="equipement">Sponsoring équipement</SelectItem>
+                          <SelectItem value="festival">Sponsoring festival</SelectItem>
+                          <SelectItem value="tournee">Sponsoring tournée</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {profileType === 'media' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Type de média</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez un type" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="blog">Blog</SelectItem>
+                          <SelectItem value="magazine">Magazine</SelectItem>
+                          <SelectItem value="radio">Radio</SelectItem>
+                          <SelectItem value="podcast">Podcast</SelectItem>
+                          <SelectItem value="television">Télévision</SelectItem>
+                          <SelectItem value="presse_en_ligne">Presse en ligne</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
+
+                  {profileType === 'agence' && (
+                    <div className="space-y-2">
+                      <Label htmlFor="role-detail">Spécialité d'agence</Label>
+                      <Select value={roleDetail} onValueChange={setRoleDetail} required>
+                        <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
+                          <SelectValue placeholder="Sélectionnez une spécialité" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          <SelectItem value="booking">Agence de booking</SelectItem>
+                          <SelectItem value="communication">Agence de communication</SelectItem>
+                          <SelectItem value="production">Agence de production</SelectItem>
+                          <SelectItem value="evenementiel">Agence événementiel</SelectItem>
+                          <SelectItem value="marketing">Agence marketing musical</SelectItem>
+                        </SelectContent>
+                      </Select>
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
                     <Input
@@ -321,7 +429,7 @@ export default function Auth() {
                   <Button 
                     type="submit" 
                     className="w-full bg-gradient-to-r from-primary to-primary/90 hover:from-primary/90 hover:to-primary transition-all duration-200" 
-                    disabled={isLoading || !profileType || ((profileType === 'artist' || profileType === 'agent' || profileType === 'manager' || profileType === 'lieu') && !roleDetail)}
+                    disabled={isLoading || !profileType || ((profileType === 'artist' || profileType === 'agent' || profileType === 'manager' || profileType === 'lieu' || profileType === 'influenceur' || profileType === 'academie' || profileType === 'sponsors' || profileType === 'media' || profileType === 'agence') && !roleDetail)}
                   >
                     {isLoading ? (
                       <>
