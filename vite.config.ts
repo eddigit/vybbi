@@ -21,19 +21,6 @@ export default defineConfig(({ mode }) => ({
           'query-vendor': ['@tanstack/react-query'],
           'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
           'chart-vendor': ['recharts'],
-          // Séparer les pages admin (moins utilisées)
-          'admin-pages': [
-            './src/pages/AdminDashboard.tsx',
-            './src/pages/AdminCommunication.tsx', 
-            './src/pages/AdminAds.tsx',
-            './src/pages/AdminInfluenceurs.tsx'
-          ],
-          // Séparer les composants admin
-          'admin-components': [
-            './src/components/admin/EmailDragDropEditor.tsx',
-            './src/components/admin/EmailVisualEditor.tsx',
-            './src/components/admin/VybbiChat.tsx'
-          ]
         }
       }
     },
