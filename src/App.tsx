@@ -156,7 +156,7 @@ const App = () => (
               <Route path="/admin/knowledge" element={<AdminKnowledge />} />
               <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
               <Route path="/affiliation" element={<InfluenceurDashboard />} />
-              <Route path="/influenceurs/:slug" element={<ArtisteProfile />} />
+              <Route path="/influenceurs/:slug" element={<ArtistProfileBySlug />} />
               <Route path="/blog" element={<Blog />} />
               <Route path="/blog/:slug" element={<BlogPost />} />
               <Route path="/technologie" element={<Technologie />} />

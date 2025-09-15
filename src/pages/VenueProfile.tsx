@@ -14,8 +14,13 @@ import { VenueCalendar } from '@/components/VenueCalendar';
 import { VenuePartners } from '@/components/VenuePartners';
 import { VenueTalentHistory } from '@/components/VenueTalentHistory';
 
-export default function VenueProfile() {
-  const { id } = useParams<{ id: string }>();
+interface VenueProfileProps {
+  venueId?: string;
+}
+
+export default function VenueProfile({ venueId }: VenueProfileProps = {}) {
+  const { id: paramId } = useParams<{ id: string }>();
+  const id = venueId || paramId;
   const { user, profile } = useAuth();
   const [venue, setVenue] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
