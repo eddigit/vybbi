@@ -162,9 +162,11 @@ export default function Landing() {
             </p>
 
             <div className="mb-8">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1">
-                🚀 Accès anticipé • Places limitées • Statut de fondateur
-              </Badge>
+              <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1 hover:bg-primary/20" asChild>
+                <Link to="/auth">
+                  🚀 Accès anticipé • Places limitées • Statut de fondateur
+                </Link>
+              </Button>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
@@ -220,9 +222,11 @@ export default function Landing() {
             </p>
 
             <div className="mb-8">
-              <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1">
-                🚀 Accès anticipé • Places limitées • Statut de fondateur
-              </Badge>
+              <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1 hover:bg-primary/20" asChild>
+                <Link to="/auth">
+                  🚀 Accès anticipé • Places limitées • Statut de fondateur
+                </Link>
+              </Button>
             </div>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">

@@ -217,7 +217,12 @@ export function useMessages(conversationId: string | null) {
             sender: senderData || { display_name: 'Utilisateur inconnu', avatar_url: null }
           };
 
-          setMessages(prev => [...prev, messageWithSender]);
+          setMessages(prev => {
+            // Prevent duplicates by checking if message already exists
+            const exists = prev.some(msg => msg.id === messageWithSender.id);
+            if (exists) return prev;
+            return [...prev, messageWithSender];
+          });
           
           // Mark as read if the user is viewing this conversation
           if (payload.new.sender_id !== user?.id) {
