@@ -3,7 +3,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
-import { Pin, Archive, MoreVertical, PinOff, ArchiveRestore } from 'lucide-react';
+import { Pin, Archive, MoreVertical, PinOff, ArchiveRestore, Trash2 } from 'lucide-react';
 import { ConversationWithDetails } from '@/hooks/useConversations';
 import { formatTime } from '@/utils/formatTime';
 
@@ -13,6 +13,7 @@ interface ConversationListItemProps {
   onSelect: () => void;
   onPin: () => void;
   onArchive: () => void;
+  onDelete: () => void;
   isPinned: boolean;
   isArchived?: boolean;
 }
@@ -23,6 +24,7 @@ export default function ConversationListItem({
   onSelect,
   onPin,
   onArchive,
+  onDelete,
   isPinned,
   isArchived = false,
 }: ConversationListItemProps) {
@@ -131,6 +133,17 @@ export default function ConversationListItem({
                 Archiver
               </>
             )}
+          </DropdownMenuItem>
+          <DropdownMenuItem
+            onClick={(e) => {
+              e.stopPropagation();
+              onDelete();
+              setShowMenu(false);
+            }}
+            className="text-destructive hover:text-destructive"
+          >
+            <Trash2 className="mr-2 h-4 w-4" />
+            Supprimer
           </DropdownMenuItem>
         </DropdownMenuContent>
       </DropdownMenu>

@@ -15,6 +15,7 @@ interface ConversationListProps {
   onUnarchiveConversation: (conversationId: string) => void;
   onPinConversation: (conversationId: string) => void;
   onUnpinConversation: (conversationId: string) => void;
+  onDeleteConversation: (conversationId: string) => void;
 }
 
 export default function ConversationList({
@@ -25,6 +26,7 @@ export default function ConversationList({
   onUnarchiveConversation,
   onPinConversation,
   onUnpinConversation,
+  onDeleteConversation,
 }: ConversationListProps) {
   const [searchTerm, setSearchTerm] = useState('');
   const [showArchived, setShowArchived] = useState(false);
@@ -75,6 +77,7 @@ export default function ConversationList({
                   onSelect={() => onSelectConversation(conversation.id)}
                   onPin={() => onUnpinConversation(conversation.id)}
                   onArchive={() => onArchiveConversation(conversation.id)}
+                  onDelete={() => onDeleteConversation(conversation.id)}
                   isPinned={true}
                 />
               ))}
@@ -97,6 +100,7 @@ export default function ConversationList({
                   onSelect={() => onSelectConversation(conversation.id)}
                   onPin={() => onPinConversation(conversation.id)}
                   onArchive={() => onArchiveConversation(conversation.id)}
+                  onDelete={() => onDeleteConversation(conversation.id)}
                   isPinned={false}
                 />
               ))}
@@ -126,6 +130,7 @@ export default function ConversationList({
                     onSelect={() => onSelectConversation(conversation.id)}
                     onPin={() => onPinConversation(conversation.id)}
                     onArchive={() => onUnarchiveConversation(conversation.id)}
+                    onDelete={() => onDeleteConversation(conversation.id)}
                     isPinned={conversation.is_pinned}
                     isArchived={true}
                   />

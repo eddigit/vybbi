@@ -74,6 +74,13 @@ export function useNotifications() {
 
     console.log('Setting up real-time subscription for notifications:', user.id);
 
+    // Debouncing to avoid duplicate notifications
+    let timeoutId: NodeJS.Timeout;
+    const debouncedFetch = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(fetchNotifications, 300);
+    };
+
     const channel = supabase
       .channel(`notifications-${user.id}`)
       .on(
@@ -89,8 +96,14 @@ export function useNotifications() {
           
           const newNotification = payload.new as Notification;
           
-          console.log('Adding new notification:', newNotification);
-          setNotifications(prev => [newNotification, ...prev.slice(0, 19)]);
+          // Avoid duplicates
+          setNotifications(prev => {
+            const exists = prev.some(n => n.id === newNotification.id);
+            if (exists) return prev;
+            
+            console.log('Adding new notification:', newNotification);
+            return [newNotification, ...prev.slice(0, 19)];
+          });
           
           // Show browser notification
           showNotification(newNotification.title, {
@@ -105,12 +118,33 @@ export function useNotifications() {
           });
         }
       )
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public', 
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        debouncedFetch
+      )
+      .on(
+        'postgres_changes',
+        {
+          event: 'DELETE',
+          schema: 'public',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
+        },
+        debouncedFetch
+      )
       .subscribe((status) => {
         console.log('Notification subscription status:', status);
       });
 
     return () => {
       console.log('Cleaning up notification subscription');
+      clearTimeout(timeoutId);
       supabase.removeChannel(channel);
     };
   };

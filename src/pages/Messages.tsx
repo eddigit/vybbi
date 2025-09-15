@@ -47,7 +47,8 @@ export default function Messages() {
     archiveConversation,
     unarchiveConversation,
     pinConversation,
-    unpinConversation
+    unpinConversation,
+    deleteConversation
   } = conversationsResult || {};
 
   const {
@@ -279,6 +280,7 @@ export default function Messages() {
             onUnarchiveConversation={unarchiveConversation || (() => {})}
             onPinConversation={pinConversation || (() => {})}
             onUnpinConversation={unpinConversation || (() => {})}
+            onDeleteConversation={deleteConversation || (() => {})}
           />
         </div>
 
@@ -338,6 +340,7 @@ export default function Messages() {
           onUnarchiveConversation={unarchiveConversation || (() => {})}
           onPinConversation={pinConversation || (() => {})}
           onUnpinConversation={unpinConversation || (() => {})}
+          onDeleteConversation={deleteConversation || (() => {})}
         />
       ) : (
         <div className="flex flex-col h-full pb-36">

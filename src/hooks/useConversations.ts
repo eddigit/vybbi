@@ -128,19 +128,64 @@ export function useConversations() {
     }
   };
 
+  const deleteConversation = async (conversationId: string) => {
+    if (!user) return;
+
+    try {
+      // Delete conversation participants first
+      await supabase
+        .from('conversation_participants')
+        .delete()
+        .eq('conversation_id', conversationId)
+        .eq('user_id', user.id);
+
+      // Delete messages from this conversation for this user (soft delete)
+      await supabase
+        .from('message_receipts')
+        .delete()
+        .eq('conversation_id', conversationId)
+        .eq('user_id', user.id);
+
+      // Remove from archives if archived
+      await supabase
+        .from('conversation_archives')
+        .delete()
+        .eq('conversation_id', conversationId)
+        .eq('user_id', user.id);
+
+      // Remove from pins if pinned
+      await supabase
+        .from('conversation_pins')
+        .delete()
+        .eq('conversation_id', conversationId)
+        .eq('user_id', user.id);
+
+      await fetchConversations();
+    } catch (error) {
+      console.error('Error deleting conversation:', error);
+    }
+  };
+
   useEffect(() => {
     fetchConversations();
 
-    // Subscribe to real-time updates
+    // Subscribe to real-time updates with debouncing to avoid duplicates
+    let timeoutId: NodeJS.Timeout;
+    const debouncedFetch = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(fetchConversations, 300);
+    };
+
     const channel = supabase
-      .channel('conversations-updates')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, fetchConversations)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_archives' }, fetchConversations)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_pins' }, fetchConversations)
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, fetchConversations)
+      .channel(`conversations-updates-${user?.id}`)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversations' }, debouncedFetch)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_archives' }, debouncedFetch)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_pins' }, debouncedFetch)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, debouncedFetch)
       .subscribe();
 
     return () => {
+      clearTimeout(timeoutId);
       supabase.removeChannel(channel);
     };
   }, [user]);
@@ -153,6 +198,7 @@ export function useConversations() {
     archiveConversation,
     unarchiveConversation,
     pinConversation,
-    unpinConversation
+    unpinConversation,
+    deleteConversation
   };
 }
