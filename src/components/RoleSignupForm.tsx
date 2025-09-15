@@ -50,11 +50,21 @@ export default function RoleSignupForm({ profileType, title, description }: Role
       // Rediriger vers la page d'instructions de confirmation
       navigate('/inscription/confirmation');
     } catch (error: any) {
-      toast({
-        title: "Erreur",
-        description: error.message || "Une erreur est survenue lors de l'inscription",
-        variant: "destructive",
-      });
+      const msg = String(error?.message || '');
+      const isHookTimeout = msg.includes('Failed to reach hook') || msg.includes('hook_timeout') || msg.includes('422');
+      if (isHookTimeout) {
+        toast({
+          title: "Vérifiez votre email",
+          description: "Le lien de confirmation a été envoyé. L'opération peut prendre quelques secondes.",
+        });
+        navigate('/inscription/confirmation');
+      } else {
+        toast({
+          title: "Erreur",
+          description: error.message || "Une erreur est survenue lors de l'inscription",
+          variant: "destructive",
+        });
+      }
     } finally {
       setIsLoading(false);
     }

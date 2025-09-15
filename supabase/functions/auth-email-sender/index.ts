@@ -139,19 +139,11 @@ const handler = async (req: Request): Promise<Response> => {
     const body = await req.text();
     logWithTimestamp('INFO', 'Processing auth webhook', { bodyLength: body.length });
     
-    // Simple security verification - currently bypassed as discussed
-    // TODO: Re-enable when webhook signature algorithm is properly implemented
-    // const expectedSecret = Deno.env.get('AUTH_EMAIL_HOOK_SECRET');
-    // if (expectedSecret && !isValidWebhookSignature(req, body, expectedSecret)) {
-    //   logWithTimestamp('ERROR', 'Unauthorized webhook request');
-    //   return new Response('Unauthorized', { status: 401, headers: corsHeaders });
-    // }
-
     // Parse the payload
     let payload: AuthWebhookPayload;
     try {
       payload = JSON.parse(body);
-    } catch (error) {
+    } catch (error: any) {
       logWithTimestamp('ERROR', 'Invalid JSON payload', { error: error.message });
       return new Response('Invalid JSON payload', { status: 400, headers: corsHeaders });
     }
@@ -167,127 +159,92 @@ const handler = async (req: Request): Promise<Response> => {
     };
     logWithTimestamp('INFO', `Processing ${email_action_type} email for ${user.email}`);
 
-    // Get environment variables
+    // Env
     const supabaseUrl = Deno.env.get('SUPABASE_URL');
     const serviceRoleKey = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY');
-    
     if (!supabaseUrl || !serviceRoleKey) {
       logWithTimestamp('ERROR', 'Missing required environment variables');
       return new Response('Server configuration error', { status: 500, headers: corsHeaders });
     }
 
-    // Determine email subject and content
+    // Email meta
     const emailActionType = payload.email_data.email_action_type;
     const subjectMap = {
-      'signup': 'Vybbi - Confirmez votre inscription',
-      'recovery': 'Vybbi - Réinitialisation de mot de passe', 
-      'email_change': 'Vybbi - Confirmez votre nouvel email',
-      'invite': 'Vybbi - Vous êtes invité'
-    };
-    const subject = subjectMap[emailActionType] || 'Vybbi - Action requise';
+      signup: 'Vybbi - Confirmez votre inscription',
+      recovery: 'Vybbi - Réinitialisation de mot de passe',
+      email_change: "Vybbi - Confirmez votre nouvel email",
+      invite: "Vybbi - Vous êtes invité",
+    } as const;
+    const subject = (subjectMap as any)[emailActionType] || 'Vybbi - Action requise';
 
-// Prepare callback URL and ALWAYS generate a fresh verify link via Admin API
-const siteUrl = payload.email_data.site_url || supabaseUrl?.replace('/rest/v1', '');
-const siteBase = (siteUrl || '').replace(/\/auth\/v1$/, '').replace(/\/$/, '');
-const callbackUrl = `${siteBase}/auth/callback`;
+    // Prepare callback and site URL
+    const siteUrl = payload.email_data.site_url || supabaseUrl.replace('/rest/v1', '');
+    const siteBase = (siteUrl || '').replace(/\/auth\/v1$/, '').replace(/\/$/, '');
+    const callbackUrl = `${siteBase}/auth/callback`;
 
-let verifyUrlOverride: string | undefined = undefined;
+    // Background task: generate link + send email
+    const backgroundTask = async () => {
+      try {
+        const adminClient = createClient(supabaseUrl, serviceRoleKey);
+        const mappedType = (emailActionType === 'signup') ? 'magiclink' : (emailActionType as any);
+        // @ts-ignore - admin API typing is broad in esm shim
+        const { data: linkData, error: linkError } = await (adminClient.auth as any).admin.generateLink({
+          type: mappedType,
+          email: user.email,
+          options: { redirectTo: callbackUrl },
+        });
 
-try {
-  const adminClient = createClient(supabaseUrl, serviceRoleKey);
-  // Map signup -> magiclink to avoid password requirement and ensure a valid action link
-  const mappedType = (emailActionType === 'signup') ? 'magiclink' : emailActionType as any;
-  // @ts-ignore - broad type for emailActionType
-  const { data: linkData, error: linkError } = await (adminClient.auth as any).admin.generateLink({
-    type: mappedType,
-    email: user.email,
-    options: { redirectTo: callbackUrl }
-  });
-
-  if (linkError) {
-    logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message, emailActionType, mappedType });
-  } else {
-    verifyUrlOverride = (linkData?.properties?.action_link) || (linkData?.action_link);
-    logWithTimestamp('INFO', 'Generated action link via Admin API', { emailActionType, mappedType });
-  }
-} catch (genErr: any) {
-  logWithTimestamp('ERROR', 'Exception during generateLink', { error: genErr?.message });
-}
-
-// Generate HTML content
-const htmlContent = getEmailTemplate(emailActionType, {
-  ...payload.email_data,
-  site_url: siteUrl,
-  verifyUrl: verifyUrlOverride
-});
-
-    // Send via Gmail function with 4s watchdog to satisfy 5s auth hook SLA
-    const supabase = createClient(supabaseUrl, serviceRoleKey);
-
-    const sendPromise = supabase.functions.invoke('gmail-send-email', {
-      body: {
-        to: payload.user.email,
-        subject: subject,
-        html: htmlContent,
-        templateData: {
-          action_type: emailActionType,
-          ...payload.email_data
+        let verifyUrlOverride: string | undefined;
+        if (linkError) {
+          logWithTimestamp('ERROR', 'Failed to generate action link', { error: linkError.message, emailActionType, mappedType });
+        } else {
+          verifyUrlOverride = (linkData?.properties?.action_link) || (linkData?.action_link);
+          logWithTimestamp('INFO', 'Generated action link via Admin API', { emailActionType, mappedType });
         }
+
+        // Build HTML
+        const htmlContent = getEmailTemplate(emailActionType, {
+          ...payload.email_data,
+          site_url: siteUrl,
+          verifyUrl: verifyUrlOverride,
+        });
+
+        const supa = createClient(supabaseUrl, serviceRoleKey);
+        const { data, error } = await supa.functions.invoke('gmail-send-email', {
+          body: {
+            to: user.email,
+            subject,
+            html: htmlContent,
+            templateData: { action_type: emailActionType, ...payload.email_data },
+          },
+        });
+
+        if (error) {
+          logWithTimestamp('ERROR', 'GMAIL send failed', { error: error.message });
+        } else {
+          logWithTimestamp('SUCCESS', 'Email sent successfully', { messageId: (data as any)?.messageId, to: user.email });
+        }
+      } catch (err: any) {
+        logWithTimestamp('ERROR', 'Background task crashed', { error: err?.message });
       }
-    }).then((res) => ({ kind: 'result', ...res })) as Promise<{ kind: 'result', data: any, error: any }>;
+    };
 
-    const watchdog = new Promise<{ kind: 'timeout' }>((resolve) => {
-      setTimeout(() => resolve({ kind: 'timeout' }), 4000);
+    // Fire-and-forget to satisfy 5s webhook SLA
+    // @ts-ignore - Edge runtime helper available at runtime
+    EdgeRuntime.waitUntil(backgroundTask());
+
+    return new Response(JSON.stringify({ success: true, queued: true }), {
+      status: 200,
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
-
-    const raced = await Promise.race([sendPromise, watchdog]);
-
-    if ((raced as any).kind === 'timeout') {
-      logWithTimestamp('WARN', 'Email send taking too long, returning early (queued).');
-      return new Response(JSON.stringify({ 
-        success: true, 
-        method: 'gmail', 
-        queued: true
-      }), {
-        status: 202,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
-    }
-
-    const { data, error } = raced as { kind: 'result', data: any, error: any };
-
-    if (error) {
-      logWithTimestamp('ERROR', 'Gmail send failed', { error: error.message });
-      return new Response(JSON.stringify({ 
-        error: 'Gmail send failed', 
-        message: error.message 
-      }), {
-        status: 500,
-        headers: { 'Content-Type': 'application/json', ...corsHeaders }
-      });
-    }
-
-    logWithTimestamp('SUCCESS', 'Email sent successfully', { 
-      messageId: data?.messageId,
-      to: payload.user.email
-    });
-    
-    return new Response(JSON.stringify({ 
-      success: true, 
-      method: 'gmail', 
-      messageId: data?.messageId
-    }), {
-      headers: { 'Content-Type': 'application/json', ...corsHeaders }
-    });
-
-  } catch (error) {
+  } catch (error: any) {
     logWithTimestamp('ERROR', 'Critical error', { error: error.message });
-    return new Response(JSON.stringify({ 
-      error: 'Internal server error', 
-      message: error.message 
+    return new Response(JSON.stringify({
+      error: 'Internal server error',
+      message: error.message,
     }), {
       status: 500,
-      headers: { 'Content-Type': 'application/json', ...corsHeaders }
+      headers: { 'Content-Type': 'application/json', ...corsHeaders },
     });
   }
 };
