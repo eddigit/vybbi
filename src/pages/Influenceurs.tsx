@@ -74,41 +74,55 @@ export default function Influenceurs() {
 
   const testimonials = [
     {
-      name: "Sarah K.",
-      role: "Influenceuse Lifestyle • 45K followers",
-      quote: "Avec 50 inscriptions par mois, je génère déjà 325€ récurrents. Le modèle de Vybbi est vraiment unique !",
-      revenue: "3900€/an"
+      name: "Marie D.",
+      role: "Influenceuse Mode • 45K followers",
+      quote: "Avec 50 inscriptions par mois via mes liens Vybbi, je génère 325€ mensuels récurrents. C'est un complément de revenus fantastique !",
+      monthly_referrals: 50,
+      monthly_revenue: 325
     },
     {
-      name: "Alex M.", 
-      role: "YouTubeur Tech • 120K subscribers",
-      quote: "En 6 mois, j'ai atteint 150 parrainages. Les 75€/mois récurrents s'ajoutent parfaitement à mes autres revenus.",
-      revenue: "1200€/an"
+      name: "Alex K.", 
+      role: "DJ/Producteur • 120K followers",
+      quote: "Le programme d'affiliation Vybbi m'a permis de monétiser ma passion. 150 parrainages = 1175€ par mois récurrents !",
+      monthly_referrals: 150,
+      monthly_revenue: 1175
     },
     {
-      name: "Léa R.",
-      role: "TikTokeuse • 200K followers",  
-      quote: "Le programme exclusif jusqu'en 2026 était un argument décisif. Mes 80 conversions rapportent déjà bien !",
-      revenue: "800€/an"
+      name: "Sophie M.",
+      role: "Content Creator • 80K followers", 
+      quote: "Excellente initiative ! Mes 80 parrainages mensuels me rapportent 640€. Et c'est récurrent chaque mois !",
+      monthly_referrals: 80,
+      monthly_revenue: 640
     }
   ];
 
-  const faqItems = [
+  const proofPoints = [
+    "✅ Paiements mensuels garantis",
+    "✅ Système de tracking transparent", 
+    "✅ Dashboard de suivi en temps réel",
+    "✅ Support dédié aux influenceurs",
+    "✅ Contrat d'affiliation officiel",
+    "✅ Pas de minimum de paiement",
+    "✅ Conformité légale française (SIRET)",
+    "✅ Exclusivité jusqu'au 31/01/2026"
+  ];
+
+  const faqs = [
     {
       question: "Pourquoi le SIRET est-il obligatoire ?",
-      answer: "En France, recevoir des commissions nécessite un statut légal (micro-entreprise, SASU, etc.). Le SIRET garantit la conformité fiscale et permet les paiements officiels."
-    },
-    {
-      question: "Que se passe-t-il après le 31 janvier 2026 ?",
-      answer: "Les influenceurs inscrits avant cette date conservent leurs 0,50€/mois à vie. Après, le programme sera moins avantageux pour les nouveaux entrants."
+      answer: "Conformément à la législation française, tout partenariat commercial nécessite un statut légal. Le SIRET garantit la transparence fiscale et la légalité des commissions versées."
     },
     {
       question: "Comment sont calculées les commissions récurrentes ?",
-      answer: "Chaque utilisateur actif que vous avez parrainé génère 0,50€/mois tant qu'il utilise Vybbi (défini par une connexion dans les 60 derniers jours)."
+      answer: "0,50€ par mois pour chaque utilisateur actif parrainé. Si vous parrainez 100 personnes qui restent actives, vous recevez 50€ chaque mois de façon récurrente."
     },
     {
-      question: "Puis-je vraiment atteindre 7000€/an ?",
-      answer: "Oui ! Avec 1000 parrainages confirmés, vous générez 500€/mois récurrents (6000€/an) + 2000€ de commissions one-shot = 8000€ la première année."
+      question: "Que se passe-t-il après le 31 janvier 2026 ?",
+      answer: "Les commissions récurrentes actuelles continuent, mais le programme sera moins avantageux pour les nouveaux inscrits. Rejoignez maintenant pour bénéficier de l'exclusivité !"
+    },
+    {
+      question: "Y a-t-il un minimum de paiement ?",
+      answer: "Non, aucun minimum ! Dès le premier euro de commission, vous êtes payé mensuellement sur votre compte bancaire."
     }
   ];
 
@@ -304,7 +318,7 @@ export default function Influenceurs() {
                     <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
                     <div className="text-center">
                       <Badge className="bg-gradient-primary text-primary-foreground">
-                        {testimonial.revenue}
+                        {testimonial.monthly_revenue}€/mois
                       </Badge>
                     </div>
                   </CardContent>
@@ -323,7 +337,7 @@ export default function Influenceurs() {
             </div>
 
             <div className="space-y-4 mb-12">
-              {faqItems.map((item, index) => (
+              {faqs.map((item, index) => (
                 <Card key={index} className="bg-gradient-card border-border">
                   <CardContent className="p-6">
                     <h3 className="text-lg font-bold mb-3 text-foreground">{item.question}</h3>

@@ -567,6 +567,57 @@ export default function Landing() {
 
           <div className="bg-gradient-card border-border rounded-2xl p-8 shadow-glow text-center">
             <div className="max-w-2xl mx-auto">
+              <Badge className="mb-6 text-sm px-4 py-2 bg-gradient-primary">
+                <Gift className="w-4 h-4 mr-2" />
+                PROGRAMME EXCLUSIF JUSQU'AU 31/01/2026
+              </Badge>
+              
+              <h3 className="text-2xl font-bold mb-4 text-foreground">
+                <span className="bg-gradient-primary bg-clip-text text-transparent">
+                  Gagnez jusqu'à 7000€/an
+                </span>
+                <br />
+                avec notre Programme d'Affiliation
+              </h3>
+              
+              <p className="text-muted-foreground mb-6">
+                Rejoignez notre programme d'affiliation exclusif : 2€ par inscription + 0,50€/mois récurrents. 
+                Exclusivité limitée jusqu'au 31 janvier 2026.
+              </p>
+              
+              <div className="grid grid-cols-3 gap-4 mb-6 max-w-lg mx-auto">
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">2€</div>
+                  <div className="text-xs text-muted-foreground">Par inscription</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">0,50€</div>
+                  <div className="text-xs text-muted-foreground">Par mois</div>
+                </div>
+                <div className="text-center">
+                  <div className="text-2xl font-bold text-primary">7000€</div>
+                  <div className="text-xs text-muted-foreground">Potentiel/an</div>
+                </div>
+              </div>
+              
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+                <Button size="lg" className="text-lg px-8 py-6" asChild>
+                  <Link to="/influenceurs">
+                    Découvrir le Programme
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+                <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+                  <Link to="/auth?ref=influencer">
+                    Devenir Influenceur
+                  </Link>
+                </Button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-gradient-card border-border rounded-2xl p-8 shadow-glow text-center mt-8">
+            <div className="max-w-2xl mx-auto">
               <h3 className="text-2xl font-bold mb-4 text-foreground">
                 Prêt à transformer votre activité musicale ?
               </h3>
