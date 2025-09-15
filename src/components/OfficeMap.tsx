@@ -60,7 +60,13 @@ const offices: Office[] = [
 export default function OfficeMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-  const [mapboxToken, setMapboxToken] = useState<string>('');
+const [mapboxToken, setMapboxToken] = useState<string>(() => {
+  try {
+    return localStorage.getItem('mapbox_token') || '';
+  } catch {
+    return '';
+  }
+});
   const [selectedOffice, setSelectedOffice] = useState<Office | null>(null);
 
   useEffect(() => {
@@ -85,8 +91,9 @@ export default function OfficeMap() {
       'top-right'
     );
 
-    // Add markers for each office
-    offices.forEach((office, index) => {
+    // Add markers and prepare bounds
+    const bounds = new mapboxgl.LngLatBounds();
+    offices.forEach((office) => {
       const popup = new mapboxgl.Popup({
         offset: 25,
         className: 'office-popup'
@@ -110,10 +117,30 @@ export default function OfficeMap() {
         .setPopup(popup)
         .addTo(map.current!);
 
+      bounds.extend(office.coordinates as [number, number]);
+
       // Add click handler to marker
       marker.getElement().addEventListener('click', () => {
         setSelectedOffice(office);
       });
+    });
+
+    // Fit map to show all markers once loaded
+    map.current?.once('load', () => {
+      try {
+        if (offices.length === 1) {
+          map.current?.setCenter(offices[0].coordinates).setZoom(10);
+        } else {
+          map.current?.fitBounds(bounds, { padding: 60, maxZoom: 4, duration: 800 });
+        }
+      } catch (e) {
+        console.error('Map fit error', e);
+      }
+    });
+
+    // Log map errors for debugging
+    map.current?.on('error', (e) => {
+      console.error('Mapbox error', (e as any)?.error || e);
     });
 
     // Cleanup
@@ -142,7 +169,11 @@ export default function OfficeMap() {
               type="text"
               placeholder="pk.eyJ1IjoiLi4u (Token Mapbox)"
               value={mapboxToken}
-              onChange={(e) => setMapboxToken(e.target.value)}
+              onChange={(e) => {
+                const t = e.target.value;
+                setMapboxToken(t);
+                try { localStorage.setItem('mapbox_token', t); } catch {}
+              }}
               className="mb-4"
             />
             <p className="text-xs text-muted-foreground">
