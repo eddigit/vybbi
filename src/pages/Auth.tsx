@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Navigate, useNavigate, useSearchParams, Link } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Loader2, Music, Users, MapPin, Briefcase } from 'lucide-react';
-import wolfLogo from '@/assets/wolf-logo.png';
+import { TALENTS } from '@/lib/talents';
 
 export default function Auth() {
   const { user, loading, signUp, signIn } = useAuth();
@@ -26,6 +26,11 @@ export default function Auth() {
   const [displayName, setDisplayName] = useState('');
   const [profileType, setProfileType] = useState('');
   const [roleDetail, setRoleDetail] = useState('');
+
+  // Reset roleDetail when profileType changes
+  useEffect(() => {
+    setRoleDetail('');
+  }, [profileType]);
 
   if (loading) {
     return (
@@ -202,17 +207,20 @@ export default function Auth() {
 
                   {profileType === 'artist' && (
                     <div className="space-y-2">
-                      <Label htmlFor="role-detail">Spécialité</Label>
+                      <Label htmlFor="role-detail">Talent principal</Label>
                       <Select value={roleDetail} onValueChange={setRoleDetail} required>
                         <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
-                          <SelectValue placeholder="Sélectionnez votre spécialité" />
+                          <SelectValue placeholder="Sélectionnez votre talent principal" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="DJ">DJ</SelectItem>
-                          <SelectItem value="musicien">Musicien</SelectItem>
-                          <SelectItem value="danseur">Danseur</SelectItem>
-                          <SelectItem value="chanteur">Chanteur</SelectItem>
-                          <SelectItem value="producteur">Producteur</SelectItem>
+                          {TALENTS.map((talent) => (
+                            <SelectItem key={talent.id} value={talent.id}>
+                              <div className="flex items-center space-x-2">
+                                <span>{talent.icon}</span>
+                                <span>{talent.label}</span>
+                              </div>
+                            </SelectItem>
+                          ))}
                         </SelectContent>
                       </Select>
                     </div>
@@ -220,15 +228,17 @@ export default function Auth() {
 
                   {profileType === 'agent' && (
                     <div className="space-y-2">
-                      <Label htmlFor="role-detail">Type de partenaire</Label>
+                      <Label htmlFor="role-detail">Spécialité</Label>
                       <Select value={roleDetail} onValueChange={setRoleDetail} required>
                         <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
-                          <SelectValue placeholder="Sélectionnez votre type" />
+                          <SelectValue placeholder="Sélectionnez votre spécialité" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="agent">Agent</SelectItem>
-                          <SelectItem value="manager_cherchant_artistes">Manager recherchant des artistes</SelectItem>
-                          <SelectItem value="autre_partenaire">Autre partenaire</SelectItem>
+                          <SelectItem value="agent_artistique">Agent artistique</SelectItem>
+                          <SelectItem value="booker">Booker</SelectItem>
+                          <SelectItem value="promoteur">Promoteur</SelectItem>
+                          <SelectItem value="tourneur">Tourneur</SelectItem>
+                          <SelectItem value="autre_agent">Autre agent</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -236,15 +246,17 @@ export default function Auth() {
 
                   {profileType === 'manager' && (
                     <div className="space-y-2">
-                      <Label htmlFor="role-detail">Type de partenaire</Label>
+                      <Label htmlFor="role-detail">Spécialité</Label>
                       <Select value={roleDetail} onValueChange={setRoleDetail} required>
                         <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
-                          <SelectValue placeholder="Sélectionnez votre type" />
+                          <SelectValue placeholder="Sélectionnez votre spécialité" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="manager">Manager</SelectItem>
-                          <SelectItem value="agent_cherchant_managers">Agent recherchant des managers</SelectItem>
-                          <SelectItem value="autre_partenaire">Autre partenaire</SelectItem>
+                          <SelectItem value="manager_artiste">Manager d'artiste</SelectItem>
+                          <SelectItem value="directeur_artistique">Directeur artistique</SelectItem>
+                          <SelectItem value="producteur_executif">Producteur exécutif</SelectItem>
+                          <SelectItem value="consultant_musical">Consultant musical</SelectItem>
+                          <SelectItem value="autre_manager">Autre manager</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -252,16 +264,18 @@ export default function Auth() {
 
                   {profileType === 'lieu' && (
                     <div className="space-y-2">
-                      <Label htmlFor="role-detail">Catégorie du lieu</Label>
+                      <Label htmlFor="role-detail">Type d'établissement</Label>
                       <Select value={roleDetail} onValueChange={setRoleDetail} required>
                         <SelectTrigger className="transition-all duration-200 focus:ring-2 focus:ring-primary/20">
-                          <SelectValue placeholder="Sélectionnez une catégorie" />
+                          <SelectValue placeholder="Sélectionnez un type" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="club">Club</SelectItem>
                           <SelectItem value="bar">Bar</SelectItem>
+                          <SelectItem value="club">Club</SelectItem>
+                          <SelectItem value="restaurant">Restaurant</SelectItem>
                           <SelectItem value="salle_concert">Salle de concert</SelectItem>
                           <SelectItem value="festival">Festival</SelectItem>
+                          <SelectItem value="hotel">Hôtel</SelectItem>
                           <SelectItem value="autre">Autre</SelectItem>
                         </SelectContent>
                       </Select>
