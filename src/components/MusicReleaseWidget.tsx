@@ -152,7 +152,7 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
           status: data.status,
           profile_id: profileId,
           cover_image_url: coverImage,
-          featured_artists: collaborators.filter(c => c.role === 'featuring')
+          featured_artists: JSON.stringify(collaborators.filter(c => c.role === 'featuring'))
         })
         .select()
         .single();
@@ -244,8 +244,10 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
           <div>
             <Label>Pochette de l'album</Label>
             <ImageUpload
-              currentImage={coverImage}
-              onImageUpload={setCoverImage}
+              currentImageUrl={coverImage}
+              onImageChange={setCoverImage}
+              bucket="media"
+              folder={`music/${profileId}`}
               className="aspect-square max-w-64"
             />
           </div>

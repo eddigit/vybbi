@@ -13,6 +13,7 @@ import { getTalentById } from '@/lib/talents';
 import EnhancedReviewForm from '@/components/EnhancedReviewForm';
 import { ImageGallerySlider } from '@/components/ImageGallerySlider';
 import RadioStatsDisplay from '@/components/RadioStatsDisplay';
+import { ProfileEvents } from '@/components/ProfileEvents';
 import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
 import { MusicDiscography } from '@/components/MusicDiscography';
 
@@ -359,6 +360,17 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             profileType="artist"
             className="mb-8"
           />
+
+          {/* Music Releases */}
+          <div className="space-y-6">
+            {user && profile && profile.id === artist.id && (
+              <MusicReleaseWidget profileId={artist.id} />
+            )}
+            <MusicDiscography 
+              profileId={artist.id} 
+              isOwner={user && profile && profile.id === artist.id} 
+            />
+          </div>
 
           {/* Bio & Genres */}
           <Card>
