@@ -941,7 +941,7 @@ export default function Landing() {
               <h4 className="font-semibold mb-4">Support</h4>
               <ul className="space-y-2 text-muted-foreground">
                 <li><Link to="/centre-aide" className="hover:text-foreground transition-colors">Centre d'aide</Link></li>
-                <li><a href="mailto:contact@vybbi.com" className="hover:text-foreground transition-colors">Contact</a></li>
+                <li><Link to="/contact" className="hover:text-foreground transition-colors">Contact</Link></li>
                 <li><Link to="/blog" className="hover:text-foreground transition-colors">Blog</Link></li>
               </ul>
             </div>

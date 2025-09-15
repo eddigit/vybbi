@@ -81,6 +81,7 @@ import CentreAide from './pages/CentreAide';
 import Confidentialite from './pages/Confidentialite';
 import Conditions from './pages/Conditions';
 import CookiesPage from './pages/Cookies';
+import Contact from './pages/Contact';
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
@@ -210,6 +211,7 @@ const App = () => (
                       <Route path="/confidentialite" element={<Confidentialite />} />
                       <Route path="/conditions" element={<Conditions />} />
                       <Route path="/cookies" element={<CookiesPage />} />
+                      <Route path="/contact" element={<Contact />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                   </Layout>
