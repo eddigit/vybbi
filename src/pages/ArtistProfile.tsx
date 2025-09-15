@@ -13,7 +13,8 @@ import { getTalentById } from '@/lib/talents';
 import EnhancedReviewForm from '@/components/EnhancedReviewForm';
 import { ImageGallerySlider } from '@/components/ImageGallerySlider';
 import RadioStatsDisplay from '@/components/RadioStatsDisplay';
-import { ProfileEvents } from '@/components/ProfileEvents';
+import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
+import { MusicDiscography } from '@/components/MusicDiscography';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | null;

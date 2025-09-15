@@ -1461,31 +1461,53 @@ export type Database = {
         Row: {
           created_at: string
           description: string | null
+          duration_seconds: number | null
           file_name: string
           file_url: string
           id: string
           media_type: Database["public"]["Enums"]["media_type"]
+          music_release_id: string | null
+          preview_url: string | null
           profile_id: string
+          track_position: number | null
+          waveform_data: Json | null
         }
         Insert: {
           created_at?: string
           description?: string | null
+          duration_seconds?: number | null
           file_name: string
           file_url: string
           id?: string
           media_type: Database["public"]["Enums"]["media_type"]
+          music_release_id?: string | null
+          preview_url?: string | null
           profile_id: string
+          track_position?: number | null
+          waveform_data?: Json | null
         }
         Update: {
           created_at?: string
           description?: string | null
+          duration_seconds?: number | null
           file_name?: string
           file_url?: string
           id?: string
           media_type?: Database["public"]["Enums"]["media_type"]
+          music_release_id?: string | null
+          preview_url?: string | null
           profile_id?: string
+          track_position?: number | null
+          waveform_data?: Json | null
         }
         Relationships: [
+          {
+            foreignKeyName: "media_assets_music_release_id_fkey"
+            columns: ["music_release_id"]
+            isOneToOne: false
+            referencedRelation: "music_releases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "media_assets_profile_id_fkey"
             columns: ["profile_id"]
@@ -1585,6 +1607,199 @@ export type Database = {
             columns: ["conversation_id"]
             isOneToOne: false
             referencedRelation: "conversations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      music_collaborators: {
+        Row: {
+          collaborator_name: string
+          collaborator_profile_id: string | null
+          created_at: string
+          id: string
+          music_release_id: string
+          role: string
+          royalty_percentage: number | null
+        }
+        Insert: {
+          collaborator_name: string
+          collaborator_profile_id?: string | null
+          created_at?: string
+          id?: string
+          music_release_id: string
+          role: string
+          royalty_percentage?: number | null
+        }
+        Update: {
+          collaborator_name?: string
+          collaborator_profile_id?: string | null
+          created_at?: string
+          id?: string
+          music_release_id?: string
+          role?: string
+          royalty_percentage?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "music_collaborators_collaborator_profile_id_fkey"
+            columns: ["collaborator_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "music_collaborators_music_release_id_fkey"
+            columns: ["music_release_id"]
+            isOneToOne: false
+            referencedRelation: "music_releases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      music_plays: {
+        Row: {
+          duration_played: number | null
+          id: string
+          ip_address: unknown | null
+          music_release_id: string
+          played_at: string
+          source: string | null
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          duration_played?: number | null
+          id?: string
+          ip_address?: unknown | null
+          music_release_id: string
+          played_at?: string
+          source?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          duration_played?: number | null
+          id?: string
+          ip_address?: unknown | null
+          music_release_id?: string
+          played_at?: string
+          source?: string | null
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "music_plays_music_release_id_fkey"
+            columns: ["music_release_id"]
+            isOneToOne: false
+            referencedRelation: "music_releases"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      music_releases: {
+        Row: {
+          album_name: string | null
+          apple_music_url: string | null
+          artist_name: string
+          bpm: number | null
+          copyright_owner: string | null
+          cover_image_url: string | null
+          created_at: string
+          credits: Json | null
+          distribution_service: string | null
+          duration_seconds: number | null
+          explicit_content: boolean | null
+          featured_artists: Json | null
+          genre: string | null
+          id: string
+          is_original_composition: boolean | null
+          isrc_code: string | null
+          key_signature: string | null
+          label: string | null
+          likes_count: number | null
+          lyrics: string | null
+          plays_count: number | null
+          profile_id: string
+          release_date: string | null
+          royalty_percentage: number | null
+          soundcloud_url: string | null
+          spotify_url: string | null
+          status: string | null
+          title: string
+          updated_at: string
+          youtube_url: string | null
+        }
+        Insert: {
+          album_name?: string | null
+          apple_music_url?: string | null
+          artist_name: string
+          bpm?: number | null
+          copyright_owner?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          credits?: Json | null
+          distribution_service?: string | null
+          duration_seconds?: number | null
+          explicit_content?: boolean | null
+          featured_artists?: Json | null
+          genre?: string | null
+          id?: string
+          is_original_composition?: boolean | null
+          isrc_code?: string | null
+          key_signature?: string | null
+          label?: string | null
+          likes_count?: number | null
+          lyrics?: string | null
+          plays_count?: number | null
+          profile_id: string
+          release_date?: string | null
+          royalty_percentage?: number | null
+          soundcloud_url?: string | null
+          spotify_url?: string | null
+          status?: string | null
+          title: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Update: {
+          album_name?: string | null
+          apple_music_url?: string | null
+          artist_name?: string
+          bpm?: number | null
+          copyright_owner?: string | null
+          cover_image_url?: string | null
+          created_at?: string
+          credits?: Json | null
+          distribution_service?: string | null
+          duration_seconds?: number | null
+          explicit_content?: boolean | null
+          featured_artists?: Json | null
+          genre?: string | null
+          id?: string
+          is_original_composition?: boolean | null
+          isrc_code?: string | null
+          key_signature?: string | null
+          label?: string | null
+          likes_count?: number | null
+          lyrics?: string | null
+          plays_count?: number | null
+          profile_id?: string
+          release_date?: string | null
+          royalty_percentage?: number | null
+          soundcloud_url?: string | null
+          spotify_url?: string | null
+          status?: string | null
+          title?: string
+          updated_at?: string
+          youtube_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "music_releases_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2900,6 +3115,14 @@ export type Database = {
           p_conversion_type: string
           p_conversion_value?: number
           p_user_id: string
+        }
+        Returns: string
+      }
+      track_music_play: {
+        Args: {
+          p_duration_played?: number
+          p_music_release_id: string
+          p_source?: string
         }
         Returns: string
       }
