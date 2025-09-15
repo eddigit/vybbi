@@ -10,6 +10,44 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  build: {
+    // Optimisations pour réduire la taille des bundles
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          // Séparer les vendors les plus lourds
+          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
+          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
+          'query-vendor': ['@tanstack/react-query'],
+          'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
+          'chart-vendor': ['recharts'],
+          // Séparer les pages admin (moins utilisées)
+          'admin-pages': [
+            './src/pages/AdminDashboard.tsx',
+            './src/pages/AdminCommunication.tsx', 
+            './src/pages/AdminAds.tsx',
+            './src/pages/AdminInfluenceurs.tsx'
+          ],
+          // Séparer les composants admin
+          'admin-components': [
+            './src/components/admin/EmailDragDropEditor.tsx',
+            './src/components/admin/EmailVisualEditor.tsx',
+            './src/components/admin/VybbiChat.tsx'
+          ]
+        }
+      }
+    },
+    // Augmenter la limite d'avertissement
+    chunkSizeWarningLimit: 1000,
+    // Minification optimisée
+    minify: 'terser',
+    terserOptions: {
+      compress: {
+        drop_console: mode === 'production',
+        drop_debugger: mode === 'production'
+      }
+    }
+  },
   plugins: [
     react(), 
     mode === "development" && componentTagger(),
@@ -40,8 +78,24 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
+        // Augmenter la limite pour les gros bundles
+        maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        // Exclure les très gros fichiers du precache
+        globIgnores: ['**/assets/index-*.js'],
         runtimeCaching: [
+          // Cache pour les gros bundles JS avec stratégie CacheFirst
+          {
+            urlPattern: /\/assets\/index-.*\.js$/,
+            handler: 'CacheFirst',
+            options: {
+              cacheName: 'js-bundle-cache',
+              expiration: {
+                maxEntries: 5,
+                maxAgeSeconds: 60 * 60 * 24 * 7 // 1 semaine
+              }
+            }
+          },
           {
             urlPattern: /^https:\/\/api\.vybbi\.com\//,
             handler: 'StaleWhileRevalidate',
