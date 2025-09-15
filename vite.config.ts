@@ -78,16 +78,19 @@ export default defineConfig(({ mode }) => ({
         ]
       },
       workbox: {
+        clientsClaim: true,
+        skipWaiting: true,
+        cleanupOutdatedCaches: true,
         // Augmenter la limite pour les gros bundles
         maximumFileSizeToCacheInBytes: 10 * 1024 * 1024, // 10 MB
         globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
         // Exclure les très gros fichiers du precache
         globIgnores: ['**/assets/index-*.js'],
         runtimeCaching: [
-          // Cache pour les gros bundles JS avec stratégie CacheFirst
+          // Cache des bundles JS principaux avec une stratégie plus sûre (StaleWhileRevalidate)
           {
             urlPattern: /\/assets\/index-.*\.js$/,
-            handler: 'CacheFirst',
+            handler: 'StaleWhileRevalidate',
             options: {
               cacheName: 'js-bundle-cache',
               expiration: {
