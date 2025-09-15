@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { supabase } from '@/integrations/supabase/client';
 
 interface Profile {
@@ -21,62 +21,41 @@ const profileCache = new Map<string, { profile: Profile | null; timestamp: numbe
 const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
 
 export function useProfileResolverOptimized(slug?: string): UseProfileResolverResult {
-  const [profile, setProfile] = useState<Profile | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const { data: profile, isLoading: loading, error } = useQuery({
+    queryKey: ['profile-resolver', slug],
+    queryFn: async () => {
+      if (!slug) return null;
+      
+      const { data, error: fetchError } = await supabase
+        .from('profiles')
+        .select('id, slug, profile_type, display_name, avatar_url, is_public')
+        .eq('slug', slug)
+        .eq('is_public', true)
+        .maybeSingle();
 
-  const cacheKey = `profile-${slug}`;
-
-  useEffect(() => {
-    if (!slug) {
-      setProfile(null);
-      setLoading(false);
-      setError(null);
-      return;
-    }
-
-    // Check cache first
-    const cached = profileCache.get(cacheKey);
-    if (cached && Date.now() - cached.timestamp < CACHE_DURATION) {
-      setProfile(cached.profile);
-      setLoading(false);
-      setError(null);
-      return;
-    }
-
-    const fetchProfile = async () => {
-      try {
-        setLoading(true);
-        setError(null);
-
-        const { data, error: fetchError } = await supabase
-          .from('profiles')
-          .select('id, slug, profile_type, display_name, avatar_url, is_public')
-          .eq('slug', slug)
-          .eq('is_public', true)
-          .maybeSingle();
-
-        if (fetchError) {
-          console.error('Error fetching profile:', fetchError);
-          setError('Erreur lors du chargement du profil');
-          profileCache.set(cacheKey, { profile: null, timestamp: Date.now() });
-          return;
-        }
-
-        // Cache the result
-        profileCache.set(cacheKey, { profile: data, timestamp: Date.now() });
-        setProfile(data);
-      } catch (err) {
-        console.error('Unexpected error:', err);
-        setError('Erreur inattendue');
-        profileCache.set(cacheKey, { profile: null, timestamp: Date.now() });
-      } finally {
-        setLoading(false);
+      if (fetchError) {
+        console.error('Error fetching profile:', fetchError);
+        throw new Error('Erreur lors du chargement du profil');
       }
-    };
 
-    fetchProfile();
-  }, [slug, cacheKey]);
+      return data;
+    },
+    enabled: !!slug,
+    staleTime: 5 * 60 * 1000, // 5 minutes
+    gcTime: 10 * 60 * 1000, // 10 minutes
+    retry: (failureCount, error) => {
+      // Don't retry on 4xx errors
+      if (error && typeof error === 'object' && 'status' in error) {
+        const status = error.status as number;
+        if (status >= 400 && status < 500) return false;
+      }
+      return failureCount < 2;
+    },
+  });
 
-  return useMemo(() => ({ profile, loading, error }), [profile, loading, error]);
+  return {
+    profile: profile || null,
+    loading,
+    error: error ? (error as Error).message : null,
+  };
 }
