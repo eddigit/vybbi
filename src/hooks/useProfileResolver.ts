@@ -106,9 +106,13 @@ export const getProfileUrl = (profile: { profile_type: string; slug?: string; id
     case 'artist':
       return `/artistes/${identifier}`;
     case 'agent':
-      return `/agents/${identifier}`;
     case 'manager':
-      return `/managers/${identifier}`;
+    case 'academie':
+    case 'sponsors':
+    case 'media':
+    case 'influenceur':
+    case 'agence':
+      return `/partners/${identifier}`;
     case 'lieu':
       return `/lieux/${identifier}`;
     default:

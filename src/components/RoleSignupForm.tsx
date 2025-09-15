@@ -10,12 +10,13 @@ import { toast } from "@/hooks/use-toast";
 import { Loader2 } from 'lucide-react';
 
 interface RoleSignupFormProps {
-  profileType: 'artist' | 'agent' | 'manager' | 'lieu';
+  profileType: 'artist' | 'agent' | 'manager' | 'lieu' | 'academie' | 'sponsors' | 'media' | 'influenceur' | 'agence';
   title: string;
   description: string;
+  secondaryType?: 'artist' | 'agent' | 'manager' | 'lieu' | 'academie' | 'sponsors' | 'media' | 'influenceur' | 'agence';
 }
 
-export default function RoleSignupForm({ profileType, title, description }: RoleSignupFormProps) {
+export default function RoleSignupForm({ profileType, title, description, secondaryType }: RoleSignupFormProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [displayName, setDisplayName] = useState('');

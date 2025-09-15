@@ -99,13 +99,14 @@ const App = () => (
               {/* SEO-friendly slug URLs */}
               <Route path="/artistes/:slug" element={<ArtisteProfile />} />
               <Route path="/lieux/:slug" element={<LieuProfile />} />
-              <Route path="/agents/:slug" element={<AgentProfile />} />
-              <Route path="/managers/:slug" element={<ManagerProfile />} />
+              <Route path="/partners/:slug" element={<PartnerProfile />} />
               
               {/* Legacy UUID URLs for backwards compatibility */}
               <Route path="/artists/:id" element={<ArtistProfile />} />
               <Route path="/lieux/:id" element={<VenueProfile />} />
               <Route path="/partners/:id" element={<PartnerProfile />} />
+              <Route path="/agents/:id" element={<PartnerProfile />} />
+              <Route path="/managers/:id" element={<PartnerProfile />} />
               
               <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/partners" element={<Partners />} />

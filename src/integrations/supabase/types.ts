@@ -1607,6 +1607,9 @@ export type Database = {
           preferred_contact_profile_id: string | null
           profile_completion_percentage: number | null
           profile_type: Database["public"]["Enums"]["profile_type"]
+          secondary_profile_type:
+            | Database["public"]["Enums"]["profile_type"]
+            | null
           slug: string | null
           soundcloud_url: string | null
           spotify_url: string | null
@@ -1641,6 +1644,9 @@ export type Database = {
           preferred_contact_profile_id?: string | null
           profile_completion_percentage?: number | null
           profile_type: Database["public"]["Enums"]["profile_type"]
+          secondary_profile_type?:
+            | Database["public"]["Enums"]["profile_type"]
+            | null
           slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
@@ -1675,6 +1681,9 @@ export type Database = {
           preferred_contact_profile_id?: string | null
           profile_completion_percentage?: number | null
           profile_type?: Database["public"]["Enums"]["profile_type"]
+          secondary_profile_type?:
+            | Database["public"]["Enums"]["profile_type"]
+            | null
           slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null

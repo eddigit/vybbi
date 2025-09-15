@@ -13,6 +13,7 @@ export interface Profile {
   user_id: string;
   display_name: string;
   profile_type: ProfileType;
+  secondary_profile_type?: ProfileType;
   bio?: string;
   avatar_url?: string;
   location?: string;

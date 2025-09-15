@@ -87,7 +87,9 @@ export default function Partners() {
       partner.location?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       partner.bio?.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesType = selectedType === 'all' || partner.profile_type === selectedType;
+    const matchesType = selectedType === 'all' || 
+      partner.profile_type === selectedType ||
+      partner.secondary_profile_type === selectedType;
     
     return matchesSearch && matchesType;
   });
