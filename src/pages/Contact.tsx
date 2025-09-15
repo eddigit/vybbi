@@ -1,5 +1,6 @@
 import { SEOHead } from "@/components/SEOHead";
 import ContactForm from "@/components/ContactForm";
+import OfficeMap from "@/components/OfficeMap";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Phone, Mail, Globe } from "lucide-react";
 
@@ -89,6 +90,11 @@ export default function Contact() {
             </p>
           </div>
 
+          {/* Interactive World Map */}
+          <div className="mb-12">
+            <OfficeMap />
+          </div>
+
           {/* Offices Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 mb-12">
             {offices.map((office, index) => (
@@ -138,11 +144,7 @@ export default function Contact() {
                 </p>
               </CardHeader>
               <CardContent>
-                <ContactForm 
-                  recipientEmail="contact@vybbi.com"
-                  recipientName="Équipe Vybbi"
-                  title="Formulaire de contact"
-                />
+                <ContactForm />
               </CardContent>
             </Card>
           </div>

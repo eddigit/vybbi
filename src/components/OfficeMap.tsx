@@ -1,0 +1,194 @@
+import React, { useEffect, useRef, useState } from 'react';
+import mapboxgl from 'mapbox-gl';
+import 'mapbox-gl/dist/mapbox-gl.css';
+import { Card } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Globe, MapPin } from 'lucide-react';
+
+interface Office {
+  city: string;
+  country: string;
+  address: string;
+  phone: string | null;
+  flag: string;
+  coordinates: [number, number]; // [lng, lat]
+}
+
+const offices: Office[] = [
+  {
+    city: "Paris",
+    country: "France",
+    address: "102 avenue des Champs Elysées 75008 Paris",
+    phone: null,
+    flag: "🇫🇷",
+    coordinates: [2.2950, 48.8738]
+  },
+  {
+    city: "Ibiza",
+    country: "Espagne",
+    address: "Calle Cervantes, 48B, 07820, Sant Antoni de Portmany Ibiza, Islas Baleares",
+    phone: "+34 682 87 66 73",
+    flag: "🇪🇸",
+    coordinates: [1.3035, 38.9669]
+  },
+  {
+    city: "Miami",
+    country: "États-Unis",
+    address: "1221 Brickell Avenue, Brickell, Suite 900, Miami, FL, 33131, USA",
+    phone: null,
+    flag: "🇺🇸",
+    coordinates: [-80.1918, 25.7617]
+  },
+  {
+    city: "Bucarest",
+    country: "Roumanie",
+    address: "6-8, Corneliu Coposu Boulevard, Building Unirii View, Floors 1-3, Bucharest, 030167, ROU",
+    phone: null,
+    flag: "🇷🇴",
+    coordinates: [26.1025, 44.4268]
+  },
+  {
+    city: "Bangkok",
+    country: "Thaïlande",
+    address: "The Ninth Tower A, 35th floor, Huai Kwang, Bangkok",
+    phone: null,
+    flag: "🇹🇭",
+    coordinates: [100.5018, 13.7563]
+  }
+];
+
+export default function OfficeMap() {
+  const mapContainer = useRef<HTMLDivElement>(null);
+  const map = useRef<mapboxgl.Map | null>(null);
+  const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [selectedOffice, setSelectedOffice] = useState<Office | null>(null);
+
+  useEffect(() => {
+    if (!mapContainer.current || !mapboxToken) return;
+
+    // Initialize map
+    mapboxgl.accessToken = mapboxToken;
+    
+    map.current = new mapboxgl.Map({
+      container: mapContainer.current,
+      style: 'mapbox://styles/mapbox/light-v11',
+      center: [20, 30], // Centered to show all offices
+      zoom: 1.5,
+      pitch: 0,
+    });
+
+    // Add navigation controls
+    map.current.addControl(
+      new mapboxgl.NavigationControl({
+        visualizePitch: true,
+      }),
+      'top-right'
+    );
+
+    // Add markers for each office
+    offices.forEach((office, index) => {
+      const popup = new mapboxgl.Popup({
+        offset: 25,
+        className: 'office-popup'
+      }).setHTML(`
+        <div class="p-3">
+          <h3 class="font-semibold text-lg flex items-center gap-2">
+            <span class="text-xl">${office.flag}</span>
+            ${office.city}
+          </h3>
+          <p class="text-sm text-muted-foreground">${office.country}</p>
+          <p class="text-sm mt-1">${office.address}</p>
+          ${office.phone ? `<p class="text-sm text-primary mt-1">${office.phone}</p>` : ''}
+        </div>
+      `);
+
+      const marker = new mapboxgl.Marker({
+        color: '#8B5CF6',
+        scale: 1.2
+      })
+        .setLngLat(office.coordinates)
+        .setPopup(popup)
+        .addTo(map.current!);
+
+      // Add click handler to marker
+      marker.getElement().addEventListener('click', () => {
+        setSelectedOffice(office);
+      });
+    });
+
+    // Cleanup
+    return () => {
+      map.current?.remove();
+    };
+  }, [mapboxToken]);
+
+  if (!mapboxToken) {
+    return (
+      <Card className="p-6">
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-2">
+            <Globe className="h-8 w-8 text-primary" />
+          </div>
+          <h3 className="text-lg font-semibold">Configuration de la carte</h3>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            Pour afficher la carte interactive de nos bureaux, veuillez entrer votre token Mapbox. 
+            Vous pouvez l'obtenir gratuitement sur{' '}
+            <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
+              mapbox.com
+            </a>
+          </p>
+          <div className="max-w-md mx-auto">
+            <Input
+              type="text"
+              placeholder="pk.eyJ1IjoiLi4u (Token Mapbox)"
+              value={mapboxToken}
+              onChange={(e) => setMapboxToken(e.target.value)}
+              className="mb-4"
+            />
+            <p className="text-xs text-muted-foreground">
+              Token temporaire pour cette session uniquement
+            </p>
+          </div>
+        </div>
+      </Card>
+    );
+  }
+
+  return (
+    <div className="space-y-6">
+      <div className="text-center">
+        <div className="inline-flex items-center gap-2 mb-4">
+          <MapPin className="h-6 w-6 text-primary" />
+          <span className="text-sm font-medium text-primary bg-primary/10 px-3 py-1 rounded-full">
+            Nos Bureaux dans le Monde
+          </span>
+        </div>
+        <h2 className="text-2xl font-bold mb-2">Présence Internationale</h2>
+        <p className="text-muted-foreground">
+          Découvrez l'emplacement de nos bureaux et contactez celui le plus proche de vous
+        </p>
+      </div>
+
+      <Card className="relative overflow-hidden">
+        <div ref={mapContainer} className="h-96 w-full" />
+        <div className="absolute inset-0 pointer-events-none bg-gradient-to-b from-transparent to-background/5" />
+      </Card>
+
+      {selectedOffice && (
+        <Card className="p-4 border-primary/50 bg-primary/5">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">{selectedOffice.flag}</span>
+            <div className="flex-1">
+              <h3 className="font-semibold text-lg">{selectedOffice.city}</h3>
+              <p className="text-sm text-muted-foreground mb-2">{selectedOffice.country}</p>
+              <p className="text-sm">{selectedOffice.address}</p>
+              {selectedOffice.phone && (
+                <p className="text-sm text-primary mt-1">{selectedOffice.phone}</p>
+              )}
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+}
