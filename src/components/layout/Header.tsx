@@ -54,8 +54,8 @@ export function Header() {
   // Removed notification handling - now in NotificationCenter
 
   return (
-    <header className="h-14 sm:h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
-      <div className="flex h-full items-center justify-between px-3 sm:px-4">
+    <header className="border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50 pt-safe-top">
+      <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
         {/* Mobile: Logo only, Desktop: Logo + Name */}
         <Link to={user ? "/dashboard" : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
           <img 
