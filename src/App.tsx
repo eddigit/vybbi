@@ -3,8 +3,9 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
+import { useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
 import { RadioPlayer } from "@/components/RadioPlayer";
 import Dashboard from "./pages/Dashboard";
@@ -67,6 +68,21 @@ import AuthCallback from './pages/AuthCallback';
 
 const queryClient = new QueryClient();
 
+const AuthHashRedirect = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  useEffect(() => {
+    if (!location.hash) return;
+    const hash = location.hash.startsWith('#') ? location.hash.slice(1) : location.hash;
+    const params = new URLSearchParams(hash);
+    const hasAuthParams = params.has('error') || params.has('error_code') || params.has('access_token') || params.has('refresh_token') || params.has('code') || params.has('token') || params.has('token_hash') || params.has('type');
+    if (hasAuthParams && location.pathname !== '/auth/callback') {
+      navigate({ pathname: '/auth/callback', search: location.search, hash: location.hash }, { replace: true });
+    }
+  }, [location, navigate]);
+  return null;
+};
+
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
@@ -75,6 +91,7 @@ const App = () => (
         <Toaster />
         <Sonner />
         <BrowserRouter>
+          <AuthHashRedirect />
           <Layout>
             <Routes>
               {/* SEO-friendly slug URLs */}

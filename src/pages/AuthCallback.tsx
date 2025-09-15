@@ -22,22 +22,29 @@ const AuthCallback = () => {
       setLoading(true);
       setError(null);
 
-      // Get parameters from URL
-      const token = searchParams.get('token');
-      const tokenHash = searchParams.get('token_hash');
-      const type = searchParams.get('type');
-      const accessToken = searchParams.get('access_token');
-      const refreshToken = searchParams.get('refresh_token');
-      const code = searchParams.get('code');
-      const urlError = searchParams.get('error');
-      const urlErrorDescription = searchParams.get('error_description');
-      const state = searchParams.get('state');
+      // Parse both query and hash params
+      const hashString = window.location.hash?.startsWith('#') ? window.location.hash.slice(1) : window.location.hash;
+      const hashParams = new URLSearchParams(hashString || '');
+      const getParam = (name: string) => searchParams.get(name) || hashParams.get(name);
 
-      console.log('Auth callback params:', { token, tokenHash, type, accessToken, refreshToken, code, urlError, urlErrorDescription, state });
+      // Get parameters from URL (query or hash)
+      const token = getParam('token');
+      const tokenHash = getParam('token_hash');
+      const type = getParam('type');
+      const accessToken = getParam('access_token');
+      const refreshToken = getParam('refresh_token');
+      const code = getParam('code');
+      const errorCode = getParam('error_code');
+      const urlError = getParam('error');
+      const urlErrorDescription = getParam('error_description');
+      const state = getParam('state');
 
-      // URL-level error from provider
-      if (urlError) {
-        throw new Error(`${urlError}: ${urlErrorDescription || 'Unknown error'}`);
+      console.log('Auth callback params (merged):', { token, tokenHash, type, accessToken, refreshToken, code, urlError, errorCode, urlErrorDescription, state });
+
+      // URL-level error from provider (hash or query)
+      if (urlError || errorCode) {
+        const errName = errorCode || urlError;
+        throw new Error(`${errName}: ${urlErrorDescription || 'Unknown error'}`);
       }
 
       // If we have access_token and refresh_token, set the session directly
