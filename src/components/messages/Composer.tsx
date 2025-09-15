@@ -101,7 +101,7 @@ export default function Composer({
   console.log('Composer - Rendering UI');
 
   return (
-    <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky bottom-20 md:bottom-20 z-[80]">
       <div className="p-4">
         <div className="flex items-end gap-2">
           <Button 

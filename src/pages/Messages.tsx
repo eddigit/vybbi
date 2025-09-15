@@ -268,7 +268,7 @@ export default function Messages() {
   // Desktop layout (lg and above)
   if (!isMobile) {
     return (
-      <div className="h-screen flex pb-20">
+      <div className="h-screen flex pb-24 md:pb-24">
         {/* Left Sidebar - Conversations */}
         <div className="w-80 flex-shrink-0">
           <ConversationList
@@ -283,7 +283,7 @@ export default function Messages() {
         </div>
 
         {/* Center - Chat Window */}
-        <div className={`flex-1 flex flex-col ${showInfo ? 'border-r' : ''}`}>
+        <div className={`flex-1 flex flex-col pb-28 ${showInfo ? 'border-r' : ''}`}>
           <ChatHeader
             conversation={selectedConversation}
             typingUsers={typingUsers}
@@ -296,18 +296,16 @@ export default function Messages() {
             <MessageList messages={messages} loading={messagesLoading} />
           </div>
           
-          <div className="relative z-40">
-            <Composer
-              conversationId={selectedConversationId}
-              onSendMessage={handleSendMessage}
-              disabled={!canSendMessage}
-              placeholder={
-                selectedConversation?.is_blocked
-                  ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
-                  : "Tapez votre message..."
-              }
-            />
-          </div>
+          <Composer
+            conversationId={selectedConversationId}
+            onSendMessage={handleSendMessage}
+            disabled={!canSendMessage}
+            placeholder={
+              selectedConversation?.is_blocked
+                ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
+                : "Tapez votre message..."
+            }
+          />
         </div>
 
         {/* Right Sidebar - Info Panel */}
@@ -329,7 +327,7 @@ export default function Messages() {
 
   // Mobile layout
   return (
-    <div className="h-screen flex flex-col pb-32">
+    <div className="h-screen flex flex-col pb-36">
       {/* Mobile: Show conversation list OR chat */}
       {showConversationList ? (
         <ConversationList
@@ -342,7 +340,7 @@ export default function Messages() {
           onUnpinConversation={unpinConversation || (() => {})}
         />
       ) : (
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full pb-36">
           <ChatHeader
             conversation={selectedConversation}
             typingUsers={typingUsers}
