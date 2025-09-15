@@ -1536,6 +1536,81 @@ export type Database = {
           },
         ]
       }
+      notification_preferences: {
+        Row: {
+          created_at: string | null
+          email_enabled: boolean | null
+          id: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          push_enabled: boolean | null
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          email_enabled?: boolean | null
+          id?: string
+          notification_type: Database["public"]["Enums"]["notification_type"]
+          push_enabled?: boolean | null
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          email_enabled?: boolean | null
+          id?: string
+          notification_type?: Database["public"]["Enums"]["notification_type"]
+          push_enabled?: boolean | null
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
+      notifications: {
+        Row: {
+          created_at: string | null
+          data: Json | null
+          email_sent: boolean | null
+          email_sent_at: string | null
+          id: string
+          message: string
+          read_at: string | null
+          related_id: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          data?: Json | null
+          email_sent?: boolean | null
+          email_sent_at?: string | null
+          id?: string
+          message: string
+          read_at?: string | null
+          related_id?: string | null
+          title: string
+          type: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          data?: Json | null
+          email_sent?: boolean | null
+          email_sent_at?: string | null
+          id?: string
+          message?: string
+          read_at?: string | null
+          related_id?: string | null
+          title?: string
+          type?: Database["public"]["Enums"]["notification_type"]
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: []
+      }
       profile_views: {
         Row: {
           created_at: string
@@ -2473,6 +2548,17 @@ export type Database = {
         Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
         Returns: number
       }
+      create_notification_with_email: {
+        Args: {
+          p_data?: Json
+          p_message: string
+          p_related_id?: string
+          p_title: string
+          p_type: Database["public"]["Enums"]["notification_type"]
+          p_user_id: string
+        }
+        Returns: string
+      }
       ensure_user_profile: {
         Args: {
           _display_name?: string
@@ -2645,6 +2731,17 @@ export type Database = {
         Args: { content: string; target_user_id: string }
         Returns: string
       }
+      send_notification_email: {
+        Args: {
+          p_data: Json
+          p_message: string
+          p_notification_id: string
+          p_title: string
+          p_type: Database["public"]["Enums"]["notification_type"]
+          p_user_email: string
+        }
+        Returns: undefined
+      }
       start_direct_conversation: {
         Args: { target_user_id: string }
         Returns: string
@@ -2688,6 +2785,18 @@ export type Database = {
       event_status: "draft" | "published" | "cancelled" | "completed"
       interaction_type: "email" | "call" | "meeting" | "message" | "note"
       media_type: "image" | "video" | "audio"
+      notification_type:
+        | "new_message"
+        | "agent_request"
+        | "manager_request"
+        | "booking_request"
+        | "booking_confirmed"
+        | "booking_cancelled"
+        | "review_received"
+        | "profile_view"
+        | "application_received"
+        | "application_accepted"
+        | "application_rejected"
       profile_type:
         | "artist"
         | "agent"
@@ -2865,6 +2974,19 @@ export const Constants = {
       event_status: ["draft", "published", "cancelled", "completed"],
       interaction_type: ["email", "call", "meeting", "message", "note"],
       media_type: ["image", "video", "audio"],
+      notification_type: [
+        "new_message",
+        "agent_request",
+        "manager_request",
+        "booking_request",
+        "booking_confirmed",
+        "booking_cancelled",
+        "review_received",
+        "profile_view",
+        "application_received",
+        "application_accepted",
+        "application_rejected",
+      ],
       profile_type: [
         "artist",
         "agent",
