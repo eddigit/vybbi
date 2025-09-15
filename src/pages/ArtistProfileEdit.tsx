@@ -63,13 +63,23 @@ export default function ArtistProfileEdit() {
     if (!id) return;
     
     try {
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('*')
+          .eq('id', id)
+          .maybeSingle();
 
-      if (error) throw error;
+        if (error) throw error;
+        
+        if (!data) {
+          toast({ 
+            title: "Profil non trouvé", 
+            description: "Le profil demandé n'existe pas.",
+            variant: "destructive" 
+          });
+          navigate('/', { replace: true });
+          return;
+        }
       
       // Check if user owns this profile - but only if user is loaded
       if (user && data.user_id !== user.id) {

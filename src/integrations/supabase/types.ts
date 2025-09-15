@@ -280,6 +280,44 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_mock_profiles: {
+        Row: {
+          ai_generated_data: Json | null
+          created_at: string
+          id: string
+          is_mock: boolean | null
+          profile_id: string
+          profile_type: string
+          updated_at: string
+        }
+        Insert: {
+          ai_generated_data?: Json | null
+          created_at?: string
+          id?: string
+          is_mock?: boolean | null
+          profile_id: string
+          profile_type: string
+          updated_at?: string
+        }
+        Update: {
+          ai_generated_data?: Json | null
+          created_at?: string
+          id?: string
+          is_mock?: boolean | null
+          profile_id?: string
+          profile_type?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_mock_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       affiliate_conversions: {
         Row: {
           commission_amount: number | null

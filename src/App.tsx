@@ -68,6 +68,7 @@ import InfluenceurDashboard from './pages/InfluenceurDashboard';
 import AdminInfluenceurs from './pages/AdminInfluenceurs';
 import AdminKnowledge from './pages/AdminKnowledge';
 import AdminEmailDiagnostics from './pages/AdminEmailDiagnostics';
+import AdminMockProfiles from './pages/AdminMockProfiles';
 import AuthCallback from './pages/AuthCallback';
 import ForgotPassword from './pages/ForgotPassword';
 import ResetPassword from './pages/ResetPassword';
@@ -183,6 +184,7 @@ const App = () => (
                       <Route path="/admin/influenceurs" element={<AdminInfluenceurs />} />
                       <Route path="/admin/knowledge" element={<AdminKnowledge />} />
                       <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
+                      <Route path="/admin/mock-profiles" element={<AdminMockProfiles />} />
                       <Route path="/affiliation" element={<InfluenceurDashboard />} />
                       <Route path="/influenceurs/:slug" element={<ArtistProfileBySlug />} />
                       <Route path="/blog" element={<Blog />} />

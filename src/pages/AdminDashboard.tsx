@@ -29,6 +29,7 @@ import { VybbiChat } from "@/components/admin/VybbiChat";
 import { VybbiConfig } from "@/components/admin/VybbiConfig";
 import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
 import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
+import CommunitySeeder from "@/components/admin/CommunitySeeder";
 import AdminProspecting from "./AdminProspecting";
 import { EmailSystemConfig } from "@/components/admin/EmailSystemConfig";
 
@@ -251,6 +252,28 @@ export default function AdminDashboard() {
         </TabsContent>
 
         <TabsContent value="users" className="space-y-6">
+          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bot className="h-5 w-5" />
+                  Profils Mocks
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-muted-foreground mb-4">
+                  Générez des profils de démonstration avec avatars IA
+                </p>
+                <Button asChild variant="outline" className="w-full">
+                  <Link to="/admin/mock-profiles">
+                    Gérer les Mocks
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Existing users content */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {Object.entries(stats?.usersByType || {}).map(([type, count]) => (
               <Card key={type}>
@@ -410,9 +433,23 @@ export default function AdminDashboard() {
                 <VybbiMonitoring />
               </TabsContent>
               
-              <TabsContent value="knowledge">
-                <VybbiKnowledge />
-              </TabsContent>
+          <TabsContent value="knowledge">
+            <div className="space-y-6">
+              <VybbiKnowledge />
+              
+              <Card>
+                <CardHeader>
+                  <CardTitle>Initialisation des Communautés</CardTitle>
+                  <CardDescription>
+                    Créez les communautés par défaut pour animer la plateforme
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <CommunitySeeder />
+                </CardContent>
+              </Card>
+            </div>
+          </TabsContent>
             </Tabs>
           </div>
         </TabsContent>
