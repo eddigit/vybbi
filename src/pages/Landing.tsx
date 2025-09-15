@@ -171,7 +171,7 @@ export default function Landing() {
               </Button>
             </div>
 
-            <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
               <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
                 <Link to="/auth">
                   Rejoindre les pionniers
