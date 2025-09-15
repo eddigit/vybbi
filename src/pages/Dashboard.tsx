@@ -4,6 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
 import PartnerDashboard from "@/pages/PartnerDashboard";
 import VenueDashboard from "@/pages/VenueDashboard";
+import InfluenceurDashboard from "@/pages/InfluenceurDashboard";
 import { useState } from "react";
 import { Users, Target, Euro, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
@@ -11,10 +12,13 @@ import { TimeFilter } from "@/components/dashboard/TimeFilter";
 import { AcquisitionChart } from "@/components/dashboard/AcquisitionChart";
 import { CommissionDistribution } from "@/components/dashboard/CommissionDistribution";
 import { AutoTranslate } from "@/components/AutoTranslate";
+import { WelcomeModal } from "@/components/WelcomeModal";
+import { useWelcomeModal } from "@/hooks/useWelcomeModal";
 
 export default function Dashboard() {
   const { profile, loading, hasRole, user } = useAuth();
   const [activeFilter, setActiveFilter] = useState("30d");
+  const { isWelcomeModalOpen, closeWelcomeModal, handleNavigate } = useWelcomeModal();
 
   const metrics = [
     {
@@ -106,6 +110,17 @@ export default function Dashboard() {
         
         {/* Assistant Vybbi */}
         <VybbiAssistant context="dashboard" variant="floating" />
+        
+        {/* Welcome Modal */}
+        {profile && (
+          <WelcomeModal
+            isOpen={isWelcomeModalOpen}
+            onClose={closeWelcomeModal}
+            profileType={profile.profile_type}
+            displayName={profile.display_name}
+            onNavigate={handleNavigate}
+          />
+        )}
       </div>
     );
   }
@@ -117,6 +132,10 @@ export default function Dashboard() {
   
   if (profile?.profile_type === 'lieu') {
     return <VenueDashboard />;
+  }
+  
+  if (profile?.profile_type === 'influenceur') {
+    return <InfluenceurDashboard />;
   }
   
   if (['agent', 'manager'].includes(profile?.profile_type || '')) {
@@ -163,6 +182,17 @@ export default function Dashboard() {
         
         {/* Assistant Vybbi */}
         <VybbiAssistant context="dashboard" variant="floating" />
+        
+        {/* Welcome Modal */}
+        {profile && (
+          <WelcomeModal
+            isOpen={isWelcomeModalOpen}
+            onClose={closeWelcomeModal}
+            profileType={profile.profile_type}
+            displayName={profile.display_name}
+            onNavigate={handleNavigate}
+          />
+        )}
       </div>
     );
   }

@@ -9,9 +9,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { ArtistRepresentationRequests } from "@/components/ArtistRepresentationRequests";
 import { ProfileVisitors } from "@/components/ProfileVisitors";
 import { ProfileViewStatsCard } from "@/components/ProfileViewStatsCard";
+import { WelcomeModal } from '@/components/WelcomeModal';
+import { useWelcomeModal } from '@/hooks/useWelcomeModal';
 
 export default function ArtistDashboard() {
   const { profile } = useAuth();
+  const { isWelcomeModalOpen, closeWelcomeModal, handleNavigate } = useWelcomeModal();
   const [stats, setStats] = useState({
     totalApplications: 0,
     pendingApplications: 0,
@@ -209,6 +212,17 @@ export default function ArtistDashboard() {
           </Card>
         </TabsContent>
       </Tabs>
+      
+      {/* Welcome Modal */}
+      {profile && (
+        <WelcomeModal
+          isOpen={isWelcomeModalOpen}
+          onClose={closeWelcomeModal}
+          profileType={profile.profile_type}
+          displayName={profile.display_name}
+          onNavigate={handleNavigate}
+        />
+      )}
     </div>
   );
 }

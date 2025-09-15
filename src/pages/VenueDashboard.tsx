@@ -5,9 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { WelcomeModal } from '@/components/WelcomeModal';
+import { useWelcomeModal } from '@/hooks/useWelcomeModal';
 
 export default function VenueDashboard() {
   const { profile } = useAuth();
+  const { isWelcomeModalOpen, closeWelcomeModal, handleNavigate } = useWelcomeModal();
   const [stats, setStats] = useState({
     totalAnnonces: 0,
     activeAnnonces: 0,
@@ -171,6 +174,17 @@ export default function VenueDashboard() {
           </CardContent>
         </Card>
       </div>
+      
+      {/* Welcome Modal */}
+      {profile && (
+        <WelcomeModal
+          isOpen={isWelcomeModalOpen}
+          onClose={closeWelcomeModal}
+          profileType={profile.profile_type}
+          displayName={profile.display_name}
+          onNavigate={handleNavigate}
+        />
+      )}
     </div>
   );
 }
