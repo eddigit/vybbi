@@ -2625,6 +2625,10 @@ export type Database = {
         Args: { event_uuid: string }
         Returns: number
       }
+      get_profile_stats: {
+        Args: { profile_id: string }
+        Returns: Json
+      }
       get_profile_view_stats: {
         Args: { p_profile_id: string }
         Returns: {
@@ -2673,6 +2677,18 @@ export type Database = {
         Args: { event_uuid: string; user_uuid: string }
         Returns: string
       }
+      get_user_profile: {
+        Args: { user_id: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          city: string
+          display_name: string
+          id: string
+          is_public: boolean
+          profile_type: Database["public"]["Enums"]["profile_type"]
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
@@ -2714,6 +2730,19 @@ export type Database = {
           venue_category: string
           website: string
           youtube_url: string
+        }[]
+      }
+      resolve_profile_by_slug: {
+        Args: { profile_slug: string }
+        Returns: {
+          avatar_url: string
+          bio: string
+          city: string
+          display_name: string
+          id: string
+          is_public: boolean
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          slug: string
         }[]
       }
       send_admin_broadcast: {
