@@ -31,6 +31,7 @@ import Landing from "./pages/Landing";
 import Promotion from "./pages/Promotion";
 import VenueProfile from "./pages/VenueProfile";
 import PartnerProfile from "./pages/PartnerProfile";
+import PartnerProfileBySlug from "./pages/PartnerProfileBySlug";
 import ArtisteProfile from "./pages/ArtisteProfile";
 import LieuProfile from "./pages/LieuProfile";
 import AgentProfile from "./pages/AgentProfile";
@@ -100,7 +101,7 @@ const App = () => (
               {/* SEO-friendly slug URLs */}
               <Route path="/artistes/:slug" element={<ArtisteProfile />} />
               <Route path="/lieux/:slug" element={<LieuProfile />} />
-              <Route path="/partners/:slug" element={<PartnerProfile />} />
+              <Route path="/partners/:slug" element={<PartnerProfileBySlug />} />
               
               {/* Legacy UUID URLs for backwards compatibility */}
               <Route path="/artists/:id" element={<ArtistProfile />} />
