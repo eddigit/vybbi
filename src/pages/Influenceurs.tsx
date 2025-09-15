@@ -35,10 +35,10 @@ export default function Influenceurs() {
       highlight: "2€"
     },
     {
-      title: "Revenus Récurrents",
-      description: "0,50€/mois par abonné parrainé",
+      title: "Revenus Récurrents*",
+      description: "0,50€/mois par abonné parrainé jusqu'au 31 janvier 2026*",
       icon: TrendingUp,
-      highlight: "0,50€/mois"
+      highlight: "0,50€/mois*"
     },
     {
       title: "Exclusivité Limitée",
@@ -68,7 +68,7 @@ export default function Influenceurs() {
     {
       step: "3",
       title: "Partagez et Gagnez",
-      description: "Chaque inscription via votre lien vous rapporte immédiatement 2€ + 0,50€/mois récurrents"
+      description: "Chaque inscription via votre lien vous rapporte immédiatement 2€ + 0,50€/mois récurrents*"
     }
   ];
 
@@ -114,11 +114,11 @@ export default function Influenceurs() {
     },
     {
       question: "Comment sont calculées les commissions récurrentes ?",
-      answer: "0,50€ par mois pour chaque utilisateur actif parrainé. Si vous parrainez 100 personnes qui restent actives, vous recevez 50€ chaque mois de façon récurrente."
+      answer: "0,50€ par mois pour chaque abonné parrainé. Si vous parrainez 100 personnes qui restent abonnées, vous recevez 50€ chaque mois de façon récurrente jusqu'au 31 janvier 2026."
     },
     {
       question: "Que se passe-t-il après le 31 janvier 2026 ?",
-      answer: "Les commissions récurrentes actuelles continuent, mais le programme sera moins avantageux pour les nouveaux inscrits. Rejoignez maintenant pour bénéficier de l'exclusivité !"
+      answer: "Après le 31 janvier 2026, le programme devient uniquement une commission par nouveau abonné (plus de revenus récurrents). Les influenceurs déjà inscrits conservent leurs conditions avantageuses actuelles. Rejoignez avant le 31 octobre 2025 pour bénéficier de l'exclusivité !"
     },
     {
       question: "Y a-t-il un minimum de paiement ?",
@@ -174,10 +174,10 @@ export default function Influenceurs() {
                   <div className="text-3xl font-bold text-primary mb-1">2€</div>
                   <div className="text-sm text-muted-foreground">Par inscription</div>
                 </div>
-                <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
-                  <div className="text-3xl font-bold text-primary mb-1">0,50€</div>
-                  <div className="text-sm text-muted-foreground">Par mois et par abonné parrainé</div>
-                </div>
+                 <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
+                   <div className="text-3xl font-bold text-primary mb-1">0,50€*</div>
+                   <div className="text-sm text-muted-foreground">Par mois et par abonné parrainé*</div>
+                 </div>
                 <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
                   <div className="text-3xl font-bold text-primary mb-1">7000€</div>
                   <div className="text-sm text-muted-foreground">Potentiel annuel maximum</div>
@@ -186,6 +186,13 @@ export default function Influenceurs() {
                   <div className="text-3xl font-bold text-primary mb-1">31/01</div>
                   <div className="text-sm text-muted-foreground">Fin de l'exclusivité 2026</div>
                 </div>
+              </div>
+              
+              <div className="mt-8 text-center">
+                <p className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-4 max-w-2xl mx-auto">
+                  <span className="font-medium">* Offre limitée :</span> Les revenus récurrents de 0,50€/mois sont garantis jusqu'au 31 janvier 2026 
+                  pour les influenceurs inscrits avant le 31 octobre 2025. Après cette date, seule la commission par nouveau abonné s'applique.
+                </p>
               </div>
             </div>
           </div>
@@ -248,8 +255,8 @@ export default function Influenceurs() {
                       
                       <div className="grid grid-cols-2 gap-4 text-sm text-muted-foreground">
                         <div>✅ Commission immédiate: {earnings.oneTime}€</div>
-                        <div>✅ Revenus mensuels récurrents: {earnings.monthly}€</div>
-                        <div>✅ Revenus annuels récurrents: {earnings.yearly}€</div>
+                        <div>✅ Revenus mensuels récurrents*: {earnings.monthly}€</div>
+                        <div>✅ Revenus annuels récurrents*: {earnings.yearly}€</div>
                         <div>✅ Total première année: {earnings.total}€</div>
                       </div>
                     </div>
@@ -258,17 +265,26 @@ export default function Influenceurs() {
                       <div className="text-sm uppercase tracking-wide opacity-90 mb-2">Vos revenus estimés</div>
                       <div className="text-4xl font-bold mb-4">{earnings.total.toLocaleString()}€</div>
                       <div className="text-sm opacity-90 mb-4">Première année complète</div>
-                      <div className="space-y-2 text-sm">
-                        <div>+ {earnings.monthly}€/mois récurrents</div>
-                        <div className="text-xs opacity-75">*Basé sur {referrals} parrainages/mois</div>
-                      </div>
+                       <div className="space-y-2 text-sm">
+                         <div>+ {earnings.monthly}€/mois récurrents*</div>
+                         <div className="text-xs opacity-75">*Basé sur {referrals} parrainages/mois</div>
+                         <div className="text-xs opacity-75">*Jusqu'au 31/01/2026 pour les premiers inscrits</div>
+                       </div>
                     </div>
                   </div>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
+                 </CardContent>
+               </Card>
+               
+               <div className="mt-6 text-center">
+                 <p className="text-sm text-muted-foreground bg-card border border-border rounded-lg p-4 max-w-3xl mx-auto">
+                   <span className="font-medium text-primary">⚡ Offre limitée :</span> Les revenus récurrents de 0,50€/mois par abonné parrainé sont garantis 
+                   jusqu'au 31 janvier 2026 pour les influenceurs qui s'inscrivent avant le 31 octobre 2025. 
+                   Après cette date, le programme devient uniquement une commission par nouveau abonné.
+                 </p>
+               </div>
+             </div>
+           </div>
+         </section>
 
         {/* How It Works */}
         <section className="py-16 px-2 sm:px-6">
