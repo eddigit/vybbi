@@ -93,7 +93,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
         .from('prospects')
         .select('*')
         .eq('id', prospectId)
-        .single();
+        .maybeSingle();
       
       if (prospectData) {
         setProspect(prospectData);
@@ -165,7 +165,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
           .from('vybbi_agents')
           .select('id')
           .eq('user_id', user.id)
-          .single();
+          .maybeSingle();
 
         if (existingAgent) {
           agentId = existingAgent.id;
@@ -175,7 +175,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
             .from('profiles')
             .select('display_name, email')
             .eq('user_id', user.id)
-            .single();
+            .maybeSingle();
 
           const { data: newAgent, error: agentError } = await supabase
             .from('vybbi_agents')
@@ -186,7 +186,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
               is_active: true
             }])
             .select('id')
-            .single();
+            .maybeSingle();
 
           if (agentError) {
             console.error('Error creating agent:', agentError);
@@ -258,7 +258,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
         .from('vybbi_agents')
         .select('id')
         .eq('user_id', (await supabase.auth.getUser()).data.user?.id)
-        .single();
+        .maybeSingle();
 
       if (!agentData) {
         toast({

@@ -625,7 +625,7 @@ function GlobalSettings() {
         .from('ad_settings')
         .select('*')
         .eq('setting_key', 'ads.global')
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       setSettings(data?.setting_value || {});

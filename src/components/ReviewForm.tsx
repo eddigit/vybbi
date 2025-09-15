@@ -55,13 +55,13 @@ export default function ReviewForm({ artistId, onReviewSubmitted, existingReview
         .from('profiles')
         .select('display_name, email')
         .eq('id', artistId)
-        .single();
+        .maybeSingle();
 
       const { data: reviewerProfile } = await supabase
         .from('profiles')
         .select('display_name')
         .eq('id', profile?.id)
-        .single();
+        .maybeSingle();
 
       // Envoyer la notification email à l'artiste (si il a un email)
       if (artistProfile?.email && reviewerProfile?.display_name) {

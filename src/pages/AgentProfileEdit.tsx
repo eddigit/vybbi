@@ -59,7 +59,7 @@ export function AgentProfileEdit() {
       const {
         data,
         error
-      } = await supabase.from("profiles").select("*").eq("id", id).single();
+      } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
       if (error) throw error;
       if (data) setProfileData(data);
     } catch (error) {

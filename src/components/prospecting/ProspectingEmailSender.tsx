@@ -70,7 +70,7 @@ export default function ProspectingEmailSender({
         .from('vybbi_agents')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
       if (!error && data) setAgentId(data.id);
     };
     fetchAgent();

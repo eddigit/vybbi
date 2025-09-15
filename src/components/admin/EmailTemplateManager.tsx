@@ -161,7 +161,7 @@ export const EmailTemplateManager: React.FC = () => {
         .update(updates)
         .eq('id', selectedTemplate.id)
         .select()
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;
@@ -183,7 +183,7 @@ export const EmailTemplateManager: React.FC = () => {
         .from('email_templates')
         .insert([templateData])
         .select()
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data;

@@ -69,7 +69,7 @@ export function ProfileEvents({ profileId, profileType, className = "" }: Profil
           .from('profiles')
           .select('id, display_name, avatar_url, slug')
           .eq('id', profileId)
-          .single();
+          .maybeSingle();
 
         const events: Event[] = (eventsData || []).map(event => ({
           ...event,

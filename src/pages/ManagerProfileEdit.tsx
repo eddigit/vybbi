@@ -57,7 +57,7 @@ export function ManagerProfileEdit() {
         .from("profiles")
         .select("*")
         .eq("id", id)
-        .single();
+        .maybeSingle();
 
       if (error) throw error;
       if (data) setProfileData(data);

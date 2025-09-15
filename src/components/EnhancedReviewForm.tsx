@@ -86,13 +86,13 @@ export default function EnhancedReviewForm({ artistId, onReviewSubmitted, existi
         .from('profiles')
         .select('display_name, email')
         .eq('id', artistId)
-        .single();
+        .maybeSingle();
 
       const { data: reviewerProfile } = await supabase
         .from('profiles')
         .select('display_name')
         .eq('id', profile?.id)
-        .single();
+        .maybeSingle();
 
       if (artistProfile?.email && reviewerProfile?.display_name) {
         setTimeout(async () => {

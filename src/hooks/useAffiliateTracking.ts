@@ -29,7 +29,7 @@ export const useAffiliateTracking = () => {
           .select('id, clicks_count')
           .eq('code', affiliateCode)
           .eq('is_active', true)
-          .single();
+          .maybeSingle();
 
         if (linkError || !linkData) {
           console.warn('Invalid affiliate code:', affiliateCode);

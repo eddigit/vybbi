@@ -49,7 +49,7 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .select('*')
         .eq('code', slotId)
         .eq('is_enabled', true)
-        .single();
+        .maybeSingle();
 
       if (!slotData) {
         // Fallback: no slot configured, pull any active campaign assets
@@ -117,7 +117,7 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
         .from('ad_settings')
         .select('setting_value')
         .eq('setting_key', 'ads.global')
-        .single();
+        .maybeSingle();
 
       const globalSettings = settingsData?.setting_value as any;
       const adsEnabled = globalSettings?.enabled !== false;
@@ -274,7 +274,7 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
       .from('ad_settings')
       .select('setting_value')
       .eq('setting_key', 'ads.global')
-      .single();
+      .maybeSingle();
 
     const clickThrottle = (globalSettings.data?.setting_value as any)?.click_throttle_ms || 2000;
     

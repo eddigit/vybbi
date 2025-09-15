@@ -50,7 +50,7 @@ export const InfluencerDashboard = () => {
         .select('id')
         .eq('user_id', user?.id)
         .eq('profile_type', 'influenceur')
-        .single();
+        .maybeSingle();
 
       if (!profile) return;
 

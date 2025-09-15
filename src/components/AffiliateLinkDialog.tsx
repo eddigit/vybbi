@@ -36,7 +36,7 @@ export const AffiliateLinkDialog = ({ open, onOpenChange, onLinkCreated }: Affil
         .select('id')
         .eq('user_id', user.id)
         .eq('profile_type', 'influenceur')
-        .single();
+        .maybeSingle();
 
       if (!profile) {
         throw new Error('Profil influenceur non trouvé');

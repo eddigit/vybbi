@@ -51,7 +51,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           .from('profiles')
           .select('*')
           .eq('id', resolvedProfile.preferred_contact_profile_id)
-          .single();
+          .maybeSingle();
         
         setPreferredContact(contactData);
       }
@@ -97,7 +97,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           .select('id')
           .eq('reviewer_id', user.id)
           .eq('reviewed_profile_id', profileId)
-          .single();
+          .maybeSingle();
         
         setUserHasReview(!!existingReview);
       }
@@ -117,7 +117,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         .select('*')
         .eq('id', id)
         .eq('profile_type', 'artist')
-        .single();
+        .maybeSingle();
 
       if (artistError) throw artistError;
       setArtist(artistData);
@@ -128,7 +128,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           .from('profiles')
           .select('*')
           .eq('id', artistData.preferred_contact_profile_id)
-          .single();
+          .maybeSingle();
         
         setPreferredContact(contactData);
       }
@@ -174,7 +174,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           .select('id')
           .eq('reviewer_id', user.id)
           .eq('reviewed_profile_id', id)
-          .single();
+          .maybeSingle();
         
         setUserHasReview(!!existingReview);
       }

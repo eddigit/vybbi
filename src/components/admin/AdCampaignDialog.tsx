@@ -148,7 +148,7 @@ export function AdCampaignDialog({ open, onOpenChange, campaign, onSuccess }: Ad
           .from('ad_campaigns')
           .insert([campaignData])
           .select()
-          .single();
+          .maybeSingle();
         
         if (error) throw error;
         campaignId = data.id;

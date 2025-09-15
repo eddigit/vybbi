@@ -87,7 +87,7 @@ const CommunityChat = () => {
         .select('*')
         .eq('community_id', communityId)
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       if (!membershipData) {
         toast({
@@ -104,7 +104,7 @@ const CommunityChat = () => {
         .from('communities')
         .select('*')
         .eq('id', communityId)
-        .single();
+        .maybeSingle();
 
       if (communityError) throw communityError;
       setCommunity(communityData);
@@ -192,7 +192,7 @@ const CommunityChat = () => {
             .from('profiles')
             .select('id, display_name, avatar_url, profile_type')
             .eq('id', payload.new.sender_profile_id)
-            .single();
+            .maybeSingle();
 
           const newMessage: Message = {
             id: payload.new.id,
@@ -221,7 +221,7 @@ const CommunityChat = () => {
         .from('profiles')
         .select('id')
         .eq('user_id', user.id)
-        .single();
+        .maybeSingle();
 
       const { error } = await supabase
         .from('community_messages')

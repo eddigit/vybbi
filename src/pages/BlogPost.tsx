@@ -36,7 +36,7 @@ export default function BlogPost() {
         `)
         .eq('slug', slug)
         .eq('status', 'published')
-        .single();
+        .maybeSingle();
       
       if (error) throw error;
       return data as BlogPostData;

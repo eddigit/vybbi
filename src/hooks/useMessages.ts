@@ -111,7 +111,7 @@ export function useMessages(conversationId: string | null) {
           }
         ])
         .select()
-        .single();
+        .maybeSingle();
 
       if (messageError) throw messageError;
 
@@ -142,7 +142,7 @@ export function useMessages(conversationId: string | null) {
               }
             ])
             .select()
-            .single();
+            .maybeSingle();
 
           if (attachmentError) throw attachmentError;
 
