@@ -3,7 +3,7 @@
   "short_name": "Vybbi",
   "description": "Plateforme de gestion des agents, tourneurs et apporteurs d'affaires dans l'industrie musicale",
   "start_url": "/",
-  "display": "standalone",
+  "display": "fullscreen",
   "orientation": "portrait-primary",
   "theme_color": "#0F1419",
   "background_color": "#0F1419",
