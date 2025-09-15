@@ -17,7 +17,7 @@ import {
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
-import { useNotifications } from "@/hooks/useNotifications";
+import { NotificationCenter } from "@/components/NotificationCenter";
 import { useState } from "react";
 
 export function Header() {
@@ -25,7 +25,7 @@ export function Header() {
   const navigate = useNavigate();
   const { user, profile, signOut } = useAuth();
   const { toast } = useToast();
-  const { notifications, unreadCount, markAsRead } = useNotifications();
+  // Removed useNotifications - now handled by NotificationCenter
   const [searchQuery, setSearchQuery] = useState("");
   const { translatedText: searchPlaceholder } = useTranslate("Recherche...");
   
@@ -51,12 +51,7 @@ export function Header() {
     // La redirection est déjà gérée dans useAuth.ts
   };
 
-  const handleNotificationClick = (notification: any) => {
-    markAsRead(notification.id);
-    if (notification.conversationId) {
-      navigate('/messages', { state: { selectedConversationId: notification.conversationId } });
-    }
-  };
+  // Removed notification handling - now in NotificationCenter
 
   return (
     <header className="h-14 sm:h-16 border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 z-50">
@@ -91,50 +86,7 @@ export function Header() {
               </form>
 
               {/* Notifications */}
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="icon" className="relative h-9 w-9 sm:h-10 sm:w-10">
-                    <Bell className="h-4 w-4 sm:h-5 sm:w-5" />
-                    {unreadCount > 0 && (
-                      <Badge className="absolute -top-1 -right-1 h-4 w-4 sm:h-5 sm:w-5 p-0 text-xs bg-primary text-primary-foreground flex items-center justify-center rounded-full min-w-[16px] sm:min-w-[20px]">
-                        {unreadCount > 99 ? '99+' : unreadCount}
-                      </Badge>
-                    )}
-                  </Button>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-72 sm:w-80">
-                  <DropdownMenuLabel><AutoTranslate text="Notifications" /></DropdownMenuLabel>
-                  <DropdownMenuSeparator />
-                  {notifications.length === 0 ? (
-                    <DropdownMenuItem disabled>
-                      <AutoTranslate text="Aucune notification" />
-                    </DropdownMenuItem>
-                  ) : (
-                    notifications.map((notification) => (
-                      <DropdownMenuItem 
-                        key={notification.id} 
-                        className="flex flex-col items-start p-3 cursor-pointer hover:bg-accent"
-                        onClick={() => handleNotificationClick(notification)}
-                      >
-                        <div className={`flex items-center gap-2 w-full ${notification.unread ? 'font-semibold' : ''}`}>
-                          <span className="text-sm flex-1 truncate">{notification.title}</span>
-                          {notification.unread && (
-                            <div className="h-2 w-2 rounded-full bg-primary flex-shrink-0"></div>
-                          )}
-                        </div>
-                        <span className="text-xs text-muted-foreground mt-1 line-clamp-2">{notification.description}</span>
-                        <span className="text-xs text-muted-foreground mt-1">{notification.time}</span>
-                      </DropdownMenuItem>
-                    ))
-                  )}
-                  <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link to="/messages" className="w-full text-center">
-                      <AutoTranslate text="Voir tous les messages" />
-                    </Link>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+              <NotificationCenter />
             </>
           )}
 

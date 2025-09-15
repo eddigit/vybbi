@@ -5,12 +5,17 @@ import { requestNotificationPermission, showNotification } from '@/utils/notific
 
 interface Notification {
   id: string;
+  user_id: string;
+  type: string;
   title: string;
-  description: string;
-  time: string;
-  unread: boolean;
-  conversationId?: string;
-  type: 'message' | 'application' | 'booking';
+  message: string;
+  data: any;
+  read_at: string | null;
+  email_sent: boolean;
+  email_sent_at: string | null;
+  related_id: string | null;
+  created_at: string;
+  updated_at: string;
 }
 
 export function useNotifications() {
@@ -42,69 +47,21 @@ export function useNotifications() {
     try {
       console.log('Fetching notifications for user:', user.id);
       
-      // Get user's conversations first
-      const { data: userConversations, error: convError } = await supabase
-        .from('conversation_participants')
-        .select('conversation_id')
-        .eq('user_id', user.id);
-
-      if (convError) {
-        console.error('Error fetching user conversations:', convError);
-        return;
-      }
-
-      const conversationIds = userConversations?.map(c => c.conversation_id) || [];
-      
-      if (conversationIds.length === 0) {
-        setNotifications([]);
-        setLoading(false);
-        return;
-      }
-
-      // Fetch recent messages from user's conversations
-      const { data: messages, error } = await supabase
-        .from('messages')
-        .select(`
-          id,
-          content,
-          created_at,
-          sender_id,
-          conversation_id
-        `)
-        .in('conversation_id', conversationIds)
-        .neq('sender_id', user.id)
+      // Fetch notifications from the notifications table
+      const { data: notifications, error } = await supabase
+        .from('notifications')
+        .select('*')
+        .eq('user_id', user.id)
         .order('created_at', { ascending: false })
-        .limit(10);
+        .limit(20);
 
       if (error) {
-        console.error('Error fetching messages:', error);
+        console.error('Error fetching notifications:', error);
         return;
       }
 
-      console.log('Found messages:', messages?.length || 0);
-
-      // Fetch sender profiles separately
-      const senderIds = [...new Set((messages || []).map(m => m.sender_id))];
-      const { data: senders } = await supabase
-        .from('profiles')
-        .select('id, user_id, display_name, avatar_url')
-        .in('user_id', senderIds);
-
-      const messageNotifications: Notification[] = (messages || []).map((message: any) => {
-        const sender = senders?.find(s => s.user_id === message.sender_id);
-        return {
-          id: message.id,
-          title: 'Nouveau message',
-          description: `${sender?.display_name || 'Utilisateur'}: ${message.content.substring(0, 50)}${message.content.length > 50 ? '...' : ''}`,
-          time: formatTime(message.created_at),
-          unread: true,
-          conversationId: message.conversation_id,
-          type: 'message' as const
-        };
-      });
-
-      setNotifications(messageNotifications);
-      console.log('Set notifications:', messageNotifications.length);
+      console.log('Found notifications:', notifications?.length || 0);
+      setNotifications(notifications || []);
     } catch (error) {
       console.error('Error fetching notifications:', error);
     } finally {
@@ -115,7 +72,7 @@ export function useNotifications() {
   const subscribeToNotifications = () => {
     if (!user) return () => {};
 
-    console.log('Setting up real-time subscription for user:', user.id);
+    console.log('Setting up real-time subscription for notifications:', user.id);
 
     const channel = supabase
       .channel(`notifications-${user.id}`)
@@ -124,72 +81,32 @@ export function useNotifications() {
         {
           event: 'INSERT',
           schema: 'public',
-          table: 'messages',
+          table: 'notifications',
+          filter: `user_id=eq.${user.id}`
         },
         async (payload) => {
-          console.log('New message received:', payload);
+          console.log('New notification received:', payload);
           
-          // Check if this message is for the current user
-          const messageId = payload.new.id;
-          const senderId = payload.new.sender_id;
+          const newNotification = payload.new as Notification;
           
-          // Skip if the current user sent the message
-          if (senderId === user.id) {
-            console.log('Skipping own message');
-            return;
-          }
-
-          try {
-            // Check if user participates in this conversation
-            const { data: participation, error: partError } = await supabase
-              .from('conversation_participants')
-              .select('user_id')
-              .eq('conversation_id', payload.new.conversation_id)
-              .eq('user_id', user.id)
-              .single();
-
-            if (partError || !participation) {
-              console.log('User not part of this conversation');
-              return;
+          console.log('Adding new notification:', newNotification);
+          setNotifications(prev => [newNotification, ...prev.slice(0, 19)]);
+          
+          // Show browser notification
+          showNotification(newNotification.title, {
+            body: newNotification.message,
+            icon: '/favicon.ico',
+            tag: 'notification-' + newNotification.id,
+            data: {
+              notificationId: newNotification.id,
+              type: newNotification.type,
+              ...newNotification.data
             }
-
-            // Fetch sender profile
-            const { data: sender } = await supabase
-              .from('profiles')
-              .select('display_name, avatar_url')
-              .eq('user_id', senderId)
-              .single();
-
-            const newNotification: Notification = {
-              id: messageId,
-              title: 'Nouveau message',
-              description: `${sender?.display_name || 'Utilisateur'}: ${payload.new.content.substring(0, 50)}${payload.new.content.length > 50 ? '...' : ''}`,
-              time: formatTime(payload.new.created_at),
-              unread: true,
-              conversationId: payload.new.conversation_id,
-              type: 'message'
-            };
-
-            console.log('Adding new notification:', newNotification);
-            setNotifications(prev => [newNotification, ...prev.slice(0, 9)]);
-            
-            // Show browser notification
-            showNotification(newNotification.title, {
-              body: newNotification.description,
-              icon: sender?.avatar_url || '/favicon.ico',
-              tag: 'message-' + messageId,
-              data: {
-                conversationId: payload.new.conversation_id,
-                messageId: messageId
-              }
-            });
-          } catch (error) {
-            console.error('Error processing new message notification:', error);
-          }
+          });
         }
       )
       .subscribe((status) => {
-        console.log('Subscription status:', status);
+        console.log('Notification subscription status:', status);
       });
 
     return () => {
@@ -198,38 +115,56 @@ export function useNotifications() {
     };
   };
 
-  const formatTime = (dateString: string) => {
-    const date = new Date(dateString);
-    const now = new Date();
-    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+  const markAsRead = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .update({ read_at: new Date().toISOString() })
+        .eq('id', notificationId);
 
-    if (diffInMinutes < 1) return 'À l\'instant';
-    if (diffInMinutes < 60) return `Il y a ${diffInMinutes} minute${diffInMinutes > 1 ? 's' : ''}`;
-    
-    const diffInHours = Math.floor(diffInMinutes / 60);
-    if (diffInHours < 24) return `Il y a ${diffInHours} heure${diffInHours > 1 ? 's' : ''}`;
-    
-    const diffInDays = Math.floor(diffInHours / 24);
-    return `Il y a ${diffInDays} jour${diffInDays > 1 ? 's' : ''}`;
+      if (error) {
+        console.error('Error marking notification as read:', error);
+        return;
+      }
+
+      setNotifications(prev => 
+        prev.map(notification => 
+          notification.id === notificationId 
+            ? { ...notification, read_at: new Date().toISOString() }
+            : notification
+        )
+      );
+    } catch (error) {
+      console.error('Error marking notification as read:', error);
+    }
   };
 
-  const markAsRead = (notificationId: string) => {
-    setNotifications(prev => 
-      prev.map(notification => 
-        notification.id === notificationId 
-          ? { ...notification, unread: false }
-          : notification
-      )
-    );
+  const deleteNotification = async (notificationId: string) => {
+    try {
+      const { error } = await supabase
+        .from('notifications')
+        .delete()
+        .eq('id', notificationId);
+
+      if (error) {
+        console.error('Error deleting notification:', error);
+        return;
+      }
+
+      setNotifications(prev => prev.filter(n => n.id !== notificationId));
+    } catch (error) {
+      console.error('Error deleting notification:', error);
+    }
   };
 
-  const unreadCount = notifications.filter(n => n.unread).length;
+  const unreadCount = notifications.filter(n => !n.read_at).length;
 
   return {
     notifications,
     loading,
     unreadCount,
     markAsRead,
+    deleteNotification,
     refetch: fetchNotifications
   };
 }
