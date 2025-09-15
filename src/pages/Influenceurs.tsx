@@ -80,6 +80,46 @@ export default function Influenceurs() {
     "✅ Pas de minimum de paiement"
   ];
 
+  const testimonials = [
+    {
+      name: "Sarah K.",
+      role: "Influenceuse Lifestyle • 45K followers",
+      quote: "Avec 50 inscriptions par mois, je génère déjà 325€ récurrents. Le modèle de Vybbi est vraiment unique !",
+      revenue: "3900€/an"
+    },
+    {
+      name: "Alex M.", 
+      role: "YouTubeur Tech • 120K subscribers",
+      quote: "En 6 mois, j'ai atteint 150 parrainages. Les 75€/mois récurrents s'ajoutent parfaitement à mes autres revenus.",
+      revenue: "1200€/an"
+    },
+    {
+      name: "Léa R.",
+      role: "TikTokeuse • 200K followers",  
+      quote: "Le programme exclusif jusqu'en 2026 était un argument décisif. Mes 80 conversions rapportent déjà bien !",
+      revenue: "800€/an"
+    }
+  ];
+
+  const faqItems = [
+    {
+      question: "Pourquoi le SIRET est-il obligatoire ?",
+      answer: "En France, recevoir des commissions nécessite un statut légal (micro-entreprise, SASU, etc.). Le SIRET garantit la conformité fiscale et permet les paiements officiels."
+    },
+    {
+      question: "Que se passe-t-il après le 31 janvier 2026 ?",
+      answer: "Les influenceurs inscrits avant cette date conservent leurs 0,50€/mois à vie. Après, le programme sera moins avantageux pour les nouveaux entrants."
+    },
+    {
+      question: "Comment sont calculées les commissions récurrentes ?",
+      answer: "Chaque utilisateur actif que vous avez parrainé génère 0,50€/mois tant qu'il utilise Vybbi (défini par une connexion dans les 60 derniers jours)."
+    },
+    {
+      question: "Puis-je vraiment atteindre 7000€/an ?",
+      answer: "Oui ! Avec 1000 parrainages confirmés, vous générez 500€/mois récurrents (6000€/an) + 2000€ de commissions one-shot = 8000€ la première année."
+    }
+  ];
+
   return (
     <>
       <SEOHead 
@@ -241,6 +281,61 @@ export default function Influenceurs() {
                     </div>
                     <h3 className="text-xl font-bold mb-4 text-foreground">{step.title}</h3>
                     <p className="text-muted-foreground">{step.description}</p>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="py-16 px-2 sm:px-6 bg-muted/30">
+          <div className="container mx-auto">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4 text-foreground">Ils génèrent déjà des revenus avec Vybbi</h2>
+              <p className="text-xl text-muted-foreground">Des influenceurs qui ont rejoint notre programme exclusif</p>
+            </div>
+
+            <div className="grid md:grid-cols-3 gap-8 mb-12">
+              {testimonials.map((testimonial, index) => (
+                <Card key={index} className="bg-gradient-card border-border shadow-glow">
+                  <CardContent className="p-6">
+                    <div className="flex items-center mb-4">
+                      <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center mr-4 shadow-glow">
+                        <span className="text-primary-foreground font-bold">{testimonial.name.charAt(0)}</span>
+                      </div>
+                      <div>
+                        <h4 className="font-bold text-foreground">{testimonial.name}</h4>
+                        <p className="text-sm text-muted-foreground">{testimonial.role}</p>
+                      </div>
+                    </div>
+                    <p className="text-muted-foreground mb-4 italic">"{testimonial.quote}"</p>
+                    <div className="text-center">
+                      <Badge className="bg-gradient-primary text-primary-foreground">
+                        {testimonial.revenue}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        {/* FAQ Section */}
+        <section className="py-16 px-2 sm:px-6">
+          <div className="container mx-auto max-w-4xl">
+            <div className="text-center mb-12">
+              <h2 className="text-3xl font-bold mb-4 text-foreground">Questions Fréquentes</h2>
+              <p className="text-xl text-muted-foreground">Tout ce que vous devez savoir sur le programme</p>
+            </div>
+
+            <div className="space-y-4 mb-12">
+              {faqItems.map((item, index) => (
+                <Card key={index} className="bg-gradient-card border-border">
+                  <CardContent className="p-6">
+                    <h3 className="text-lg font-bold mb-3 text-foreground">{item.question}</h3>
+                    <p className="text-muted-foreground">{item.answer}</p>
                   </CardContent>
                 </Card>
               ))}

@@ -218,6 +218,132 @@ npx supabase gen types typescript --local > ../src/integrations/supabase/types.t
 - Supabase : Configuration dans `.env`
 - Brevo API : `https://api.brevo.com/v3/`
 
+## 💰 Système d'Affiliation
+
+### Architecture du Système
+Le système d'affiliation Vybbi permet aux influenceurs de générer des revenus récurrents en recommandant la plateforme.
+
+#### Modèle de Commission
+- **Commission One-Shot** : 2€ par inscription réussie
+- **Revenus Récurrents** : 0,50€/mois par utilisateur actif (exclusif jusqu'au 31/01/2026)
+- **Potentiel Maximum** : Jusqu'à 7000€/an pour les top performers
+
+#### Tables Base de Données
+
+**`influencer_links`**
+```sql
+CREATE TABLE influencer_links (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  influencer_profile_id UUID NOT NULL REFERENCES profiles(id),
+  name TEXT,
+  description TEXT,
+  code TEXT NOT NULL UNIQUE,
+  clicks_count INTEGER DEFAULT 0,
+  conversions_count INTEGER DEFAULT 0,
+  is_active BOOLEAN DEFAULT true,
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+**`affiliate_visits`**
+```sql
+CREATE TABLE affiliate_visits (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  link_id UUID NOT NULL REFERENCES influencer_links(id),
+  session_id UUID DEFAULT gen_random_uuid(),
+  visitor_ip INET,
+  visited_at TIMESTAMPTZ DEFAULT NOW(),
+  user_agent TEXT,
+  referrer TEXT,
+  page_url TEXT,
+  country TEXT,
+  city TEXT
+);
+```
+
+**`affiliate_conversions`**
+```sql
+CREATE TABLE affiliate_conversions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  link_id UUID NOT NULL REFERENCES influencer_links(id),
+  visit_id UUID REFERENCES affiliate_visits(id),
+  user_id UUID REFERENCES auth.users(id),
+  conversion_type TEXT NOT NULL,
+  conversion_value NUMERIC,
+  commission_amount NUMERIC,
+  commission_rate NUMERIC DEFAULT 0.05,
+  monthly_commission_amount NUMERIC DEFAULT 0.50,
+  is_recurring BOOLEAN DEFAULT false,
+  is_exclusive_program BOOLEAN DEFAULT false,
+  converted_at TIMESTAMPTZ DEFAULT NOW(),
+  confirmed_at TIMESTAMPTZ,
+  paid_at TIMESTAMPTZ,
+  conversion_status TEXT DEFAULT 'pending',
+  recurring_start_date DATE,
+  recurring_end_date DATE
+);
+```
+
+**`recurring_commissions`**
+```sql
+CREATE TABLE recurring_commissions (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  influencer_profile_id UUID NOT NULL REFERENCES profiles(id),
+  user_id UUID NOT NULL REFERENCES auth.users(id),
+  conversion_id UUID NOT NULL REFERENCES affiliate_conversions(id),
+  month_year TEXT NOT NULL,
+  amount NUMERIC NOT NULL,
+  is_exclusive_program BOOLEAN DEFAULT false,
+  status TEXT DEFAULT 'pending',
+  paid_at TIMESTAMPTZ,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+#### Edge Functions
+
+**`calculate-monthly-commissions`**
+Fonction automatisée pour calculer les commissions récurrentes mensuelles :
+- Vérifie les conversions confirmées
+- Contrôle l'activité des utilisateurs
+- Applique les taux différenciés (exclusif vs standard)
+- Crée les enregistrements de commissions mensuelles
+
+#### Fonctionnalités UI
+
+**Page Influenceurs (`/influenceurs`)**
+- Landing page dédiée avec calculateur de revenus
+- Arguments marketing et témoignages
+- Call-to-action pour inscription
+- Exclusivité temporelle mise en avant
+
+**Champ SIRET Obligatoire**
+- Composant `SiretField` pour validation légale française
+- Obligatoire pour l'inscription influenceur
+- Conformité fiscale et déclarative
+
+**Dashboard Influenceur**
+- Suivi des liens et performances
+- Analytics en temps réel
+- Gestion des commissions
+- Historique des paiements
+
+### Sécurité et Conformité
+
+#### Row Level Security (RLS)
+- Influenceurs : accès uniquement à leurs propres liens et conversions
+- Admins : accès complet pour gestion et monitoring
+- Visiteurs : insertion autorisée pour le tracking
+
+#### Obligations Légales
+- SIRET obligatoire pour les commissions (conformité française)
+- Cotisations sociales selon le statut
+- Déclaration fiscale des revenus d'affiliation
+
+### Exclusivité Temporaire
+Le programme avec commissions récurrentes de 0,50€/mois est **exclusif jusqu'au 31 janvier 2026**. Après cette date, les nouveaux influenceurs auront des conditions moins avantageuses.
+
 ---
 
-*Dernière mise à jour : 13 septembre 2025*
+*Dernière mise à jour : 15 septembre 2025*
