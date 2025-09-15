@@ -166,14 +166,21 @@ export default function RadioStatsDisplay({ artistId }: RadioStatsDisplayProps) 
       {/* Ranking Badge & Action */}
       <div className="flex items-center justify-between flex-wrap gap-4">
         <div className="flex items-center gap-3">
-          <Badge variant={rankingBadge.variant} className="text-sm gap-1">
-            <span>{rankingBadge.icon}</span>
-            {stats.ranking_position <= 50 ? (
-              <>Classé #{stats.ranking_position} sur le Top 50</>
-            ) : (
-              <>Hors classement (position {stats.ranking_position})</>
+          <div className="flex flex-col gap-1">
+            <Badge variant={rankingBadge.variant} className="text-sm gap-1">
+              <span>{rankingBadge.icon}</span>
+              {stats.ranking_position <= 50 ? (
+                <>Classé #{stats.ranking_position} sur le Top 50</>
+              ) : (
+                <>Hors classement (position {stats.ranking_position})</>
+              )}
+            </Badge>
+            {stats.ranking_position > 50 && (
+              <p className="text-xs text-muted-foreground italic ml-1">
+                * Classement officiel disponible à partir de janvier 2026
+              </p>
             )}
-          </Badge>
+          </div>
           
           {stats.total_plays > 0 && (
             <Badge variant="outline" className="text-xs">
