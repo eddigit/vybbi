@@ -15,7 +15,7 @@ export default function Influenceurs() {
 
   const calculateEarnings = (referralCount: number) => {
     const oneTimeCommission = referralCount * 2; // 2€ par inscription
-    const monthlyRecurring = referralCount * 0.5; // 0,50€ par mois par utilisateur actif
+    const monthlyRecurring = referralCount * 0.5; // 0,50€ par mois par abonné parrainé
     const yearlyRecurring = monthlyRecurring * 12;
     return {
       oneTime: oneTimeCommission,
@@ -36,7 +36,7 @@ export default function Influenceurs() {
     },
     {
       title: "Revenus Récurrents",
-      description: "0,50€/mois par utilisateur actif",
+      description: "0,50€/mois par abonné parrainé",
       icon: TrendingUp,
       highlight: "0,50€/mois"
     },
@@ -176,7 +176,7 @@ export default function Influenceurs() {
                 </div>
                 <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
                   <div className="text-3xl font-bold text-primary mb-1">0,50€</div>
-                  <div className="text-sm text-muted-foreground">Par mois et par utilisateur</div>
+                  <div className="text-sm text-muted-foreground">Par mois et par abonné parrainé</div>
                 </div>
                 <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
                   <div className="text-3xl font-bold text-primary mb-1">7000€</div>
