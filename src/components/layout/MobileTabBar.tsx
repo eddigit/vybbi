@@ -14,11 +14,13 @@ import {
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
+import { useRadioPlayer } from "@/hooks/useRadioPlayer";
 
 export function MobileTabBar() {
   const location = useLocation();
   const { profile } = useAuth();
-
+  const { currentTrack } = useRadioPlayer();
+  const hasPlayer = Boolean(currentTrack);
   // Public tabs (visible only for non-authenticated users)
   const publicTabs = !profile ? [
     { name: "Annonces", href: "/annonces", icon: Megaphone },
@@ -75,7 +77,13 @@ export function MobileTabBar() {
   };
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border pb-safe-bottom md:hidden touch-target">
+    <div
+      className={cn(
+        "fixed left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-t border-border md:hidden touch-target",
+        hasPlayer ? "bottom-[64px]" : "bottom-0",
+        "pb-safe-bottom"
+      )}
+    >
       <div className="flex items-center justify-around px-2 py-2">
         {tabs.map((tab) => {
           const Icon = tab.icon;

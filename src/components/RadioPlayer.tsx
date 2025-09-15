@@ -43,19 +43,16 @@ export function RadioPlayer() {
 
   return (
     <div 
-      className={`fixed left-0 right-0 z-[60] animate-slide-up ${
-        hasMobileTabBar 
-          ? 'bottom-[calc(64px+env(safe-area-inset-bottom))] md:bottom-0' 
-          : 'bottom-[env(safe-area-inset-bottom)] md:bottom-0'
-      }`}
+      className="fixed left-0 right-0 z-[60] animate-slide-up bottom-0 md:bottom-0"
+
       aria-label="Lecteur Radio Vybbi"
     >
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">
-        <div className="container mx-auto px-4 py-3">
+        <div className="container mx-auto px-3 py-2 sm:px-4 sm:py-3">
           <div className="flex items-center gap-4">
             {/* Pochette / Avatar artiste */}
             <div className="flex-shrink-0">
-              <Avatar className="w-12 h-12 sm:w-14 sm:h-14 ring-2 ring-primary/20">
+              <Avatar className="w-10 h-10 sm:w-12 sm:h-12 ring-2 ring-primary/20">
                 <AvatarImage
                   src={currentTrack.artist.avatar_url || ''}
                   alt={`Avatar ${currentTrack.artist.display_name}`}
@@ -109,7 +106,7 @@ export function RadioPlayer() {
                 variant="ghost"
                 size="sm"
                 onClick={previousTrack}
-                className="w-8 h-8 p-0 hover:bg-primary/10"
+                className="hidden sm:inline-flex w-8 h-8 p-0 hover:bg-primary/10"
                 aria-label="Piste précédente"
               >
                 <SkipBack className="w-4 h-4" />
@@ -118,7 +115,7 @@ export function RadioPlayer() {
               <Button
                 onClick={isPlaying ? pause : play}
                 size="sm"
-                className="w-10 h-10 p-0 bg-gradient-primary hover:opacity-90 transition-all duration-200 hover-glow"
+                className="w-9 h-9 sm:w-10 sm:h-10 p-0 bg-gradient-primary hover:opacity-90 transition-all duration-200 hover-glow"
                 aria-label={isPlaying ? 'Pause' : 'Lecture'}
               >
                 {isPlaying ? (
@@ -132,7 +129,7 @@ export function RadioPlayer() {
                 variant="ghost"
                 size="sm"
                 onClick={nextTrack}
-                className="w-8 h-8 p-0 hover:bg-primary/10"
+                className="hidden sm:inline-flex w-8 h-8 p-0 hover:bg-primary/10"
                 aria-label="Piste suivante"
               >
                 <SkipForward className="w-4 h-4" />
