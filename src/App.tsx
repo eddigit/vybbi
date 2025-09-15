@@ -12,6 +12,8 @@ import { ScrollToTop } from "@/components/ScrollToTop";
 import { RadioPlayer } from "@/components/RadioPlayer";
 import { PerformanceOptimizer, ConnectionOptimizer } from './components/PerformanceOptimizer';
 import { ErrorBoundary } from './components/ErrorBoundary';
+import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
+import { OfflineIndicator } from '@/components/OfflineIndicator';
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
 import Campaigns from "./pages/Campaigns";
@@ -216,6 +218,8 @@ const App = () => (
                     </Routes>
                   </Layout>
                   <RadioPlayer />
+                  <PWAInstallPrompt />
+                  <OfflineIndicator />
                 </BrowserRouter>
               </TooltipProvider>
             </PerformanceOptimizer>

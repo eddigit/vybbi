@@ -15,17 +15,18 @@ export function Footer() {
   };
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 z-50 bg-card/95 backdrop-blur-sm border-t border-border">
-      <div className="px-4 py-2 flex items-center justify-between text-xs text-muted-foreground">
-        <div className="flex items-center gap-2 sm:gap-4">
-          <span>© {currentYear} Vybbi</span>
-          <div className="flex items-center gap-1 sm:gap-2">
+    <footer className="bg-card/95 backdrop-blur-sm border-t border-border">
+      <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
+        {/* Mobile-first layout */}
+        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+          <span className="text-xs text-muted-foreground">© {currentYear} Vybbi</span>
+          <div className="flex items-center gap-2 sm:gap-3">
             {Object.entries(socialIcons).map(([platform, Icon]) => (
               <Button
                 key={platform}
                 variant="ghost"
                 size="sm"
-                className="h-5 w-5 sm:h-6 sm:w-6 p-0 hover:bg-primary/10"
+                className="h-7 w-7 sm:h-8 sm:w-8 p-0 hover:bg-primary/10 hover:text-primary transition-colors touch-target"
                 asChild
               >
                 <a
@@ -34,13 +35,16 @@ export function Footer() {
                   rel="noopener noreferrer"
                   aria-label={`Vybbi sur ${platform}`}
                 >
-                  <Icon className="h-2.5 w-2.5 sm:h-3 sm:w-3" />
+                  <Icon className="h-3.5 w-3.5 sm:h-4 sm:w-4" />
                 </a>
               </Button>
             ))}
           </div>
         </div>
-        <div className="flex items-center gap-2 sm:gap-4">
+        
+        {/* Version and credits */}
+        <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-4 text-xs text-muted-foreground">
+          <span className="sm:hidden">{version}</span>
           <span className="hidden sm:inline">{version}</span>
           <span className="hidden lg:inline">Créé par Gilles Korzec</span>
         </div>

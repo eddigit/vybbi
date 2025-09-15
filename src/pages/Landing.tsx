@@ -134,8 +134,8 @@ export default function Landing() {
       </nav>
 
       {/* Hero Section */}
-      <section className="pt-24 pb-4 px-2 sm:px-6">
-        <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-4">
+      <section className="pt-20 sm:pt-24 pb-4 px-3 sm:px-6">
+        <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-2 sm:px-4">
           <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
             <div className="xl:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
@@ -145,52 +145,52 @@ export default function Landing() {
             {/* Main Hero Content */}
             <div className="text-center">
               <div className="max-w-5xl md:max-w-6xl mx-auto">
-            <div className="mb-6 flex justify-center">
+            <div className="mb-4 sm:mb-6 flex justify-center">
               <TickerBanner />
             </div>
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 mt-6 sm:mt-8 leading-tight px-2">
+              <span className="bg-gradient-primary bg-clip-text text-transparent block sm:inline">
                 Connectez votre
               </span>
-              <br />
+              <br className="hidden sm:block" />
               <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
               <span className="text-foreground"> au monde</span>
             </h1>
             
-            <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
+            <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-3 sm:px-2">
               Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
               Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
             </p>
 
-            <div className="mb-8">
-              <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1 hover:bg-primary/20" asChild>
+            <div className="mb-6 sm:mb-8">
+              <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 sm:px-4 py-2 hover:bg-primary/20 text-xs sm:text-sm" asChild>
                 <Link to="/auth">
                   🚀 Accès anticipé • Places limitées • Statut de fondateur
                 </Link>
               </Button>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
-              <Button size="lg" className="text-lg px-8 py-6" asChild>
+            <div className="flex flex-col gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
+              <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
                 <Link to="/auth">
                   Rejoindre les pionniers
-                  <ArrowRight className="ml-2 h-5 w-5" />
+                  <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-lg px-8 py-6" asChild>
+              <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
                 <Link to="/demo">
-                  <Play className="mr-2 h-5 w-5" />
+                  <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Voir la démo
                 </Link>
               </Button>
             </div>
 
-            {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-4xl mx-auto">
-              {stats.map((stat, index) => <div key={index} className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
+            {/* Stats - Mobile optimized */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto px-2">
+              {stats.map((stat, index) => <div key={index} className="text-center mobile-card p-3 sm:p-4">
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-1">{stat.number}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground leading-tight">{stat.label}</div>
                 </div>)}
             </div>
           </div>

@@ -82,21 +82,21 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center p-4">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center p-3 sm:p-4">
+      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
-          <div className="flex justify-center mb-4">
-            <img src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi Logo" className="w-16 h-16" />
+          <div className="flex justify-center mb-3 sm:mb-4">
+            <img src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi Logo" className="w-12 h-12 sm:w-16 sm:h-16" />
           </div>
-          <h1 className="text-4xl font-bold text-white mb-3">
+          <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 sm:mb-3">
             Vybbi
           </h1>
-          <p className="text-muted-foreground mt-2">
+          <p className="text-muted-foreground text-sm sm:text-base mt-2">
             La plateforme qui connecte les talents
           </p>
         </div>
 
-        <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95">
+        <Card className="border-border/50 shadow-2xl backdrop-blur-sm bg-card/95 mobile-card">
           <CardHeader className="space-y-1">
             <CardTitle className="text-2xl text-center">
               {activeTab === 'signin' ? 'Accéder à votre compte' : 'Créer votre compte'}
