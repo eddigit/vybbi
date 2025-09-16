@@ -43,12 +43,12 @@ serve(async (req) => {
     // Nettoyer les verrous expirés d'abord
     const { data: cleanupResult } = await supabase.rpc('cleanup_expired_task_locks');
     if (cleanupResult > 0) {
-      console.log(`🧹 Nettoyé ${cleanupResult} verrous expirés`);
+      console.log(`🧹 ${cleanupResult} verrous expirés nettoyés`);
     }
 
-    // Récupérer et verrouiller les tâches à traiter via la fonction sécurisée
-    const { data: tasksToProcess, error: lockError } = await supabase.rpc('lock_and_process_tasks', {
-      max_tasks: 50
+    // Verrouiller et récupérer les tâches à traiter de façon sécurisée
+    const { data: tasksToProcess, error: lockError } = await supabase.rpc('lock_and_process_tasks', { 
+      max_tasks: 50 
     });
 
     if (lockError) {
@@ -62,8 +62,7 @@ serve(async (req) => {
       return new Response(JSON.stringify({ 
         success: true, 
         message: 'Aucune tâche à traiter',
-        processedTasks: 0,
-        failedTasks: 0 
+        processedTasks: 0 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -78,47 +77,40 @@ serve(async (req) => {
         console.log(`🎯 Traitement tâche: ${task.title} pour ${task.prospect_data.contact_name}`);
         
         let processed = false;
-        let status = 'failed';
-        let errorMessage = null;
 
         // Vérifier les conditions avant traitement
         if (await shouldSkipTask(supabase, task)) {
           console.log(`⏭️ Tâche ignorée (conditions non remplies): ${task.task_id}`);
-          status = 'skipped';
-          processed = true;
-        } else {
-          switch (task.task_type) {
-            case 'email':
-              processed = await processEmailTask(supabase, task);
-              break;
-              
-            case 'whatsapp':
-              processed = await processWhatsAppTask(supabase, task);
-              break;
-              
-            case 'call':
-              processed = await processCallTask(supabase, task);
-              break;
-              
-            case 'reminder':
-              processed = await processReminderTask(supabase, task);
-              break;
-              
-            default:
-              console.log(`⚠️ Type de tâche non supporté: ${task.task_type}`);
-              errorMessage = `Type de tâche non supporté: ${task.task_type}`;
-              break;
-          }
-
-          status = processed ? 'completed' : 'failed';
+          
+          await supabase.rpc('complete_task_processing', {
+            task_id: task.task_id,
+            new_status: 'skipped'
+          });
+          
+          continue;
         }
 
-        // Finaliser le traitement via la fonction sécurisée
-        const { data: completionResult } = await supabase.rpc('complete_task_processing', {
-          task_id: task.task_id,
-          new_status: status,
-          error_message: errorMessage
-        });
+        switch (task.task_type) {
+          case 'email':
+            processed = await processEmailTask(supabase, task);
+            break;
+            
+          case 'whatsapp':
+            processed = await processWhatsAppTask(supabase, task);
+            break;
+            
+          case 'call':
+            processed = await processCallTask(supabase, task);
+            break;
+            
+          case 'reminder':
+            processed = await processReminderTask(supabase, task);
+            break;
+            
+          default:
+            console.log(`⚠️ Type de tâche non supporté: ${task.task_type}`);
+            break;
+        }
 
         if (processed) {
           processedCount++;
@@ -132,7 +124,7 @@ serve(async (req) => {
         console.error(`❌ Erreur traitement tâche ${task.task_id}:`, taskError);
         errorCount++;
         
-        // Marquer la tâche comme échouée via la fonction sécurisée
+        // Marquer la tâche comme échouée de façon sécurisée
         await supabase.rpc('complete_task_processing', {
           task_id: task.task_id,
           new_status: 'failed',
@@ -147,8 +139,7 @@ serve(async (req) => {
       success: true,
       processedTasks: processedCount,
       failedTasks: errorCount,
-      totalTasks: tasksToProcess.length,
-      message: `Traitement terminé: ${processedCount} tâches traitées, ${errorCount} erreurs`
+      totalTasks: tasksToProcess.length
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -213,19 +204,29 @@ async function processEmailTask(supabase: any, task: WorkflowTask): Promise<bool
   try {
     if (!task.prospect_data.email) {
       console.log(`⚠️ Pas d'email pour le prospect ${task.prospect_data.contact_name}`);
+      await supabase.rpc('complete_task_processing', {
+        task_id: task.task_id,
+        new_status: 'failed',
+        error_message: 'Pas d\'adresse email disponible'
+      });
       return false;
     }
 
     // Créer l'interaction dans l'historique
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.template_data?.agent_id,
       interaction_type: 'email',
       subject: task.title,
       content: `Email automatique envoyé via workflow: ${task.description}`,
       outcome: 'sent_automatically',
       completed_at: new Date().toISOString()
     }]);
+
+    // Marquer la tâche comme terminée de façon sécurisée
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'completed'
+    });
 
     // Mettre à jour la date de dernier contact
     await supabase
@@ -236,6 +237,11 @@ async function processEmailTask(supabase: any, task: WorkflowTask): Promise<bool
     return true;
   } catch (error) {
     console.error('Erreur processEmailTask:', error);
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'failed',
+      error_message: error.message
+    });
     return false;
   }
 }
@@ -247,13 +253,17 @@ async function processWhatsAppTask(supabase: any, task: WorkflowTask): Promise<b
     
     if (!whatsappNumber) {
       console.log(`⚠️ Pas de numéro WhatsApp pour ${task.prospect_data.contact_name}`);
+      await supabase.rpc('complete_task_processing', {
+        task_id: task.task_id,
+        new_status: 'failed',
+        error_message: 'Pas de numéro WhatsApp disponible'
+      });
       return false;
     }
 
     // Créer l'interaction
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.template_data?.agent_id,
       interaction_type: 'message',
       subject: task.title,
       content: `WhatsApp automatique préparé: ${task.description}`,
@@ -261,15 +271,20 @@ async function processWhatsAppTask(supabase: any, task: WorkflowTask): Promise<b
       completed_at: new Date().toISOString()
     }]);
 
-    // Mettre à jour la date de dernier contact
-    await supabase
-      .from('prospects')
-      .update({ last_contact_at: new Date().toISOString() })
-      .eq('id', task.prospect_id);
+    // Marquer comme terminé de façon sécurisée
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'completed'
+    });
 
     return true;
   } catch (error) {
     console.error('Erreur processWhatsAppTask:', error);
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'failed',
+      error_message: error.message
+    });
     return false;
   }
 }
@@ -280,7 +295,6 @@ async function processCallTask(supabase: any, task: WorkflowTask): Promise<boole
     // Créer un rappel pour l'agent
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.template_data?.agent_id,
       interaction_type: 'note',
       subject: `Rappel: ${task.title}`,
       content: `Tâche d'appel programmée automatiquement: ${task.description}`,
@@ -288,9 +302,20 @@ async function processCallTask(supabase: any, task: WorkflowTask): Promise<boole
       completed_at: new Date().toISOString()
     }]);
 
+    // Marquer comme terminé de façon sécurisée
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'completed'
+    });
+
     return true;
   } catch (error) {
     console.error('Erreur processCallTask:', error);
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'failed',
+      error_message: error.message
+    });
     return false;
   }
 }
@@ -301,7 +326,6 @@ async function processReminderTask(supabase: any, task: WorkflowTask): Promise<b
     // Créer une notification pour l'agent
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.template_data?.agent_id,
       interaction_type: 'note',
       subject: task.title,
       content: task.description,
@@ -309,9 +333,20 @@ async function processReminderTask(supabase: any, task: WorkflowTask): Promise<b
       completed_at: new Date().toISOString()
     }]);
 
+    // Marquer comme terminé de façon sécurisée
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'completed'
+    });
+
     return true;
   } catch (error) {
     console.error('Erreur processReminderTask:', error);
+    await supabase.rpc('complete_task_processing', {
+      task_id: task.task_id,
+      new_status: 'failed',
+      error_message: error.message
+    });
     return false;
   }
 }

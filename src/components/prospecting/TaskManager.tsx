@@ -67,6 +67,7 @@ export default function TaskManager() {
   const [statusFilter, setStatusFilter] = useState('all');
   const [typeFilter, setTypeFilter] = useState('all');
   const [activeTab, setActiveTab] = useState('pending');
+  const [processing, setProcessing] = useState(false);
 
   useEffect(() => {
     loadTasks();
@@ -169,11 +170,11 @@ export default function TaskManager() {
 
   const handleProcessTasksNow = async () => {
     try {
-      setLoading(true);
+      setProcessing(true);
       
       toast({
-        title: "Traitement en cours...",
-        description: "Les tâches sont en cours de traitement"
+        title: "Traitement en cours",
+        description: "Les tâches de prospection sont en cours de traitement...",
       });
 
       const { data, error } = await supabase.functions.invoke('process-workflow-tasks', {
@@ -183,21 +184,22 @@ export default function TaskManager() {
       if (error) throw error;
 
       toast({
-        title: "Tâches traitées",
-        description: `${data.processedTasks || 0} tâches traitées avec succès`
+        title: "Traitement terminé",
+        description: `${data?.processedTasks || 0} tâches traitées avec succès`,
       });
 
-      // Recharger les tâches après traitement
-      await loadTasks();
+      // Recharger les tâches pour voir les mises à jour
+      loadTasks();
+
     } catch (error) {
       console.error('Erreur traitement tâches:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de traiter les tâches",
+        description: "Impossible de traiter les tâches maintenant",
         variant: "destructive"
       });
     } finally {
-      setLoading(false);
+      setProcessing(false);
     }
   };
 
@@ -317,8 +319,10 @@ export default function TaskManager() {
     return statusMatch && typeMatch;
   });
 
-  if (loading) {
-    return <div className="flex items-center justify-center h-64">Chargement des tâches...</div>;
+  if (loading || processing) {
+    return <div className="flex items-center justify-center h-64">
+      {processing ? 'Traitement des tâches en cours...' : 'Chargement des tâches...'}
+    </div>;
   }
 
   return (
@@ -333,10 +337,16 @@ export default function TaskManager() {
             Suivez et gérez toutes vos tâches de prospection automatiques
           </p>
         </div>
-        <Button onClick={handleProcessTasksNow} disabled={loading} className="gap-2">
-          <Play className="h-4 w-4" />
-          Traiter les tâches maintenant
-        </Button>
+        <div className="flex gap-2">
+          <Button 
+            onClick={handleProcessTasksNow}
+            disabled={loading || processing}
+            className="bg-primary hover:bg-primary/90"
+          >
+            <Play className="mr-2 h-4 w-4" />
+            {processing ? 'Traitement...' : 'Traiter maintenant'}
+          </Button>
+        </div>
       </div>
 
       {/* Statistiques */}
