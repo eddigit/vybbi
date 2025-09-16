@@ -12,7 +12,9 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProspectDialog from '@/components/prospecting/ProspectDialog';
 import ProspectingEmailSender from '@/components/prospecting/ProspectingEmailSender';
-import WhatsAppSender from '@/components/prospecting/WhatsAppSender';
+import WorkflowManager from '@/components/prospecting/WorkflowManager';
+import TaskManager from '@/components/prospecting/TaskManager';
+import HotProspectsDetector from '@/components/prospecting/HotProspectsDetector';
 import { 
   Users, 
   TrendingUp, 
@@ -292,13 +294,14 @@ export default function AdminProspecting() {
         </Card>
       </div>
 
-      <Tabs defaultValue="prospects" className="space-y-4">
-        <TabsList>
-          <TabsTrigger value="prospects">Prospects</TabsTrigger>
-          <TabsTrigger value="agents">Agents Vybbi</TabsTrigger>
-          <TabsTrigger value="campaigns">Campagnes</TabsTrigger>
-          <TabsTrigger value="analytics">Analytics</TabsTrigger>
-        </TabsList>
+        <Tabs defaultValue="prospects" className="space-y-4">
+          <TabsList>
+            <TabsTrigger value="prospects">Prospects</TabsTrigger>
+            <TabsTrigger value="agents">Agents Vybbi</TabsTrigger>
+            <TabsTrigger value="workflows">Workflows Automatiques</TabsTrigger>
+            <TabsTrigger value="tasks">Tâches & Follow-ups</TabsTrigger>
+            <TabsTrigger value="hotprospects">Prospects Chauds 🔥</TabsTrigger>
+          </TabsList>
 
         <TabsContent value="prospects" className="space-y-4">
           {/* Filters */}

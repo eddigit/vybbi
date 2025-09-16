@@ -2110,6 +2110,47 @@ export type Database = {
           },
         ]
       }
+      prospect_engagement_events: {
+        Row: {
+          event_data: Json | null
+          event_type: string
+          id: string
+          ip_address: unknown | null
+          occurred_at: string | null
+          prospect_id: string | null
+          source: string | null
+          user_agent: string | null
+        }
+        Insert: {
+          event_data?: Json | null
+          event_type: string
+          id?: string
+          ip_address?: unknown | null
+          occurred_at?: string | null
+          prospect_id?: string | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Update: {
+          event_data?: Json | null
+          event_type?: string
+          id?: string
+          ip_address?: unknown | null
+          occurred_at?: string | null
+          prospect_id?: string | null
+          source?: string | null
+          user_agent?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_engagement_events_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prospect_imports: {
         Row: {
           completed_at: string | null
@@ -2212,6 +2253,47 @@ export type Database = {
           },
         ]
       }
+      prospect_scoring_history: {
+        Row: {
+          calculated_at: string | null
+          calculated_by: string | null
+          factors: Json | null
+          id: string
+          new_score: number | null
+          previous_score: number | null
+          prospect_id: string | null
+          score_type: string | null
+        }
+        Insert: {
+          calculated_at?: string | null
+          calculated_by?: string | null
+          factors?: Json | null
+          id?: string
+          new_score?: number | null
+          previous_score?: number | null
+          prospect_id?: string | null
+          score_type?: string | null
+        }
+        Update: {
+          calculated_at?: string | null
+          calculated_by?: string | null
+          factors?: Json | null
+          id?: string
+          new_score?: number | null
+          previous_score?: number | null
+          prospect_id?: string | null
+          score_type?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_scoring_history_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       prospect_tags: {
         Row: {
           category: string | null
@@ -2244,6 +2326,76 @@ export type Database = {
           name?: string
         }
         Relationships: []
+      }
+      prospect_tasks: {
+        Row: {
+          agent_id: string | null
+          auto_created: boolean | null
+          completed_at: string | null
+          created_at: string | null
+          description: string | null
+          id: string
+          prospect_id: string | null
+          scheduled_at: string
+          status: string | null
+          task_type: string
+          template_data: Json | null
+          title: string
+          workflow_id: string | null
+        }
+        Insert: {
+          agent_id?: string | null
+          auto_created?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          prospect_id?: string | null
+          scheduled_at: string
+          status?: string | null
+          task_type: string
+          template_data?: Json | null
+          title: string
+          workflow_id?: string | null
+        }
+        Update: {
+          agent_id?: string | null
+          auto_created?: boolean | null
+          completed_at?: string | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          prospect_id?: string | null
+          scheduled_at?: string
+          status?: string | null
+          task_type?: string
+          template_data?: Json | null
+          title?: string
+          workflow_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_tasks_agent_id_fkey"
+            columns: ["agent_id"]
+            isOneToOne: false
+            referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospect_tasks_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospect_tasks_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "prospecting_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       prospecting_campaigns: {
         Row: {
@@ -2303,6 +2455,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      prospecting_workflows: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          prospect_type: string
+          steps: Json
+          trigger_conditions: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          prospect_type: string
+          steps?: Json
+          trigger_conditions?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          prospect_type?: string
+          steps?: Json
+          trigger_conditions?: Json | null
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       prospects: {
         Row: {
@@ -2753,6 +2941,39 @@ export type Database = {
           title?: string
           type?: Database["public"]["Enums"]["roadmap_item_type"]
           updated_at?: string
+        }
+        Relationships: []
+      }
+      scoring_rules: {
+        Row: {
+          conditions: Json | null
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          rule_type: string
+          score_impact: number
+        }
+        Insert: {
+          conditions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          rule_type: string
+          score_impact: number
+        }
+        Update: {
+          conditions?: Json | null
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          rule_type?: string
+          score_impact?: number
         }
         Relationships: []
       }
