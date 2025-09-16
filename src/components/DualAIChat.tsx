@@ -167,12 +167,17 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
         genres: profile?.genres || null
       };
 
+      // Détection simple d'intention de recherche côté client
+      const intentSearch = /\b(recherche|chercher|trouve|search|find)\b/.test(textToSend.toLowerCase());
+      const actionToSend = action || (intentSearch ? 'search' : selectedAction);
+      const clientFilters = intentSearch ? { q: textToSend } : {};
+
       const { data, error } = await supabase.functions.invoke('vybbi-ai', {
         body: {
           message: textToSend,
-          action: action || selectedAction,
+          action: actionToSend,
           context: context,
-          filters: {}
+          filters: clientFilters
         }
       });
 

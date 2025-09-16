@@ -76,12 +76,78 @@ serve(async (req) => {
 
     // Enrichir le contexte selon l'action
     if (action === 'search' || action === 'match' || action === 'recommend' || action === 'assistant') {
-      // Récupérer les données pertinentes de la base
+      // Déterminer mot-clés potentiels pour une recherche côté serveur
+      const rawMsg = (message || '').toLowerCase();
+      const hintedSearch = (filters?.q || '').toString().trim();
+      const tokens = rawMsg
+        .replace(/\b(recherche(r)?|chercher|trouve(r)?|trouver|dj|artiste|profil|profil(s)?|événement(s)?|annonce(s)?):?/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim();
+      const keyword = (hintedSearch || tokens).slice(0, 64);
+      const wantsSearch = action === 'search' || /\b(recherche|chercher|trouve|search|find)\b/.test(rawMsg);
+      const mentionsDJ = /\bdj\b/.test(rawMsg);
+
+      let profilesPromise;
+      let eventsPromise;
+      let annoncesPromise;
+      let availabilityPromise;
+
+      if (wantsSearch && keyword) {
+        // Requêtes filtrées par mot-clé
+        const profileNameQ = supabase
+          .from('profiles')
+          .select('id, display_name, profile_type, location, genres, slug')
+          .eq('is_public', true)
+          .ilike('display_name', `%${keyword}%`);
+
+        const profileDjQ = mentionsDJ
+          ? supabase
+              .from('profiles')
+              .select('id, display_name, profile_type, location, genres, slug')
+              .eq('is_public', true)
+              .or(`genres.cs.{dj},talents.cs.{dj}`)
+          : null;
+
+        profilesPromise = (async () => {
+          const [byName, byDj] = await Promise.all([
+            profileNameQ,
+            profileDjQ ?? Promise.resolve({ data: [], error: null })
+          ]);
+          const list = [...(byName.data || []), ...((byDj as any).data || [])];
+          // dédup
+          const map = new Map(list.map((p: any) => [p.id, p]));
+          return { data: Array.from(map.values()), error: byName.error || (byDj as any).error };
+        })();
+
+        eventsPromise = supabase
+          .from('events')
+          .select('id, title, event_date, location, genres')
+          .eq('status', 'published')
+          .ilike('title', `%${keyword}%`);
+
+        annoncesPromise = supabase
+          .from('annonces')
+          .select('id, title, budget_max, location, genres')
+          .eq('status', 'published')
+          .ilike('title', `%${keyword}%`);
+
+        availabilityPromise = supabase
+          .from('availability_slots')
+          .select('*, profiles!inner(display_name, profile_type, genres)')
+          .eq('status', 'available');
+      } else {
+        // Récupérer les données pertinentes de la base (général)
+        profilesPromise = supabase.from('profiles').select('*').eq('is_public', true);
+        eventsPromise = supabase.from('events').select('*').eq('status', 'published');
+        annoncesPromise = supabase.from('annonces').select('*').eq('status', 'published');
+        availabilityPromise = supabase.from('availability_slots').select('*, profiles!inner(display_name, profile_type, genres)').eq('status', 'available');
+      }
+
       const [profiles, events, annonces, availability] = await Promise.all([
-        supabase.from('profiles').select('*').eq('is_public', true),
-        supabase.from('events').select('*').eq('status', 'published'),
-        supabase.from('annonces').select('*').eq('status', 'published'),
-        supabase.from('availability_slots').select('*, profiles!inner(display_name, profile_type, genres)').eq('status', 'available')
+        profilesPromise,
+        eventsPromise,
+        annoncesPromise,
+        availabilityPromise
       ]);
 
       const contextInfo = {
@@ -97,8 +163,8 @@ serve(async (req) => {
 
       contextData = `\n\nDONNÉES ACTUELLES DE LA PLATEFORME :\n${JSON.stringify(contextInfo, null, 2)}`;
 
-      // Si c'est une recherche, on peut déjà pré-traiter les résultats
-      if (action === 'search') {
+      // Résultats de recherche prétraités si applicable
+      if (wantsSearch) {
         searchResults = {
           profiles: profiles.data || [],
           events: events.data || [],
@@ -163,9 +229,27 @@ Adapte tes réponses à ce contexte spécifique.`;
       const data = await response.json();
       reply = data.choices?.[0]?.message?.content || '';
     } else {
-      // Dernier repli côté serveur: message utile sans OpenAI
-      reply = `Je rencontre un pic de charge sur le service d'IA. Voici tout de même un état de la plateforme pour t'aider:\n\n` +
-        (contextData || '').slice(0, 1800) + `\n\nReformule ta demande ou précise des filtres (genre, ville, date) et je réessaierai.`;
+      // Dernier repli côté serveur: fournir un résumé pertinent basé sur la base de données
+      const counts = searchResults ? {
+        p: searchResults.profiles?.length || 0,
+        e: searchResults.events?.length || 0,
+        a: searchResults.annonces?.length || 0
+      } : { p: 0, e: 0, a: 0 };
+
+      const topProfiles = (searchResults?.profiles || []).slice(0, 5).map((p: any) => `• ${p.display_name}${p.location ? ` — ${p.location}` : ''}`).join('\n');
+      const topEvents = (searchResults?.events || []).slice(0, 3).map((e: any) => `• ${e.title}${e.event_date ? ` — ${e.event_date}` : ''}`).join('\n');
+      const topAnnonces = (searchResults?.annonces || []).slice(0, 3).map((a: any) => `• ${a.title}${a.budget_max ? ` — budget ${a.budget_max}€` : ''}`).join('\n');
+
+      if (counts.p + counts.e + counts.a > 0) {
+        reply = `Voici des résultats trouvés directement dans la base de données (mode secours):\n\n` +
+          (counts.p ? `Profils (${counts.p}):\n${topProfiles}\n\n` : '') +
+          (counts.e ? `Événements (${counts.e}):\n${topEvents}\n\n` : '') +
+          (counts.a ? `Annonces (${counts.a}):\n${topAnnonces}\n\n` : '') +
+          `Tu peux affiner avec des filtres (ex: ville, genre, date).`;
+      } else {
+        reply = `Je rencontre un pic de charge sur le service d'IA. Voici un état de la plateforme pour t'aider:\n\n` +
+          (contextData || '').slice(0, 1800) + `\n\nReformule ta demande ou précise des filtres (genre, ville, date) et je réessaierai.`;
+      }
     }
 
     // Log de l'interaction (seulement si utilisateur connecté)
