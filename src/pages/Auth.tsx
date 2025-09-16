@@ -158,12 +158,13 @@ export default function Auth() {
                     />
                   </div>
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center space-x-2">
+                    <div className="flex items-center space-x-1">
                       <Checkbox 
                         id="remember-me" 
                         checked={rememberMe}
                         onCheckedChange={(checked) => setRememberMe(checked as boolean)}
                         size="xxs"
+                        className="scale-[0.6] origin-left"
                       />
                       <Label htmlFor="remember-me" className="text-xs text-muted-foreground cursor-pointer">
                         Se souvenir de moi
