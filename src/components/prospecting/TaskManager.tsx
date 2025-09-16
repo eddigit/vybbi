@@ -18,7 +18,7 @@ import {
   Filter,
   Eye,
   Play,
-  Skip,
+  SkipForward,
   User
 } from 'lucide-react';
 
@@ -451,7 +451,7 @@ export default function TaskManager() {
                             size="sm"
                             onClick={() => handleSkipTask(task.id)}
                           >
-                            <Skip className="h-4 w-4" />
+                            <SkipForward className="h-4 w-4" />
                           </Button>
                         </>
                       )}

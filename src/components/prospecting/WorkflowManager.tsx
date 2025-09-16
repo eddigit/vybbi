@@ -68,7 +68,13 @@ export default function WorkflowManager() {
         .order('created_at', { ascending: false });
       
       if (data) {
-        setWorkflows(data as ProspectingWorkflow[]);
+      setWorkflows(data.map(w => ({
+        ...w,
+        steps: Array.isArray(w.steps) && w.steps.length > 0 
+          ? (w.steps as unknown as WorkflowStep[])
+          : [],
+        trigger_conditions: w.trigger_conditions as any
+      })) as ProspectingWorkflow[]);
       }
     } catch (error) {
       console.error('Erreur chargement workflows:', error);

@@ -85,7 +85,9 @@ import CentreAide from './pages/CentreAide';
 import Confidentialite from './pages/Confidentialite';
 import Conditions from './pages/Conditions';
 import CookiesPage from './pages/Cookies';
+import Chat from "./pages/Chat";
 import Contact from './pages/Contact';
+import AdminProspecting from "./pages/AdminProspecting";
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
@@ -198,8 +200,10 @@ const App = () => (
                       <Route path="/admin/ads" element={<AdminAds />} />
                       <Route path="/admin/influenceurs" element={<AdminInfluenceurs />} />
                       <Route path="/admin/knowledge" element={<AdminKnowledge />} />
+                      <Route path="/admin/prospecting" element={<AdminProspecting />} />
                       <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
                       <Route path="/admin/mock-profiles" element={<AdminMockProfiles />} />
+                      <Route path="/chat" element={<Chat />} />
                       <Route path="/affiliation" element={<InfluenceurDashboard />} />
                       <Route path="/influenceurs/:slug" element={<ArtistProfileBySlug />} />
                       <Route path="/blog" element={<Blog />} />
