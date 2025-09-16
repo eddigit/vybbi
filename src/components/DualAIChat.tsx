@@ -168,17 +168,19 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
         genres: profile?.genres || null
       };
 
-      // Détection simple d'intention de recherche côté client
-      const intentSearch = /\b(recherche|chercher|trouve|search|find)\b/.test(textToSend.toLowerCase());
+      // Détection avancée d'intention de recherche côté client
+      const lower = textToSend.toLowerCase();
+      const intentSearch = /(\b(recherch\w*|cherche\w*|trouv\w*|search|find|montre\w*|liste\w*|affiche\w*)\b)|(\bqui\s+(est|sont)\b)|(\bprofil\s+de\b)/.test(lower);
       const actionToSend = action || (intentSearch ? 'search' : selectedAction);
       const clientFilters = intentSearch ? { q: textToSend } : {};
-
+      const history = messages.slice(-10).map(m => ({ role: m.role, content: m.content }));
       const { data, error } = await supabase.functions.invoke('vybbi-ai', {
         body: {
           message: textToSend,
           action: actionToSend,
           context: context,
-          filters: clientFilters
+          filters: clientFilters,
+          history
         }
       });
 
@@ -191,7 +193,7 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
         role: 'assistant',
         content: data.reply || 'Désolé, je n\'ai pas pu traiter votre demande.',
         timestamp: new Date(),
-        action: data.action,
+        action: data.action || actionToSend,
         searchResults: data.searchResults
       };
 

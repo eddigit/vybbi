@@ -68,12 +68,12 @@ serve(async (req) => {
   }
 
   try {
-    const { message, action, filters, context } = await req.json();
+    const { message, action, filters, context, history } = await req.json();
     console.log(`Vybbi request: ${action || 'chat'} - Context: ${context?.page || 'general'} - ${message}`);
 
     let contextData = "";
     let searchResults = null;
-
+    let resolvedAction = action || 'assistant';
     // Enrichir le contexte selon l'action
     if (action === 'search' || action === 'match' || action === 'recommend' || action === 'assistant') {
       // Déterminer mot-clés potentiels pour une recherche côté serveur
@@ -84,9 +84,10 @@ serve(async (req) => {
         .replace(/\s+/g, ' ')
         .trim();
       const keyword = (hintedSearch || tokens).slice(0, 64);
-      const wantsSearch = action === 'search' || /\b(recherche|chercher|trouve|search|find)\b/.test(rawMsg);
+      const wantsSearch = action === 'search' || (/(\b(recherch\w*|cherche\w*|trouv\w*|search|find|montre\w*|liste\w*|affiche\w*)\b)|(\bqui\s+(est|sont)\b)|(\bprofil\s+de\b))/ .test(rawMsg));
       const mentionsDJ = /\bdj\b/.test(rawMsg);
-
+      resolvedAction = wantsSearch ? 'search' : resolvedAction;
+      console.log(`Vybbi request: ${resolvedAction} - Context: ${context?.page || 'general'} - ${message}`);
       let profilesPromise;
       let eventsPromise;
       let annoncesPromise;
@@ -185,10 +186,10 @@ serve(async (req) => {
 Adapte tes réponses à ce contexte spécifique.`;
     }
 
-    // Appel à OpenAI avec cascade de modèles et tolérance aux erreurs
+    // Appel à OpenAI avec historique de conversation
     const systemMessage = { role: 'system', content: VYBBI_SYSTEM_PROMPT + contextData + userContextPrompt };
+    const historyMessages = Array.isArray(history) ? history.slice(-10).map((m: any) => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: String(m.content || '') })) : [];
     const userMessage = { role: 'user', content: message };
-
     async function callOpenAI(payload: any) {
       const res = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
@@ -203,7 +204,7 @@ Adapte tes réponses à ce contexte spécifique.`;
 
     let response = await callOpenAI({
       model: 'gpt-5-mini-2025-08-07',
-      messages: [systemMessage, userMessage],
+      messages: [systemMessage, ...historyMessages, userMessage],
       // Nouveau paramètre requis pour les modèles récents
       max_completion_tokens: 800,
     });
@@ -217,7 +218,7 @@ Adapte tes réponses à ce contexte spécifique.`;
       }
       response = await callOpenAI({
         model: 'gpt-4o-mini',
-        messages: [systemMessage, userMessage],
+        messages: [systemMessage, ...historyMessages, userMessage],
         // Ancien paramètre pour modèles legacy
         max_tokens: 800,
         temperature: 0.7,
@@ -273,7 +274,7 @@ Adapte tes réponses à ce contexte spécifique.`;
     return new Response(JSON.stringify({ 
       reply, 
       searchResults,
-      action,
+      action: resolvedAction,
       context: context?.page,
       timestamp: new Date().toISOString()
     }), {

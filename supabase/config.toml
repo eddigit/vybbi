@@ -29,3 +29,6 @@ verify_jwt = false
 
 [functions.setup-auth-hook]
 verify_jwt = false
+
+[functions.vybbi-ai]
+verify_jwt = false
