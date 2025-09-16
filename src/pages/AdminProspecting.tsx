@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProspectDialog from '@/components/prospecting/ProspectDialog';
 import ProspectingEmailSender from '@/components/prospecting/ProspectingEmailSender';
+import WhatsAppSender from '@/components/prospecting/WhatsAppSender';
 import WorkflowManager from '@/components/prospecting/WorkflowManager';
 import TaskManager from '@/components/prospecting/TaskManager';
 import HotProspectsDetector from '@/components/prospecting/HotProspectsDetector';
@@ -511,26 +512,16 @@ export default function AdminProspecting() {
           </Card>
         </TabsContent>
 
-        <TabsContent value="campaigns">
-          <Card>
-            <CardHeader>
-              <CardTitle>Campagnes de Prospection</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Fonctionnalité en développement - Gestion des campagnes email et de prospection de masse</p>
-            </CardContent>
-          </Card>
+        <TabsContent value="workflows" className="space-y-4">
+          <WorkflowManager />
         </TabsContent>
 
-        <TabsContent value="analytics">
-          <Card>
-            <CardHeader>
-              <CardTitle>Analytics & Rapports</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <p className="text-muted-foreground">Fonctionnalité en développement - Tableaux de bord analytics détaillés</p>
-            </CardContent>
-          </Card>
+        <TabsContent value="tasks" className="space-y-4">
+          <TaskManager />
+        </TabsContent>
+
+        <TabsContent value="hotprospects" className="space-y-4">
+          <HotProspectsDetector />
         </TabsContent>
       </Tabs>
 
@@ -546,6 +537,13 @@ export default function AdminProspecting() {
         onClose={() => setEmailSenderOpen(false)}
         selectedProspect={selectedProspect as any}
         onEmailSent={loadData}
+      />
+
+      <WhatsAppSender
+        isOpen={whatsappSenderOpen}
+        onClose={() => setWhatsappSenderOpen(false)}
+        selectedProspect={selectedProspect as any}
+        onMessageSent={loadData}
       />
     </div>
   );
