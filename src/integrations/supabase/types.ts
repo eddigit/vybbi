@@ -3563,6 +3563,16 @@ export type Database = {
         }
         Returns: string
       }
+      track_affiliate_visit: {
+        Args: {
+          p_affiliate_code: string
+          p_page_url?: string
+          p_referrer?: string
+          p_session_id: string
+          p_user_agent?: string
+        }
+        Returns: Json
+      }
       track_music_play: {
         Args: {
           p_duration_played?: number
