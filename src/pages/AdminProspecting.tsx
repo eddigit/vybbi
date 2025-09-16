@@ -12,6 +12,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ProspectDialog from '@/components/prospecting/ProspectDialog';
 import ProspectingEmailSender from '@/components/prospecting/ProspectingEmailSender';
+import WhatsAppSender from '@/components/prospecting/WhatsAppSender';
 import { 
   Users, 
   TrendingUp, 
@@ -23,7 +24,10 @@ import {
   Plus,
   Eye,
   Edit,
-  Target
+  Target,
+  MessageCircle,
+  Download,
+  Upload
 } from 'lucide-react';
 
 interface ProspectingStats {
@@ -41,6 +45,7 @@ interface Prospect {
   contact_name: string;
   email?: string;
   phone?: string;
+  whatsapp_number?: string;
   status: 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive';
   qualification_score: number;
   assigned_agent_id?: string;
@@ -80,11 +85,14 @@ export default function AdminProspecting() {
   const [selectedProspect, setSelectedProspect] = useState<{
     id: string;
     contact_name: string;
-    email: string;
+    email?: string;
+    whatsapp_number?: string;
+    phone?: string;
     company_name?: string;
     prospect_type: string;
     status: string;
   } | undefined>();
+  const [whatsappSenderOpen, setWhatsappSenderOpen] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -419,8 +427,32 @@ export default function AdminProspecting() {
                               setEmailSenderOpen(true);
                             }}
                             disabled={!prospect.email}
+                            title="Envoyer un email"
                           >
                             <Mail className="h-4 w-4" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              const prospectForWhatsApp = {
+                                id: prospect.id,
+                                contact_name: prospect.contact_name,
+                                email: prospect.email,
+                                whatsapp_number: prospect.whatsapp_number,
+                                phone: prospect.phone,
+                                company_name: prospect.company_name,
+                                prospect_type: prospect.prospect_type,
+                                status: prospect.status
+                              };
+                              setSelectedProspect(prospectForWhatsApp);
+                              setWhatsappSenderOpen(true);
+                            }}
+                            disabled={!prospect.whatsapp_number && !prospect.phone}
+                            title="Envoyer un WhatsApp"
+                            className="bg-green-50 hover:bg-green-100 border-green-200"
+                          >
+                            <MessageCircle className="h-4 w-4 text-green-600" />
                           </Button>
                         </div>
                       </TableCell>
@@ -509,7 +541,7 @@ export default function AdminProspecting() {
       <ProspectingEmailSender
         isOpen={emailSenderOpen}
         onClose={() => setEmailSenderOpen(false)}
-        selectedProspect={selectedProspect}
+        selectedProspect={selectedProspect as any}
         onEmailSent={loadData}
       />
     </div>

@@ -10,7 +10,8 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
-import { Phone, Mail, Calendar, Plus, Send } from 'lucide-react';
+import { Phone, Mail, Calendar, Plus, Send, Instagram, Linkedin, Twitter, Globe, MessageCircle, Star, Building, Users, Target } from 'lucide-react';
+import ProspectTagManager from './ProspectTagManager';
 
 interface ProspectDialogProps {
   open: boolean;
@@ -21,17 +22,34 @@ interface ProspectDialogProps {
 
 interface Prospect {
   id?: string;
-  prospect_type: 'artist' | 'venue' | 'agent' | 'manager';
+  prospect_type: 'artist' | 'venue' | 'agent' | 'manager' | 'academie' | 'sponsors' | 'media' | 'agence' | 'influenceur';
   company_name?: string;
   contact_name: string;
   email?: string;
   phone?: string;
+  whatsapp_number?: string;
   address?: string;
   city?: string;
+  region?: string;
+  country?: string;
   website?: string;
+  instagram_url?: string;
+  linkedin_url?: string;
+  twitter_url?: string;
+  tiktok_url?: string;
+  youtube_url?: string;
+  facebook_url?: string;
   social_media?: any;
   status: 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive';
   qualification_score: number;
+  influence_score?: number;
+  priority_level?: 'low' | 'medium' | 'high' | 'critical';
+  industry_sector?: string;
+  company_size?: 'startup' | 'small' | 'medium' | 'large' | 'enterprise' | 'unknown';
+  estimated_budget?: number;
+  collaboration_potential?: 'high' | 'medium' | 'low' | 'unknown';
+  referral_source?: string;
+  tags?: string[];
   notes?: string;
   source?: string;
 }
@@ -76,7 +94,13 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
         prospect_type: 'artist',
         contact_name: '',
         status: 'new',
-        qualification_score: 0
+        qualification_score: 0,
+        influence_score: 0,
+        priority_level: 'medium',
+        company_size: 'unknown',
+        collaboration_potential: 'unknown',
+        country: 'FR',
+        tags: []
       });
       setInteractions([]);
     }
@@ -96,7 +120,13 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
         .maybeSingle();
       
       if (prospectData) {
-        setProspect(prospectData);
+        setProspect({
+          ...prospectData,
+          tags: prospectData.tags || [],
+          priority_level: (prospectData.priority_level as 'low' | 'medium' | 'high' | 'critical') || 'medium',
+          company_size: (prospectData.company_size as 'startup' | 'small' | 'medium' | 'large' | 'enterprise' | 'unknown') || 'unknown',
+          collaboration_potential: (prospectData.collaboration_potential as 'high' | 'medium' | 'low' | 'unknown') || 'unknown'
+        });
       }
 
       // Load interactions
@@ -148,10 +178,10 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
       }
 
       if (prospectId) {
-        // Update existing prospect
+        // Update existing prospect - cast to any to bypass type issues
         const { error } = await supabase
           .from('prospects')
-          .update(prospect)
+          .update(prospect as any)
           .eq('id', prospectId);
 
         if (error) {
@@ -202,11 +232,28 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
           company_name: prospect.company_name?.trim() || null,
           email: prospect.email?.trim() || null,
           phone: prospect.phone?.trim() || null,
+          whatsapp_number: prospect.whatsapp_number?.trim() || null,
           address: prospect.address?.trim() || null,
           city: prospect.city?.trim() || null,
+          region: prospect.region?.trim() || null,
+          country: prospect.country || 'FR',
           website: prospect.website?.trim() || null,
+          instagram_url: prospect.instagram_url?.trim() || null,
+          linkedin_url: prospect.linkedin_url?.trim() || null,
+          twitter_url: prospect.twitter_url?.trim() || null,
+          tiktok_url: prospect.tiktok_url?.trim() || null,
+          youtube_url: prospect.youtube_url?.trim() || null,
+          facebook_url: prospect.facebook_url?.trim() || null,
           status: prospect.status,
           qualification_score: prospect.qualification_score || 0,
+          influence_score: prospect.influence_score || 0,
+          priority_level: prospect.priority_level || 'medium',
+          industry_sector: prospect.industry_sector?.trim() || null,
+          company_size: prospect.company_size || 'unknown',
+          estimated_budget: prospect.estimated_budget || null,
+          collaboration_potential: prospect.collaboration_potential || 'unknown',
+          referral_source: prospect.referral_source?.trim() || null,
+          tags: prospect.tags || [],
           notes: prospect.notes?.trim() || null,
           source: prospect.source?.trim() || 'manual',
           created_by: user.id,
@@ -217,7 +264,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
 
         const { data, error } = await supabase
           .from('prospects')
-          .insert([prospectData])
+          .insert([prospectData as any])
           .select();
 
         if (error) {
@@ -352,8 +399,9 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
         </DialogHeader>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
-            <TabsTrigger value="details">Détails</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4">
+            <TabsTrigger value="details">Informations</TabsTrigger>
+            <TabsTrigger value="social">Réseaux & Contact</TabsTrigger>
             <TabsTrigger value="interactions" disabled={!prospectId}>
               Interactions ({interactions.length})
             </TabsTrigger>
@@ -362,121 +410,431 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
             </TabsTrigger>
           </TabsList>
 
-          <TabsContent value="details" className="space-y-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="space-y-2">
-                <Label htmlFor="contact_name">Nom du Contact *</Label>
-                <Input
-                  id="contact_name"
-                  value={prospect.contact_name}
-                  onChange={(e) => setProspect({ ...prospect, contact_name: e.target.value })}
-                  placeholder="Jean Dupont"
+          <TabsContent value="details" className="space-y-6">
+            {/* Informations principales */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Users className="h-5 w-5" />
+                  Informations Principales
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="contact_name">Nom du Contact *</Label>
+                    <Input
+                      id="contact_name"
+                      value={prospect.contact_name}
+                      onChange={(e) => setProspect({ ...prospect, contact_name: e.target.value })}
+                      placeholder="Jean Dupont"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="prospect_type">Type de Prospect *</Label>
+                    <Select 
+                      value={prospect.prospect_type} 
+                      onValueChange={(value) => setProspect({ ...prospect, prospect_type: value as any })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="artist">Artiste</SelectItem>
+                        <SelectItem value="venue">Lieu/Club</SelectItem>
+                        <SelectItem value="agent">Agent</SelectItem>
+                        <SelectItem value="manager">Manager</SelectItem>
+                        <SelectItem value="academie">École/Académie</SelectItem>
+                        <SelectItem value="sponsors">Sponsor/Partenaire</SelectItem>
+                        <SelectItem value="media">Média/Presse</SelectItem>
+                        <SelectItem value="agence">Agence</SelectItem>
+                        <SelectItem value="influenceur">Influenceur</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="company_name">Nom de l'Entreprise</Label>
+                    <Input
+                      id="company_name"
+                      value={prospect.company_name || ''}
+                      onChange={(e) => setProspect({ ...prospect, company_name: e.target.value })}
+                      placeholder="Studio XYZ, Club ABC..."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="industry_sector">Secteur d'Activité</Label>
+                    <Input
+                      id="industry_sector"
+                      value={prospect.industry_sector || ''}
+                      onChange={(e) => setProspect({ ...prospect, industry_sector: e.target.value })}
+                      placeholder="Musique électronique, Hip-hop..."
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="company_size">Taille d'Entreprise</Label>
+                    <Select 
+                      value={prospect.company_size} 
+                      onValueChange={(value) => setProspect({ ...prospect, company_size: value as any })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="startup">Startup</SelectItem>
+                        <SelectItem value="small">Petite (1-10)</SelectItem>
+                        <SelectItem value="medium">Moyenne (11-50)</SelectItem>
+                        <SelectItem value="large">Grande (51-200)</SelectItem>
+                        <SelectItem value="enterprise">Entreprise (200+)</SelectItem>
+                        <SelectItem value="unknown">Inconnue</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="estimated_budget">Budget Estimé (€)</Label>
+                    <Input
+                      id="estimated_budget"
+                      type="number"
+                      min="0"
+                      value={prospect.estimated_budget || ''}
+                      onChange={(e) => setProspect({ ...prospect, estimated_budget: parseInt(e.target.value) || undefined })}
+                      placeholder="5000"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Statut et Scoring */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Target className="h-5 w-5" />
+                  Statut et Évaluation
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="status">Statut</Label>
+                    <Select 
+                      value={prospect.status} 
+                      onValueChange={(value) => setProspect({ ...prospect, status: value as any })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="new">🔵 Nouveau</SelectItem>
+                        <SelectItem value="contacted">🟡 Contacté</SelectItem>
+                        <SelectItem value="qualified">🟠 Qualifié</SelectItem>
+                        <SelectItem value="interested">🟢 Intéressé</SelectItem>
+                        <SelectItem value="converted">✅ Converti</SelectItem>
+                        <SelectItem value="rejected">❌ Rejeté</SelectItem>
+                        <SelectItem value="unresponsive">⚫ Sans réponse</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="priority_level">Niveau de Priorité</Label>
+                    <Select 
+                      value={prospect.priority_level} 
+                      onValueChange={(value) => setProspect({ ...prospect, priority_level: value as any })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="low">🟢 Faible</SelectItem>
+                        <SelectItem value="medium">🟡 Moyenne</SelectItem>
+                        <SelectItem value="high">🟠 Haute</SelectItem>
+                        <SelectItem value="critical">🔴 Critique</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="qualification_score">Score de Qualification (0-100)</Label>
+                    <Input
+                      id="qualification_score"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={prospect.qualification_score}
+                      onChange={(e) => setProspect({ ...prospect, qualification_score: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="influence_score">Score d'Influence (0-100)</Label>
+                    <Input
+                      id="influence_score"
+                      type="number"
+                      min="0"
+                      max="100"
+                      value={prospect.influence_score || 0}
+                      onChange={(e) => setProspect({ ...prospect, influence_score: parseInt(e.target.value) || 0 })}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="collaboration_potential">Potentiel de Collaboration</Label>
+                    <Select 
+                      value={prospect.collaboration_potential} 
+                      onValueChange={(value) => setProspect({ ...prospect, collaboration_potential: value as any })}
+                    >
+                      <SelectTrigger>
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="high">🟢 Élevé</SelectItem>
+                        <SelectItem value="medium">🟡 Moyen</SelectItem>
+                        <SelectItem value="low">🔴 Faible</SelectItem>
+                        <SelectItem value="unknown">❓ Inconnu</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="referral_source">Source de Référencement</Label>
+                    <Input
+                      id="referral_source"
+                      value={prospect.referral_source || ''}
+                      onChange={(e) => setProspect({ ...prospect, referral_source: e.target.value })}
+                      placeholder="LinkedIn, événement, référence..."
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Tags */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Tags et Catégorisation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <ProspectTagManager
+                  selectedTags={prospect.tags || []}
+                  onTagsChange={(tags) => setProspect({ ...prospect, tags })}
                 />
-              </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-2">
-                <Label htmlFor="prospect_type">Type de Prospect *</Label>
-                <Select 
-                  value={prospect.prospect_type} 
-                  onValueChange={(value) => setProspect({ ...prospect, prospect_type: value as any })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="artist">Artiste</SelectItem>
-                    <SelectItem value="venue">Lieu</SelectItem>
-                    <SelectItem value="agent">Agent</SelectItem>
-                    <SelectItem value="manager">Manager</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+            {/* Localisation */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Globe className="h-5 w-5" />
+                  Localisation
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="grid grid-cols-3 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="city">Ville</Label>
+                    <Input
+                      id="city"
+                      value={prospect.city || ''}
+                      onChange={(e) => setProspect({ ...prospect, city: e.target.value })}
+                      placeholder="Paris"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="region">Région</Label>
+                    <Input
+                      id="region"
+                      value={prospect.region || ''}
+                      onChange={(e) => setProspect({ ...prospect, region: e.target.value })}
+                      placeholder="Île-de-France"
+                    />
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="country">Pays</Label>
+                    <Input
+                      id="country"
+                      value={prospect.country || 'FR'}
+                      onChange={(e) => setProspect({ ...prospect, country: e.target.value })}
+                      placeholder="FR"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-2">
-                <Label htmlFor="company_name">Nom de l'Entreprise</Label>
-                <Input
-                  id="company_name"
-                  value={prospect.company_name || ''}
-                  onChange={(e) => setProspect({ ...prospect, company_name: e.target.value })}
-                  placeholder="Studio XYZ"
+            {/* Notes */}
+            <Card>
+              <CardHeader>
+                <CardTitle>Notes et Observations</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <Textarea
+                  id="notes"
+                  value={prospect.notes || ''}
+                  onChange={(e) => setProspect({ ...prospect, notes: e.target.value })}
+                  placeholder="Notes détaillées sur ce prospect, historique des échanges, préférences..."
+                  rows={4}
                 />
-              </div>
+              </CardContent>
+            </Card>
 
-              <div className="space-y-2">
-                <Label htmlFor="email">Email</Label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={prospect.email || ''}
-                  onChange={(e) => setProspect({ ...prospect, email: e.target.value })}
-                  placeholder="contact@example.com"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="phone">Téléphone</Label>
-                <Input
-                  id="phone"
-                  value={prospect.phone || ''}
-                  onChange={(e) => setProspect({ ...prospect, phone: e.target.value })}
-                  placeholder="+33 1 23 45 67 89"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="city">Ville</Label>
-                <Input
-                  id="city"
-                  value={prospect.city || ''}
-                  onChange={(e) => setProspect({ ...prospect, city: e.target.value })}
-                  placeholder="Paris"
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="status">Statut</Label>
-                <Select 
-                  value={prospect.status} 
-                  onValueChange={(value) => setProspect({ ...prospect, status: value as any })}
-                >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="new">Nouveau</SelectItem>
-                    <SelectItem value="contacted">Contacté</SelectItem>
-                    <SelectItem value="qualified">Qualifié</SelectItem>
-                    <SelectItem value="interested">Intéressé</SelectItem>
-                    <SelectItem value="converted">Converti</SelectItem>
-                    <SelectItem value="rejected">Rejeté</SelectItem>
-                    <SelectItem value="unresponsive">Sans réponse</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="qualification_score">Score de Qualification (0-100)</Label>
-                <Input
-                  id="qualification_score"
-                  type="number"
-                  min="0"
-                  max="100"
-                  value={prospect.qualification_score}
-                  onChange={(e) => setProspect({ ...prospect, qualification_score: parseInt(e.target.value) || 0 })}
-                />
-              </div>
+            <div className="flex justify-end gap-2">
+              <Button variant="outline" onClick={() => onOpenChange(false)}>
+                Annuler
+              </Button>
+              <Button onClick={handleSaveProspect} disabled={loading}>
+                {loading ? 'Enregistrement...' : 'Enregistrer'}
+              </Button>
             </div>
+          </TabsContent>
 
-            <div className="space-y-2">
-              <Label htmlFor="notes">Notes</Label>
-              <Textarea
-                id="notes"
-                value={prospect.notes || ''}
-                onChange={(e) => setProspect({ ...prospect, notes: e.target.value })}
-                placeholder="Notes sur ce prospect..."
-                rows={3}
-              />
-            </div>
+          <TabsContent value="social" className="space-y-6">
+            {/* Contact Direct */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Phone className="h-5 w-5" />
+                  Coordonnées de Contact
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="email">Email</Label>
+                    <Input
+                      id="email"
+                      type="email"
+                      value={prospect.email || ''}
+                      onChange={(e) => setProspect({ ...prospect, email: e.target.value })}
+                      placeholder="contact@example.com"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="phone">Téléphone</Label>
+                    <Input
+                      id="phone"
+                      value={prospect.phone || ''}
+                      onChange={(e) => setProspect({ ...prospect, phone: e.target.value })}
+                      placeholder="+33 1 23 45 67 89"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="whatsapp_number">WhatsApp</Label>
+                    <Input
+                      id="whatsapp_number"
+                      value={prospect.whatsapp_number || ''}
+                      onChange={(e) => setProspect({ ...prospect, whatsapp_number: e.target.value })}
+                      placeholder="+33 6 12 34 56 78"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="website">Site Web</Label>
+                    <Input
+                      id="website"
+                      value={prospect.website || ''}
+                      onChange={(e) => setProspect({ ...prospect, website: e.target.value })}
+                      placeholder="https://example.com"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Réseaux Sociaux */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Instagram className="h-5 w-5" />
+                  Réseaux Sociaux
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="instagram_url" className="flex items-center gap-2">
+                      <Instagram className="h-4 w-4" />
+                      Instagram
+                    </Label>
+                    <Input
+                      id="instagram_url"
+                      value={prospect.instagram_url || ''}
+                      onChange={(e) => setProspect({ ...prospect, instagram_url: e.target.value })}
+                      placeholder="https://instagram.com/username"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="linkedin_url" className="flex items-center gap-2">
+                      <Linkedin className="h-4 w-4" />
+                      LinkedIn
+                    </Label>
+                    <Input
+                      id="linkedin_url"
+                      value={prospect.linkedin_url || ''}
+                      onChange={(e) => setProspect({ ...prospect, linkedin_url: e.target.value })}
+                      placeholder="https://linkedin.com/in/username"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="twitter_url" className="flex items-center gap-2">
+                      <Twitter className="h-4 w-4" />
+                      Twitter/X
+                    </Label>
+                    <Input
+                      id="twitter_url"
+                      value={prospect.twitter_url || ''}
+                      onChange={(e) => setProspect({ ...prospect, twitter_url: e.target.value })}
+                      placeholder="https://twitter.com/username"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="youtube_url" className="flex items-center gap-2">
+                      <MessageCircle className="h-4 w-4" />
+                      YouTube
+                    </Label>
+                    <Input
+                      id="youtube_url"
+                      value={prospect.youtube_url || ''}
+                      onChange={(e) => setProspect({ ...prospect, youtube_url: e.target.value })}
+                      placeholder="https://youtube.com/@username"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="tiktok_url">TikTok</Label>
+                    <Input
+                      id="tiktok_url"
+                      value={prospect.tiktok_url || ''}
+                      onChange={(e) => setProspect({ ...prospect, tiktok_url: e.target.value })}
+                      placeholder="https://tiktok.com/@username"
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="facebook_url">Facebook</Label>
+                    <Input
+                      id="facebook_url"
+                      value={prospect.facebook_url || ''}
+                      onChange={(e) => setProspect({ ...prospect, facebook_url: e.target.value })}
+                      placeholder="https://facebook.com/username"
+                    />
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
 
             <div className="flex justify-end gap-2">
               <Button variant="outline" onClick={() => onOpenChange(false)}>

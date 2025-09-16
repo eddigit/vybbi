@@ -2110,6 +2110,45 @@ export type Database = {
           },
         ]
       }
+      prospect_imports: {
+        Row: {
+          completed_at: string | null
+          created_at: string | null
+          error_details: Json | null
+          failed_imports: number | null
+          file_name: string
+          id: string
+          import_status: string | null
+          imported_by: string | null
+          successful_imports: number | null
+          total_records: number | null
+        }
+        Insert: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_details?: Json | null
+          failed_imports?: number | null
+          file_name: string
+          id?: string
+          import_status?: string | null
+          imported_by?: string | null
+          successful_imports?: number | null
+          total_records?: number | null
+        }
+        Update: {
+          completed_at?: string | null
+          created_at?: string | null
+          error_details?: Json | null
+          failed_imports?: number | null
+          file_name?: string
+          id?: string
+          import_status?: string | null
+          imported_by?: string | null
+          successful_imports?: number | null
+          total_records?: number | null
+        }
+        Relationships: []
+      }
       prospect_interactions: {
         Row: {
           agent_id: string
@@ -2172,6 +2211,39 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      prospect_tags: {
+        Row: {
+          category: string | null
+          color: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          is_system: boolean | null
+          name: string
+        }
+        Insert: {
+          category?: string | null
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean | null
+          name: string
+        }
+        Update: {
+          category?: string | null
+          color?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          is_system?: boolean | null
+          name?: string
+        }
+        Relationships: []
       }
       prospecting_campaigns: {
         Row: {
@@ -2237,76 +2309,142 @@ export type Database = {
           address: string | null
           assigned_agent_id: string | null
           assigned_at: string | null
+          auto_scoring_enabled: boolean | null
           city: string | null
+          collaboration_potential: string | null
           company_name: string | null
+          company_size: string | null
           contact_name: string
           converted_at: string | null
           converted_user_id: string | null
+          country: string | null
           created_at: string
           created_by: string | null
           email: string | null
+          engagement_history: Json | null
+          estimated_budget: number | null
+          facebook_url: string | null
           id: string
+          industry_sector: string | null
+          influence_score: number | null
+          instagram_url: string | null
           last_contact_at: string | null
+          last_engagement_score: number | null
+          linkedin_url: string | null
           next_follow_up_at: string | null
           notes: string | null
           phone: string | null
+          priority_level: string | null
           prospect_type: Database["public"]["Enums"]["prospect_type"]
           qualification_score: number | null
+          referral_prospect_id: string | null
+          referral_source: string | null
+          region: string | null
           social_media: Json | null
           source: string | null
           status: Database["public"]["Enums"]["prospect_status"]
+          tags: string[] | null
+          tiktok_url: string | null
+          timezone: string | null
+          twitter_url: string | null
           updated_at: string
           website: string | null
+          whatsapp_number: string | null
+          youtube_url: string | null
         }
         Insert: {
           address?: string | null
           assigned_agent_id?: string | null
           assigned_at?: string | null
+          auto_scoring_enabled?: boolean | null
           city?: string | null
+          collaboration_potential?: string | null
           company_name?: string | null
+          company_size?: string | null
           contact_name: string
           converted_at?: string | null
           converted_user_id?: string | null
+          country?: string | null
           created_at?: string
           created_by?: string | null
           email?: string | null
+          engagement_history?: Json | null
+          estimated_budget?: number | null
+          facebook_url?: string | null
           id?: string
+          industry_sector?: string | null
+          influence_score?: number | null
+          instagram_url?: string | null
           last_contact_at?: string | null
+          last_engagement_score?: number | null
+          linkedin_url?: string | null
           next_follow_up_at?: string | null
           notes?: string | null
           phone?: string | null
+          priority_level?: string | null
           prospect_type: Database["public"]["Enums"]["prospect_type"]
           qualification_score?: number | null
+          referral_prospect_id?: string | null
+          referral_source?: string | null
+          region?: string | null
           social_media?: Json | null
           source?: string | null
           status?: Database["public"]["Enums"]["prospect_status"]
+          tags?: string[] | null
+          tiktok_url?: string | null
+          timezone?: string | null
+          twitter_url?: string | null
           updated_at?: string
           website?: string | null
+          whatsapp_number?: string | null
+          youtube_url?: string | null
         }
         Update: {
           address?: string | null
           assigned_agent_id?: string | null
           assigned_at?: string | null
+          auto_scoring_enabled?: boolean | null
           city?: string | null
+          collaboration_potential?: string | null
           company_name?: string | null
+          company_size?: string | null
           contact_name?: string
           converted_at?: string | null
           converted_user_id?: string | null
+          country?: string | null
           created_at?: string
           created_by?: string | null
           email?: string | null
+          engagement_history?: Json | null
+          estimated_budget?: number | null
+          facebook_url?: string | null
           id?: string
+          industry_sector?: string | null
+          influence_score?: number | null
+          instagram_url?: string | null
           last_contact_at?: string | null
+          last_engagement_score?: number | null
+          linkedin_url?: string | null
           next_follow_up_at?: string | null
           notes?: string | null
           phone?: string | null
+          priority_level?: string | null
           prospect_type?: Database["public"]["Enums"]["prospect_type"]
           qualification_score?: number | null
+          referral_prospect_id?: string | null
+          referral_source?: string | null
+          region?: string | null
           social_media?: Json | null
           source?: string | null
           status?: Database["public"]["Enums"]["prospect_status"]
+          tags?: string[] | null
+          tiktok_url?: string | null
+          timezone?: string | null
+          twitter_url?: string | null
           updated_at?: string
           website?: string | null
+          whatsapp_number?: string | null
+          youtube_url?: string | null
         }
         Relationships: [
           {
@@ -2314,6 +2452,13 @@ export type Database = {
             columns: ["assigned_agent_id"]
             isOneToOne: false
             referencedRelation: "vybbi_agents"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "prospects_referral_prospect_id_fkey"
+            columns: ["referral_prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
             referencedColumns: ["id"]
           },
         ]
