@@ -119,30 +119,54 @@ serve(async (req) => {
 Adapte tes réponses à ce contexte spécifique.`;
     }
 
-    // Appel à OpenAI
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: 'gpt-4.1-2025-04-14',
-        messages: [
-          { role: 'system', content: VYBBI_SYSTEM_PROMPT + contextData + userContextPrompt },
-          { role: 'user', content: message }
-        ],
-        max_tokens: 1000,
-        temperature: 0.7,
-      }),
-    });
+    // Appel à OpenAI avec cascade de modèles et tolérance aux erreurs
+    const systemMessage = { role: 'system', content: VYBBI_SYSTEM_PROMPT + contextData + userContextPrompt };
+    const userMessage = { role: 'user', content: message };
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status} ${response.statusText}`);
+    async function callOpenAI(payload: any) {
+      const res = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${OPENAI_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+      return res;
     }
 
-    const data = await response.json();
-    const reply = data.choices[0].message.content;
+    let response = await callOpenAI({
+      model: 'gpt-5-mini-2025-08-07',
+      messages: [systemMessage, userMessage],
+      // Nouveau paramètre requis pour les modèles récents
+      max_completion_tokens: 800,
+    });
+
+    // Fallback si rate-limit/erreur
+    if (!response.ok) {
+      console.warn(`Primary model failed (${response.status}). Falling back to gpt-4o-mini`);
+      // Petit backoff pour 429
+      if (response.status === 429) {
+        await new Promise((r) => setTimeout(r, 600));
+      }
+      response = await callOpenAI({
+        model: 'gpt-4o-mini',
+        messages: [systemMessage, userMessage],
+        // Ancien paramètre pour modèles legacy
+        max_tokens: 800,
+        temperature: 0.7,
+      });
+    }
+
+    let reply = '';
+    if (response.ok) {
+      const data = await response.json();
+      reply = data.choices?.[0]?.message?.content || '';
+    } else {
+      // Dernier repli côté serveur: message utile sans OpenAI
+      reply = `Je rencontre un pic de charge sur le service d'IA. Voici tout de même un état de la plateforme pour t'aider:\n\n` +
+        (contextData || '').slice(0, 1800) + `\n\nReformule ta demande ou précise des filtres (genre, ville, date) et je réessaierai.`;
+    }
 
     // Log de l'interaction (seulement si utilisateur connecté)
     const authHeader = req.headers.get('authorization');
