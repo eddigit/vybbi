@@ -163,8 +163,9 @@ export default function Auth() {
                         id="remember-me" 
                         checked={rememberMe}
                         onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                        className="h-3 w-3"
                       />
-                      <Label htmlFor="remember-me" className="text-sm text-muted-foreground cursor-pointer">
+                      <Label htmlFor="remember-me" className="text-xs text-muted-foreground cursor-pointer">
                         Se souvenir de moi
                       </Label>
                     </div>
