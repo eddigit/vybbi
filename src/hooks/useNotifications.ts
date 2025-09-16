@@ -30,9 +30,11 @@ export function useNotifications() {
       return;
     }
 
+    console.log('🔔 [useNotifications] Initializing for user:', user.id);
+
     // Demander la permission pour les notifications
     requestNotificationPermission().then(granted => {
-      console.log('Notification permission granted:', granted);
+      console.log('🔔 [useNotifications] Browser notification permission granted:', granted);
     });
 
     fetchNotifications();
@@ -72,17 +74,24 @@ export function useNotifications() {
   const subscribeToNotifications = () => {
     if (!user) return () => {};
 
-    console.log('Setting up real-time subscription for notifications:', user.id);
+    console.log('🔔 [useNotifications] Setting up real-time subscription for user:', user.id);
 
-    // Debouncing to avoid duplicate notifications
+    // Debouncing intelligent pour éviter les doublons tout en gardant la réactivité
     let timeoutId: NodeJS.Timeout;
+    let lastFetchTime = 0;
     const debouncedFetch = () => {
       clearTimeout(timeoutId);
-      timeoutId = setTimeout(fetchNotifications, 300);
+      const now = Date.now();
+      // Si la dernière fetch était il y a moins de 100ms, on debounce
+      const delay = (now - lastFetchTime) < 100 ? 200 : 0;
+      timeoutId = setTimeout(() => {
+        lastFetchTime = Date.now();
+        fetchNotifications();
+      }, delay);
     };
 
     const channel = supabase
-      .channel(`notifications-${user.id}`)
+      .channel(`notifications-realtime-${user.id}`)
       .on(
         'postgres_changes',
         {
@@ -92,28 +101,37 @@ export function useNotifications() {
           filter: `user_id=eq.${user.id}`
         },
         async (payload) => {
-          console.log('New notification received:', payload);
+          console.log('🔔 [REALTIME] New notification received:', payload);
           
           const newNotification = payload.new as Notification;
           
-          // Avoid duplicates
+          // Optimistic update immédiat pour la réactivité
           setNotifications(prev => {
             const exists = prev.some(n => n.id === newNotification.id);
-            if (exists) return prev;
+            if (exists) {
+              console.log('🔔 [REALTIME] Notification already exists, skipping:', newNotification.id);
+              return prev;
+            }
             
-            console.log('Adding new notification:', newNotification);
+            console.log('🔔 [REALTIME] Adding new notification instantly:', newNotification.title);
             return [newNotification, ...prev.slice(0, 19)];
           });
           
-          // Show browser notification
+          // Notification browser immédiate avec métadonnées enrichies
+          const notificationData = newNotification.data || {};
           showNotification(newNotification.title, {
             body: newNotification.message,
             icon: '/favicon.ico',
-            tag: 'notification-' + newNotification.id,
+            tag: `notification-${newNotification.type}-${newNotification.id}`,
+            requireInteraction: newNotification.type === 'new_message', // Messages nécessitent interaction
             data: {
               notificationId: newNotification.id,
               type: newNotification.type,
-              ...newNotification.data
+              conversationId: notificationData.conversation_id,
+              senderId: notificationData.sender_id,
+              senderName: notificationData.senderName,
+              timestamp: newNotification.created_at,
+              ...notificationData
             }
           });
         }
@@ -126,7 +144,17 @@ export function useNotifications() {
           table: 'notifications',
           filter: `user_id=eq.${user.id}`
         },
-        debouncedFetch
+        (payload) => {
+          console.log('🔔 [REALTIME] Notification updated:', payload);
+          // Update immédiat en local
+          setNotifications(prev => 
+            prev.map(notification => 
+              notification.id === payload.new.id 
+                ? { ...notification, ...payload.new } as Notification
+                : notification
+            )
+          );
+        }
       )
       .on(
         'postgres_changes',
@@ -136,10 +164,19 @@ export function useNotifications() {
           table: 'notifications',
           filter: `user_id=eq.${user.id}`
         },
-        debouncedFetch
+        (payload) => {
+          console.log('🔔 [REALTIME] Notification deleted:', payload);
+          // Suppression immédiate en local
+          setNotifications(prev => prev.filter(n => n.id !== payload.old.id));
+        }
       )
       .subscribe((status) => {
-        console.log('Notification subscription status:', status);
+        console.log('🔔 [REALTIME] Notification subscription status:', status);
+        if (status === 'SUBSCRIBED') {
+          console.log('🔔 [REALTIME] ✅ Successfully subscribed to notifications');
+        } else if (status === 'CLOSED') {
+          console.log('🔔 [REALTIME] ❌ Notification subscription closed');
+        }
       });
 
     return () => {

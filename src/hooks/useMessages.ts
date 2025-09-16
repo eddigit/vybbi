@@ -186,9 +186,9 @@ export function useMessages(conversationId: string | null) {
     fetchMessages();
     markAsRead();
 
-    // Subscribe to real-time messages
+    // Subscribe to real-time messages avec optimisations
     const channel = supabase
-      .channel(`messages-${conversationId}`)
+      .channel(`messages-realtime-${conversationId}`)
       .on(
         'postgres_changes',
         {
@@ -198,21 +198,26 @@ export function useMessages(conversationId: string | null) {
           filter: `conversation_id=eq.${conversationId}`,
         },
         async (payload) => {
+          console.log('💬 [useMessages] New message received in real-time:', payload);
+          
+          // Optimistic update immédiat pour la réactivité
+          const newMessage = payload.new as any;
+          
           // Fetch sender info for the new message
           const { data: senderData } = await supabase
             .from('profiles')
             .select('display_name, avatar_url')
-            .eq('user_id', payload.new.sender_id)
+            .eq('user_id', newMessage.sender_id)
             .maybeSingle();
 
           // Fetch attachments for the new message
           const { data: attachmentsData } = await supabase
             .from('message_attachments')
             .select('*')
-            .eq('message_id', payload.new.id);
+            .eq('message_id', newMessage.id);
 
           const messageWithSender: MessageWithSender = {
-            ...payload.new as any,
+            ...newMessage,
             attachments: attachmentsData || [],
             sender: senderData || { display_name: 'Utilisateur inconnu', avatar_url: null }
           };
@@ -220,17 +225,24 @@ export function useMessages(conversationId: string | null) {
           setMessages(prev => {
             // Prevent duplicates by checking if message already exists
             const exists = prev.some(msg => msg.id === messageWithSender.id);
-            if (exists) return prev;
+            if (exists) {
+              console.log('💬 [useMessages] Message already exists, skipping:', messageWithSender.id);
+              return prev;
+            }
+            console.log('💬 [useMessages] Adding new message:', messageWithSender.content.substring(0, 50) + '...');
             return [...prev, messageWithSender];
           });
           
-          // Mark as read if the user is viewing this conversation
-          if (payload.new.sender_id !== user?.id) {
+          // Mark as read if the user is viewing this conversation and it's not their own message
+          if (newMessage.sender_id !== user?.id) {
+            console.log('💬 [useMessages] Marking conversation as read for incoming message');
             markAsRead();
           }
         }
       )
-      .subscribe();
+      .subscribe((status) => {
+        console.log('💬 [useMessages] Subscription status for conversation', conversationId, ':', status);
+      });
 
     return () => {
       supabase.removeChannel(channel);

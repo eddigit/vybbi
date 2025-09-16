@@ -16,6 +16,7 @@ import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { usePWAUpdate } from '@/hooks/usePWAUpdate';
 import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
+import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
 import Campaigns from "./pages/Campaigns";
@@ -139,9 +140,10 @@ const App = () => (
                 <Toaster />
                 <Sonner />
                 <BrowserRouter>
-                  <AuthHashRedirect />
-                  <ScrollToTop />
-                  <Layout>
+                  <RealtimeNotificationProvider>
+                    <AuthHashRedirect />
+                    <ScrollToTop />
+                    <Layout>
                     <Routes>
                       {/* SEO-friendly slug URLs */}
                       <Route path="/artistes/:slug" element={<ArtistProfileBySlug />} />
@@ -222,11 +224,12 @@ const App = () => (
                       <Route path="/contact" element={<Contact />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
-                  </Layout>
-                  <RadioPlayer />
-                  <PWAInstallPrompt />
-                  <OfflineIndicator />
-                  <PWAUpdateHandler />
+                    </Layout>
+                    <RadioPlayer />
+                    <PWAInstallPrompt />
+                    <OfflineIndicator />
+                    <PWAUpdateHandler />
+                  </RealtimeNotificationProvider>
                 </BrowserRouter>
               </TooltipProvider>
             </PerformanceOptimizer>
