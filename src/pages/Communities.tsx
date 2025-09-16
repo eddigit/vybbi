@@ -34,10 +34,8 @@ const Communities = () => {
   }, [user]);
 
   const fetchCommunities = async () => {
-    if (!user) return;
-
     try {
-      // First, fetch all communities
+      // First, fetch all communities (works without authentication for public communities)
       const { data: communitiesData, error: communitiesError } = await supabase
         .from('communities')
         .select(`
@@ -54,18 +52,22 @@ const Communities = () => {
 
       if (communitiesError) throw communitiesError;
 
-      // Then, fetch user's memberships separately
-      const { data: membershipsData, error: membershipsError } = await supabase
-        .from('community_members')
-        .select('community_id, role')
-        .eq('user_id', user.id);
+      let membershipMap = new Map();
+      
+      // Only fetch memberships if user is authenticated
+      if (user) {
+        const { data: membershipsData, error: membershipsError } = await supabase
+          .from('community_members')
+          .select('community_id, role')
+          .eq('user_id', user.id);
 
-      if (membershipsError) throw membershipsError;
+        if (membershipsError) throw membershipsError;
 
-      // Create a map of memberships for quick lookup
-      const membershipMap = new Map(
-        membershipsData?.map(m => [m.community_id, m.role]) || []
-      );
+        // Create a map of memberships for quick lookup
+        membershipMap = new Map(
+          membershipsData?.map(m => [m.community_id, m.role]) || []
+        );
+      }
 
       const formattedCommunities: Community[] = communitiesData.map((community: any) => ({
         id: community.id,
@@ -75,8 +77,8 @@ const Communities = () => {
         category: community.category,
         avatar_url: community.avatar_url,
         member_count: community.member_count,
-        is_member: membershipMap.has(community.id),
-        member_role: membershipMap.get(community.id)
+        is_member: user ? membershipMap.has(community.id) : false,
+        member_role: user ? membershipMap.get(community.id) : undefined
       }));
 
       setCommunities(formattedCommunities);
@@ -93,7 +95,15 @@ const Communities = () => {
   };
 
   const joinCommunity = async (communityId: string) => {
-    if (!user) return;
+    if (!user) {
+      toast({
+        title: "Connexion requise",
+        description: "Vous devez vous connecter pour rejoindre une communauté",
+        variant: "destructive"
+      });
+      navigate('/auth');
+      return;
+    }
 
     try {
       // Get user's profile ID
