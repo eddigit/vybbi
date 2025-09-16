@@ -107,9 +107,9 @@ export default function Auth() {
           </CardHeader>
           <CardContent>
             <Tabs defaultValue={initialTab} className="space-y-4" onValueChange={setActiveTab}>
-              <TabsList className="grid w-full grid-cols-2">
-                <TabsTrigger value="signin">Connexion</TabsTrigger>
-                <TabsTrigger value="signup">Inscription</TabsTrigger>
+              <TabsList className="grid w-full grid-cols-2 gap-1">
+                <TabsTrigger value="signin" className="w-full">Connexion</TabsTrigger>
+                <TabsTrigger value="signup" className="w-full">Inscription</TabsTrigger>
               </TabsList>
 
               <TabsContent value="signin" className="space-y-4">
