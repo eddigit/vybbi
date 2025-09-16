@@ -7,16 +7,14 @@ const corsHeaders = {
 };
 
 interface WorkflowTask {
-  id: string;
+  task_id: string;
   prospect_id: string;
-  workflow_id: string;
-  agent_id: string;
   task_type: 'email' | 'call' | 'whatsapp' | 'reminder' | 'note';
   title: string;
   description: string;
   scheduled_at: string;
   template_data: any;
-  prospect: {
+  prospect_data: {
     contact_name: string;
     company_name?: string;
     email?: string;
@@ -34,7 +32,7 @@ serve(async (req) => {
   }
 
   try {
-    console.log('🔄 Démarrage du traitement des tâches de workflow...');
+    console.log('🔄 Démarrage du traitement sécurisé des tâches de workflow...');
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get('SUPABASE_URL')!;
@@ -42,30 +40,30 @@ serve(async (req) => {
     
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Récupérer les tâches dues (à traiter maintenant)
-    const now = new Date().toISOString();
-    const { data: dueTasks, error: tasksError } = await supabase
-      .from('prospect_tasks')
-      .select(`
-        *,
-        prospect:prospects(contact_name, company_name, email, phone, whatsapp_number, prospect_type, status)
-      `)
-      .eq('status', 'pending')
-      .lte('scheduled_at', now)
-      .limit(50); // Traiter par batch de 50
-
-    if (tasksError) {
-      console.error('❌ Erreur récupération des tâches:', tasksError);
-      throw tasksError;
+    // Nettoyer les verrous expirés d'abord
+    const { data: cleanupResult } = await supabase.rpc('cleanup_expired_task_locks');
+    if (cleanupResult > 0) {
+      console.log(`🧹 Nettoyé ${cleanupResult} verrous expirés`);
     }
 
-    console.log(`📋 ${dueTasks?.length || 0} tâches à traiter`);
+    // Récupérer et verrouiller les tâches à traiter via la fonction sécurisée
+    const { data: tasksToProcess, error: lockError } = await supabase.rpc('lock_and_process_tasks', {
+      max_tasks: 50
+    });
 
-    if (!dueTasks || dueTasks.length === 0) {
+    if (lockError) {
+      console.error('❌ Erreur verrouillage des tâches:', lockError);
+      throw lockError;
+    }
+
+    console.log(`📋 ${tasksToProcess?.length || 0} tâches verrouillées pour traitement`);
+
+    if (!tasksToProcess || tasksToProcess.length === 0) {
       return new Response(JSON.stringify({ 
         success: true, 
         message: 'Aucune tâche à traiter',
-        processedTasks: 0 
+        processedTasks: 0,
+        failedTasks: 0 
       }), {
         headers: { ...corsHeaders, 'Content-Type': 'application/json' },
       });
@@ -74,67 +72,72 @@ serve(async (req) => {
     let processedCount = 0;
     let errorCount = 0;
 
-    // Traiter chaque tâche
-    for (const task of dueTasks as WorkflowTask[]) {
+    // Traiter chaque tâche verrouillée
+    for (const task of tasksToProcess as WorkflowTask[]) {
       try {
-        console.log(`🎯 Traitement tâche: ${task.title} pour ${task.prospect.contact_name}`);
+        console.log(`🎯 Traitement tâche: ${task.title} pour ${task.prospect_data.contact_name}`);
         
         let processed = false;
+        let status = 'failed';
+        let errorMessage = null;
 
         // Vérifier les conditions avant traitement
         if (await shouldSkipTask(supabase, task)) {
-          console.log(`⏭️ Tâche ignorée (conditions non remplies): ${task.id}`);
-          
-          await supabase
-            .from('prospect_tasks')
-            .update({ status: 'skipped' })
-            .eq('id', task.id);
-          
-          continue;
+          console.log(`⏭️ Tâche ignorée (conditions non remplies): ${task.task_id}`);
+          status = 'skipped';
+          processed = true;
+        } else {
+          switch (task.task_type) {
+            case 'email':
+              processed = await processEmailTask(supabase, task);
+              break;
+              
+            case 'whatsapp':
+              processed = await processWhatsAppTask(supabase, task);
+              break;
+              
+            case 'call':
+              processed = await processCallTask(supabase, task);
+              break;
+              
+            case 'reminder':
+              processed = await processReminderTask(supabase, task);
+              break;
+              
+            default:
+              console.log(`⚠️ Type de tâche non supporté: ${task.task_type}`);
+              errorMessage = `Type de tâche non supporté: ${task.task_type}`;
+              break;
+          }
+
+          status = processed ? 'completed' : 'failed';
         }
 
-        switch (task.task_type) {
-          case 'email':
-            processed = await processEmailTask(supabase, task);
-            break;
-            
-          case 'whatsapp':
-            processed = await processWhatsAppTask(supabase, task);
-            break;
-            
-          case 'call':
-            processed = await processCallTask(supabase, task);
-            break;
-            
-          case 'reminder':
-            processed = await processReminderTask(supabase, task);
-            break;
-            
-          default:
-            console.log(`⚠️ Type de tâche non supporté: ${task.task_type}`);
-            break;
-        }
+        // Finaliser le traitement via la fonction sécurisée
+        const { data: completionResult } = await supabase.rpc('complete_task_processing', {
+          task_id: task.task_id,
+          new_status: status,
+          error_message: errorMessage
+        });
 
         if (processed) {
           processedCount++;
-          console.log(`✅ Tâche traitée: ${task.id}`);
+          console.log(`✅ Tâche traitée: ${task.task_id}`);
         } else {
           errorCount++;
-          console.log(`❌ Échec traitement tâche: ${task.id}`);
+          console.log(`❌ Échec traitement tâche: ${task.task_id}`);
         }
 
       } catch (taskError) {
-        console.error(`❌ Erreur traitement tâche ${task.id}:`, taskError);
+        console.error(`❌ Erreur traitement tâche ${task.task_id}:`, taskError);
         errorCount++;
         
-        // Marquer la tâche comme échouée
-        await supabase
-          .from('prospect_tasks')
-          .update({ 
-            status: 'failed',
-            completed_at: new Date().toISOString() 
-          })
-          .eq('id', task.id);
+        // Marquer la tâche comme échouée via la fonction sécurisée
+        await supabase.rpc('complete_task_processing', {
+          task_id: task.task_id,
+          new_status: 'failed',
+          error_message: taskError.message
+        });
       }
     }
 
@@ -144,7 +147,8 @@ serve(async (req) => {
       success: true,
       processedTasks: processedCount,
       failedTasks: errorCount,
-      totalTasks: dueTasks.length
+      totalTasks: tasksToProcess.length,
+      message: `Traitement terminé: ${processedCount} tâches traitées, ${errorCount} erreurs`
     }), {
       headers: { ...corsHeaders, 'Content-Type': 'application/json' },
     });
@@ -196,8 +200,8 @@ async function shouldSkipTask(supabase: any, task: WorkflowTask): Promise<boolea
       
     case 'high_priority_only':
       // Seulement pour les prospects haute priorité
-      return task.prospect.status !== 'qualified' && 
-             task.prospect.status !== 'interested';
+      return task.prospect_data.status !== 'qualified' && 
+             task.prospect_data.status !== 'interested';
              
     default:
       return false;
@@ -207,30 +211,21 @@ async function shouldSkipTask(supabase: any, task: WorkflowTask): Promise<boolea
 // Traiter une tâche email
 async function processEmailTask(supabase: any, task: WorkflowTask): Promise<boolean> {
   try {
-    if (!task.prospect.email) {
-      console.log(`⚠️ Pas d'email pour le prospect ${task.prospect.contact_name}`);
+    if (!task.prospect_data.email) {
+      console.log(`⚠️ Pas d'email pour le prospect ${task.prospect_data.contact_name}`);
       return false;
     }
 
     // Créer l'interaction dans l'historique
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.agent_id,
+      agent_id: task.template_data?.agent_id,
       interaction_type: 'email',
       subject: task.title,
       content: `Email automatique envoyé via workflow: ${task.description}`,
       outcome: 'sent_automatically',
       completed_at: new Date().toISOString()
     }]);
-
-    // Marquer la tâche comme terminée
-    await supabase
-      .from('prospect_tasks')
-      .update({ 
-        status: 'completed',
-        completed_at: new Date().toISOString() 
-      })
-      .eq('id', task.id);
 
     // Mettre à jour la date de dernier contact
     await supabase
@@ -248,17 +243,17 @@ async function processEmailTask(supabase: any, task: WorkflowTask): Promise<bool
 // Traiter une tâche WhatsApp
 async function processWhatsAppTask(supabase: any, task: WorkflowTask): Promise<boolean> {
   try {
-    const whatsappNumber = task.prospect.whatsapp_number || task.prospect.phone;
+    const whatsappNumber = task.prospect_data.whatsapp_number || task.prospect_data.phone;
     
     if (!whatsappNumber) {
-      console.log(`⚠️ Pas de numéro WhatsApp pour ${task.prospect.contact_name}`);
+      console.log(`⚠️ Pas de numéro WhatsApp pour ${task.prospect_data.contact_name}`);
       return false;
     }
 
     // Créer l'interaction
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.agent_id,
+      agent_id: task.template_data?.agent_id,
       interaction_type: 'message',
       subject: task.title,
       content: `WhatsApp automatique préparé: ${task.description}`,
@@ -266,14 +261,11 @@ async function processWhatsAppTask(supabase: any, task: WorkflowTask): Promise<b
       completed_at: new Date().toISOString()
     }]);
 
-    // Marquer comme terminé
+    // Mettre à jour la date de dernier contact
     await supabase
-      .from('prospect_tasks')
-      .update({ 
-        status: 'completed',
-        completed_at: new Date().toISOString() 
-      })
-      .eq('id', task.id);
+      .from('prospects')
+      .update({ last_contact_at: new Date().toISOString() })
+      .eq('id', task.prospect_id);
 
     return true;
   } catch (error) {
@@ -288,22 +280,13 @@ async function processCallTask(supabase: any, task: WorkflowTask): Promise<boole
     // Créer un rappel pour l'agent
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.agent_id,
+      agent_id: task.template_data?.agent_id,
       interaction_type: 'note',
       subject: `Rappel: ${task.title}`,
       content: `Tâche d'appel programmée automatiquement: ${task.description}`,
       outcome: 'reminder_created',
       completed_at: new Date().toISOString()
     }]);
-
-    // Marquer comme terminé
-    await supabase
-      .from('prospect_tasks')
-      .update({ 
-        status: 'completed',
-        completed_at: new Date().toISOString() 
-      })
-      .eq('id', task.id);
 
     return true;
   } catch (error) {
@@ -318,22 +301,13 @@ async function processReminderTask(supabase: any, task: WorkflowTask): Promise<b
     // Créer une notification pour l'agent
     await supabase.from('prospect_interactions').insert([{
       prospect_id: task.prospect_id,
-      agent_id: task.agent_id,
+      agent_id: task.template_data?.agent_id,
       interaction_type: 'note',
       subject: task.title,
       content: task.description,
       outcome: 'reminder_executed',
       completed_at: new Date().toISOString()
     }]);
-
-    // Marquer comme terminé
-    await supabase
-      .from('prospect_tasks')
-      .update({ 
-        status: 'completed',
-        completed_at: new Date().toISOString() 
-      })
-      .eq('id', task.id);
 
     return true;
   } catch (error) {

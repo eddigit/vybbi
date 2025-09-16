@@ -167,6 +167,40 @@ export default function TaskManager() {
     }
   };
 
+  const handleProcessTasksNow = async () => {
+    try {
+      setLoading(true);
+      
+      toast({
+        title: "Traitement en cours...",
+        description: "Les tâches sont en cours de traitement"
+      });
+
+      const { data, error } = await supabase.functions.invoke('process-workflow-tasks', {
+        body: { manual_trigger: true }
+      });
+
+      if (error) throw error;
+
+      toast({
+        title: "Tâches traitées",
+        description: `${data.processedTasks || 0} tâches traitées avec succès`
+      });
+
+      // Recharger les tâches après traitement
+      await loadTasks();
+    } catch (error) {
+      console.error('Erreur traitement tâches:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de traiter les tâches",
+        variant: "destructive"
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const getTaskIcon = (type: string) => {
     switch (type) {
       case 'email': return <Mail className="h-4 w-4" />;
@@ -299,6 +333,10 @@ export default function TaskManager() {
             Suivez et gérez toutes vos tâches de prospection automatiques
           </p>
         </div>
+        <Button onClick={handleProcessTasksNow} disabled={loading} className="gap-2">
+          <Play className="h-4 w-4" />
+          Traiter les tâches maintenant
+        </Button>
       </div>
 
       {/* Statistiques */}

@@ -262,10 +262,12 @@ export default function WhatsAppSender({ isOpen, onClose, selectedProspect, onMe
                 </p>
               </div>
 
+              {selectedTemplate && (
                 <div className="bg-muted/30 p-3 rounded-lg">
                   <p className="text-sm font-medium mb-1">Template sélectionné:</p>
                   <p className="text-sm text-muted-foreground">{selectedTemplate.name}</p>
                 </div>
+              )}
             </div>
           </TabsContent>
 
