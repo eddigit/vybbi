@@ -1836,12 +1836,16 @@ export type Database = {
       }
       notifications: {
         Row: {
+          action_url: string | null
+          category: string | null
           created_at: string | null
           data: Json | null
           email_sent: boolean | null
           email_sent_at: string | null
+          expires_at: string | null
           id: string
           message: string
+          priority: number | null
           read_at: string | null
           related_id: string | null
           title: string
@@ -1850,12 +1854,16 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          action_url?: string | null
+          category?: string | null
           created_at?: string | null
           data?: Json | null
           email_sent?: boolean | null
           email_sent_at?: string | null
+          expires_at?: string | null
           id?: string
           message: string
+          priority?: number | null
           read_at?: string | null
           related_id?: string | null
           title: string
@@ -1864,12 +1872,16 @@ export type Database = {
           user_id: string
         }
         Update: {
+          action_url?: string | null
+          category?: string | null
           created_at?: string | null
           data?: Json | null
           email_sent?: boolean | null
           email_sent_at?: string | null
+          expires_at?: string | null
           id?: string
           message?: string
+          priority?: number | null
           read_at?: string | null
           related_id?: string | null
           title?: string
@@ -3292,6 +3304,10 @@ export type Database = {
         Returns: number
       }
       cleanup_expired_task_locks: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      cleanup_old_notifications: {
         Args: Record<PropertyKey, never>
         Returns: number
       }
