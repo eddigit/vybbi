@@ -2334,7 +2334,12 @@ export type Database = {
           completed_at: string | null
           created_at: string | null
           description: string | null
+          execution_attempt: number | null
           id: string
+          last_error_message: string | null
+          locked_at: string | null
+          processing_by: string | null
+          processing_status: string | null
           prospect_id: string | null
           scheduled_at: string
           status: string | null
@@ -2349,7 +2354,12 @@ export type Database = {
           completed_at?: string | null
           created_at?: string | null
           description?: string | null
+          execution_attempt?: number | null
           id?: string
+          last_error_message?: string | null
+          locked_at?: string | null
+          processing_by?: string | null
+          processing_status?: string | null
           prospect_id?: string | null
           scheduled_at: string
           status?: string | null
@@ -2364,7 +2374,12 @@ export type Database = {
           completed_at?: string | null
           created_at?: string | null
           description?: string | null
+          execution_attempt?: number | null
           id?: string
+          last_error_message?: string | null
+          locked_at?: string | null
+          processing_by?: string | null
+          processing_status?: string | null
           prospect_id?: string | null
           scheduled_at?: string
           status?: string | null
@@ -3276,6 +3291,14 @@ export type Database = {
         Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
         Returns: number
       }
+      cleanup_expired_task_locks: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      complete_task_processing: {
+        Args: { error_message?: string; new_status: string; task_id: string }
+        Returns: boolean
+      }
       create_notification_with_email: {
         Args: {
           p_data?: Json
@@ -3423,6 +3446,19 @@ export type Database = {
           _user_id: string
         }
         Returns: boolean
+      }
+      lock_and_process_tasks: {
+        Args: { max_tasks?: number }
+        Returns: {
+          description: string
+          prospect_data: Json
+          prospect_id: string
+          scheduled_at: string
+          task_id: string
+          task_type: string
+          template_data: Json
+          title: string
+        }[]
       }
       resolve_profile: {
         Args: { identifier: string }
