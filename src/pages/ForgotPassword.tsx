@@ -97,7 +97,7 @@ export default function ForgotPassword() {
                   Renvoyer l'email
                 </Button>
                 <Button variant="ghost" className="w-full" asChild>
-                  <Link to="/auth">
+                  <Link to="/auth?tab=signin">
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     Retour à la connexion
                   </Link>

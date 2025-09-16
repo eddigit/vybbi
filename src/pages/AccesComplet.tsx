@@ -131,19 +131,19 @@ export default function AccesComplet() {
         <div className="text-center space-y-6">
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" className="text-lg px-8 py-6 rounded-xl">
-              <Link to="/auth">
+              <Link to="/auth?tab=signup">
                 Créer mon compte gratuit
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-6 rounded-xl">
-              <Link to="/auth">
+              <Link to="/auth?tab=signup">
                 Se connecter
               </Link>
             </Button>
           </div>
           
           <p className="text-sm text-muted-foreground">
-            Déjà membre ? <Link to="/auth" className="text-primary hover:underline font-medium">Connectez-vous ici</Link>
+            Déjà membre ? <Link to="/auth?tab=signin" className="text-primary hover:underline font-medium">Connectez-vous ici</Link>
           </p>
         </div>
 

@@ -148,8 +148,15 @@ export function useAuth() {
     }
   };
 
-  const signIn = async (email: string, password: string) => {
+  const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     try {
+      // Store email for future use if remember me is checked
+      if (rememberMe) {
+        localStorage.setItem('vybbi_remembered_email', email);
+      } else {
+        localStorage.removeItem('vybbi_remembered_email');
+      }
+      
       const { error } = await supabase.auth.signInWithPassword({
         email,
         password,

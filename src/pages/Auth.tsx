@@ -6,6 +6,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PasswordInput } from '@/components/ui/password-input';
 import { Loader2, Music, Users, MapPin, Briefcase, Star, GraduationCap, Coins, Camera, Building2 } from 'lucide-react';
@@ -27,11 +28,28 @@ export default function Auth() {
   const [displayName, setDisplayName] = useState('');
   const [profileType, setProfileType] = useState('');
   const [roleDetail, setRoleDetail] = useState('');
+  const [rememberMe, setRememberMe] = useState(false);
+
+  // Load remembered email and remember me preference
+  useEffect(() => {
+    const rememberedEmail = localStorage.getItem('vybbi_remembered_email');
+    if (rememberedEmail) {
+      setEmail(rememberedEmail);
+      setRememberMe(true);
+    }
+  }, []);
 
   // Reset roleDetail when profileType changes
   useEffect(() => {
     setRoleDetail('');
   }, [profileType]);
+
+  // Sync active tab with URL
+  useEffect(() => {
+    const newUrl = new URL(window.location.href);
+    newUrl.searchParams.set('tab', activeTab);
+    window.history.replaceState({}, '', newUrl.toString());
+  }, [activeTab]);
 
   if (loading) {
     return (
@@ -49,7 +67,7 @@ export default function Auth() {
     e.preventDefault();
     setIsLoading(true);
     try {
-      await signIn(email, password);
+      await signIn(email, password, rememberMe);
     } finally {
       setIsLoading(false);
     }
@@ -139,7 +157,17 @@ export default function Auth() {
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
                   </div>
-                  <div className="text-right">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center space-x-2">
+                      <Checkbox 
+                        id="remember-me" 
+                        checked={rememberMe}
+                        onCheckedChange={(checked) => setRememberMe(checked as boolean)}
+                      />
+                      <Label htmlFor="remember-me" className="text-sm text-muted-foreground cursor-pointer">
+                        Se souvenir de moi
+                      </Label>
+                    </div>
                     <Link 
                       to="/forgot-password" 
                       className="text-sm text-primary hover:text-primary/80 transition-colors"

@@ -127,10 +127,10 @@ export default function Landing() {
 
             <div className="flex items-center gap-4">
               <Button variant="ghost" asChild>
-                <Link to="/auth">Connexion</Link>
+                <Link to="/auth?tab=signin">Connexion</Link>
               </Button>
               <Button asChild>
-                <Link to="/auth">Commencer</Link>
+                <Link to="/auth?tab=signup">Commencer</Link>
               </Button>
             </div>
           </div>
@@ -169,7 +169,7 @@ export default function Landing() {
 
             <div className="mb-6 sm:mb-8">
               <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 sm:px-4 py-2 hover:bg-primary/20 text-xs sm:text-sm" asChild>
-                <Link to="/auth">
+                <Link to="/auth?tab=signup">
                   🚀 Accès anticipé • Places limitées • Statut de fondateur
                 </Link>
               </Button>
@@ -177,7 +177,7 @@ export default function Landing() {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
               <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
-                <Link to="/auth">
+                <Link to="/auth?tab=signup">
                   Rejoindre les pionniers
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
@@ -511,7 +511,7 @@ export default function Landing() {
                   Testez toutes nos fonctionnalités premium sans engagement ni carte bancaire.
                 </p>
                 <Button variant="outline" size="sm" className="w-full" asChild>
-                  <Link to="/auth">Commencer l'essai</Link>
+                  <Link to="/auth?tab=signup">Commencer l'essai</Link>
                 </Button>
               </CardContent>
             </Card>
