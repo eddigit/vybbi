@@ -84,7 +84,8 @@ serve(async (req) => {
         .replace(/\s+/g, ' ')
         .trim();
       const keyword = (hintedSearch || tokens).slice(0, 64);
-      const wantsSearch = action === 'search' || (/(\b(recherch\w*|cherche\w*|trouv\w*|search|find|montre\w*|liste\w*|affiche\w*)\b)|(\bqui\s+(est|sont)\b)|(\bprofil\s+de\b))/ .test(rawMsg));
+      const searchRegex = /\b(recherch\w*|cherche\w*|trouv\w*|search|find|montre\w*|liste\w*|affiche\w*|profil\s+de|qui\s+(?:est|sont))\b/;
+      const wantsSearch = action === 'search' || searchRegex.test(rawMsg);
       const mentionsDJ = /\bdj\b/.test(rawMsg);
       resolvedAction = wantsSearch ? 'search' : resolvedAction;
       console.log(`Vybbi request: ${resolvedAction} - Context: ${context?.page || 'general'} - ${message}`);
