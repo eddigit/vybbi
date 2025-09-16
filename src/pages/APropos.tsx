@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Mail, Instagram, Music, Youtube, Linkedin, ExternalLink } from "lucide-react";
+import { Mail, Instagram, Music, Youtube, Linkedin, Facebook, ExternalLink } from "lucide-react";
 import { VYBBI_SOCIAL_LINKS } from "@/lib/socialLinks";
 const APropos = () => {
   const problems = [{
@@ -264,6 +264,11 @@ const APropos = () => {
                     <Button variant="ghost" size="sm" asChild>
                       <a href={VYBBI_SOCIAL_LINKS.instagram} target="_blank" rel="noopener noreferrer" aria-label="Instagram">
                         <Instagram className="h-4 w-4" />
+                      </a>
+                    </Button>
+                    <Button variant="ghost" size="sm" asChild>
+                      <a href={VYBBI_SOCIAL_LINKS.facebook} target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                        <Facebook className="h-4 w-4" />
                       </a>
                     </Button>
                     <Button variant="ghost" size="sm" asChild>

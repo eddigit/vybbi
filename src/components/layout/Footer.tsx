@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { VYBBI_SOCIAL_LINKS } from "@/lib/socialLinks";
-import { Instagram, Music, Headphones, Youtube, Linkedin } from "lucide-react";
+import { Instagram, Music, Headphones, Youtube, Linkedin, Facebook } from "lucide-react";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -8,6 +8,7 @@ export function Footer() {
 
   const socialIcons = {
     instagram: Instagram,
+    facebook: Facebook,
     spotify: Music,
     soundcloud: Headphones,
     youtube: Youtube,
