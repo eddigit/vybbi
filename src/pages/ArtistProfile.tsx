@@ -15,10 +15,11 @@ import { ImageGallerySlider } from '@/components/ImageGallerySlider';
 import RadioStatsDisplay from '@/components/RadioStatsDisplay';
 import { ProfileEvents } from '@/components/ProfileEvents';
 import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
+import { ResolvedProfile } from '@/hooks/useProfileResolver';
 import { MusicDiscography } from '@/components/MusicDiscography';
 
 interface ArtistProfileProps {
-  resolvedProfile?: Profile | null;
+  resolvedProfile?: Profile | ResolvedProfile | null;
 }
 
 export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
@@ -198,7 +199,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
 
   const canLeaveReview = profile && 
     ['agent', 'manager', 'lieu'].includes(profile.profile_type) &&
-    artist?.user_id !== user?.id;
+    artist && 'user_id' in artist && artist.user_id !== user?.id;
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
@@ -575,7 +576,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           {/* Contact & Actions */}
           <Card>
             <CardContent className="p-6">
-              {user && artist.user_id === user.id ? (
+              {user && 'user_id' in artist && artist.user_id === user.id ? (
                 <Button className="w-full mb-4" asChild>
                   <Link to={`/artists/${id}/edit`}>
                     <Edit className="h-4 w-4 mr-2" />
@@ -584,16 +585,16 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
                 </Button>
               ) : (
                 <>
-                  {user ? (
-                    <>
-                      {artist.accepts_direct_contact !== false ? (
-                        <Button className="w-full mb-4" asChild>
-                          <Link to={`/messages?contact=${artist.user_id}`}>
-                            <MessageCircle className="h-4 w-4 mr-2" />
-                            Contacter l'artiste
-                          </Link>
-                        </Button>
-                      ) : preferredContact ? (
+                      {user && 'user_id' in artist ? (
+                        <>
+                          {artist.accepts_direct_contact !== false ? (
+                            <Button className="w-full mb-4" asChild>
+                              <Link to={`/messages?contact=${artist.user_id}`}>
+                                <MessageCircle className="h-4 w-4 mr-2" />
+                                Contacter l'artiste
+                              </Link>
+                            </Button>
+                          ) : preferredContact ? (
                         <Button className="w-full mb-4" asChild>
                           <Link to={`/messages?partner=${preferredContact.id}`}>
                             <MessageCircle className="h-4 w-4 mr-2" />

@@ -27,10 +27,7 @@ export function useProfileResolverOptimized(slug?: string): UseProfileResolverRe
       if (!slug) return null;
       
       const { data, error: fetchError } = await supabase
-        .from('profiles')
-        .select('id, slug, profile_type, display_name, avatar_url, is_public')
-        .eq('slug', slug)
-        .eq('is_public', true)
+        .rpc('get_safe_profile_data', { profile_identifier: slug })
         .maybeSingle();
 
       if (fetchError) {

@@ -5,7 +5,6 @@ import { useProfileTracking } from './useProfileTracking';
 
 export interface ResolvedProfile {
   id: string;
-  user_id: string;
   display_name: string;
   profile_type: string;
   avatar_url: string | null;
@@ -15,8 +14,7 @@ export interface ResolvedProfile {
   genres: string[] | null;
   talents: string[] | null;
   languages: string[] | null;
-  email: string | null;
-  phone: string | null;
+  // Note: email and phone are now private and not accessible in public profiles
   website: string | null;
   instagram_url: string | null;
   spotify_url: string | null;
@@ -34,7 +32,6 @@ export interface ResolvedProfile {
   preferred_contact_profile_id: string | null;
   created_at: string;
   updated_at: string;
-  is_slug_match: boolean;
 }
 
 export const useProfileResolver = (identifier: string | undefined) => {
@@ -61,8 +58,9 @@ export const useProfileResolver = (identifier: string | undefined) => {
         setLoading(true);
         setError(null);
 
+        // Use the secure function for public profile data
         const { data, error } = await supabase
-          .rpc('resolve_profile', { identifier })
+          .rpc('get_safe_profile_data', { profile_identifier: identifier })
           .maybeSingle();
 
         if (error) throw error;
@@ -75,14 +73,8 @@ export const useProfileResolver = (identifier: string | undefined) => {
 
         setProfile(data);
 
-        // If we resolved by ID (UUID), redirect to the slug URL
-        if (!data.is_slug_match && data.slug) {
-          const pathSegments = window.location.pathname.split('/');
-          if (pathSegments.length >= 2) {
-            const basePath = pathSegments[1]; // 'artistes', 'lieux', etc.
-            navigate(`/${basePath}/${data.slug}`, { replace: true });
-          }
-        }
+        // Note: Redirect logic removed as we're using secure function that doesn't track slug match
+        // For security, we now use a dedicated safe function that doesn't expose internal routing info
       } catch (err) {
         console.error('Error resolving profile:', err);
         setError(err instanceof Error ? err.message : 'Unknown error');

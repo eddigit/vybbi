@@ -43,7 +43,8 @@ export default function ArtistProfileBySlug() {
   // Convert ResolvedProfile to Profile for ArtistProfile component
   const convertedProfile = {
     ...profile,
-    profile_type: profile.profile_type as 'artist'
+    profile_type: profile.profile_type as 'artist',
+    user_id: '', // Empty for public profiles - will disable user-id dependent features
   };
 
   // Render the artist profile directly with the resolved profile data

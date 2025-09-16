@@ -316,13 +316,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "admin_mock_profiles_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       affiliate_conversions: {
@@ -680,13 +673,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "artist_radio_subscriptions_artist_profile_id_fkey"
-            columns: ["artist_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       availability_slots: {
@@ -953,13 +939,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "community_members_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       community_messages: {
@@ -1022,13 +1001,6 @@ export type Database = {
             columns: ["sender_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "community_messages_sender_profile_id_fkey"
-            columns: ["sender_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1337,13 +1309,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "event_attendees_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       events: {
@@ -1451,13 +1416,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "influencer_links_influencer_profile_id_fkey"
-            columns: ["influencer_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       manager_artists: {
@@ -1555,13 +1513,6 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "media_assets_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1694,13 +1645,6 @@ export type Database = {
             columns: ["collaborator_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "music_collaborators_collaborator_profile_id_fkey"
-            columns: ["collaborator_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1858,13 +1802,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "music_releases_profile_id_fkey"
-            columns: ["profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       notification_preferences: {
@@ -1994,24 +1931,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "profile_views_viewed_profile_id_fkey"
-            columns: ["viewed_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "profile_views_viewer_profile_id_fkey"
             columns: ["viewer_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "profile_views_viewer_profile_id_fkey"
-            columns: ["viewer_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2143,13 +2066,6 @@ export type Database = {
             columns: ["preferred_contact_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_preferred_contact_profile"
-            columns: ["preferred_contact_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2970,13 +2886,6 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
-          {
-            foreignKeyName: "recurring_commissions_influencer_profile_id_fkey"
-            columns: ["influencer_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
         ]
       }
       reviews: {
@@ -3010,13 +2919,6 @@ export type Database = {
             columns: ["reviewed_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "reviews_reviewed_profile_id_fkey"
-            columns: ["reviewed_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3386,120 +3288,7 @@ export type Database = {
       }
     }
     Views: {
-      public_profiles: {
-        Row: {
-          accepts_direct_contact: boolean | null
-          avatar_url: string | null
-          bio: string | null
-          city: string | null
-          created_at: string | null
-          display_name: string | null
-          experience: string | null
-          genres: string[] | null
-          header_position_y: number | null
-          header_url: string | null
-          id: string | null
-          instagram_url: string | null
-          is_public: boolean | null
-          languages: string[] | null
-          location: string | null
-          onboarding_completed: boolean | null
-          preferred_contact_profile_id: string | null
-          profile_completion_percentage: number | null
-          profile_type: Database["public"]["Enums"]["profile_type"] | null
-          slug: string | null
-          soundcloud_url: string | null
-          spotify_url: string | null
-          talents: string[] | null
-          tiktok_url: string | null
-          updated_at: string | null
-          user_id: string | null
-          venue_capacity: number | null
-          venue_category: string | null
-          website: string | null
-          youtube_url: string | null
-        }
-        Insert: {
-          accepts_direct_contact?: boolean | null
-          avatar_url?: string | null
-          bio?: string | null
-          city?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          experience?: string | null
-          genres?: string[] | null
-          header_position_y?: number | null
-          header_url?: string | null
-          id?: string | null
-          instagram_url?: string | null
-          is_public?: boolean | null
-          languages?: string[] | null
-          location?: string | null
-          onboarding_completed?: boolean | null
-          preferred_contact_profile_id?: string | null
-          profile_completion_percentage?: number | null
-          profile_type?: Database["public"]["Enums"]["profile_type"] | null
-          slug?: string | null
-          soundcloud_url?: string | null
-          spotify_url?: string | null
-          talents?: string[] | null
-          tiktok_url?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-          venue_capacity?: number | null
-          venue_category?: string | null
-          website?: string | null
-          youtube_url?: string | null
-        }
-        Update: {
-          accepts_direct_contact?: boolean | null
-          avatar_url?: string | null
-          bio?: string | null
-          city?: string | null
-          created_at?: string | null
-          display_name?: string | null
-          experience?: string | null
-          genres?: string[] | null
-          header_position_y?: number | null
-          header_url?: string | null
-          id?: string | null
-          instagram_url?: string | null
-          is_public?: boolean | null
-          languages?: string[] | null
-          location?: string | null
-          onboarding_completed?: boolean | null
-          preferred_contact_profile_id?: string | null
-          profile_completion_percentage?: number | null
-          profile_type?: Database["public"]["Enums"]["profile_type"] | null
-          slug?: string | null
-          soundcloud_url?: string | null
-          spotify_url?: string | null
-          talents?: string[] | null
-          tiktok_url?: string | null
-          updated_at?: string | null
-          user_id?: string | null
-          venue_capacity?: number | null
-          venue_category?: string | null
-          website?: string | null
-          youtube_url?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "fk_preferred_contact_profile"
-            columns: ["preferred_contact_profile_id"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "fk_preferred_contact_profile"
-            columns: ["preferred_contact_profile_id"]
-            isOneToOne: false
-            referencedRelation: "public_profiles"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
       assign_prospect_to_agent: {
@@ -3619,7 +3408,22 @@ export type Database = {
           views_this_week: number
         }[]
       }
-      get_public_profile_data: {
+      get_radio_playlist: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          artist_avatar: string
+          artist_name: string
+          artist_profile_id: string
+          file_name: string
+          file_url: string
+          media_asset_id: string
+          priority_boost: number
+          subscription_type: string
+          track_id: string
+          weight: number
+        }[]
+      }
+      get_safe_profile_data: {
         Args: { profile_identifier: string }
         Returns: {
           accepts_direct_contact: boolean
@@ -3649,21 +3453,6 @@ export type Database = {
           venue_category: string
           website: string
           youtube_url: string
-        }[]
-      }
-      get_radio_playlist: {
-        Args: Record<PropertyKey, never>
-        Returns: {
-          artist_avatar: string
-          artist_name: string
-          artist_profile_id: string
-          file_name: string
-          file_url: string
-          media_asset_id: string
-          priority_boost: number
-          subscription_type: string
-          track_id: string
-          weight: number
         }[]
       }
       get_top_artists: {
