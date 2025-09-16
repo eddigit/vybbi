@@ -4,6 +4,15 @@ import { supabase } from '@/integrations/supabase/client';
 // Session storage key for tracking affiliate visits
 const AFFILIATE_SESSION_KEY = 'vybbi_affiliate_session';
 
+// Type for the RPC response
+interface AffiliateTrackingResult {
+  success: boolean;
+  error?: string;
+  visit_id?: string;
+  link_id?: string;
+  clicks_count?: number;
+}
+
 export const useAffiliateTracking = () => {
   useEffect(() => {
     const trackAffiliateVisit = async () => {
@@ -12,66 +21,55 @@ export const useAffiliateTracking = () => {
         const urlParams = new URLSearchParams(window.location.search);
         const affiliateCode = urlParams.get('ref') || urlParams.get('affiliate');
         
-        if (!affiliateCode) return;
+        if (!affiliateCode) {
+          console.log('No affiliate code found in URL');
+          return;
+        }
+
+        console.log('Affiliate code detected:', affiliateCode);
 
         // Check if we already tracked this session
         const existingSession = sessionStorage.getItem(AFFILIATE_SESSION_KEY);
         if (existingSession) {
           const sessionData = JSON.parse(existingSession);
           if (sessionData.code === affiliateCode) {
+            console.log('Visit already tracked for this session');
             return; // Already tracked this session
           }
-        }
-
-        // Get or find the affiliate link
-        const { data: linkData, error: linkError } = await supabase
-          .from('influencer_links')
-          .select('id, clicks_count')
-          .eq('code', affiliateCode)
-          .eq('is_active', true)
-          .maybeSingle();
-
-        if (linkError || !linkData) {
-          console.warn('Invalid affiliate code:', affiliateCode);
-          return;
         }
 
         // Generate session ID
         const sessionId = crypto.randomUUID();
 
-        // Track the visit
-        const { error: visitError } = await supabase
-          .from('affiliate_visits')
-          .insert({
-            link_id: linkData.id,
-            session_id: sessionId,
-            visitor_ip: null, // Will be handled server-side if needed
-            user_agent: navigator.userAgent,
-            referrer: document.referrer || null,
-            page_url: window.location.href,
-          });
+        console.log('Tracking affiliate visit with session ID:', sessionId);
 
-        if (visitError) {
-          console.error('Error tracking affiliate visit:', visitError);
+        // Use the secure RPC function to track the visit
+        const { data: result, error } = await supabase.rpc('track_affiliate_visit', {
+          p_affiliate_code: affiliateCode,
+          p_session_id: sessionId,
+          p_user_agent: navigator.userAgent,
+          p_referrer: document.referrer || null,
+          p_page_url: window.location.href
+        });
+
+        if (error) {
+          console.error('Error calling track_affiliate_visit RPC:', error);
           return;
         }
 
-        // Update link clicks count
-        const { error: updateError } = await supabase
-          .from('influencer_links')
-          .update({ 
-            clicks_count: linkData.clicks_count ? linkData.clicks_count + 1 : 1 
-          })
-          .eq('id', linkData.id);
+        const trackingResult = result as unknown as AffiliateTrackingResult;
 
-        if (updateError) {
-          console.error('Error updating clicks count:', updateError);
+        if (!trackingResult?.success) {
+          console.warn('Affiliate tracking failed:', trackingResult?.error);
+          return;
         }
+
+        console.log('Affiliate visit tracked successfully:', trackingResult);
 
         // Store session data
         sessionStorage.setItem(AFFILIATE_SESSION_KEY, JSON.stringify({
           sessionId,
-          linkId: linkData.id,
+          linkId: trackingResult.link_id,
           code: affiliateCode,
           timestamp: new Date().toISOString()
         }));
