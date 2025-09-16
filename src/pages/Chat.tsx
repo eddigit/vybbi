@@ -1,15 +1,15 @@
 import React from 'react';
 import { Helmet } from 'react-helmet-async';
-import DualAIChat from '@/components/DualAIChat';
-import { MessageSquare, Zap, Shield, Cpu } from 'lucide-react';
+import VybbiChat from '@/components/DualAIChat';
+import { Bot, Database, Users, TrendingUp, MessageCircle, Search, Calendar } from 'lucide-react';
 
 const Chat = () => {
   return (
     <>
       <Helmet>
-        <title>Chat IA - Assistant Intelligent</title>
-        <meta name="description" content="Chattez avec notre assistant IA avancé. Réponses instantanées avec fallback automatique entre Google AI et Hugging Face." />
-        <meta name="keywords" content="chat IA, assistant intelligent, Google AI, Hugging Face, conversation automatique" />
+        <title>Vybbi - Assistant IA Musical Intelligent</title>
+        <meta name="description" content="Chattez avec Vybbi, l'assistant IA qui connaît toute la plateforme musicale. Trouvez des artistes, organisez des événements, découvrez des opportunités." />
+        <meta name="keywords" content="Vybbi, assistant IA musical, booking artistes, événements musicaux, plateforme musique" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -17,63 +17,84 @@ const Chat = () => {
           {/* Header */}
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
-              <div className="p-3 rounded-2xl bg-primary/10">
-                <MessageSquare className="h-8 w-8 text-primary" />
+              <div className="p-3 rounded-2xl bg-gradient-to-r from-primary/20 to-purple-500/20">
+                <Bot className="h-8 w-8 text-primary" />
               </div>
-              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-primary/60 bg-clip-text text-transparent">
-                Assistant IA
+              <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+                Vybbi
               </h1>
             </div>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Chattez avec notre assistant intelligent alimenté par les dernières technologies d'IA
+              L'assistant IA qui connaît toute la plateforme musicale pour vous accompagner
             </p>
           </div>
 
           {/* Features */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-8">
             <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
               <div className="p-2 rounded-lg bg-primary/10">
-                <Zap className="h-5 w-5 text-primary" />
+                <Database className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold">Réponses rapides</h3>
-                <p className="text-sm text-muted-foreground">IA avancée pour des réponses instantanées</p>
+                <h3 className="font-semibold">Connaissance complète</h3>
+                <p className="text-sm text-muted-foreground">Base de données musicale complète</p>
               </div>
             </div>
             
             <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
               <div className="p-2 rounded-lg bg-primary/10">
-                <Shield className="h-5 w-5 text-primary" />
+                <Search className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold">Système de secours</h3>
-                <p className="text-sm text-muted-foreground">Fallback automatique entre APIs</p>
+                <h3 className="font-semibold">Recherche intelligente</h3>
+                <p className="text-sm text-muted-foreground">Trouve profils et opportunités</p>
               </div>
             </div>
             
             <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
               <div className="p-2 rounded-lg bg-primary/10">
-                <Cpu className="h-5 w-5 text-primary" />
+                <TrendingUp className="h-5 w-5 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold">Multi-modèles</h3>
-                <p className="text-sm text-muted-foreground">Google AI + Hugging Face</p>
+                <h3 className="font-semibold">Matching intelligent</h3>
+                <p className="text-sm text-muted-foreground">Opportunités personnalisées</p>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-3 p-4 rounded-xl bg-card border">
+              <div className="p-2 rounded-lg bg-primary/10">
+                <Users className="h-5 w-5 text-primary" />
+              </div>
+              <div>
+                <h3 className="font-semibold">Accompagnement</h3>
+                <p className="text-sm text-muted-foreground">Conseils selon votre profil</p>
               </div>
             </div>
           </div>
 
           {/* Chat Interface */}
           <div className="max-w-4xl mx-auto">
-            <DualAIChat 
-              className="shadow-xl border-0 bg-card/80 backdrop-blur-sm" 
-              showProviderBadge={false}
-            />
+            <VybbiChat className="shadow-xl border-0 bg-card/80 backdrop-blur-sm" />
           </div>
 
           {/* Footer Info */}
           <div className="text-center mt-8 text-sm text-muted-foreground">
-            <p>Propulsé par Google AI (Gemini 1.5 Flash) avec fallback Hugging Face</p>
-            <p className="mt-1">Limite de 500 caractères par message • Conversations non persistantes</p>
+            <p>🧠 Vybbi apprend de chaque interaction pour mieux vous accompagner</p>
+            <p className="mt-1">Limite de 1000 caractères par message • Historique des conversations sauvegardé</p>
+            <div className="flex items-center justify-center gap-4 mt-2">
+              <span className="flex items-center gap-1">
+                <Users className="h-3 w-3" />
+                Profils
+              </span>
+              <span className="flex items-center gap-1">
+                <Calendar className="h-3 w-3" />
+                Événements
+              </span>
+              <span className="flex items-center gap-1">
+                <MessageCircle className="h-3 w-3" />
+                Annonces
+              </span>
+            </div>
           </div>
         </div>
       </div>
