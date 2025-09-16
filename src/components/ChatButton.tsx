@@ -8,11 +8,10 @@ export function ChatButton() {
   const location = useLocation();
   const { currentTrack } = useRadioPlayer();
   
-  // Don't show on landing/auth pages or if no radio is active
-  const isLanding = location.pathname === '/';
+  // Don't show on auth pages, show everywhere else when radio is active
   const isAuth = location.pathname.startsWith('/auth') || location.pathname === '/forgot-password' || location.pathname === '/reset-password';
   
-  if (isLanding || isAuth || !currentTrack) {
+  if (isAuth || !currentTrack) {
     return null;
   }
 
