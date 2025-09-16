@@ -9,6 +9,7 @@ import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { useLocation } from 'react-router-dom';
+import vybbiLogo from '@/assets/vybbi-logo.png';
 
 interface Message {
   id: string;
@@ -338,7 +339,7 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div className="p-2 rounded-lg bg-primary/20">
-              <Bot className="h-5 w-5 text-primary" />
+              <img src={vybbiLogo} alt="Vybbi IA" className="h-8 w-8 rounded-full" />
             </div>
             <div>
               <h3 className="font-bold text-lg bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
@@ -379,7 +380,9 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
         <div className="space-y-4">
           {messages.length === 0 && (
             <div className="text-center text-muted-foreground py-8">
-              <Bot className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+              <div className="w-16 h-16 mx-auto mb-4 rounded-full overflow-hidden bg-muted/20 flex items-center justify-center">
+                <img src={vybbiLogo} alt="Vybbi IA" className="w-full h-full rounded-full object-cover" />
+              </div>
               <p>Commencez une conversation avec Vybbi</p>
               <p className="text-sm mt-2">Tapez votre message ci-dessous (max 1000 caractères)</p>
               
@@ -414,8 +417,8 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
             >
               {message.role === 'assistant' && (
                 <div className="flex-shrink-0">
-                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                    <Bot className="h-4 w-4" />
+                  <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                    <img src={vybbiLogo} alt="Vybbi" className="w-full h-full rounded-full object-cover" />
                   </div>
                 </div>
               )}
@@ -456,8 +459,8 @@ const VybbiChat: React.FC<VybbiChatProps> = ({
           {isLoading && (
             <div className="flex justify-start">
               <div className="flex gap-3">
-                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-                  <Bot className="h-4 w-4" />
+                <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center overflow-hidden">
+                  <img src={vybbiLogo} alt="Vybbi" className="w-full h-full rounded-full object-cover" />
                 </div>
                 <div className="bg-muted px-4 py-2 rounded-2xl rounded-bl-md">
                   <div className="flex items-center gap-2">

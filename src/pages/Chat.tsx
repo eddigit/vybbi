@@ -2,6 +2,7 @@ import React from 'react';
 import { Helmet } from 'react-helmet-async';
 import VybbiChat from '@/components/DualAIChat';
 import { Bot, Database, Users, TrendingUp, MessageCircle, Search, Calendar } from 'lucide-react';
+import vybbiLogo from '@/assets/vybbi-logo.png';
 
 const Chat = () => {
   return (
@@ -18,7 +19,7 @@ const Chat = () => {
           <div className="text-center mb-8">
             <div className="flex items-center justify-center gap-3 mb-4">
               <div className="p-3 rounded-2xl bg-gradient-to-r from-primary/20 to-purple-500/20">
-                <Bot className="h-8 w-8 text-primary" />
+                <img src={vybbiLogo} alt="Vybbi IA" className="h-12 w-12 rounded-full" />
               </div>
               <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
                 Vybbi
