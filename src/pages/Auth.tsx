@@ -12,6 +12,8 @@ import { PasswordInput } from '@/components/ui/password-input';
 import { Loader2, Music, Users, MapPin, Briefcase, Star, GraduationCap, Coins, Camera, Building2 } from 'lucide-react';
 import { TALENTS } from '@/lib/talents';
 import { SiretField } from '@/components/SiretField';
+import { HelpTooltip, HELP_MESSAGES } from '@/components/HelpTooltips';
+import { LoadingOverlay } from '@/components/LoadingStates';
 
 export default function Auth() {
   const { user, loading, signUp, signIn } = useAuth();
@@ -78,7 +80,7 @@ export default function Auth() {
     setIsLoading(true);
     try {
       await signUp(email, password, displayName, profileType, roleDetail || undefined);
-      navigate('/inscription/confirmation');
+      // The user will be redirected automatically by useAuth after email confirmation
     } finally {
       setIsLoading(false);
     }

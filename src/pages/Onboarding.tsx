@@ -11,6 +11,8 @@ import { Step2ProfileSpecific } from '@/components/onboarding/Step2ProfileSpecif
 import { Step3Contact } from '@/components/onboarding/Step3Contact';
 import { Step4Final } from '@/components/onboarding/Step4Final';
 
+import { LoadingPage } from '@/components/LoadingStates';
+
 export default function Onboarding() {
   const navigate = useNavigate();
   const { user, profile, loading: authLoading } = useAuth();
@@ -105,16 +107,8 @@ export default function Onboarding() {
         description: "Bienvenue dans la communauté Vybbi !",
       });
 
-      // Navigate to appropriate dashboard based on profile type
-      if (profile.profile_type === 'artist') {
-        navigate(`/artists/${profile.id}`, { replace: true });
-      } else if (profile.profile_type === 'agent') {
-        navigate(`/agents/${profile.id}`, { replace: true });
-      } else if (profile.profile_type === 'manager') {
-        navigate(`/managers/${profile.id}`, { replace: true });
-      } else {
-        navigate('/dashboard', { replace: true });
-      }
+      // Navigate to dashboard for all profile types for consistency
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       console.error('Error completing onboarding:', error);
       toast({
@@ -168,9 +162,10 @@ export default function Onboarding() {
 
   if (authLoading || !profile) {
     return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-primary"></div>
-      </div>
+      <LoadingPage 
+        title="Préparation de votre profil..."
+        description="Nous configurons votre espace personnel"
+      />
     );
   }
 

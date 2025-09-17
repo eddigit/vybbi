@@ -6,6 +6,7 @@ import PartnerDashboard from "@/pages/PartnerDashboard";
 import VenueDashboard from "@/pages/VenueDashboard";
 import InfluenceurDashboard from "@/pages/InfluenceurDashboard";
 import { useState } from "react";
+import { Navigate } from "react-router-dom";
 import { Users, Target, Euro, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { TimeFilter } from "@/components/dashboard/TimeFilter";
@@ -14,6 +15,7 @@ import { CommissionDistribution } from "@/components/dashboard/CommissionDistrib
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { WelcomeModal } from "@/components/WelcomeModal";
 import { useWelcomeModal } from "@/hooks/useWelcomeModal";
+import { LoadingSpinner } from "@/components/LoadingStates";
 
 export default function Dashboard() {
   const { profile, loading, hasRole, user } = useAuth();
@@ -54,15 +56,14 @@ export default function Dashboard() {
   if (loading) {
     return (
       <div className="container mx-auto px-6 py-8">
-        <div className="animate-pulse"><AutoTranslate text="Chargement..." /></div>
+        <LoadingSpinner size="lg" text="Chargement de votre tableau de bord..." />
       </div>
     );
   }
 
   // Redirect to home if not authenticated
   if (!user) {
-    window.location.href = '/';
-    return null;
+    return <Navigate to="/" replace />;
   }
 
   // Check if user is admin first
