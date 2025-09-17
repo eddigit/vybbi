@@ -32,6 +32,9 @@ import { ProfileShareButton } from '@/components/ProfileShareButton';
 import { LazyLoadAnalytics } from '@/components/LazyLoadAnalytics';
 import { SEOHead } from '@/components/SEOHead';
 import { ProductionsSlider } from '@/components/ProductionsSlider';
+import { MusicPlayer } from '@/components/MusicPlayer';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import { useMusicReleases } from '@/hooks/useMusicReleases';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -54,6 +57,11 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   const [loading, setLoading] = useState(true);
   const [isSliderOpen, setIsSliderOpen] = useState(false);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  
+  // Music Player states
+  const [selectedTrack, setSelectedTrack] = useState<any | null>(null);
+  const [isPlayerOpen, setIsPlayerOpen] = useState(false);
+  const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
 
   useEffect(() => {
     if (resolvedProfile) {
@@ -174,6 +182,17 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   const canLeaveReview = profile && 
     ['agent', 'manager', 'lieu'].includes(profile.profile_type) &&
     artist && 'user_id' in artist && artist.user_id !== user?.id;
+
+  // Music Player functions
+  const { data: musicReleases = [] } = useMusicReleases(artist?.id || '', 'published');
+  const publishedReleases = musicReleases?.filter(r => r.status === 'published') || [];
+
+  const playTrack = (track: any, playlist: any[] = []) => {
+    setSelectedTrack(track);
+    const trackIndex = playlist.findIndex((t: any) => t.id === track.id);
+    setCurrentPlaylistIndex(trackIndex >= 0 ? trackIndex : 0);
+    setIsPlayerOpen(true);
+  };
 
   const handleImageClick = (index: number) => {
     setSelectedImageIndex(index);
@@ -357,10 +376,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           {/* Sets & Productions Slider */}
           <ProductionsSlider
             profileId={artist.id}
-            onPlayTrack={(track, playlist) => {
-              // Handle track play logic here if needed
-              console.log('Playing track:', track.title);
-            }}
+            onPlayTrack={(track, playlist) => playTrack(track, playlist)}
           />
 
           {/* Radio Statistics Card - Moved to lower priority */}
@@ -648,6 +664,47 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         isOpen={isSliderOpen}
         onClose={() => setIsSliderOpen(false)}
       />
+
+      {/* Music Player Dialog */}
+      <Dialog open={isPlayerOpen} onOpenChange={setIsPlayerOpen}>
+        <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Lecture en cours</DialogTitle>
+          </DialogHeader>
+          
+          {selectedTrack && (
+            <div className="space-y-6">
+              {/* Track Info */}
+              <div className="flex items-start gap-6">
+                <Avatar className="h-24 w-24 rounded-lg">
+                  <AvatarImage src={selectedTrack.cover_image_url} alt={selectedTrack.title} />
+                  <AvatarFallback className="rounded-lg">
+                    <Music className="h-8 w-8" />
+                  </AvatarFallback>
+                </Avatar>
+
+                <div className="flex-1 space-y-2">
+                  <h2 className="text-xl font-bold">{selectedTrack.title}</h2>
+                  <p className="text-lg text-muted-foreground">{selectedTrack.artist_name}</p>
+                  {selectedTrack.album_name && (
+                    <p className="text-muted-foreground">Album: {selectedTrack.album_name}</p>
+                  )}
+                </div>
+              </div>
+              
+              <MusicPlayer
+                track={selectedTrack as any}
+                playlist={publishedReleases as any}
+                currentIndex={currentPlaylistIndex}
+                onTrackChange={(index) => {
+                  setCurrentPlaylistIndex(index);
+                  setSelectedTrack(publishedReleases[index]);
+                }}
+              />
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
       </div>
     </div>
   );
