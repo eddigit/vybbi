@@ -88,6 +88,7 @@ import Conditions from './pages/Conditions';
 import CookiesPage from './pages/Cookies';
 import Chat from "./pages/Chat";
 import Contact from './pages/Contact';
+import SystemTest from './pages/SystemTest';
 import AdminProspecting from "./pages/AdminProspecting";
 
 // Configure React Query with optimizations
@@ -222,6 +223,7 @@ const App = () => (
                       <Route path="/conditions" element={<Conditions />} />
                       <Route path="/cookies" element={<CookiesPage />} />
                       <Route path="/contact" element={<Contact />} />
+                      <Route path="/system-test" element={<SystemTest />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                     </Layout>

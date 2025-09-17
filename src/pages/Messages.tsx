@@ -21,21 +21,14 @@ export default function Messages() {
   const { toast } = useToast();
   const isMobile = useIsMobile();
   
-  console.log('Messages component loaded, user:', user);
-  
   // State
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showConversationList, setShowConversationList] = useState(true);
   
-  // Test if hooks are working properly
-  console.log('Loading conversations...');
+  // Load conversations and messages
   const conversationsResult = useConversations();
-  console.log('Conversations result:', conversationsResult);
-  
-  console.log('Loading messages for conversation:', selectedConversationId);
   const messagesResult = useMessages(selectedConversationId);
-  console.log('Messages result:', messagesResult);
   
   const typingResult = useTypingPresence(selectedConversationId);
 
