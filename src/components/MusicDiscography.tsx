@@ -35,6 +35,7 @@ import { useToast } from '@/hooks/use-toast';
 interface MusicDiscographyProps {
   profileId: string;
   isOwner?: boolean;
+  compactMode?: boolean;
 }
 
 interface MusicReleaseWithAssets extends Omit<MusicRelease, 'featured_artists'> {
@@ -56,7 +57,8 @@ interface MusicReleaseWithAssets extends Omit<MusicRelease, 'featured_artists'> 
 
 export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   profileId,
-  isOwner = false
+  isOwner = false,
+  compactMode = false
 }) => {
   const [selectedTrack, setSelectedTrack] = useState<any | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
@@ -128,8 +130,9 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
     release: any; 
     showStatus?: boolean;
     showActions?: boolean;
+    compactMode?: boolean;
     onClick?: () => void;
-  }> = ({ release, showStatus = false, showActions = false, onClick }) => {
+  }> = ({ release, showStatus = false, showActions = false, compactMode = false, onClick }) => {
     const submissionStatus = hasAnySubmission(release.media_assets || []);
     const hasAudioFile = release.media_assets?.some((asset: any) => asset.media_type === 'audio');
 
@@ -141,42 +144,56 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
       )}
       onClick={onClick}
     >
-      <CardContent className="p-4">
-        <div className="flex items-start gap-4">
+      <CardContent className={cn("p-4", compactMode && "p-2")}>
+        <div className={cn("flex items-start gap-4", compactMode && "gap-2")}>
             <div className="relative">
-            <Avatar className="h-16 w-16 rounded-lg">
+            <Avatar className={cn("h-16 w-16 rounded-lg", compactMode && "h-10 w-10")}>
               <AvatarImage src={release.cover_image_url} alt={release.title} />
               <AvatarFallback className="rounded-lg">
-                <Music className="h-6 w-6" />
+                <Music className={cn("h-6 w-6", compactMode && "h-4 w-4")} />
               </AvatarFallback>
             </Avatar>
             
             {/* Video indicator */}
             {release.youtube_url && (
-              <div className="absolute top-1 right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1">
-                <Video className="h-3 w-3" />
+              <div className={cn(
+                "absolute top-1 right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1",
+                compactMode && "px-1 py-0.5"
+              )}>
+                <Video className={cn("h-3 w-3", compactMode && "h-2 w-2")} />
               </div>
             )}
             
-            <Button
-              size="sm"
-              className="absolute inset-0 m-auto h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-              onClick={(e) => {
-                e.stopPropagation();
-                playTrack(release, publishedReleases);
-              }}
-            >
-              <Play className="h-4 w-4" />
-            </Button>
+            {!compactMode && (
+              <Button
+                size="sm"
+                className="absolute inset-0 m-auto h-8 w-8 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  playTrack(release, publishedReleases);
+                }}
+              >
+                <Play className="h-4 w-4" />
+              </Button>
+            )}
           </div>
 
           <div className="flex-1 min-w-0">
             <div className="flex items-start justify-between">
               <div className="min-w-0 flex-1">
-                <h3 className="font-semibold text-lg truncate">{release.title}</h3>
-                <p className="text-muted-foreground truncate">{release.artist_name}</p>
+                <h3 className={cn(
+                  "font-semibold text-lg truncate", 
+                  compactMode && "text-sm"
+                )}>{release.title}</h3>
+                <p className={cn(
+                  "text-muted-foreground truncate", 
+                  compactMode && "text-xs"
+                )}>{release.artist_name}</p>
                 {release.album_name && (
-                  <p className="text-sm text-muted-foreground truncate">{release.album_name}</p>
+                  <p className={cn(
+                    "text-sm text-muted-foreground truncate", 
+                    compactMode && "text-xs"
+                  )}>{release.album_name}</p>
                 )}
               </div>
 
@@ -187,6 +204,7 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                     release.status === 'draft' ? 'secondary' : 
                     'outline'
                   }
+                  className={compactMode ? "text-xs px-1" : ""}
                 >
                   {release.status === 'published' ? 'Publié' : 
                    release.status === 'draft' ? 'Brouillon' : 
@@ -195,60 +213,69 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
               )}
             </div>
 
-            <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
-              {release.release_date && (
+            {!compactMode && (
+              <div className="flex items-center gap-3 mt-2 text-sm text-muted-foreground">
+                {release.release_date && (
+                  <div className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    {formatDistanceToNow(new Date(release.release_date), { 
+                      addSuffix: true, 
+                      locale: fr 
+                    })}
+                  </div>
+                )}
+                
+                {release.duration_seconds && (
+                  <div className="flex items-center gap-1">
+                    <Clock className="h-3 w-3" />
+                    {formatDuration(release.duration_seconds)}
+                  </div>
+                )}
+
                 <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  {formatDistanceToNow(new Date(release.release_date), { 
-                    addSuffix: true, 
-                    locale: fr 
-                  })}
+                  <Eye className="h-3 w-3" />
+                  {release.plays_count}
                 </div>
-              )}
-              
-              {release.duration_seconds && (
+
                 <div className="flex items-center gap-1">
-                  <Clock className="h-3 w-3" />
-                  {formatDuration(release.duration_seconds)}
+                  <Heart className="h-3 w-3" />
+                  {release.likes_count}
                 </div>
-              )}
-
-              <div className="flex items-center gap-1">
-                <Eye className="h-3 w-3" />
-                {release.plays_count}
               </div>
+            )}
 
-              <div className="flex items-center gap-1">
-                <Heart className="h-3 w-3" />
-                {release.likes_count}
-              </div>
-            </div>
-
-            <div className="flex items-center gap-2 mt-2 flex-wrap">
-              {release.genre && <Badge variant="secondary">{release.genre}</Badge>}
-              {release.explicit_content && <Badge variant="destructive">Explicit</Badge>}
+            <div className={cn(
+              "flex items-center gap-2 mt-2 flex-wrap",
+              compactMode && "gap-1 mt-1"
+            )}>
+              {release.genre && <Badge variant="secondary" className={compactMode ? "text-xs px-1" : ""}>{release.genre}</Badge>}
+              {release.explicit_content && <Badge variant="destructive" className={compactMode ? "text-xs px-1" : ""}>Explicit</Badge>}
               {release.youtube_url && (
-                <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
-                  <Video className="h-3 w-3 mr-1" />
+                <Badge variant="outline" className={cn(
+                  "bg-red-50 text-red-700 border-red-200",
+                  compactMode && "text-xs px-1"
+                )}>
+                  <Video className={cn("h-3 w-3 mr-1", compactMode && "h-2 w-2 mr-0.5")} />
                   Vidéo
                 </Badge>
               )}
               {release.is_original_composition && (
-                <Badge variant="outline">
-                  <Award className="h-3 w-3 mr-1" />
+                <Badge variant="outline" className={compactMode ? "text-xs px-1" : ""}>
+                  <Award className={cn("h-3 w-3 mr-1", compactMode && "h-2 w-2 mr-0.5")} />
                   Original
                 </Badge>
               )}
               {submissionStatus && (
                 <Badge 
                   variant={submissionStatus.status === 'approved' ? 'default' : 'secondary'}
-                  className={
+                  className={cn(
                     submissionStatus.status === 'approved' 
                       ? 'bg-green-100 text-green-800 border-green-300'
-                      : 'bg-orange-100 text-orange-800 border-orange-300'
-                  }
+                      : 'bg-orange-100 text-orange-800 border-orange-300',
+                    compactMode && "text-xs px-1"
+                  )}
                 >
-                  <Radio className="h-3 w-3 mr-1" />
+                  <Radio className={cn("h-3 w-3 mr-1", compactMode && "h-2 w-2 mr-0.5")} />
                   {submissionStatus.status === 'approved' ? 'En Radio' : 'En attente'}
                 </Badge>
               )}
@@ -256,42 +283,42 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
 
             {/* Action buttons for owners */}
             {showActions && (
-              <div className="flex items-center gap-1">
+              <div className={cn("flex items-center gap-1", compactMode && "mt-1")}>
                 <Button
-                  size="sm"
+                  size={compactMode ? "sm" : "sm"}
                   variant="outline"
                   onClick={(e) => {
                     e.stopPropagation();
                     handleEditRelease(release);
                   }}
-                  className="h-8 px-2"
+                  className={cn("h-8 px-2", compactMode && "h-6 px-1")}
                 >
-                  <Edit className="h-3 w-3" />
+                  <Edit className={cn("h-3 w-3", compactMode && "h-2 w-2")} />
                 </Button>
                 
                 {release.status === 'draft' && (
                   <Button
-                    size="sm"
+                    size={compactMode ? "sm" : "sm"}
                     variant="default"
                     onClick={(e) => {
                       e.stopPropagation();
                       handlePublishRelease(release.id);
                     }}
-                    className="h-8 px-2"
+                    className={cn("h-8 px-2", compactMode && "h-6 px-1")}
                   >
-                    <Upload className="h-3 w-3" />
+                    <Upload className={cn("h-3 w-3", compactMode && "h-2 w-2")} />
                   </Button>
                 )}
                 
                 <AlertDialog>
                   <AlertDialogTrigger asChild>
                     <Button
-                      size="sm"
+                      size={compactMode ? "sm" : "sm"}
                       variant="destructive"
                       onClick={(e) => e.stopPropagation()}
-                      className="h-8 px-2"
+                      className={cn("h-8 px-2", compactMode && "h-6 px-1")}
                     >
-                      <Trash2 className="h-3 w-3" />
+                      <Trash2 className={cn("h-3 w-3", compactMode && "h-2 w-2")} />
                     </Button>
                   </AlertDialogTrigger>
                   <AlertDialogContent>
@@ -555,31 +582,35 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   return (
     <>
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Music className="h-5 w-5" />
+        <CardHeader className={cn(compactMode && "pb-3")}>
+          <CardTitle className={cn(
+            "flex items-center gap-2",
+            compactMode ? "text-base" : "text-lg"
+          )}>
+            <Music className={compactMode ? "h-4 w-4" : "h-5 w-5"} />
             Discographie
-            <Badge variant="secondary">{releases.length}</Badge>
+            <Badge variant="secondary" className={compactMode ? "text-xs" : ""}>{releases.length}</Badge>
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className={cn(compactMode && "px-4 py-2")}>
           {isOwner ? (
             <Tabs defaultValue="published" className="w-full">
-              <TabsList>
-                <TabsTrigger value="published">
+              <TabsList className={cn(compactMode && "h-8")}>
+                <TabsTrigger value="published" className={cn(compactMode && "text-xs px-2")}>
                   Publié ({publishedReleases.length})
                 </TabsTrigger>
-                <TabsTrigger value="drafts">
+                <TabsTrigger value="drafts" className={cn(compactMode && "text-xs px-2")}>
                   Brouillons ({draftReleases.length})
                 </TabsTrigger>
               </TabsList>
               
-              <TabsContent value="published" className="space-y-4 mt-4">
+              <TabsContent value="published" className={cn("space-y-4 mt-4", compactMode && "space-y-2 mt-2")}>
                 {publishedReleases.map((release) => (
                   <ReleaseCard
                     key={release.id}
                     release={release}
                     showActions={isOwner}
+                    compactMode={compactMode}
                     onClick={() => {
                       setSelectedTrack(release);
                       setIsPlayerOpen(true);
@@ -588,13 +619,14 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                 ))}
               </TabsContent>
               
-              <TabsContent value="drafts" className="space-y-4 mt-4">
+              <TabsContent value="drafts" className={cn("space-y-4 mt-4", compactMode && "space-y-2 mt-2")}>
                 {draftReleases.map((release) => (
                   <ReleaseCard
                     key={release.id}
                     release={release}
                     showStatus
                     showActions={isOwner}
+                    compactMode={compactMode}
                     onClick={() => {
                       setSelectedTrack(release);
                       setIsPlayerOpen(true);
@@ -604,11 +636,12 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
               </TabsContent>
             </Tabs>
           ) : (
-            <div className="space-y-4">
+            <div className={cn("space-y-4", compactMode && "space-y-2")}>
               {publishedReleases.map((release) => (
                 <ReleaseCard
                   key={release.id}
                   release={release}
+                  compactMode={compactMode}
                   onClick={() => {
                     setSelectedTrack(release);
                     setIsPlayerOpen(true);

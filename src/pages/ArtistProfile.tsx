@@ -362,17 +362,6 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             className="mb-8"
           />
 
-          {/* Music Releases */}
-          <div className="space-y-6">
-            {user && profile && profile.id === artist.id && (
-              <MusicReleaseWidget profileId={artist.id} />
-            )}
-            <MusicDiscography 
-              profileId={artist.id} 
-              isOwner={user && profile && profile.id === artist.id} 
-            />
-          </div>
-
           {/* Bio & Genres */}
           <Card>
             <CardHeader>
@@ -628,6 +617,18 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
               )}
             </CardContent>
           </Card>
+
+          {/* Music Releases - Sidebar Version */}
+          <div className="space-y-4">
+            {user && profile && profile.id === artist.id && (
+              <MusicReleaseWidget profileId={artist.id} />
+            )}
+            <MusicDiscography 
+              profileId={artist.id} 
+              isOwner={user && profile && profile.id === artist.id}
+              compactMode={true}
+            />
+          </div>
 
           {/* Social Links */}
           {socialLinks.length > 0 && (
