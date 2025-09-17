@@ -5,8 +5,10 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { MusicPlayer } from '@/components/MusicPlayer';
 import { RadioSubmissionDialog } from '@/components/RadioSubmissionDialog';
+import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
 import { 
   Music, 
   Play, 
@@ -18,13 +20,17 @@ import {
   ExternalLink,
   Award,
   Video,
-  Radio
+  Radio,
+  Edit,
+  Trash2,
+  Upload
 } from 'lucide-react';
-import { useMusicReleases, MusicRelease } from '@/hooks/useMusicReleases';
+import { useMusicReleases, MusicRelease, useDeleteMusicRelease, useUpdateMusicRelease } from '@/hooks/useMusicReleases';
 import { useRadioSubmissions } from '@/hooks/useRadioSubmissions';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
+import { useToast } from '@/hooks/use-toast';
 
 interface MusicDiscographyProps {
   profileId: string;
@@ -57,6 +63,7 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
   const [radioSubmissionOpen, setRadioSubmissionOpen] = useState(false);
   const [selectedTrackForRadio, setSelectedTrackForRadio] = useState<any | null>(null);
+  const [editingRelease, setEditingRelease] = useState<any | null>(null);
 
   const { data: releases = [], isLoading, error } = useMusicReleases(
     profileId, 
@@ -64,6 +71,9 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   );
 
   const { hasAnySubmission, refreshSubmissions } = useRadioSubmissions(profileId);
+  const deleteReleaseMutation = useDeleteMusicRelease();
+  const updateReleaseMutation = useUpdateMusicRelease();
+  const { toast } = useToast();
 
   const publishedReleases = releases?.filter(r => r.status === 'published') || [];
   const draftReleases = releases?.filter(r => r.status === 'draft') || [];
@@ -84,6 +94,29 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
     refreshSubmissions();
   };
 
+  const handleEditRelease = (release: any) => {
+    setEditingRelease(release);
+  };
+
+  const handlePublishRelease = async (releaseId: string) => {
+    try {
+      await updateReleaseMutation.mutateAsync({
+        releaseId,
+        data: { status: 'published' }
+      });
+    } catch (error) {
+      console.error('Error publishing release:', error);
+    }
+  };
+
+  const handleDeleteRelease = async (releaseId: string) => {
+    try {
+      await deleteReleaseMutation.mutateAsync(releaseId);
+    } catch (error) {
+      console.error('Error deleting release:', error);
+    }
+  };
+
   const formatDuration = (seconds?: number) => {
     if (!seconds) return '--:--';
     const mins = Math.floor(seconds / 60);
@@ -94,8 +127,9 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   const ReleaseCard: React.FC<{ 
     release: any; 
     showStatus?: boolean;
+    showActions?: boolean;
     onClick?: () => void;
-  }> = ({ release, showStatus = false, onClick }) => {
+  }> = ({ release, showStatus = false, showActions = false, onClick }) => {
     const submissionStatus = hasAnySubmission(release.media_assets || []);
     const hasAudioFile = release.media_assets?.some((asset: any) => asset.media_type === 'audio');
 
@@ -219,6 +253,64 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                 </Badge>
               )}
             </div>
+
+            {/* Action buttons for owners */}
+            {showActions && (
+              <div className="flex items-center gap-1">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    handleEditRelease(release);
+                  }}
+                  className="h-8 px-2"
+                >
+                  <Edit className="h-3 w-3" />
+                </Button>
+                
+                {release.status === 'draft' && (
+                  <Button
+                    size="sm"
+                    variant="default"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePublishRelease(release.id);
+                    }}
+                    className="h-8 px-2"
+                  >
+                    <Upload className="h-3 w-3" />
+                  </Button>
+                )}
+                
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={(e) => e.stopPropagation()}
+                      className="h-8 px-2"
+                    >
+                      <Trash2 className="h-3 w-3" />
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Confirmer la suppression</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Êtes-vous sûr de vouloir supprimer "{release.title}" ? Cette action est irréversible.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Annuler</AlertDialogCancel>
+                      <AlertDialogAction onClick={() => handleDeleteRelease(release.id)}>
+                        Supprimer
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              </div>
+            )}
 
             {/* Radio submission button for owners */}
             {isOwner && release.status === 'published' && hasAudioFile && !submissionStatus && (
@@ -487,6 +579,7 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                   <ReleaseCard
                     key={release.id}
                     release={release}
+                    showActions={isOwner}
                     onClick={() => {
                       setSelectedTrack(release);
                       setIsPlayerOpen(true);
@@ -501,6 +594,7 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                     key={release.id}
                     release={release}
                     showStatus
+                    showActions={isOwner}
                     onClick={() => {
                       setSelectedTrack(release);
                       setIsPlayerOpen(true);
@@ -559,6 +653,23 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
           musicRelease={selectedTrackForRadio}
           onSubmissionSuccess={handleRadioSubmissionSuccess}
         />
+      )}
+      
+      {/* Edit Release Dialog */}
+      {editingRelease && (
+        <Dialog open={!!editingRelease} onOpenChange={() => setEditingRelease(null)}>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle>Modifier la sortie musicale</DialogTitle>
+            </DialogHeader>
+            <MusicReleaseWidget
+              profileId={profileId}
+              editRelease={editingRelease}
+              onSuccess={() => setEditingRelease(null)}
+              onCancel={() => setEditingRelease(null)}
+            />
+          </DialogContent>
+        </Dialog>
       )}
     </>
   );

@@ -51,13 +51,17 @@ interface Collaborator {
 interface MusicReleaseWidgetProps {
   profileId: string;
   onSuccess?: () => void;
+  editRelease?: any; // Release to edit
+  onCancel?: () => void;
 }
 
 export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
   profileId,
-  onSuccess
+  onSuccess,
+  editRelease,
+  onCancel
 }) => {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(!!editRelease);
   const [coverImage, setCoverImage] = useState<string>('');
   const [audioFile, setAudioFile] = useState<File | null>(null);
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
@@ -67,7 +71,28 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
 
   const form = useForm<MusicReleaseForm>({
     resolver: zodResolver(musicReleaseSchema),
-    defaultValues: {
+    defaultValues: editRelease ? {
+      title: editRelease.title || '',
+      artist_name: editRelease.artist_name || '',
+      album_name: editRelease.album_name || '',
+      genre: editRelease.genre || '',
+      label: editRelease.label || '',
+      copyright_owner: editRelease.copyright_owner || '',
+      isrc_code: editRelease.isrc_code || '',
+      distribution_service: editRelease.distribution_service || '',
+      spotify_url: editRelease.spotify_url || '',
+      apple_music_url: editRelease.apple_music_url || '',
+      soundcloud_url: editRelease.soundcloud_url || '',
+      youtube_url: editRelease.youtube_url || '',
+      royalty_percentage: editRelease.royalty_percentage || 100,
+      is_original_composition: editRelease.is_original_composition ?? true,
+      release_date: editRelease.release_date || '',
+      lyrics: editRelease.lyrics || '',
+      bpm: editRelease.bpm || undefined,
+      key_signature: editRelease.key_signature || '',
+      explicit_content: editRelease.explicit_content || false,
+      status: editRelease.status || 'draft'
+    } : {
       royalty_percentage: 100,
       is_original_composition: true,
       explicit_content: false,
@@ -151,6 +176,59 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
   const onSubmit = async (data: MusicReleaseForm) => {
     setIsLoading(true);
     try {
+      // If editing, update the existing release
+      if (editRelease) {
+        const { error } = await supabase
+          .from('music_releases')
+          .update({
+            title: data.title,
+            artist_name: data.artist_name,
+            album_name: data.album_name,
+            genre: data.genre,
+            label: data.label,
+            copyright_owner: data.copyright_owner,
+            distribution_service: data.distribution_service,
+            spotify_url: data.spotify_url,
+            apple_music_url: data.apple_music_url,
+            soundcloud_url: data.soundcloud_url,
+            youtube_url: data.youtube_url,
+            royalty_percentage: data.royalty_percentage,
+            is_original_composition: data.is_original_composition,
+            release_date: data.release_date ? data.release_date : null,
+            lyrics: data.lyrics,
+            bpm: data.bpm,
+            key_signature: data.key_signature,
+            explicit_content: data.explicit_content,
+            status: data.status,
+            cover_image_url: coverImage
+          })
+          .eq('id', editRelease.id);
+
+        if (error) throw error;
+
+        // Update collaborators - delete existing and insert new ones
+        await supabase.from('music_collaborators').delete().eq('music_release_id', editRelease.id);
+        
+        if (collaborators.length > 0) {
+          const collaboratorRecords = collaborators.map(collab => ({
+            music_release_id: editRelease.id,
+            collaborator_name: collab.name,
+            role: collab.role,
+            royalty_percentage: collab.royalty_percentage
+          }));
+          await supabase.from('music_collaborators').insert(collaboratorRecords);
+        }
+
+        toast({
+          title: "Succès",
+          description: "Votre sortie musicale a été mise à jour avec succès."
+        });
+
+        setIsOpen(false);
+        await queryClient.invalidateQueries({ queryKey: ['music-releases', profileId] });
+        onSuccess?.();
+        return;
+      }
       // Upload audio file if provided
       let audioUrl = '';
       if (audioFile) {
@@ -352,7 +430,8 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
     }
   };
 
-  if (!isOpen) {
+  // Don't show the add button when in edit mode
+  if (editRelease || !isOpen) {
     return (
       <Card className="border-dashed border-2 border-muted">
         <CardContent className="p-6">
@@ -380,9 +459,12 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
           <span className="flex items-center gap-2">
             <Music className="h-5 w-5" />
             <Video className="h-4 w-4 text-red-600" />
-            Nouvelle sortie musicale
+            {editRelease ? 'Modifier la sortie' : 'Nouvelle sortie musicale'}
           </span>
-          <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
+          <Button variant="ghost" size="sm" onClick={() => {
+            setIsOpen(false);
+            onCancel?.();
+          }}>
             <X className="h-4 w-4" />
           </Button>
         </CardTitle>
@@ -763,14 +845,33 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
             <Button
               type="button"
               variant="outline"
-              onClick={() => setIsOpen(false)}
+              onClick={() => {
+                setIsOpen(false);
+                onCancel?.();
+              }}
               disabled={isLoading}
             >
               Annuler
             </Button>
+            
             <Button type="submit" disabled={isLoading}>
-              {isLoading ? 'Sauvegarde...' : 'Ajouter la sortie'}
+              {isLoading ? 'Sauvegarde...' : editRelease ? 'Mettre à jour' : 'Sauvegarder en brouillon'}
             </Button>
+            
+            {/* Publish directly button for new releases */}
+            {!editRelease && (
+              <Button 
+                type="button"
+                onClick={() => {
+                  form.setValue('status', 'published');
+                  form.handleSubmit(onSubmit)();
+                }}
+                disabled={isLoading}
+                variant="default"
+              >
+                Publier directement
+              </Button>
+            )}
           </div>
         </form>
       </CardContent>
