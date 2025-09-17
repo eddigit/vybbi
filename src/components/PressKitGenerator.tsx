@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Download, FileText, Image, User, Music, Calendar } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { PressKitTemplate } from './PressKitTemplate';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 
 interface PressKitGeneratorProps {
   profileData: {
@@ -35,36 +38,95 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
     events: false,
     social: true
   });
+  const [showPreview, setShowPreview] = useState(false);
+  const templateRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
 
   const handleGeneratePresKit = async () => {
+    if (!templateRef.current) {
+      toast({
+        title: "Erreur",
+        description: "Template non disponible. Veuillez ouvrir l'aperçu d'abord.",
+        variant: "destructive"
+      });
+      return;
+    }
+
     setIsGenerating(true);
     
     try {
-      // Simulate press kit generation
-      await new Promise(resolve => setTimeout(resolve, 2000));
+      toast({
+        title: "Génération en cours...",
+        description: "Création du PDF professionnel, veuillez patienter.",
+      });
+
+      // Configuration pour une qualité optimale
+      const canvas = await html2canvas(templateRef.current, {
+        scale: 2,
+        useCORS: true,
+        allowTaint: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        width: templateRef.current.scrollWidth,
+        height: templateRef.current.scrollHeight
+      });
+
+      // Créer le PDF avec jsPDF
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: 'a4',
+        compress: true
+      });
+
+      // Calculer les dimensions pour ajuster à la page A4
+      const imgWidth = 210; // A4 width in mm
+      const pageHeight = 297; // A4 height in mm
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+      
+      let heightLeft = imgHeight;
+      let position = 0;
+
+      // Ajouter la première page
+      pdf.addImage(
+        canvas.toDataURL('image/jpeg', 0.95),
+        'JPEG',
+        0,
+        position,
+        imgWidth,
+        imgHeight
+      );
+      heightLeft -= pageHeight;
+
+      // Ajouter des pages supplémentaires si nécessaire
+      while (heightLeft >= 0) {
+        position = heightLeft - imgHeight;
+        pdf.addPage();
+        pdf.addImage(
+          canvas.toDataURL('image/jpeg', 0.95),
+          'JPEG',
+          0,
+          position,
+          imgWidth,
+          imgHeight
+        );
+        heightLeft -= pageHeight;
+      }
+
+      // Télécharger le PDF
+      const fileName = `${profileData.display_name.replace(/[^a-zA-Z0-9]/g, '_')}_PressKit.pdf`;
+      pdf.save(fileName);
       
       toast({
-        title: "Press Kit généré avec succès",
-        description: "Votre press kit professionnel est prêt à télécharger.",
+        title: "Press Kit généré avec succès !",
+        description: "Votre press kit professionnel a été téléchargé.",
       });
       
-      // Here would be the actual PDF generation logic
-      // For now, we simulate the download
-      const blob = new Blob(['Press Kit Content'], { type: 'application/pdf' });
-      const url = URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-      link.download = `${profileData.display_name}_PressKit.pdf`;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-      
     } catch (error) {
+      console.error('Erreur génération PDF:', error);
       toast({
         title: "Erreur",
-        description: "Impossible de générer le press kit.",
+        description: "Impossible de générer le press kit. Veuillez réessayer.",
         variant: "destructive"
       });
     } finally {
@@ -140,23 +202,66 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
             </CardContent>
           </Card>
 
-          <Button 
-            onClick={handleGeneratePresKit}
-            disabled={isGenerating || !Object.values(selectedSections).some(Boolean)}
-            className="w-full"
-          >
-            {isGenerating ? (
-              <>
-                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-background mr-2"></div>
-                Génération en cours...
-              </>
-            ) : (
-              <>
-                <Download className="w-4 h-4 mr-2" />
-                Générer & Télécharger
-              </>
-            )}
-          </Button>
+          <div className="flex gap-2">
+            <Button 
+              variant="outline"
+              onClick={() => setShowPreview(!showPreview)}
+              className="flex-1"
+            >
+              <FileText className="w-4 h-4 mr-2" />
+              {showPreview ? 'Masquer aperçu' : 'Aperçu'}
+            </Button>
+            
+            <Button 
+              onClick={handleGeneratePresKit}
+              disabled={isGenerating || !Object.values(selectedSections).some(Boolean)}
+              className="flex-1"
+            >
+              {isGenerating ? (
+                <>
+                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-background mr-2"></div>
+                  Génération...
+                </>
+              ) : (
+                <>
+                  <Download className="w-4 h-4 mr-2" />
+                  Télécharger PDF
+                </>
+              )}
+            </Button>
+          </div>
+
+          {showPreview && (
+            <div className="mt-6 border rounded-lg overflow-hidden bg-gray-50">
+              <div className="p-4 bg-muted text-center">
+                <p className="text-sm text-muted-foreground">
+                  Aperçu du Press Kit - Le PDF final aura une qualité optimale
+                </p>
+              </div>
+              <div className="max-h-96 overflow-y-auto">
+                <div className="transform scale-50 origin-top">
+                  <PressKitTemplate
+                    ref={templateRef}
+                    profileData={profileData}
+                    mediaAssets={mediaAssets}
+                    reviews={reviews}
+                    events={events}
+                  />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Template caché pour la génération PDF */}
+          <div className="sr-only">
+            <PressKitTemplate
+              ref={templateRef}
+              profileData={profileData}
+              mediaAssets={mediaAssets}
+              reviews={reviews}
+              events={events}
+            />
+          </div>
         </div>
       </DialogContent>
     </Dialog>
