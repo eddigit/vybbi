@@ -3533,11 +3533,25 @@ export type Database = {
         }
         Relationships: []
       }
+      security_summary: {
+        Row: {
+          access_count: number | null
+          access_date: string | null
+          action: string | null
+          table_name: string | null
+          unique_users: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       assign_prospect_to_agent: {
         Args: { prospect_id: string }
         Returns: string
+      }
+      audit_sensitive_access: {
+        Args: { action: string; record_id?: string; table_name: string }
+        Returns: undefined
       }
       calculate_monthly_recurring_commissions: {
         Args: Record<PropertyKey, never>
