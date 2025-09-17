@@ -1,11 +1,14 @@
 import { useState, useEffect } from "react";
-import { Calendar, Music, Users, Eye, TrendingUp, TrendingDown, MessageSquare, Edit } from "lucide-react";
+import { Calendar, Music, Users, Eye, TrendingUp, TrendingDown, MessageSquare, Edit, EyeOff } from "lucide-react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label"; 
 import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { ArtistRepresentationRequests } from "@/components/ArtistRepresentationRequests";
 import { ProfileVisitors } from "@/components/ProfileVisitors";
 import { ProfileViewStatsCard } from "@/components/ProfileViewStatsCard";
@@ -14,6 +17,7 @@ import { useWelcomeModal } from '@/hooks/useWelcomeModal';
 
 export default function ArtistDashboard() {
   const { profile } = useAuth();
+  const { toast } = useToast();
   const { isWelcomeModalOpen, closeWelcomeModal, handleNavigate } = useWelcomeModal();
   const [stats, setStats] = useState({
     totalApplications: 0,
@@ -21,6 +25,7 @@ export default function ArtistDashboard() {
     acceptedApplications: 0,
     profileViews: 0
   });
+  const [isUpdatingVisibility, setIsUpdatingVisibility] = useState(false);
 
   useEffect(() => {
     if (profile) {
@@ -52,6 +57,39 @@ export default function ArtistDashboard() {
       }
     } catch (error) {
       console.error('Error fetching artist stats:', error);
+    }
+  };
+
+  const handleVisibilityToggle = async (isPublic: boolean) => {
+    if (!profile) return;
+    
+    setIsUpdatingVisibility(true);
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_public: isPublic })
+        .eq('id', profile.id);
+
+      if (error) throw error;
+
+      toast({
+        title: isPublic ? "Profil rendu public" : "Profil masqué",
+        description: isPublic 
+          ? "Votre profil est maintenant visible sur la plateforme" 
+          : "Votre profil est maintenant masqué du public"
+      });
+
+      // Force a profile refresh to update the local state
+      window.location.reload();
+    } catch (error) {
+      console.error('Error updating visibility:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de modifier la visibilité du profil",
+        variant: "destructive"
+      });
+    } finally {
+      setIsUpdatingVisibility(false);
     }
   };
 
@@ -149,6 +187,45 @@ export default function ArtistDashboard() {
               <ProfileViewStatsCard profileId={profile.id} />
             )}
           </div>
+
+          {/* Visibility Control */}
+          <Card>
+            <CardHeader>
+              <CardTitle>Visibilité du profil</CardTitle>
+              <CardDescription>
+                Contrôlez si votre profil est visible publiquement sur la plateforme
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2">
+                    {profile?.is_public ? (
+                      <Eye className="h-5 w-5 text-green-600" />
+                    ) : (
+                      <EyeOff className="h-5 w-5 text-gray-500" />
+                    )}
+                    <div>
+                      <Label className="text-base font-medium">
+                        {profile?.is_public ? "Profil public" : "Profil masqué"}
+                      </Label>
+                      <p className="text-sm text-muted-foreground">
+                        {profile?.is_public 
+                          ? "Votre profil est visible sur la plateforme et dans les recherches"
+                          : "Votre profil est masqué du public, seuls vous et les admins peuvent le voir"
+                        }
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <Switch
+                  checked={profile?.is_public || false}
+                  onCheckedChange={handleVisibilityToggle}
+                  disabled={isUpdatingVisibility}
+                />
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Quick Actions */}
           <Card>
