@@ -19,6 +19,10 @@ import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
 import { ResolvedProfile } from '@/hooks/useProfileResolver';
 import { MusicDiscography } from '@/components/MusicDiscography';
 import ArtistEventManager from '@/components/ArtistEventManager';
+import { ProfileShareTools } from '@/components/ProfileShareTools';
+import { ProfileCTA } from '@/components/ProfileCTA';
+import { ProfileAnalytics } from '@/components/ProfileAnalytics';
+import { useProfileTracking } from '@/hooks/useProfileTracking';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -28,6 +32,10 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   const { id } = useParams<{ id: string }>();
   const { user, profile } = useAuth();
   const [artist, setArtist] = useState<Profile | null>(null);
+  
+  // Track profile view - use resolvedProfile ID or fallback to artist ID
+  const trackingProfileId = resolvedProfile?.id || artist?.id;
+  useProfileTracking(trackingProfileId, 'full_profile', window.location.pathname);
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewers, setReviewers] = useState<{ [key: string]: Profile }>({});
@@ -276,6 +284,15 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         }}
       >
         <div className="absolute inset-0 bg-black/20"></div>
+        
+        {/* Share Tools - Top Right */}
+        <div className="absolute top-6 right-6">
+          <ProfileShareTools
+            profileUrl={window.location.href}
+            artistName={artist.display_name}
+          />
+        </div>
+
         <div className="absolute bottom-6 left-6 flex items-end gap-6">
           <Avatar className="h-24 w-24 md:h-32 md:w-32 ring-4 ring-white/20">
             <AvatarImage src={artist.avatar_url || ''} />
@@ -595,61 +612,30 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         {/* Sidebar */}
         <div className="space-y-6">
           
-          {/* Contact & Actions */}
-          <Card>
-            <CardContent className="p-6">
-              {user && 'user_id' in artist && artist.user_id === user.id ? (
-                <Button className="w-full mb-4" asChild>
-                  <Link to={`/artists/${id}/edit`}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    Modifier mon profil
-                  </Link>
-                </Button>
-              ) : (
-                <>
-                      {user && 'user_id' in artist ? (
-                        <>
-                          {artist.accepts_direct_contact !== false ? (
-                            <Button className="w-full mb-4" asChild>
-                              <Link to={`/messages?contact=${artist.user_id}`}>
-                                <MessageCircle className="h-4 w-4 mr-2" />
-                                Contacter l'artiste
-                              </Link>
-                            </Button>
-                          ) : preferredContact ? (
-                        <Button className="w-full mb-4" asChild>
-                          <Link to={`/messages?partner=${preferredContact.id}`}>
-                            <MessageCircle className="h-4 w-4 mr-2" />
-                            Contacter {preferredContact.profile_type === 'agent' ? "l'agent" : "le manager"}
-                          </Link>
-                        </Button>
-                      ) : (
-                        <Button className="w-full mb-4" disabled>
-                          <MessageCircle className="h-4 w-4 mr-2" />
-                          Contact non disponible
-                        </Button>
-                      )}
-                    </>
-                  ) : (
-                    <Button className="w-full mb-4" asChild>
-                      <Link to="/auth?tab=signup">
-                        <MessageCircle className="h-4 w-4 mr-2" />
-                        Créer un compte pour contacter
-                      </Link>
-                    </Button>
-                  )}
-                </>
-              )}
-              {artist.website && (
-                <Button variant="outline" className="w-full" asChild>
-                  <a href={artist.website} target="_blank" rel="noopener noreferrer">
-                    <ExternalLink className="h-4 w-4 mr-2" />
-                    Visit Website
-                  </a>
-                </Button>
-              )}
-            </CardContent>
-          </Card>
+          {/* Professional CTA Card */}
+          <ProfileCTA 
+            artist={artist} 
+            preferredContact={preferredContact}
+          />
+
+          {/* Owner Edit Button - Separate from CTA */}
+          {user && 'user_id' in artist && artist.user_id === user.id && (
+            <>
+              <Card>
+                <CardContent className="p-4">
+                  <Button className="w-full" variant="outline" asChild>
+                    <Link to={`/artists/${id}/edit`}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Modifier mon profil
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+              
+              {/* Analytics for profile owner */}
+              <ProfileAnalytics profileId={artist.id} />
+            </>
+          )}
 
           {/* Music Releases - Sidebar Version */}
           <div className="space-y-4">
