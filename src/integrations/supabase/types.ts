@@ -1313,9 +1313,12 @@ export type Database = {
       }
       events: {
         Row: {
+          artist_profile_id: string | null
           budget_max: number | null
           budget_min: number | null
           created_at: string
+          created_by_artist: boolean | null
+          created_by_user_id: string | null
           description: string | null
           event_date: string
           event_time: string | null
@@ -1332,9 +1335,12 @@ export type Database = {
           venue_profile_id: string
         }
         Insert: {
+          artist_profile_id?: string | null
           budget_max?: number | null
           budget_min?: number | null
           created_at?: string
+          created_by_artist?: boolean | null
+          created_by_user_id?: string | null
           description?: string | null
           event_date: string
           event_time?: string | null
@@ -1351,9 +1357,12 @@ export type Database = {
           venue_profile_id: string
         }
         Update: {
+          artist_profile_id?: string | null
           budget_max?: number | null
           budget_min?: number | null
           created_at?: string
+          created_by_artist?: boolean | null
+          created_by_user_id?: string | null
           description?: string | null
           event_date?: string
           event_time?: string | null
@@ -1369,7 +1378,15 @@ export type Database = {
           updated_at?: string
           venue_profile_id?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "events_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       influencer_links: {
         Row: {

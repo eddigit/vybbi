@@ -18,6 +18,7 @@ interface Event {
   genres?: string[];
   flyer_url?: string;
   flyer_position_y?: number;
+  event_type?: 'booking' | 'own';
   venue_profile?: {
     id: string;
     display_name: string;
@@ -78,16 +79,43 @@ export function ProfileEvents({ profileId, profileType, className = "" }: Profil
 
         setEvents(events);
       } else {
-        // For artists, get all events where they have confirmed bookings
-        const { data: bookings } = await supabase
-          .from('bookings')
-          .select('event_id')
-          .eq('artist_profile_id', profileId)
-          .eq('status', 'confirmed');
+        // For artists, get both confirmed bookings AND their own events
+        const [bookingsResponse, ownEventsResponse] = await Promise.all([
+          // Get confirmed bookings
+          supabase
+            .from('bookings')
+            .select('event_id')
+            .eq('artist_profile_id', profileId)
+            .eq('status', 'confirmed'),
+          
+          // Get events created by the artist
+          supabase
+            .from('events')
+            .select(`
+              id,
+              title,
+              description,
+              event_date,
+              event_time,
+              location,
+              budget_min,
+              budget_max,
+              genres,
+              flyer_url,
+              flyer_position_y,
+              created_by_artist
+            `)
+            .eq('artist_profile_id', profileId)
+            .eq('created_by_artist', true)
+            .eq('status', 'published')
+        ]);
 
-        if (bookings && bookings.length > 0) {
-          const eventIds = bookings.map(b => b.event_id);
-          const { data: eventsData, error } = await supabase
+        const allEvents: Event[] = [];
+
+        // Add events from confirmed bookings
+        if (bookingsResponse.data && bookingsResponse.data.length > 0) {
+          const eventIds = bookingsResponse.data.map(b => b.event_id);
+          const { data: bookingEventsData } = await supabase
             .from('events')
             .select(`
               id,
@@ -103,37 +131,45 @@ export function ProfileEvents({ profileId, profileType, className = "" }: Profil
               flyer_position_y,
               venue_profile_id
             `)
-            .eq('status', 'published')
             .in('id', eventIds)
+            .eq('status', 'published')
             .order('event_date', { ascending: false });
 
-          if (error) throw error;
-
-          // Get venue profiles for all events
-          if (eventsData && eventsData.length > 0) {
-            const venueIds = [...new Set(eventsData.map(e => e.venue_profile_id))];
+          if (bookingEventsData) {
+            // Get venue profiles for booking events
+            const venueIds = [...new Set(bookingEventsData.map(e => e.venue_profile_id))];
             const { data: venueProfiles } = await supabase
               .from('profiles')
               .select('id, display_name, avatar_url, slug')
               .in('id', venueIds);
 
-            const venueProfileMap = new Map(
-              (venueProfiles || []).map(profile => [profile.id, profile])
-            );
+            const venueMap = venueProfiles?.reduce((acc, venue) => {
+              acc[venue.id] = venue;
+              return acc;
+            }, {} as Record<string, any>) || {};
 
-            const events: Event[] = eventsData.map(event => ({
+            const bookingEvents: Event[] = bookingEventsData.map(event => ({
               ...event,
-              venue_profile: venueProfileMap.get(event.venue_profile_id) || undefined
+              venue_profile: venueMap[event.venue_profile_id] || undefined,
+              event_type: 'booking' as const
             }));
 
-            setEvents(events);
-          } else {
-            setEvents([]);
+            allEvents.push(...bookingEvents);
           }
-        } else {
-          // No confirmed bookings, return empty array
-          setEvents([]);
         }
+
+        // Add events created by the artist
+        if (ownEventsResponse.data) {
+          const ownEvents: Event[] = ownEventsResponse.data.map(event => ({
+            ...event,
+            event_type: 'own' as const
+          }));
+          allEvents.push(...ownEvents);
+        }
+
+        // Sort all events by date
+        allEvents.sort((a, b) => new Date(b.event_date).getTime() - new Date(a.event_date).getTime());
+        setEvents(allEvents);
       }
     } catch (error) {
       console.error('Error fetching events:', error);

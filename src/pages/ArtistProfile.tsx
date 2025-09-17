@@ -1,10 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit, MessageCircle } from 'lucide-react';
+import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit, MessageCircle, Calendar } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile, MediaAsset, Review } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
@@ -17,6 +18,7 @@ import { ProfileEvents } from '@/components/ProfileEvents';
 import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
 import { ResolvedProfile } from '@/hooks/useProfileResolver';
 import { MusicDiscography } from '@/components/MusicDiscography';
+import ArtistEventManager from '@/components/ArtistEventManager';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -356,11 +358,42 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           </Card>
 
           {/* Events */}
-          <ProfileEvents 
-            profileId={id!}
-            profileType="artist"
-            className="mb-8"
-          />
+          <div className="mb-8">
+            {user && profile && profile.id === artist.id ? (
+              // Owner view with management tabs
+              <div className="space-y-6">
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-5 w-5" />
+                  <h3 className="text-lg font-semibold">Événements</h3>
+                </div>
+                <Tabs defaultValue="portfolio" className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="portfolio">Portfolio événements</TabsTrigger>
+                    <TabsTrigger value="bookings">Bookings confirmés</TabsTrigger>
+                  </TabsList>
+                  <TabsContent value="portfolio">
+                    <ArtistEventManager 
+                      artistProfileId={artist.id}
+                      isOwner={true}
+                    />
+                  </TabsContent>
+                  <TabsContent value="bookings">
+                    <ProfileEvents 
+                      profileId={id!}
+                      profileType="artist"
+                    />
+                  </TabsContent>
+                </Tabs>
+              </div>
+            ) : (
+              // Public view
+              <ProfileEvents 
+                profileId={id!}
+                profileType="artist"
+                className="mb-8"
+              />
+            )}
+          </div>
 
           {/* Bio & Genres */}
           <Card>
