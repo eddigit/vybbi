@@ -23,6 +23,9 @@ import { ProfileShareTools } from '@/components/ProfileShareTools';
 import { ProfileCTA } from '@/components/ProfileCTA';
 import { ProfileAnalytics } from '@/components/ProfileAnalytics';
 import { useProfileTracking } from '@/hooks/useProfileTracking';
+import { DirectContactForm } from '@/components/DirectContactForm';
+import { PricingIndicator } from '@/components/PricingIndicator';
+import { ArtistAvailabilityCalendar } from '@/components/ArtistAvailabilityCalendar';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -36,6 +39,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   // Track profile view - use resolvedProfile ID or fallback to artist ID
   const trackingProfileId = resolvedProfile?.id || artist?.id;
   useProfileTracking(trackingProfileId, 'full_profile', window.location.pathname);
+  
   const [media, setMedia] = useState<MediaAsset[]>([]);
   const [reviews, setReviews] = useState<Review[]>([]);
   const [reviewers, setReviewers] = useState<{ [key: string]: Profile }>({});
@@ -108,103 +112,57 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         const { data: existingReview } = await supabase
           .from('reviews')
           .select('id')
-          .eq('reviewer_id', user.id)
           .eq('reviewed_profile_id', profileId)
+          .eq('reviewer_id', user.id)
           .maybeSingle();
         
         setUserHasReview(!!existingReview);
       }
 
+      setLoading(false);
     } catch (error) {
       console.error('Error fetching related data:', error);
-    } finally {
       setLoading(false);
     }
   };
 
   const fetchArtistData = async () => {
+    if (!id) return;
+
     try {
-      // Fetch artist profile
-      const { data: artistData, error: artistError } = await supabase
+      const { data: artistData, error } = await supabase
         .from('profiles')
         .select('*')
         .eq('id', id)
         .eq('profile_type', 'artist')
         .maybeSingle();
 
-      if (artistError) throw artistError;
+      if (error) throw error;
+      
+      if (!artistData) {
+        setLoading(false);
+        return;
+      }
+
       setArtist(artistData);
-
-      // Fetch preferred contact if exists
-      if (artistData.preferred_contact_profile_id) {
-        const { data: contactData } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', artistData.preferred_contact_profile_id)
-          .maybeSingle();
-        
-        setPreferredContact(contactData);
-      }
-
-      // Fetch media assets
-      const { data: mediaData } = await supabase
-        .from('media_assets')
-        .select('*')
-        .eq('profile_id', id)
-        .order('created_at', { ascending: false });
-      
-      setMedia(mediaData || []);
-
-      // Fetch reviews
-      const { data: reviewsData } = await supabase
-        .from('reviews')
-        .select('*')
-        .eq('reviewed_profile_id', id)
-        .order('created_at', { ascending: false })
-        .limit(10);
-      
-      setReviews(reviewsData || []);
-
-      // Fetch reviewer profiles if there are reviews
-      if (reviewsData && reviewsData.length > 0) {
-        const reviewerIds = [...new Set(reviewsData.map(review => review.reviewer_id))];
-        const { data: reviewerProfiles } = await supabase
-          .from('profiles')
-          .select('*')
-          .in('user_id', reviewerIds);
-        
-        const reviewerMap: { [key: string]: Profile } = {};
-        reviewerProfiles?.forEach(reviewer => {
-          reviewerMap[reviewer.user_id] = reviewer;
-        });
-        setReviewers(reviewerMap);
-      }
-
-      // Check if current user has already reviewed this artist
-      if (user) {
-        const { data: existingReview } = await supabase
-          .from('reviews')
-          .select('id')
-          .eq('reviewer_id', user.id)
-          .eq('reviewed_profile_id', id)
-          .maybeSingle();
-        
-        setUserHasReview(!!existingReview);
-      }
-
+      fetchRelatedData(artistData.id);
     } catch (error) {
-      console.error('Error fetching artist data:', error);
-    } finally {
+      console.error('Error fetching artist:', error);
       setLoading(false);
     }
   };
 
-  const averageRating = reviews.length > 0 
-    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length 
+  const averageRating = reviews.length > 0
+    ? reviews.reduce((sum, review) => sum + review.rating, 0) / reviews.length
     : 0;
 
   const handleReviewSubmitted = () => {
-    fetchArtistData();
+    // Refresh the artist data to show the new review
+    if (id && !resolvedProfile) {
+      fetchArtistData();
+    } else if (artist) {
+      fetchRelatedData(artist.id);
+    }
   };
 
   const canLeaveReview = profile && 
@@ -267,9 +225,10 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
     { platform: 'tiktok', url: artist.tiktok_url, label: 'TikTok' },
   ].filter(link => link.url);
 
+  const isOwner = user && 'user_id' in artist && artist.user_id === user.id;
+
   return (
-    <>
-      <div className="container mx-auto p-6">
+    <div className="container mx-auto p-6">
       {/* Header Section with Cover Image */}
       <div 
         className="relative h-64 md:h-80 rounded-xl mb-8 overflow-hidden"
@@ -365,248 +324,184 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           <Card>
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
-                <Music className="h-5 w-5 text-primary" />
-                Statistiques Radio Vybbi
+                <Music2 className="h-5 w-5" />
+                Radio Vybbi
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <RadioStatsDisplay artistId={id!} />
+              <RadioStatsDisplay profileId={artist.id} />
             </CardContent>
           </Card>
 
-          {/* Events */}
-          <div className="mb-8">
-            {user && profile && profile.id === artist.id ? (
-              // Owner view with management tabs
-              <div className="space-y-6">
-                <div className="flex items-center gap-2">
-                  <Calendar className="h-5 w-5" />
-                  <h3 className="text-lg font-semibold">Événements</h3>
-                </div>
-                <Tabs defaultValue="portfolio" className="w-full">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="portfolio">Portfolio événements</TabsTrigger>
-                    <TabsTrigger value="bookings">Bookings confirmés</TabsTrigger>
-                  </TabsList>
-                  <TabsContent value="portfolio">
-                    <ArtistEventManager 
-                      artistProfileId={artist.id}
-                      isOwner={true}
-                    />
-                  </TabsContent>
-                  <TabsContent value="bookings">
-                    <ProfileEvents 
-                      profileId={id!}
-                      profileType="artist"
-                    />
-                  </TabsContent>
-                </Tabs>
-              </div>
-            ) : (
-              // Public view
-              <ProfileEvents 
-                profileId={id!}
-                profileType="artist"
-                className="mb-8"
-              />
-            )}
-          </div>
-
-          {/* Bio & Genres */}
-          <Card>
-            <CardHeader>
-              <CardTitle>About</CardTitle>
-            </CardHeader>
-            <CardContent>
-              {artist.bio && (
-                <p className="text-muted-foreground mb-4 leading-relaxed whitespace-pre-wrap">{artist.bio}</p>
-              )}
-              
-              {artist.genres && artist.genres.length > 0 && (
-                <div className="mb-4">
-                  <h4 className="font-semibold mb-2">Genres</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {artist.genres.map((genre) => (
-                      <Badge key={genre} variant="secondary">{genre}</Badge>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              {(artist as any).languages && (artist as any).languages.length > 0 && (
-                <div>
-                  <h4 className="font-semibold mb-2">Langues parlées</h4>
-                  <div className="flex flex-wrap gap-2">
-                    {(artist as any).languages.map((langCode: string) => {
-                      const lang = getLanguageByCode(langCode);
-                      return lang ? (
-                        <Badge key={langCode} variant="outline" className="gap-1">
-                          <span>{lang.flag}</span>
-                          {lang.name}
-                        </Badge>
-                      ) : null;
-                    })}
-                  </div>
-                </div>
-              )}
-            </CardContent>
-          </Card>
-
-          {/* Social Media Embeds */}
-          {artist.spotify_url && getSpotifyEmbedUrl(artist.spotify_url) && (
+          {/* Bio Section */}
+          {artist.bio && (
             <Card>
               <CardHeader>
-                <CardTitle>Featured Music</CardTitle>
+                <CardTitle>À propos</CardTitle>
               </CardHeader>
               <CardContent>
-                <iframe
-                  src={getSpotifyEmbedUrl(artist.spotify_url) || ''}
-                  width="100%"
-                  height="352"
-                  frameBorder="0"
-                  allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
-                  loading="lazy"
-                  className="rounded-lg"
-                ></iframe>
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+                  {artist.bio}
+                </p>
               </CardContent>
             </Card>
           )}
 
-          {/* Media Gallery */}
-          {media.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle>Portfolio</CardTitle>
-              </CardHeader>
-              <CardContent>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {media.slice(0, 6).map((item, index) => (
-                    <div key={item.id} className="aspect-square bg-muted rounded-lg overflow-hidden group cursor-pointer">
-                       {item.media_type === 'image' ? (
-                         <img 
-                           src={item.file_url} 
-                           alt={item.file_name || 'Portfolio item'}
-                           className="w-full h-full object-cover group-hover:scale-105 transition-transform"
-                           onClick={() => handleImageClick(imageMedia.findIndex(img => img.id === item.id))}
-                         />
-                       ) : (
-                         <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-primary/20 to-primary/5">
-                           <Music2 className="h-8 w-8 text-primary" />
-                           <span className="sr-only">{item.media_type} file</span>
-                         </div>
-                       )}
+          {/* Tabbed Content */}
+          <Tabs defaultValue="events" className="w-full">
+            <TabsList className="grid w-full grid-cols-4">
+              <TabsTrigger value="events">Événements</TabsTrigger>
+              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
+              <TabsTrigger value="reviews">Avis</TabsTrigger>
+              {isOwner && <TabsTrigger value="manage-events">Mes Événements</TabsTrigger>}
+            </TabsList>
+            
+            <TabsContent value="events" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Événements à venir</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <ProfileEvents profileId={artist.id} profileType="artist" />
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            <TabsContent value="portfolio" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <CardTitle>Portfolio</CardTitle>
+                </CardHeader>
+                <CardContent>
+                  {imageMedia.length > 0 ? (
+                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                      {imageMedia.map((item, index) => (
+                        <div 
+                          key={item.id}
+                          className="aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          onClick={() => handleImageClick(index)}
+                        >
+                          <img
+                            src={item.file_url}
+                            alt={item.description || item.file_name}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      ))}
                     </div>
-                  ))}
-                </div>
-                {media.length > 6 && (
-                  <p className="text-sm text-muted-foreground mt-4">
-                    +{media.length - 6} more items
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          )}
+                  ) : (
+                    <p className="text-center text-muted-foreground py-8">
+                      Aucune image dans le portfolio pour le moment.
+                    </p>
+                  )}
+                </CardContent>
+              </Card>
+            </TabsContent>
 
-          {/* Reviews */}
-          {(reviews.length > 0 || canLeaveReview) && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Star className="h-5 w-5" />
-                  Avis {reviews.length > 0 && `(${reviews.length})`}
-                </CardTitle>
-                {averageRating > 0 && (
-                  <div className="flex items-center gap-1">
-                    <Star className="h-4 w-4 fill-yellow-400 text-yellow-400" />
-                    <span className="font-medium">{averageRating.toFixed(1)}</span>
-                    <span className="text-muted-foreground text-sm">
-                      sur {reviews.length} avis
-                    </span>
+            <TabsContent value="reviews" className="mt-6">
+              <Card>
+                <CardHeader>
+                  <div className="flex items-center justify-between">
+                    <div>
+                      <CardTitle className="flex items-center gap-2">
+                        <Star className="h-5 w-5" />
+                        Avis et recommandations
+                      </CardTitle>
+                      {reviews.length > 0 && (
+                        <div className="flex items-center gap-2 mt-2">
+                          <div className="flex items-center">
+                            {[1, 2, 3, 4, 5].map((star) => (
+                              <Star
+                                key={star}
+                                className={`h-4 w-4 ${
+                                  star <= Math.round(averageRating)
+                                    ? 'fill-yellow-400 text-yellow-400'
+                                    : 'text-gray-300'
+                                }`}
+                              />
+                            ))}
+                          </div>
+                          <span className="text-sm text-muted-foreground">
+                            {averageRating.toFixed(1)} ({reviews.length} avis)
+                          </span>
+                        </div>
+                      )}
+                    </div>
                   </div>
-                )}
-              </CardHeader>
-              <CardContent className="space-y-6">
-                {/* Review Form for eligible users */}
-                {canLeaveReview && (
-                  <EnhancedReviewForm 
-                    artistId={id!} 
-                    onReviewSubmitted={handleReviewSubmitted}
-                    existingReview={userHasReview}
-                  />
-                )}
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-6">
+                    {canLeaveReview && !userHasReview && (
+                      <EnhancedReviewForm
+                        artistId={artist.id}
+                        onReviewSubmitted={handleReviewSubmitted}
+                      />
+                    )}
 
-                {/* Reviews Display */}
-                {reviews.length > 0 ? (
-                  <div className="space-y-4">
-                    {reviews.slice(0, 5).map((review) => {
-                      const reviewer = reviewers[review.reviewer_id];
-                      return (
-                        <div key={review.id} className="border-l-2 border-primary/20 pl-4 py-3">
-                          <div className="flex items-start gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={reviewer?.avatar_url || ''} />
-                              <AvatarFallback className="text-xs">
-                                {reviewer?.display_name 
-                                  ? reviewer.display_name.split(' ').map(n => n[0]).join('').slice(0, 2)
-                                  : '?'
-                                }
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1">
-                              <div className="flex items-center gap-2 mb-1">
-                                <span className="font-medium text-sm">
-                                  {reviewer?.display_name || 'Utilisateur'}
-                                </span>
-                                <Badge variant="outline" className="text-xs">
-                                  {reviewer?.profile_type === 'lieu' ? 'Lieu' : 
-                                   reviewer?.profile_type === 'agent' ? 'Agent' : 
-                                   reviewer?.profile_type === 'manager' ? 'Manager' : 
-                                   reviewer?.profile_type}
-                                </Badge>
-                              </div>
-                              <div className="flex items-center gap-2 mb-2">
-                                <div className="flex">
-                                  {[...Array(5)].map((_, i) => (
-                                    <Star
-                                      key={i}
-                                      className={`h-3 w-3 ${
-                                        i < review.rating
-                                          ? 'fill-yellow-400 text-yellow-400'
-                                          : 'text-muted-foreground'
-                                      }`}
-                                    />
-                                  ))}
+                    {reviews.length > 0 ? (
+                      reviews.map((review) => {
+                        const reviewer = reviewers[review.reviewer_id];
+                        return (
+                          <div key={review.id} className="border-b pb-4 last:border-b-0">
+                            <div className="flex items-start gap-3">
+                              <Avatar className="h-10 w-10">
+                                <AvatarImage src={reviewer?.avatar_url || ''} />
+                                <AvatarFallback>
+                                  {reviewer?.display_name?.charAt(0) || 'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1">
+                                <div className="flex items-center gap-2 mb-1">
+                                  <span className="font-medium">{reviewer?.display_name || 'Utilisateur'}</span>
+                                  <div className="flex items-center">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <Star
+                                        key={star}
+                                        className={`h-3 w-3 ${
+                                          star <= review.rating
+                                            ? 'fill-yellow-400 text-yellow-400'
+                                            : 'text-gray-300'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
                                 </div>
+                                <p className="text-sm text-muted-foreground">{review.comment}</p>
                                 <span className="text-xs text-muted-foreground">
-                                  {new Date(review.created_at).toLocaleDateString('fr-FR')}
+                                  {new Date(review.created_at).toLocaleDateString()}
                                 </span>
                               </div>
-                              {review.comment && (
-                                <p className="text-sm text-muted-foreground">{review.comment}</p>
-                              )}
                             </div>
                           </div>
-                        </div>
-                      );
-                    })}
-                    {reviews.length > 5 && (
-                      <p className="text-sm text-muted-foreground text-center">
-                        +{reviews.length - 5} autres avis
+                        );
+                      })
+                    ) : canLeaveReview ? (
+                      <p className="text-center text-muted-foreground py-4">
+                        Soyez le premier à laisser un avis pour cet artiste.
+                      </p>
+                    ) : (
+                      <p className="text-center text-muted-foreground py-4">
+                        Aucun avis pour le moment.
                       </p>
                     )}
                   </div>
-                ) : canLeaveReview ? (
-                  <p className="text-center text-muted-foreground py-4">
-                    Soyez le premier à laisser un avis pour cet artiste.
-                  </p>
-                ) : (
-                  <p className="text-center text-muted-foreground py-4">
-                    Aucun avis pour le moment.
-                  </p>
-                )}
-              </CardContent>
-            </Card>
-          )}
+                </CardContent>
+              </Card>
+            </TabsContent>
+
+            {isOwner && (
+              <TabsContent value="manage-events" className="mt-6">
+                <Card>
+                  <CardHeader>
+                    <CardTitle>Gérer mes événements</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <ArtistEventManager artistProfileId={artist.id} isOwner={true} />
+                  </CardContent>
+                </Card>
+              </TabsContent>
+            )}
+          </Tabs>
         </div>
 
         {/* Sidebar */}
@@ -618,8 +513,28 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             preferredContact={preferredContact}
           />
 
+          {/* Enhanced Contact Form */}
+          {!isOwner && (
+            <DirectContactForm
+              artistId={artist.id}
+              artistName={artist.display_name}
+              preferredContactId={preferredContact?.id}
+              preferredContactName={preferredContact?.display_name}
+              className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white border-none"
+            />
+          )}
+
+          {/* Pricing Information */}
+          <PricingIndicator artist={artist} />
+
+          {/* Availability Calendar */}
+          <ArtistAvailabilityCalendar
+            artistId={artist.id}
+            isOwner={isOwner}
+          />
+
           {/* Owner Edit Button - Separate from CTA */}
-          {user && 'user_id' in artist && artist.user_id === user.id && (
+          {isOwner && (
             <>
               <Card>
                 <CardContent className="p-4">
@@ -677,14 +592,13 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           )}
         </div>
       </div>
-    </div>
 
-    <ImageGallerySlider 
-      images={sliderImages}
-      selectedIndex={selectedImageIndex}
-      isOpen={isSliderOpen}
-      onClose={() => setIsSliderOpen(false)}
-    />
-    </>
+      <ImageGallerySlider 
+        images={sliderImages}
+        selectedIndex={selectedImageIndex}
+        isOpen={isSliderOpen}
+        onClose={() => setIsSliderOpen(false)}
+      />
+    </div>
   );
 }
