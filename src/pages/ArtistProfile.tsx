@@ -35,6 +35,7 @@ import { ProductionsSlider } from '@/components/ProductionsSlider';
 import { MusicPlayer } from '@/components/MusicPlayer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useMusicReleases } from '@/hooks/useMusicReleases';
+import ArtistStatsWidget from '@/components/ArtistStatsWidget';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -379,18 +380,8 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             onPlayTrack={(track, playlist) => playTrack(track, playlist)}
           />
 
-          {/* Radio Statistics Card - Moved to lower priority */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Music2 className="h-5 w-5" />
-                Radio Vybbi
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RadioStatsDisplay artistId={artist.id} />
-            </CardContent>
-          </Card>
+          {/* New Vybbi Statistics Widget */}
+          <ArtistStatsWidget artistId={artist.id} />
 
           {/* Tabbed Content */}
           <Tabs defaultValue="events" className="w-full">
