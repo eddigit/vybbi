@@ -75,7 +75,7 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Music className="h-5 w-5" />
-            Sets & Productions
+            Sets & Productions ({publishedReleases.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -92,7 +92,7 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
       <CardHeader>
         <CardTitle className="flex items-center gap-2">
           <Music className="h-5 w-5" />
-          Sets & Productions
+          Sets & Productions ({publishedReleases.length})
         </CardTitle>
       </CardHeader>
       <CardContent>

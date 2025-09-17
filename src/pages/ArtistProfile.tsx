@@ -282,7 +282,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             : 'center'
         }}
       >
-        <div className="absolute inset-0 bg-black/20"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/10"></div>
         
         {/* Share Tools - Top Right */}
         <div className="absolute top-6 right-6">
@@ -300,7 +300,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             </AvatarFallback>
           </Avatar>
           <div className="text-white">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2">{artist.display_name}</h1>
+            <h1 className="text-3xl md:text-4xl font-bold mb-2 drop-shadow-lg" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>{artist.display_name}</h1>
             <div className="flex items-center gap-4 text-white/80">
               {artist.location && (
                 <div className="flex items-center gap-1">
