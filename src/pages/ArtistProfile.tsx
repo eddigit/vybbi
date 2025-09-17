@@ -26,6 +26,9 @@ import { useProfileTracking } from '@/hooks/useProfileTracking';
 import { DirectContactForm } from '@/components/DirectContactForm';
 import { PricingIndicator } from '@/components/PricingIndicator';
 import { ArtistAvailabilityCalendar } from '@/components/ArtistAvailabilityCalendar';
+import { PressKitGenerator } from '@/components/PressKitGenerator';
+import { RiderTechnicalManager } from '@/components/RiderTechnicalManager';
+import { TestimonialsSection } from '@/components/TestimonialsSection';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -401,6 +404,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             <TabsContent value="pricing" className="mt-6">
               <div className="space-y-6">
                 <PricingIndicator artist={artist} />
+                <RiderTechnicalManager profileId={artist.id} />
                 <DirectContactForm
                   artistId={artist.id}
                   artistName={artist.display_name}
@@ -436,6 +440,19 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           <ProfileCTA 
             artist={artist} 
             preferredContact={preferredContact}
+          />
+
+          {/* Testimonials & Certifications */}
+          <TestimonialsSection 
+            profileId={artist.id} 
+            isOwner={isOwner}
+          />
+
+          {/* Press Kit Generator */}
+          <PressKitGenerator 
+            profileData={artist}
+            mediaAssets={media}
+            reviews={reviews}
           />
 
           {/* Reviews Section - Sidebar */}
