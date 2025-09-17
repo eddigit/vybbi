@@ -8,6 +8,10 @@ interface SEOHeadProps {
   image?: string;
   url?: string;
   type?: string;
+  canonicalUrl?: string;
+  ogImage?: string;
+  structuredData?: object;
+  noIndex?: boolean;
   profile?: {
     id: string;
     display_name: string;
@@ -28,6 +32,10 @@ export function SEOHead({
   image = "/logo.png",
   url = window.location.href,
   type = "website",
+  canonicalUrl,
+  ogImage,
+  structuredData,
+  noIndex = false,
   profile
 }: SEOHeadProps) {
   
@@ -59,6 +67,8 @@ export function SEOHead({
   };
   
   const seoData = profile ? getProfileSEO() : { title, description, keywords, image, type };
+  const finalCanonicalUrl = canonicalUrl || url;
+  const finalImageUrl = ogImage || seoData.image;
 
   return (
     <Helmet>
@@ -69,8 +79,8 @@ export function SEOHead({
       {/* Open Graph */}
       <meta property="og:title" content={seoData.title} />
       <meta property="og:description" content={seoData.description} />
-      <meta property="og:image" content={seoData.image} />
-      <meta property="og:url" content={url} />
+      <meta property="og:image" content={finalImageUrl} />
+      <meta property="og:url" content={finalCanonicalUrl} />
       <meta property="og:type" content={seoData.type} />
       <meta property="og:site_name" content="Vybbi" />
       
@@ -78,7 +88,7 @@ export function SEOHead({
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={seoData.title} />
       <meta name="twitter:description" content={seoData.description} />
-      <meta name="twitter:image" content={seoData.image} />
+      <meta name="twitter:image" content={finalImageUrl} />
       
       {/* Schema.org structured data for profiles */}
       {profile && (
@@ -89,7 +99,7 @@ export function SEOHead({
             "name": profile.display_name,
             "description": profile.bio,
             "image": profile.avatar_url,
-            "url": url,
+            "url": finalCanonicalUrl,
             ...(profile.location && {
               "address": {
                 "@type": "PostalAddress",
@@ -103,11 +113,18 @@ export function SEOHead({
           })}
         </script>
       )}
+
+      {/* Custom structured data */}
+      {structuredData && (
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
+      )}
       
       {/* Additional meta tags */}
       <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta name="robots" content="index, follow" />
-      <link rel="canonical" href={url} />
+      <meta name="robots" content={noIndex ? "noindex, nofollow" : "index, follow"} />
+      <link rel="canonical" href={finalCanonicalUrl} />
       
       {/* Profile-specific meta tags */}
       {profile && (

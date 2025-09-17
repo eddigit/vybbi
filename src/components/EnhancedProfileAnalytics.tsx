@@ -92,14 +92,15 @@ export function EnhancedProfileAnalytics({ profileId, className }: EnhancedProfi
       ];
 
       if (basicStats && typeof basicStats === 'object' && !Array.isArray(basicStats)) {
+        const stats = basicStats as any;
         setStats({
-          total_views: basicStats.total_views || 0,
-          views_this_week: basicStats.views_this_week || 0,
-          views_this_month: basicStats.views_this_month || 0,
-          unique_visitors: basicStats.unique_visitors || 0,
-          agent_views: basicStats.agent_views || 0,
-          manager_views: basicStats.manager_views || 0,
-          venue_views: basicStats.venue_views || 0,
+          total_views: stats.total_views || 0,
+          views_this_week: stats.views_this_week || 0,
+          views_this_month: stats.views_this_month || 0,
+          unique_visitors: stats.unique_visitors || 0,
+          agent_views: stats.agent_views || 0,
+          manager_views: stats.manager_views || 0,
+          venue_views: stats.venue_views || 0,
           bounce_rate: Math.random() * 30 + 20,
           avg_session_duration: Math.random() * 180 + 60,
           conversion_rate: Math.random() * 5 + 2

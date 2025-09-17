@@ -31,6 +31,7 @@ import { RiderTechnicalManager } from '@/components/RiderTechnicalManager';
 import { TestimonialsSection } from '@/components/TestimonialsSection';
 import { EnhancedProfileAnalytics } from '@/components/EnhancedProfileAnalytics';
 import { ProfileEmbedWidget } from '@/components/ProfileEmbedWidget';
+import { SEOHead } from '@/components/SEOHead';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -233,8 +234,22 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   const isOwner = user && 'user_id' in artist && artist.user_id === user.id;
 
   return (
-    <div className="container mx-auto p-6">
-      {/* Header Section with Cover Image */}
+    <div className="min-h-screen bg-background">
+      <SEOHead 
+        profile={{
+          id: artist.id,
+          display_name: artist.display_name,
+          profile_type: 'artist',
+          bio: artist.bio,
+          location: artist.location,
+          talents: (artist as any).talents,
+          languages: (artist as any).languages,
+          avatar_url: artist.avatar_url,
+          slug: (artist as any).slug
+        }}
+      />
+      <div className="container mx-auto p-6">
+        {/* Header Section with Cover Image */}
       <div 
         className="relative h-64 md:h-80 rounded-xl mb-8 overflow-hidden"
         style={{
@@ -531,9 +546,9 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
                                 {new Date(review.created_at).toLocaleDateString()}
                               </span>
                             </div>
-                          </div>
-                        </div>
-                      );
+      </div>
+    </div>
+  );
                     })}
                     {reviews.length > 3 && (
                       <p className="text-xs text-center text-muted-foreground">
@@ -586,6 +601,24 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             />
           </div>
 
+          {/* Enhanced Analytics - Owner only */}
+          {artist && artist.user_id === user?.id && (
+            <EnhancedProfileAnalytics 
+              profileId={artist.id} 
+              className="col-span-1"
+            />
+          )}
+
+          {/* Embed Widget - Owner only */}
+          {artist && artist.user_id === user?.id && (
+            <ProfileEmbedWidget 
+              profileId={artist.id}
+              profileType="artist"
+              profileSlug={(artist as any).slug || artist.id}
+              className="col-span-1"
+            />
+          )}
+
           {/* Social Links */}
           {socialLinks.length > 0 && (
             <Card>
@@ -620,6 +653,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         isOpen={isSliderOpen}
         onClose={() => setIsSliderOpen(false)}
       />
+      </div>
     </div>
   );
 }
