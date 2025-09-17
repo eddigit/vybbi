@@ -9,6 +9,7 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { MusicPlayer } from '@/components/MusicPlayer';
 import { RadioSubmissionDialog } from '@/components/RadioSubmissionDialog';
 import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
+import { AdaptiveReleaseImage } from '@/components/AdaptiveReleaseImage';
 import { 
   Music, 
   Play, 
@@ -146,13 +147,12 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
     >
       <CardContent className={cn("p-4", compactMode && "p-2")}>
         <div className={cn("flex items-start gap-4", compactMode && "gap-2")}>
-            <div className="relative">
-            <Avatar className={cn("h-16 w-16 rounded-lg", compactMode && "h-10 w-10")}>
-              <AvatarImage src={release.cover_image_url} alt={release.title} />
-              <AvatarFallback className="rounded-lg">
-                <Music className={cn("h-6 w-6", compactMode && "h-4 w-4")} />
-              </AvatarFallback>
-            </Avatar>
+            <div className="relative group">
+            <AdaptiveReleaseImage 
+              src={release.cover_image_url} 
+              alt={release.title} 
+              compactMode={compactMode}
+            />
             
             {/* Video indicator */}
             {release.youtube_url && (
