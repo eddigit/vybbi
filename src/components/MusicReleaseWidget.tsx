@@ -118,6 +118,34 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
     return publicUrl;
   };
 
+  // Generate a unique ISRC code
+  const generateISRCCode = async (): Promise<string> => {
+    const currentYear = new Date().getFullYear().toString().slice(-2);
+    let attempts = 0;
+    const maxAttempts = 100;
+
+    while (attempts < maxAttempts) {
+      const randomId = Math.random().toString(36).substring(2, 7).toUpperCase();
+      const isrcCode = `FR-VYB-${currentYear}-${randomId}`;
+      
+      // Check if this ISRC code already exists
+      const { data: existing } = await supabase
+        .from('music_releases')
+        .select('id')
+        .eq('isrc_code', isrcCode)
+        .maybeSingle();
+      
+      if (!existing) {
+        return isrcCode;
+      }
+      attempts++;
+    }
+    
+    // Fallback with timestamp
+    const timestamp = Date.now().toString().slice(-5);
+    return `FR-VYB-${currentYear}-${timestamp}`;
+  };
+
   const onSubmit = async (data: MusicReleaseForm) => {
     setIsLoading(true);
     try {
@@ -125,6 +153,28 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
       let audioUrl = '';
       if (audioFile) {
         audioUrl = await uploadAudioFile(audioFile);
+      }
+
+      // Generate or validate ISRC code
+      let isrcCode = data.isrc_code;
+      if (!isrcCode || isrcCode.trim() === '') {
+        isrcCode = await generateISRCCode();
+      } else {
+        // Check if provided ISRC code already exists
+        const { data: existing } = await supabase
+          .from('music_releases')
+          .select('id')
+          .eq('isrc_code', isrcCode)
+          .maybeSingle();
+        
+        if (existing) {
+          toast({
+            title: "Code ISRC déjà utilisé",
+            description: "Ce code ISRC existe déjà. Un code unique a été généré automatiquement.",
+            variant: "default"
+          });
+          isrcCode = await generateISRCCode();
+        }
       }
 
       // Create music release
@@ -137,7 +187,7 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
           genre: data.genre,
           label: data.label,
           copyright_owner: data.copyright_owner,
-          isrc_code: data.isrc_code,
+          isrc_code: isrcCode,
           distribution_service: data.distribution_service,
           spotify_url: data.spotify_url,
           apple_music_url: data.apple_music_url,
@@ -158,7 +208,91 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        // Handle specific constraint errors
+        if (error.code === '23505' && error.message.includes('isrc_code')) {
+          // Retry with a new generated ISRC code
+          const newIsrcCode = await generateISRCCode();
+          const { data: retryRelease, error: retryError } = await supabase
+            .from('music_releases')
+            .insert({
+              title: data.title,
+              artist_name: data.artist_name,
+              album_name: data.album_name,
+              genre: data.genre,
+              label: data.label,
+              copyright_owner: data.copyright_owner,
+              isrc_code: newIsrcCode,
+              distribution_service: data.distribution_service,
+              spotify_url: data.spotify_url,
+              apple_music_url: data.apple_music_url,
+              soundcloud_url: data.soundcloud_url,
+              youtube_url: data.youtube_url,
+              royalty_percentage: data.royalty_percentage,
+              is_original_composition: data.is_original_composition,
+              release_date: data.release_date ? data.release_date : null,
+              lyrics: data.lyrics,
+              bpm: data.bpm,
+              key_signature: data.key_signature,
+              explicit_content: data.explicit_content,
+              status: data.status,
+              profile_id: profileId,
+              cover_image_url: coverImage,
+              featured_artists: JSON.stringify(collaborators.filter(c => c.role === 'featuring'))
+            })
+            .select()
+            .single();
+          
+          if (retryError) throw retryError;
+          
+          toast({
+            title: "Code ISRC généré",
+            description: `Un code ISRC unique a été généré: ${newIsrcCode}`,
+            variant: "default"
+          });
+          
+          // Use the retry result
+          const finalRelease = retryRelease;
+          
+          // Continue with media assets and collaborators using finalRelease
+          if (audioUrl && finalRelease) {
+            await supabase.from('media_assets').insert({
+              profile_id: profileId,
+              music_release_id: finalRelease.id,
+              file_name: audioFile!.name,
+              file_url: audioUrl,
+              media_type: 'audio',
+              file_size: audioFile!.size
+            });
+          }
+
+          if (collaborators.length > 0 && finalRelease) {
+            const collaboratorRecords = collaborators.map(collab => ({
+              music_release_id: finalRelease.id,
+              collaborator_name: collab.name,
+              role: collab.role,
+              royalty_percentage: collab.royalty_percentage
+            }));
+
+            await supabase.from('music_collaborators').insert(collaboratorRecords);
+          }
+
+          toast({
+            title: "Succès",
+            description: "Votre sortie musicale a été ajoutée avec succès."
+          });
+
+          setIsOpen(false);
+          form.reset();
+          setCoverImage('');
+          setAudioFile(null);
+          setCollaborators([]);
+          onSuccess?.();
+          return;
+        }
+        
+        throw error;
+      }
 
       // Create media asset for audio file
       if (audioUrl && release) {
