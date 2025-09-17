@@ -11,9 +11,10 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import ImageUpload from '@/components/ImageUpload';
-import { Music, Plus, X, Upload } from 'lucide-react';
+import { Music, Plus, X, Upload, Video } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
+import { extractYouTubeVideoId, getYouTubeThumbnail } from '@/components/YouTubePlayer';
 
 const musicReleaseSchema = z.object({
   title: z.string().min(1, 'Titre requis'),
@@ -216,9 +217,12 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
             variant="ghost"
             className="w-full h-32 flex flex-col items-center justify-center gap-2 text-muted-foreground hover:text-foreground"
           >
-            <Music className="h-8 w-8" />
+            <div className="flex items-center gap-2">
+              <Music className="h-8 w-8" />
+              <Video className="h-6 w-6 text-red-600" />
+            </div>
             <span className="text-lg font-medium">Ajouter une sortie musicale</span>
-            <span className="text-sm">Partagez votre musique avec gestion des droits d'auteur</span>
+            <span className="text-sm">Partagez votre musique et vos vidéos avec gestion des droits d'auteur</span>
           </Button>
         </CardContent>
       </Card>
@@ -231,6 +235,7 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
         <CardTitle className="flex items-center justify-between">
           <span className="flex items-center gap-2">
             <Music className="h-5 w-5" />
+            <Video className="h-4 w-4 text-red-600" />
             Nouvelle sortie musicale
           </span>
           <Button variant="ghost" size="sm" onClick={() => setIsOpen(false)}>
@@ -240,38 +245,43 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
       </CardHeader>
       <CardContent className="space-y-6">
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {/* Cover Image Upload */}
-          <div>
-            <Label>Pochette de l'album</Label>
-            <ImageUpload
-              currentImageUrl={coverImage}
-              onImageChange={setCoverImage}
-              bucket="media"
-              folder={`music/${profileId}`}
-              className="aspect-square max-w-64"
-            />
-          </div>
-
-          {/* Audio File Upload */}
-          <div>
-            <Label htmlFor="audio-upload">Fichier audio</Label>
-            <div className="mt-2">
-              <input
-                id="audio-upload"
-                type="file"
-                accept="audio/*"
-                onChange={handleAudioUpload}
-                className="hidden"
+          {/* Media Upload Section */}
+          <div className="space-y-4">
+            <h3 className="text-lg font-semibold">Médias</h3>
+            
+            {/* Cover Image Upload */}
+            <div>
+              <Label>Pochette de l'album</Label>
+              <ImageUpload
+                currentImageUrl={coverImage}
+                onImageChange={setCoverImage}
+                bucket="media"
+                folder={`music/${profileId}`}
+                className="aspect-square max-w-64"
               />
-              <Button
-                type="button"
-                variant="outline"
-                onClick={() => document.getElementById('audio-upload')?.click()}
-                className="w-full"
-              >
-                <Upload className="h-4 w-4 mr-2" />
-                {audioFile ? audioFile.name : 'Sélectionner un fichier audio'}
-              </Button>
+            </div>
+
+            {/* Audio File Upload */}
+            <div>
+              <Label htmlFor="audio-upload">Fichier audio (optionnel si vidéo YouTube)</Label>
+              <div className="mt-2">
+                <input
+                  id="audio-upload"
+                  type="file"
+                  accept="audio/*"
+                  onChange={handleAudioUpload}
+                  className="hidden"
+                />
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => document.getElementById('audio-upload')?.click()}
+                  className="w-full"
+                >
+                  <Upload className="h-4 w-4 mr-2" />
+                  {audioFile ? audioFile.name : 'Sélectionner un fichier audio'}
+                </Button>
+              </div>
             </div>
           </div>
 
@@ -430,8 +440,38 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
                 <Input
                   id="youtube_url"
                   {...form.register('youtube_url')}
-                  placeholder="https://youtube.com/watch?v=..."
+                  placeholder="https://youtube.com/watch?v=... ou collez une URL YouTube"
+                  onPaste={async (e) => {
+                    const pastedText = e.clipboardData.getData('Text');
+                    if (pastedText.includes('youtube.com') || pastedText.includes('youtu.be')) {
+                      // Auto-extract video ID and fetch metadata
+                      const videoId = extractYouTubeVideoId(pastedText);
+                      if (videoId) {
+                        try {
+                          // Set the YouTube URL
+                          form.setValue('youtube_url', pastedText);
+                          
+                          // Auto-fill cover image from YouTube thumbnail if not already set
+                          if (!coverImage) {
+                            const thumbnailUrl = getYouTubeThumbnail(videoId, 'maxres');
+                            setCoverImage(thumbnailUrl);
+                            toast({
+                              title: "Métadonnées YouTube détectées",
+                              description: "L'image de couverture a été automatiquement ajoutée depuis YouTube."
+                            });
+                          }
+                        } catch (error) {
+                          console.error('Error extracting YouTube metadata:', error);
+                        }
+                      }
+                    }
+                  }}
                 />
+                {form.watch('youtube_url') && (
+                  <p className="text-xs text-muted-foreground mt-1">
+                    ✅ Vidéo YouTube détectée - lecture directe disponible
+                  </p>
+                )}
               </div>
             </div>
           </div>

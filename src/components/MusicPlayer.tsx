@@ -4,6 +4,8 @@ import { Slider } from '@/components/ui/slider';
 import { Card } from '@/components/ui/card';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { YouTubePlayer, extractYouTubeVideoId } from '@/components/YouTubePlayer';
 import { 
   Play, 
   Pause, 
@@ -14,7 +16,8 @@ import {
   ExternalLink,
   Heart,
   Share2,
-  Music
+  Music,
+  Video
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useTrackMusicPlay } from '@/hooks/useMusicReleases';
@@ -53,10 +56,23 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   const [isMuted, setIsMuted] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
   const [hasStartedPlaying, setHasStartedPlaying] = useState(false);
+  const [playerMode, setPlayerMode] = useState<'audio' | 'video'>('audio');
 
   const trackPlayMutation = useTrackMusicPlay();
 
   const audioUrl = track.media_assets?.[0]?.preview_url || track.media_assets?.[0]?.file_url;
+  const youtubeVideoId = track.youtube_url ? extractYouTubeVideoId(track.youtube_url) : null;
+  const hasVideo = !!youtubeVideoId;
+  const hasAudio = !!audioUrl;
+
+  // Auto-select best available mode
+  useEffect(() => {
+    if (hasVideo && !hasAudio) {
+      setPlayerMode('video');
+    } else if (hasAudio && !hasVideo) {
+      setPlayerMode('audio');
+    }
+  }, [hasVideo, hasAudio]);
 
   useEffect(() => {
     const audio = audioRef.current;
@@ -175,14 +191,21 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   if (compact) {
     return (
       <div className={cn("flex items-center gap-2", className)}>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={togglePlay}
-          disabled={!audioUrl}
-        >
-          {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
-        </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={togglePlay}
+            disabled={!audioUrl && !youtubeVideoId}
+          >
+            {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+          </Button>
+          
+          {hasVideo && (
+            <Badge variant="outline" className="text-xs">
+              <Video className="h-3 w-3 mr-1" />
+              Vidéo
+            </Badge>
+          )}
         
         <div className="flex-1 text-sm">
           <div className="font-medium truncate">{track.title}</div>
@@ -203,6 +226,47 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
   return (
     <Card className={cn("p-4", className)}>
       <div className="space-y-4">
+        {/* Mode Toggle */}
+        {hasVideo && hasAudio && (
+          <Tabs value={playerMode} onValueChange={(value) => setPlayerMode(value as 'audio' | 'video')}>
+            <TabsList className="grid w-full grid-cols-2">
+              <TabsTrigger value="audio">
+                <Music className="h-4 w-4 mr-2" />
+                Audio
+              </TabsTrigger>
+              <TabsTrigger value="video">
+                <Video className="h-4 w-4 mr-2" />
+                Vidéo
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
+        )}
+
+        {/* Video Player */}
+        {playerMode === 'video' && youtubeVideoId && (
+          <YouTubePlayer
+            videoId={youtubeVideoId}
+            onPlay={() => setIsPlaying(true)}
+            onPause={() => setIsPlaying(false)}
+            onEnded={() => {
+              setIsPlaying(false);
+              if (hasStartedPlaying) {
+                trackPlayMutation.mutate({
+                  releaseId: track.id,
+                  durationPlayed: Math.floor(currentTime),
+                  source: 'profile'
+                });
+              }
+              // Auto-play next track
+              if (playlist.length > 1 && currentIndex < playlist.length - 1) {
+                onTrackChange?.(currentIndex + 1);
+              }
+            }}
+            onTimeUpdate={(time) => setCurrentTime(time)}
+            className="mb-4"
+          />
+        )}
+
         {/* Track Info */}
         <div className="flex items-center gap-4">
           <Avatar className="h-16 w-16 rounded-lg">
@@ -242,65 +306,69 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
           </div>
         </div>
 
-        {/* Progress Bar */}
-        <div className="space-y-2">
-          <Slider
-            value={[currentTime]}
-            max={duration || 100}
-            step={1}
-            onValueChange={handleSeek}
-            className="w-full"
-            disabled={!audioUrl}
-          />
-          <div className="flex justify-between text-xs text-muted-foreground">
-            <span>{formatTime(currentTime)}</span>
-            <span>{formatTime(duration)}</span>
-          </div>
-        </div>
+        {/* Progress Bar and Controls - Only show for audio mode */}
+        {playerMode === 'audio' && (
+          <>
+            <div className="space-y-2">
+              <Slider
+                value={[currentTime]}
+                max={duration || 100}
+                step={1}
+                onValueChange={handleSeek}
+                className="w-full"
+                disabled={!audioUrl}
+              />
+              <div className="flex justify-between text-xs text-muted-foreground">
+                <span>{formatTime(currentTime)}</span>
+                <span>{formatTime(duration)}</span>
+              </div>
+            </div>
 
-        {/* Controls */}
-        <div className="flex items-center justify-center gap-4">
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={previousTrack}
-            disabled={playlist.length <= 1 || currentIndex === 0}
-          >
-            <SkipBack className="h-4 w-4" />
-          </Button>
+            {/* Controls */}
+            <div className="flex items-center justify-center gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={previousTrack}
+                disabled={playlist.length <= 1 || currentIndex === 0}
+              >
+                <SkipBack className="h-4 w-4" />
+              </Button>
 
-          <Button
-            onClick={togglePlay}
-            disabled={!audioUrl}
-            size="lg"
-            className="rounded-full"
-          >
-            {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
-          </Button>
+              <Button
+                onClick={togglePlay}
+                disabled={!audioUrl && !youtubeVideoId}
+                size="lg"
+                className="rounded-full"
+              >
+                {isPlaying ? <Pause className="h-5 w-5" /> : <Play className="h-5 w-5" />}
+              </Button>
 
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={nextTrack}
-            disabled={playlist.length <= 1 || currentIndex === playlist.length - 1}
-          >
-            <SkipForward className="h-4 w-4" />
-          </Button>
-        </div>
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={nextTrack}
+                disabled={playlist.length <= 1 || currentIndex === playlist.length - 1}
+              >
+                <SkipForward className="h-4 w-4" />
+              </Button>
+            </div>
 
-        {/* Volume Control */}
-        <div className="flex items-center gap-2">
-          <Button variant="ghost" size="sm" onClick={toggleMute}>
-            {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
-          </Button>
-          <Slider
-            value={[isMuted ? 0 : volume]}
-            max={1}
-            step={0.1}
-            onValueChange={handleVolumeChange}
-            className="flex-1 max-w-24"
-          />
-        </div>
+            {/* Volume Control */}
+            <div className="flex items-center gap-2">
+              <Button variant="ghost" size="sm" onClick={toggleMute}>
+                {isMuted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
+              </Button>
+              <Slider
+                value={[isMuted ? 0 : volume]}
+                max={1}
+                step={0.1}
+                onValueChange={handleVolumeChange}
+                className="flex-1 max-w-24"
+              />
+            </div>
+          </>
+        )}
 
         {/* External Links */}
         {(track.spotify_url || track.apple_music_url || track.soundcloud_url || track.youtube_url) && (
@@ -341,8 +409,8 @@ export const MusicPlayer: React.FC<MusicPlayerProps> = ({
         )}
       </div>
 
-      {/* Audio Element */}
-      {audioUrl && (
+      {/* Audio Element - Only for audio mode */}
+      {playerMode === 'audio' && audioUrl && (
         <audio
           ref={audioRef}
           src={audioUrl}

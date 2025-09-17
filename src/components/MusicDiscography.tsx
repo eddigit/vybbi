@@ -15,7 +15,8 @@ import {
   Heart,
   Users,
   ExternalLink,
-  Award
+  Award,
+  Video
 } from 'lucide-react';
 import { useMusicReleases, MusicRelease } from '@/hooks/useMusicReleases';
 import { formatDistanceToNow } from 'date-fns';
@@ -88,13 +89,20 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
     >
       <CardContent className="p-4">
         <div className="flex items-start gap-4">
-          <div className="relative">
+            <div className="relative">
             <Avatar className="h-16 w-16 rounded-lg">
               <AvatarImage src={release.cover_image_url} alt={release.title} />
               <AvatarFallback className="rounded-lg">
                 <Music className="h-6 w-6" />
               </AvatarFallback>
             </Avatar>
+            
+            {/* Video indicator */}
+            {release.youtube_url && (
+              <div className="absolute top-1 right-1 bg-red-600 text-white text-xs px-1.5 py-0.5 rounded-full flex items-center gap-1">
+                <Video className="h-3 w-3" />
+              </div>
+            )}
             
             <Button
               size="sm"
@@ -165,6 +173,12 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
             <div className="flex items-center gap-2 mt-2">
               {release.genre && <Badge variant="secondary">{release.genre}</Badge>}
               {release.explicit_content && <Badge variant="destructive">Explicit</Badge>}
+              {release.youtube_url && (
+                <Badge variant="outline" className="bg-red-50 text-red-700 border-red-200">
+                  <Video className="h-3 w-3 mr-1" />
+                  Vidéo
+                </Badge>
+              )}
               {release.is_original_composition && (
                 <Badge variant="outline">
                   <Award className="h-3 w-3 mr-1" />
@@ -262,6 +276,14 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                     <a href={release.soundcloud_url} target="_blank" rel="noopener noreferrer">
                       <ExternalLink className="h-4 w-4 mr-2" />
                       SoundCloud
+                    </a>
+                  </Button>
+                )}
+                {release.youtube_url && (
+                  <Button variant="outline" size="sm" asChild>
+                    <a href={release.youtube_url} target="_blank" rel="noopener noreferrer">
+                      <Video className="h-4 w-4 mr-2" />
+                      YouTube
                     </a>
                   </Button>
                 )}
