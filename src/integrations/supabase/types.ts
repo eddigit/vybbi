@@ -3775,6 +3775,10 @@ export type Database = {
         Args: { prospect_id: string }
         Returns: string
       }
+      audit_rls_access: {
+        Args: { operation: string; table_name: string }
+        Returns: undefined
+      }
       audit_sensitive_access: {
         Args: { action: string; record_id?: string; table_name: string }
         Returns: undefined
@@ -4132,6 +4136,14 @@ export type Database = {
       trigger_trial_offer_update: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      user_can_access_conversation: {
+        Args: { conv_id: string }
+        Returns: boolean
+      }
+      user_owns_profile: {
+        Args: { profile_id_param: string }
+        Returns: boolean
       }
     }
     Enums: {
