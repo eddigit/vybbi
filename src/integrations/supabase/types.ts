@@ -3803,6 +3803,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_security_logs: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       complete_task_processing: {
         Args: { error_message?: string; new_status: string; task_id: string }
         Returns: boolean
@@ -3829,6 +3833,10 @@ export type Database = {
       generate_affiliate_code: {
         Args: { base_name?: string }
         Returns: string
+      }
+      generate_security_report: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       generate_slug: {
         Args: { input_text: string }
@@ -4097,6 +4105,10 @@ export type Database = {
       start_direct_conversation: {
         Args: { target_user_id: string }
         Returns: string
+      }
+      test_rls_security: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       track_affiliate_conversion: {
         Args: {
