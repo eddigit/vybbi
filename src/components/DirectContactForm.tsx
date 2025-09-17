@@ -36,7 +36,8 @@ interface ContactFormData {
   contactPhone: string;
 }
 
-export function DirectContactForm({ 
+// DirectContactForm component for booking requests
+export function DirectContactForm({
   artistId, 
   artistName, 
   preferredContactId, 
