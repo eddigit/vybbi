@@ -10,6 +10,8 @@ import { useAuth } from '@/hooks/useAuth';
 import { cn } from '@/lib/utils';
 import { format, isSameDay } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { useBookingNotifications } from '@/hooks/useBookingNotifications';
+import { useToast } from '@/hooks/use-toast';
 
 interface VenueEvent {
   id: string;
@@ -31,6 +33,8 @@ interface VenueCalendarProps {
 
 export function VenueCalendar({ venueProfileId, showBookingButton = false }: VenueCalendarProps) {
   const { user, profile } = useAuth();
+  const { toast } = useToast();
+  const { notifyBookingProposed } = useBookingNotifications();
   const [events, setEvents] = useState<VenueEvent[]>([]);
   const [selectedDate, setSelectedDate] = useState<Date | undefined>(new Date());
   const [selectedEvent, setSelectedEvent] = useState<VenueEvent | null>(null);
@@ -73,12 +77,44 @@ export function VenueCalendar({ venueProfileId, showBookingButton = false }: Ven
         });
 
       if (error) throw error;
+
+      // Send notification email to venue
+      try {
+        const { data: venueProfile } = await supabase
+          .from('profiles')
+          .select('email, display_name')
+          .eq('id', venueProfileId)
+          .single();
+
+        if (venueProfile?.email) {
+          notifyBookingProposed({
+            venueEmail: venueProfile.email,
+            venueName: venueProfile.display_name || 'Venue',
+            eventTitle: selectedEvent.title,
+            eventDate: format(new Date(selectedEvent.event_date), 'dd/MM/yyyy'),
+            artistName: profile.display_name || 'Artiste',
+            proposedFee: 'À négocier',
+            message: `Demande de réservation pour l'événement "${selectedEvent.title}"`
+          });
+        }
+      } catch (notifError) {
+        console.log('Notification email failed, but booking created:', notifError);
+      }
       
-      // Close dialog and show success message
+      toast({
+        title: "Demande envoyée",
+        description: "Votre demande de réservation a été transmise au lieu"
+      });
+
+      // Close dialog
       setSelectedEvent(null);
-      // You might want to add a toast notification here
     } catch (error) {
       console.error('Error booking event:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible d'envoyer la demande de réservation",
+        variant: "destructive"
+      });
     }
   };
 
