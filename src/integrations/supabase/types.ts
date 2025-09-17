@@ -316,6 +316,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "admin_mock_profiles_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       affiliate_conversions: {
@@ -673,6 +680,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "artist_radio_subscriptions_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       availability_slots: {
@@ -939,6 +953,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "community_members_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       community_messages: {
@@ -1001,6 +1022,13 @@ export type Database = {
             columns: ["sender_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "community_messages_sender_profile_id_fkey"
+            columns: ["sender_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1309,6 +1337,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "event_attendees_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       events: {
@@ -1386,6 +1421,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "events_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       influencer_links: {
@@ -1431,6 +1473,13 @@ export type Database = {
             columns: ["influencer_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "influencer_links_influencer_profile_id_fkey"
+            columns: ["influencer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1530,6 +1579,13 @@ export type Database = {
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "media_assets_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -1662,6 +1718,13 @@ export type Database = {
             columns: ["collaborator_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "music_collaborators_collaborator_profile_id_fkey"
+            columns: ["collaborator_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
           {
@@ -1819,6 +1882,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "music_releases_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       notification_preferences: {
@@ -1948,10 +2018,24 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "profile_views_viewed_profile_id_fkey"
+            columns: ["viewed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "profile_views_viewer_profile_id_fkey"
             columns: ["viewer_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_views_viewer_profile_id_fkey"
+            columns: ["viewer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2083,6 +2167,13 @@ export type Database = {
             columns: ["preferred_contact_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_preferred_contact_profile"
+            columns: ["preferred_contact_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -2903,6 +2994,13 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "recurring_commissions_influencer_profile_id_fkey"
+            columns: ["influencer_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       reviews: {
@@ -2936,6 +3034,13 @@ export type Database = {
             columns: ["reviewed_profile_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_reviewed_profile_id_fkey"
+            columns: ["reviewed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -3338,7 +3443,96 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      safe_public_profiles: {
+        Row: {
+          accepts_direct_contact: boolean | null
+          avatar_url: string | null
+          bio: string | null
+          city: string | null
+          created_at: string | null
+          display_name: string | null
+          experience: string | null
+          genres: string[] | null
+          header_position_y: number | null
+          header_url: string | null
+          id: string | null
+          instagram_url: string | null
+          languages: string[] | null
+          location: string | null
+          onboarding_completed: boolean | null
+          profile_completion_percentage: number | null
+          profile_type: Database["public"]["Enums"]["profile_type"] | null
+          slug: string | null
+          soundcloud_url: string | null
+          spotify_url: string | null
+          talents: string[] | null
+          tiktok_url: string | null
+          updated_at: string | null
+          venue_capacity: number | null
+          venue_category: string | null
+          website: string | null
+          youtube_url: string | null
+        }
+        Insert: {
+          accepts_direct_contact?: boolean | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          experience?: string | null
+          genres?: string[] | null
+          header_position_y?: number | null
+          header_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          languages?: string[] | null
+          location?: string | null
+          onboarding_completed?: boolean | null
+          profile_completion_percentage?: number | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
+          slug?: string | null
+          soundcloud_url?: string | null
+          spotify_url?: string | null
+          talents?: string[] | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          venue_capacity?: number | null
+          venue_category?: string | null
+          website?: string | null
+          youtube_url?: string | null
+        }
+        Update: {
+          accepts_direct_contact?: boolean | null
+          avatar_url?: string | null
+          bio?: string | null
+          city?: string | null
+          created_at?: string | null
+          display_name?: string | null
+          experience?: string | null
+          genres?: string[] | null
+          header_position_y?: number | null
+          header_url?: string | null
+          id?: string | null
+          instagram_url?: string | null
+          languages?: string[] | null
+          location?: string | null
+          onboarding_completed?: boolean | null
+          profile_completion_percentage?: number | null
+          profile_type?: Database["public"]["Enums"]["profile_type"] | null
+          slug?: string | null
+          soundcloud_url?: string | null
+          spotify_url?: string | null
+          talents?: string[] | null
+          tiktok_url?: string | null
+          updated_at?: string | null
+          venue_capacity?: number | null
+          venue_category?: string | null
+          website?: string | null
+          youtube_url?: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       assign_prospect_to_agent: {
@@ -3352,6 +3546,10 @@ export type Database = {
       calculate_profile_completion: {
         Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
         Returns: number
+      }
+      check_security_integrity: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
       }
       cleanup_expired_task_locks: {
         Args: Record<PropertyKey, never>
@@ -3561,6 +3759,10 @@ export type Database = {
           title: string
         }[]
       }
+      log_sensitive_access: {
+        Args: { p_action: string; p_record_id?: string; p_table_name: string }
+        Returns: undefined
+      }
       resolve_profile: {
         Args: { identifier: string }
         Returns: {
@@ -3609,6 +3811,10 @@ export type Database = {
           profile_type: Database["public"]["Enums"]["profile_type"]
           slug: string
         }[]
+      }
+      security_phase1_status: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       send_admin_broadcast: {
         Args: {
