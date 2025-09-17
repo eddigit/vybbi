@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Calendar, CheckCircle, XCircle, Clock, Plus } from 'lucide-react';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Calendar as CalendarComponent } from '@/components/ui/calendar';
@@ -14,6 +14,7 @@ import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { cn } from '@/lib/utils';
 
 interface AvailabilitySlot {
   id: string;
@@ -103,7 +104,6 @@ export function ArtistAvailabilityCalendar({
   };
 
   const isDateAvailable = (date: Date) => {
-    const dateStr = format(date, 'yyyy-MM-dd');
     return availabilitySlots.some(slot => {
       const start = new Date(slot.start_date);
       const end = new Date(slot.end_date);
@@ -113,19 +113,12 @@ export function ArtistAvailabilityCalendar({
   };
 
   const isDateBusy = (date: Date) => {
-    const dateStr = format(date, 'yyyy-MM-dd');
     return availabilitySlots.some(slot => {
       const start = new Date(slot.start_date);
       const end = new Date(slot.end_date);
       const checkDate = new Date(date);
       return checkDate >= start && checkDate <= end && slot.status === 'busy';
     });
-  };
-
-  const getDateStatus = (date: Date) => {
-    if (isDateAvailable(date)) return 'available';
-    if (isDateBusy(date)) return 'busy';
-    return null;
   };
 
   const upcomingAvailability = availabilitySlots
@@ -149,22 +142,22 @@ export function ArtistAvailabilityCalendar({
   }
 
   return (
-    <Card className={`border-green-200 bg-gradient-to-br from-green-50 to-emerald-50 dark:from-green-950/20 dark:to-emerald-950/20 ${className}`}>
-      <CardHeader className="pb-3">
+    <Card className={cn("bg-card border", className)}>
+      <CardHeader>
         <div className="flex items-center justify-between">
           <div>
-            <CardTitle className="text-lg flex items-center gap-2 text-green-900 dark:text-green-100">
+            <CardTitle className="text-foreground flex items-center gap-2">
               <Calendar className="h-5 w-5" />
               Disponibilités
             </CardTitle>
-            <p className="text-sm text-green-600 dark:text-green-300">
+            <CardDescription className="text-muted-foreground">
               Créneaux disponibles pour vos événements
-            </p>
+            </CardDescription>
           </div>
           {isOwner && (
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button size="sm" variant="outline" className="border-green-300">
+                <Button size="sm" variant="outline">
                   <Plus className="h-4 w-4" />
                 </Button>
               </DialogTrigger>
@@ -240,9 +233,9 @@ export function ArtistAvailabilityCalendar({
           <div className="space-y-2">
             <h4 className="font-medium text-sm text-foreground">Prochaines disponibilités</h4>
             {upcomingAvailability.map((slot) => (
-              <div key={slot.id} className="flex items-center justify-between p-3 bg-white/50 dark:bg-white/5 rounded-lg">
+              <div key={slot.id} className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
                 <div className="flex items-center gap-2">
-                  <CheckCircle className="h-4 w-4 text-green-600" />
+                  <CheckCircle className="h-4 w-4 text-primary" />
                   <div>
                     <div className="text-sm font-medium">
                       {format(new Date(slot.start_date), 'dd MMM', { locale: fr })} - {format(new Date(slot.end_date), 'dd MMM yyyy', { locale: fr })}
@@ -252,7 +245,7 @@ export function ArtistAvailabilityCalendar({
                     )}
                   </div>
                 </div>
-                <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
+                <Badge variant="default" className="bg-primary text-primary-foreground">
                   Libre
                 </Badge>
               </div>
@@ -266,14 +259,14 @@ export function ArtistAvailabilityCalendar({
             mode="single"
             selected={selectedDate}
             onSelect={setSelectedDate}
-            className="rounded-md border bg-white/30 p-3 pointer-events-auto"
+            className="rounded-md border bg-card p-3 pointer-events-auto"
             modifiers={{
               available: (date) => isDateAvailable(date),
               busy: (date) => isDateBusy(date)
             }}
             modifiersStyles={{
-              available: { backgroundColor: '#dcfce7', color: '#166534' },
-              busy: { backgroundColor: '#fecaca', color: '#dc2626' }
+              available: { backgroundColor: 'hsl(var(--primary))', color: 'hsl(var(--primary-foreground))' },
+              busy: { backgroundColor: 'hsl(var(--muted))', color: 'hsl(var(--muted-foreground))' }
             }}
           />
         </div>
@@ -281,23 +274,23 @@ export function ArtistAvailabilityCalendar({
         {/* Legend */}
         <div className="flex items-center gap-4 text-xs">
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-green-200 rounded-full"></div>
-            <span>Disponible</span>
+            <div className="w-3 h-3 bg-primary rounded-full"></div>
+            <span className="text-muted-foreground">Disponible</span>
           </div>
           <div className="flex items-center gap-1">
-            <div className="w-3 h-3 bg-red-200 rounded-full"></div>
-            <span>Occupé</span>
+            <div className="w-3 h-3 bg-muted rounded-full"></div>
+            <span className="text-muted-foreground">Occupé</span>
           </div>
         </div>
 
         {/* Call to Action */}
         {!isOwner && (
-          <div className="pt-3 border-t border-green-200/50">
+          <div className="pt-3 border-t border-border">
             <div className="text-center space-y-1">
-              <div className="text-xs font-medium text-green-900 dark:text-green-100">
+              <div className="text-xs font-medium text-foreground">
                 📅 Réservation rapide
               </div>
-              <div className="text-xs text-green-600 dark:text-green-300">
+              <div className="text-xs text-muted-foreground">
                 Contactez pour vérifier la disponibilité en temps réel
               </div>
             </div>

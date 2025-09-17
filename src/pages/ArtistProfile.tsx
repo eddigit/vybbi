@@ -29,6 +29,8 @@ import { ArtistAvailabilityCalendar } from '@/components/ArtistAvailabilityCalen
 import { PressKitGenerator } from '@/components/PressKitGenerator';
 import { RiderTechnicalManager } from '@/components/RiderTechnicalManager';
 import { TestimonialsSection } from '@/components/TestimonialsSection';
+import { EnhancedProfileAnalytics } from '@/components/EnhancedProfileAnalytics';
+import { ProfileEmbedWidget } from '@/components/ProfileEmbedWidget';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
