@@ -362,7 +362,7 @@ export default function PartnerProfile({ partnerId }: PartnerProfileProps) {
                 <CardTitle>Expérience</CardTitle>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">{partner.experience}</p>
+                <p className="text-sm text-muted-foreground whitespace-pre-wrap">{partner.experience}</p>
               </CardContent>
             </Card>
           )}

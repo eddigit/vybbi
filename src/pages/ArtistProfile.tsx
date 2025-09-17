@@ -380,7 +380,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             </CardHeader>
             <CardContent>
               {artist.bio && (
-                <p className="text-muted-foreground mb-4 leading-relaxed">{artist.bio}</p>
+                <p className="text-muted-foreground mb-4 leading-relaxed whitespace-pre-wrap">{artist.bio}</p>
               )}
               
               {artist.genres && artist.genres.length > 0 && (

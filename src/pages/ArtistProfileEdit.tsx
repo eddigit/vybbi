@@ -89,8 +89,28 @@ export default function ArtistProfileEdit() {
         return;
       }
 
-      // If user is not loaded yet, don't show access denied
+      // If user is not loaded yet, continue loading profile data but don't check ownership yet
       if (!user) {
+        setProfile(data);
+        setFormData({
+          display_name: data.display_name || '',
+          bio: data.bio || '',
+          location: data.location || '',
+          website: data.website || '',
+          genres: data.genres || [],
+          genresString: (data.genres || []).join(', '),
+          languages: (data as any).languages || [],
+          experience: data.experience || '',
+          spotify_url: data.spotify_url || '',
+          soundcloud_url: data.soundcloud_url || '',
+          youtube_url: data.youtube_url || '',
+          instagram_url: data.instagram_url || '',
+          tiktok_url: data.tiktok_url || '',
+          header_position_y: (data as any).header_position_y || 50,
+          talents: (data as any).talents || [],
+          accepts_direct_contact: (data as any).accepts_direct_contact ?? true,
+          preferred_contact_profile_id: (data as any).preferred_contact_profile_id || ''
+        });
         setLoading(false);
         return;
       }
