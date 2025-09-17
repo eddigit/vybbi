@@ -329,7 +329,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <RadioStatsDisplay profileId={artist.id} />
+              <RadioStatsDisplay artistId={artist.id} />
             </CardContent>
           </Card>
 
