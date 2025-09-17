@@ -11,6 +11,7 @@ import { Calendar as CalendarComponent } from '@/components/ui/calendar';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
+import { useBookingNotifications } from '@/hooks/useBookingNotifications';
 import { supabase } from '@/integrations/supabase/client';
 import { cn } from '@/lib/utils';
 import { format } from 'date-fns';
@@ -43,6 +44,7 @@ export function DirectContactForm({
   className = '' 
 }: DirectContactFormProps) {
   const { toast } = useToast();
+  const { notifyBookingProposed } = useBookingNotifications();
   const [isOpen, setIsOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState<ContactFormData>({
@@ -138,6 +140,25 @@ Cette demande a été générée via le profil Vybbi de ${artistName}.
         });
 
       if (messageError) throw messageError;
+
+      // Envoyer notification de booking à la venue si c'est un profil lieu
+      const { data: targetProfile } = await supabase
+        .from('profiles')
+        .select('profile_type, email, display_name')
+        .eq('id', preferredContactId || artistId)
+        .single();
+
+      if (targetProfile?.profile_type === 'lieu' && targetProfile.email) {
+        notifyBookingProposed({
+          venueEmail: targetProfile.email,
+          venueName: targetProfile.display_name || 'Lieu',
+          eventTitle: formData.eventType,
+          eventDate: formData.eventDate ? format(formData.eventDate, 'dd/MM/yyyy') : 'À définir',
+          artistName: formData.contactName,
+          proposedFee: formData.budget,
+          message: formData.message
+        });
+      }
 
       toast({
         title: "Demande envoyée !",

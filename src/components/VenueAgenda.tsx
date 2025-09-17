@@ -10,6 +10,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { useAuth } from '@/hooks/useAuth';
 import { useToast } from '@/hooks/use-toast';
+import { useBookingNotifications } from '@/hooks/useBookingNotifications';
 
 interface Event {
   id: string;
@@ -33,6 +34,7 @@ interface VenueAgendaProps {
 export function VenueAgenda({ venueProfileId, showBookingButton = false }: VenueAgendaProps) {
   const { profile } = useAuth();
   const { toast } = useToast();
+  const { notifyBookingProposed } = useBookingNotifications();
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedEvent, setSelectedEvent] = useState<Event | null>(null);
@@ -95,9 +97,28 @@ export function VenueAgenda({ venueProfileId, showBookingButton = false }: Venue
         variant: "destructive" 
       });
     } else {
+      // Récupérer les infos de la venue pour notification
+      const { data: venueProfile } = await supabase
+        .from('profiles')
+        .select('email, display_name')
+        .eq('id', venueProfileId)
+        .single();
+
+      if (venueProfile?.email && selectedEvent) {
+        notifyBookingProposed({
+          venueEmail: venueProfile.email,
+          venueName: venueProfile.display_name || 'Lieu',
+          eventTitle: selectedEvent.title,
+          eventDate: new Date(selectedEvent.event_date).toLocaleDateString('fr-FR'),
+          artistName: profile?.display_name || 'Artiste',
+          proposedFee: bookingForm.proposed_fee ? `${bookingForm.proposed_fee}€` : 'À négocier',
+          message: bookingForm.message
+        });
+      }
+
       toast({ 
         title: "Succès", 
-        description: "Votre demande de booking a été envoyée" 
+        description: "Votre demande de booking a été envoyée avec notification email" 
       });
       setIsBookingModalOpen(false);
       setBookingForm({ message: '', proposed_fee: '' });
