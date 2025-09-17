@@ -3990,6 +3990,10 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_community_member: {
+        Args: { community_id_param: string; user_id_param: string }
+        Returns: boolean
+      }
       lock_and_process_tasks: {
         Args: { max_tasks?: number }
         Returns: {
