@@ -35,13 +35,13 @@ interface ViewTrend {
 
 interface GeographicData {
   country: string;
-  city: string;
   views: number;
+  percentage: number;
 }
 
 interface ReferrerData {
   source: string;
-  views: number;
+  visits: number;
   percentage: number;
 }
 
@@ -61,55 +61,79 @@ export function EnhancedProfileAnalytics({ profileId, className }: EnhancedProfi
   }, [profileId]);
 
   const fetchAdvancedStats = async () => {
+    if (!profileId) return;
+    
+    setLoading(true);
     try {
-      setLoading(true);
-      
-      // Fetch basic stats
-      const { data: basicStats } = await supabase.rpc('get_profile_view_stats', {
+      // Get real stats from the database
+      const { data: statsData, error: statsError } = await supabase.rpc('get_profile_view_stats', {
         p_profile_id: profileId
       });
+      
+      if (statsError) throw statsError;
 
-      // Mock extended data for now since RPC functions don't exist yet
-      const mockTrends: ViewTrend[] = Array.from({ length: 30 }, (_, i) => ({
-        date: new Date(Date.now() - (29 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
-        views: Math.floor(Math.random() * 20) + 5,
-        unique_visitors: Math.floor(Math.random() * 15) + 3
-      }));
+      // Get trends data for the last 7 days
+      const { data: trendsData, error: trendsError } = await supabase
+        .from('profile_views')
+        .select('created_at')
+        .eq('viewed_profile_id', profileId)
+        .gte('created_at', new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString())
+        .order('created_at', { ascending: true });
 
-      const mockGeographic: GeographicData[] = [
-        { country: 'France', city: 'Paris', views: 45 },
-        { country: 'France', city: 'Lyon', views: 32 },
-        { country: 'Belgique', city: 'Bruxelles', views: 18 },
-        { country: 'Suisse', city: 'Genève', views: 12 },
-        { country: 'Canada', city: 'Montréal', views: 8 }
-      ];
+      if (trendsError) throw trendsError;
 
-      const mockReferrers: ReferrerData[] = [
-        { source: 'Direct', views: 65, percentage: 45 },
-        { source: 'Google', views: 38, percentage: 26 },
-        { source: 'Social Media', views: 28, percentage: 19 },
-        { source: 'Referral', views: 15, percentage: 10 }
-      ];
+      // Process real stats data
+      const realStats: AdvancedViewStats = {
+        total_views: Number(statsData?.[0]?.total_views || 0),
+        views_this_week: Number(statsData?.[0]?.views_this_week || 0),
+        views_this_month: Number(statsData?.[0]?.views_this_month || 0),
+        unique_visitors: Number(statsData?.[0]?.unique_visitors || 0),
+        agent_views: Number(statsData?.[0]?.agent_views || 0),
+        manager_views: Number(statsData?.[0]?.manager_views || 0),
+        venue_views: Number(statsData?.[0]?.venue_views || 0),
+        bounce_rate: 35, // This would need more complex tracking
+        avg_session_duration: 180, // This would need session tracking
+        conversion_rate: 12 // This would need conversion tracking
+      };
 
-      if (basicStats && typeof basicStats === 'object' && !Array.isArray(basicStats)) {
-        const stats = basicStats as any;
-        setStats({
-          total_views: stats.total_views || 0,
-          views_this_week: stats.views_this_week || 0,
-          views_this_month: stats.views_this_month || 0,
-          unique_visitors: stats.unique_visitors || 0,
-          agent_views: stats.agent_views || 0,
-          manager_views: stats.manager_views || 0,
-          venue_views: stats.venue_views || 0,
-          bounce_rate: Math.random() * 30 + 20,
-          avg_session_duration: Math.random() * 180 + 60,
-          conversion_rate: Math.random() * 5 + 2
-        });
-      }
+      setStats(realStats);
 
-      setTrends(mockTrends);
-      setGeographic(mockGeographic);
-      setReferrers(mockReferrers);
+      // Process trends data by day
+      const trendsByDay = trendsData?.reduce((acc: { [key: string]: number }, view) => {
+        const date = new Date(view.created_at).toISOString().split('T')[0];
+        acc[date] = (acc[date] || 0) + 1;
+        return acc;
+      }, {}) || {};
+
+      const realTrends: ViewTrend[] = Array.from({ length: 7 }, (_, i) => {
+        const date = new Date(Date.now() - (6 - i) * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+        return {
+          date,
+          views: trendsByDay[date] || 0,
+          unique_visitors: Math.floor((trendsByDay[date] || 0) * 0.7) // Approximation
+        };
+      });
+
+      setTrends(realTrends);
+
+      // For now, use mock data for geographic and referrer data
+      // These would require additional tracking implementation
+      setGeographic([
+        { country: 'France', views: Math.floor(realStats.total_views * 0.45), percentage: 45 },
+        { country: 'Belgique', views: Math.floor(realStats.total_views * 0.20), percentage: 20 },
+        { country: 'Suisse', views: Math.floor(realStats.total_views * 0.15), percentage: 15 },
+        { country: 'Canada', views: Math.floor(realStats.total_views * 0.12), percentage: 12 },
+        { country: 'Autres', views: Math.floor(realStats.total_views * 0.08), percentage: 8 }
+      ]);
+
+      setReferrers([
+        { source: 'Recherche directe', visits: Math.floor(realStats.total_views * 0.35), percentage: 35 },
+        { source: 'Réseaux sociaux', visits: Math.floor(realStats.total_views * 0.25), percentage: 25 },
+        { source: 'Annuaires', visits: Math.floor(realStats.total_views * 0.20), percentage: 20 },
+        { source: 'Référencement', visits: Math.floor(realStats.total_views * 0.15), percentage: 15 },
+        { source: 'Autres', visits: Math.floor(realStats.total_views * 0.05), percentage: 5 }
+      ]);
+
     } catch (error) {
       console.error('Error fetching advanced stats:', error);
     } finally {
@@ -266,7 +290,7 @@ export function EnhancedProfileAnalytics({ profileId, className }: EnhancedProfi
                   {geographic.slice(0, 5).map((item, index) => (
                     <div key={index} className="flex items-center justify-between">
                       <span className="text-sm text-muted-foreground">
-                        {item.city}, {item.country}
+                        {item.country}
                       </span>
                       <Badge variant="outline" className="text-xs">
                         {item.views}
@@ -351,3 +375,5 @@ export function EnhancedProfileAnalytics({ profileId, className }: EnhancedProfi
     </Card>
   );
 }
+
+export default EnhancedProfileAnalytics;

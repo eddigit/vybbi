@@ -29,8 +29,8 @@ import { ArtistAvailabilityCalendar } from '@/components/ArtistAvailabilityCalen
 import { PressKitGenerator } from '@/components/PressKitGenerator';
 import { RiderTechnicalManager } from '@/components/RiderTechnicalManager';
 import { TestimonialsSection } from '@/components/TestimonialsSection';
-import { EnhancedProfileAnalytics } from '@/components/EnhancedProfileAnalytics';
-import { ProfileEmbedWidget } from '@/components/ProfileEmbedWidget';
+import { ProfileShareButton } from '@/components/ProfileShareButton';
+import { LazyLoadAnalytics } from '@/components/LazyLoadAnalytics';
 import { SEOHead } from '@/components/SEOHead';
 
 interface ArtistProfileProps {
@@ -367,6 +367,16 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             </Card>
           )}
 
+          {/* Bouton de partage */}
+          <div className="flex justify-end mb-6">
+            <ProfileShareButton
+              profileUrl={`/artistes/${(artist as any).slug || artist.id}`}
+              profileName={artist.display_name}
+              profileType="artiste"
+              className="animate-fade-in"
+            />
+          </div>
+
           {/* Tabbed Content */}
           <Tabs defaultValue="events" className="w-full">
             <TabsList className="grid w-full grid-cols-4">
@@ -601,21 +611,13 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             />
           </div>
 
-          {/* Enhanced Analytics - Owner only */}
+          {/* Analytics avancées - lazy loaded pour le propriétaire */}
           {artist && artist.user_id === user?.id && (
-            <EnhancedProfileAnalytics 
-              profileId={artist.id} 
-              className="col-span-1"
-            />
-          )}
-
-          {/* Embed Widget - Owner only */}
-          {artist && artist.user_id === user?.id && (
-            <ProfileEmbedWidget 
+            <LazyLoadAnalytics
               profileId={artist.id}
               profileType="artist"
               profileSlug={(artist as any).slug || artist.id}
-              className="col-span-1"
+              isOwner={true}
             />
           )}
 

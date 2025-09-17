@@ -365,3 +365,5 @@ export default VybbiEmbed;`;
     </Card>
   );
 }
+
+export default ProfileEmbedWidget;
