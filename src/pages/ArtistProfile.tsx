@@ -352,7 +352,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             <TabsList className="grid w-full grid-cols-4">
               <TabsTrigger value="events">Événements</TabsTrigger>
               <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-              <TabsTrigger value="reviews">Avis</TabsTrigger>
+              <TabsTrigger value="pricing">Tarifs & Booking</TabsTrigger>
               {isOwner && <TabsTrigger value="manage-events">Mes Événements</TabsTrigger>}
             </TabsList>
             
@@ -398,95 +398,20 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
               </Card>
             </TabsContent>
 
-            <TabsContent value="reviews" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <CardTitle className="flex items-center gap-2">
-                        <Star className="h-5 w-5" />
-                        Avis et recommandations
-                      </CardTitle>
-                      {reviews.length > 0 && (
-                        <div className="flex items-center gap-2 mt-2">
-                          <div className="flex items-center">
-                            {[1, 2, 3, 4, 5].map((star) => (
-                              <Star
-                                key={star}
-                                className={`h-4 w-4 ${
-                                  star <= Math.round(averageRating)
-                                    ? 'fill-yellow-400 text-yellow-400'
-                                    : 'text-gray-300'
-                                }`}
-                              />
-                            ))}
-                          </div>
-                          <span className="text-sm text-muted-foreground">
-                            {averageRating.toFixed(1)} ({reviews.length} avis)
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-6">
-                    {canLeaveReview && !userHasReview && (
-                      <EnhancedReviewForm
-                        artistId={artist.id}
-                        onReviewSubmitted={handleReviewSubmitted}
-                      />
-                    )}
-
-                    {reviews.length > 0 ? (
-                      reviews.map((review) => {
-                        const reviewer = reviewers[review.reviewer_id];
-                        return (
-                          <div key={review.id} className="border-b pb-4 last:border-b-0">
-                            <div className="flex items-start gap-3">
-                              <Avatar className="h-10 w-10">
-                                <AvatarImage src={reviewer?.avatar_url || ''} />
-                                <AvatarFallback>
-                                  {reviewer?.display_name?.charAt(0) || 'U'}
-                                </AvatarFallback>
-                              </Avatar>
-                              <div className="flex-1">
-                                <div className="flex items-center gap-2 mb-1">
-                                  <span className="font-medium">{reviewer?.display_name || 'Utilisateur'}</span>
-                                  <div className="flex items-center">
-                                    {[1, 2, 3, 4, 5].map((star) => (
-                                      <Star
-                                        key={star}
-                                        className={`h-3 w-3 ${
-                                          star <= review.rating
-                                            ? 'fill-yellow-400 text-yellow-400'
-                                            : 'text-gray-300'
-                                        }`}
-                                      />
-                                    ))}
-                                  </div>
-                                </div>
-                                <p className="text-sm text-muted-foreground">{review.comment}</p>
-                                <span className="text-xs text-muted-foreground">
-                                  {new Date(review.created_at).toLocaleDateString()}
-                                </span>
-                              </div>
-                            </div>
-                          </div>
-                        );
-                      })
-                    ) : canLeaveReview ? (
-                      <p className="text-center text-muted-foreground py-4">
-                        Soyez le premier à laisser un avis pour cet artiste.
-                      </p>
-                    ) : (
-                      <p className="text-center text-muted-foreground py-4">
-                        Aucun avis pour le moment.
-                      </p>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
+            <TabsContent value="pricing" className="mt-6">
+              <div className="space-y-6">
+                <PricingIndicator artist={artist} />
+                <DirectContactForm
+                  artistId={artist.id}
+                  artistName={artist.display_name}
+                  preferredContactId={preferredContact?.id}
+                  preferredContactName={preferredContact?.display_name}
+                />
+                <ArtistAvailabilityCalendar
+                  artistId={artist.id}
+                  isOwner={isOwner}
+                />
+              </div>
             </TabsContent>
 
             {isOwner && (
@@ -513,25 +438,102 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             preferredContact={preferredContact}
           />
 
-          {/* Enhanced Contact Form */}
-          {!isOwner && (
-            <DirectContactForm
-              artistId={artist.id}
-              artistName={artist.display_name}
-              preferredContactId={preferredContact?.id}
-              preferredContactName={preferredContact?.display_name}
-              className="bg-gradient-to-r from-primary to-secondary hover:from-primary/90 hover:to-secondary/90 text-white border-none"
-            />
-          )}
+          {/* Reviews Section - Sidebar */}
+          <Card>
+            <CardHeader>
+              <div className="flex items-center justify-between">
+                <div>
+                  <CardTitle className="flex items-center gap-2 text-lg">
+                    <Star className="h-5 w-5" />
+                    Avis
+                  </CardTitle>
+                  {reviews.length > 0 && (
+                    <div className="flex items-center gap-2 mt-2">
+                      <div className="flex items-center">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`h-4 w-4 ${
+                              star <= Math.round(averageRating)
+                                ? 'fill-primary text-primary'
+                                : 'text-muted-foreground/50'
+                            }`}
+                          />
+                        ))}
+                      </div>
+                      <span className="text-sm text-muted-foreground">
+                        {averageRating.toFixed(1)} ({reviews.length} avis)
+                      </span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                {canLeaveReview && !userHasReview && (
+                  <EnhancedReviewForm
+                    artistId={artist.id}
+                    onReviewSubmitted={handleReviewSubmitted}
+                  />
+                )}
 
-          {/* Pricing Information */}
-          <PricingIndicator artist={artist} />
-
-          {/* Availability Calendar */}
-          <ArtistAvailabilityCalendar
-            artistId={artist.id}
-            isOwner={isOwner}
-          />
+                {reviews.length > 0 ? (
+                  <div className="space-y-4 max-h-96 overflow-y-auto">
+                    {reviews.slice(0, 3).map((review) => {
+                      const reviewer = reviewers[review.reviewer_id];
+                      return (
+                        <div key={review.id} className="border-b pb-3 last:border-b-0">
+                          <div className="flex items-start gap-3">
+                            <Avatar className="h-8 w-8">
+                              <AvatarImage src={reviewer?.avatar_url || ''} />
+                              <AvatarFallback className="text-xs">
+                                {reviewer?.display_name?.charAt(0) || 'U'}
+                              </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-medium text-sm">{reviewer?.display_name || 'Utilisateur'}</span>
+                                <div className="flex items-center">
+                                  {[1, 2, 3, 4, 5].map((star) => (
+                                    <Star
+                                      key={star}
+                                      className={`h-3 w-3 ${
+                                        star <= review.rating
+                                          ? 'fill-primary text-primary'
+                                          : 'text-muted-foreground/50'
+                                      }`}
+                                    />
+                                  ))}
+                                </div>
+                              </div>
+                              <p className="text-sm text-muted-foreground line-clamp-2">{review.comment}</p>
+                              <span className="text-xs text-muted-foreground">
+                                {new Date(review.created_at).toLocaleDateString()}
+                              </span>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
+                    {reviews.length > 3 && (
+                      <p className="text-xs text-center text-muted-foreground">
+                        +{reviews.length - 3} autres avis
+                      </p>
+                    )}
+                  </div>
+                ) : canLeaveReview ? (
+                  <p className="text-center text-muted-foreground py-4 text-sm">
+                    Soyez le premier à laisser un avis.
+                  </p>
+                ) : (
+                  <p className="text-center text-muted-foreground py-4 text-sm">
+                    Aucun avis pour le moment.
+                  </p>
+                )}
+              </div>
+            </CardContent>
+          </Card>
 
           {/* Owner Edit Button - Separate from CTA */}
           {isOwner && (
