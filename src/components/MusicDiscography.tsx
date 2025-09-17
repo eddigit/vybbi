@@ -32,11 +32,13 @@ import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
 import { useToast } from '@/hooks/use-toast';
+import { getContentByTalents } from '@/lib/adaptiveContent';
 
 interface MusicDiscographyProps {
   profileId: string;
   isOwner?: boolean;
   compactMode?: boolean;
+  talents?: string[];
 }
 
 interface MusicReleaseWithAssets extends Omit<MusicRelease, 'featured_artists'> {
@@ -59,7 +61,8 @@ interface MusicReleaseWithAssets extends Omit<MusicRelease, 'featured_artists'> 
 export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   profileId,
   isOwner = false,
-  compactMode = false
+  compactMode = false,
+  talents = []
 }) => {
   const [selectedTrack, setSelectedTrack] = useState<any | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
@@ -77,6 +80,9 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   const deleteReleaseMutation = useDeleteMusicRelease();
   const updateReleaseMutation = useUpdateMusicRelease();
   const { toast } = useToast();
+
+  // Get adaptive content based on talents
+  const adaptiveContent = getContentByTalents(talents);
 
   const publishedReleases = releases?.filter(r => r.status === 'published') || [];
   const draftReleases = releases?.filter(r => r.status === 'draft') || [];
@@ -572,7 +578,7 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
         <CardContent className="p-6">
           <div className="text-center text-muted-foreground">
             <Music className="h-8 w-8 mx-auto mb-2" />
-            <p>Aucune sortie musicale pour le moment</p>
+            <p>{adaptiveContent.emptyMessage}</p>
           </div>
         </CardContent>
       </Card>
@@ -587,8 +593,8 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
             "flex items-center gap-2",
             compactMode ? "text-base" : "text-lg"
           )}>
-            <Music className={compactMode ? "h-4 w-4" : "h-5 w-5"} />
-            Discographie
+            <span className={compactMode ? "text-sm" : "text-base"}>{adaptiveContent.icon}</span>
+            {adaptiveContent.title}
             <Badge variant="secondary" className={compactMode ? "text-xs" : ""}>{releases.length}</Badge>
           </CardTitle>
         </CardHeader>

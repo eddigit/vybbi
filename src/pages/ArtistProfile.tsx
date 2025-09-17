@@ -627,6 +627,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
               profileId={artist.id} 
               isOwner={user && profile && profile.id === artist.id}
               compactMode={true}
+              talents={(artist as any).talents || []}
             />
           </div>
 
