@@ -17,7 +17,6 @@ import RadioStatsDisplay from '@/components/RadioStatsDisplay';
 import { ProfileEvents } from '@/components/ProfileEvents';
 import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
 import { ResolvedProfile } from '@/hooks/useProfileResolver';
-import { MusicDiscography } from '@/components/MusicDiscography';
 import ArtistEventManager from '@/components/ArtistEventManager';
 import { ProfileShareTools } from '@/components/ProfileShareTools';
 import { ProfileCTA } from '@/components/ProfileCTA';
@@ -32,6 +31,7 @@ import { TestimonialsSection } from '@/components/TestimonialsSection';
 import { ProfileShareButton } from '@/components/ProfileShareButton';
 import { LazyLoadAnalytics } from '@/components/LazyLoadAnalytics';
 import { SEOHead } from '@/components/SEOHead';
+import { ProductionsSlider } from '@/components/ProductionsSlider';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -340,20 +340,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           
-          {/* Radio Statistics Card */}
-          <Card>
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2">
-                <Music2 className="h-5 w-5" />
-                Radio Vybbi
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <RadioStatsDisplay artistId={artist.id} />
-            </CardContent>
-          </Card>
-
-          {/* Bio Section */}
+          {/* Bio Section - Moved to top priority */}
           {artist.bio && (
             <Card>
               <CardHeader>
@@ -367,15 +354,27 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             </Card>
           )}
 
-          {/* Bouton de partage */}
-          <div className="flex justify-end mb-6">
-            <ProfileShareButton
-              profileUrl={`/artistes/${(artist as any).slug || artist.id}`}
-              profileName={artist.display_name}
-              profileType="artiste"
-              className="animate-fade-in"
-            />
-          </div>
+          {/* Sets & Productions Slider */}
+          <ProductionsSlider
+            profileId={artist.id}
+            onPlayTrack={(track, playlist) => {
+              // Handle track play logic here if needed
+              console.log('Playing track:', track.title);
+            }}
+          />
+
+          {/* Radio Statistics Card - Moved to lower priority */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Music2 className="h-5 w-5" />
+                Radio Vybbi
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <RadioStatsDisplay artistId={artist.id} />
+            </CardContent>
+          </Card>
 
           {/* Tabbed Content */}
           <Tabs defaultValue="events" className="w-full">
@@ -598,18 +597,12 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             </>
           )}
 
-          {/* Music Releases - Sidebar Version */}
-          <div className="space-y-4">
-            {user && profile && profile.id === artist.id && (
+          {/* Music Releases - Owner Only Widget */}
+          {user && profile && profile.id === artist.id && (
+            <div className="space-y-4">
               <MusicReleaseWidget profileId={artist.id} />
-            )}
-            <MusicDiscography 
-              profileId={artist.id} 
-              isOwner={user && profile && profile.id === artist.id}
-              compactMode={true}
-              talents={(artist as any).talents || []}
-            />
-          </div>
+            </div>
+          )}
 
           {/* Analytics avancées - lazy loaded pour le propriétaire */}
           {artist && artist.user_id === user?.id && (
