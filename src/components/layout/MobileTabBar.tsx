@@ -85,7 +85,7 @@ export function MobileTabBar() {
         "pb-safe-bottom"
       )}
     >
-      <div className="flex items-center justify-around px-2 py-2">
+      <div className="flex items-center justify-around px-1 py-2 h-16">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = isActive(tab.href);
@@ -95,15 +95,15 @@ export function MobileTabBar() {
               key={tab.name}
               to={tab.href}
               className={cn(
-                "flex flex-col items-center justify-center min-h-[48px] px-2 py-1 rounded-lg transition-all duration-200 touch-target select-none",
+                "flex flex-col items-center justify-center flex-1 min-h-[56px] max-w-[80px] px-1 py-2 rounded-lg transition-all duration-200 touch-target select-none",
                 active
-                  ? "text-primary bg-primary/10"
-                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
+                  ? "text-primary bg-primary/10 scale-105"
+                  : "text-muted-foreground hover:text-foreground hover:bg-muted/50 active:scale-95"
               )}
               style={{ touchAction: 'manipulation' }}
             >
-              <Icon className={cn("h-5 w-5 mb-1", active && "text-primary")} />
-              <span className="text-xs font-medium truncate max-w-[60px] select-none">
+              <Icon className={cn("h-6 w-6 mb-1 flex-shrink-0", active && "text-primary drop-shadow-sm")} />
+              <span className="text-[10px] font-medium leading-tight text-center line-clamp-1 select-none">
                 {tab.name}
               </span>
             </Link>

@@ -216,7 +216,7 @@ export function WelcomeModal({ isOpen, onClose, profileType, displayName, onNavi
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-sm sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader className="text-center space-y-4">
           <div className="mx-auto">
             <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${content.gradient} flex items-center justify-center shadow-glow`}>
@@ -250,11 +250,11 @@ export function WelcomeModal({ isOpen, onClose, profileType, displayName, onNavi
               <AutoTranslate text="Premiers pas recommandés" />
             </h3>
             
-            <div className="grid gap-4 md:grid-cols-3">
+            <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
               {content.steps.map((step, index) => {
                 const StepIcon = step.icon;
                 return (
-                  <div key={index} className="p-4 border rounded-lg hover:bg-accent/50 transition-colors">
+                  <div key={index} className="p-3 sm:p-4 border rounded-lg hover:bg-accent/50 transition-colors">
                     <div className="flex items-start gap-3">
                       <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
                         <StepIcon className="w-4 h-4 text-primary" />
@@ -269,11 +269,11 @@ export function WelcomeModal({ isOpen, onClose, profileType, displayName, onNavi
                         <Button
                           variant="outline"
                           size="sm"
-                          className="w-full mt-2"
+                          className="w-full mt-2 text-xs sm:text-sm touch-target"
                           onClick={() => handleNavigateAndClose(step.action)}
                         >
                           <AutoTranslate text={step.actionText} />
-                          <ArrowRight className="w-3 h-3 ml-1" />
+                          <ArrowRight className="w-3 h-3 ml-1 flex-shrink-0" />
                         </Button>
                       </div>
                     </div>
@@ -297,9 +297,9 @@ export function WelcomeModal({ isOpen, onClose, profileType, displayName, onNavi
                     variant="ghost"
                     size="sm"
                     onClick={() => handleNavigateAndClose(action.path)}
-                    className="flex items-center gap-2"
+                    className="flex items-center gap-2 text-xs sm:text-sm touch-target"
                   >
-                    <ActionIcon className="w-4 h-4" />
+                    <ActionIcon className="w-4 h-4 flex-shrink-0" />
                     <AutoTranslate text={action.label} />
                   </Button>
                 );
@@ -308,28 +308,29 @@ export function WelcomeModal({ isOpen, onClose, profileType, displayName, onNavi
           </div>
 
           {/* Footer actions */}
-          <div className="flex justify-between items-center border-t pt-6">
+          <div className="flex flex-col sm:flex-row justify-between items-center gap-4 border-t pt-6">
             <Button
               variant="ghost"
               onClick={onClose}
-              className="text-sm"
+              className="text-sm order-2 sm:order-1 w-full sm:w-auto touch-target"
             >
               <AutoTranslate text="Passer pour le moment" />
             </Button>
             
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 order-1 sm:order-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 onClick={() => handleNavigateAndClose('/dashboard')}
+                className="w-full sm:w-auto text-sm touch-target"
               >
                 <AutoTranslate text="Aller au tableau de bord" />
               </Button>
               <Button
                 onClick={() => handleNavigateAndClose(content.steps[0].action)}
-                className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90"
+                className="bg-gradient-to-r from-primary to-primary-glow hover:opacity-90 w-full sm:w-auto text-sm touch-target"
               >
                 <AutoTranslate text="Commencer maintenant" />
-                <ArrowRight className="w-4 h-4 ml-2" />
+                <ArrowRight className="w-4 h-4 ml-2 flex-shrink-0" />
               </Button>
             </div>
           </div>

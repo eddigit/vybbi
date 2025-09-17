@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy } from 'lucide-react';
+import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { TickerBanner } from "@/components/TickerBanner";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
+import { MobileNavigation } from "@/components/MobileNavigation";
 
 // Define Blockchain icon component
 const Blockchain = ({
@@ -32,6 +33,16 @@ export default function Landing() {
     isPromotionalActive,
     isLoading
   } = useTrialConfig();
+
+  const navigationLinks = [
+    { href: "/a-propos", label: "À propos" },
+    { href: "/top-artistes", label: "Top Artistes" },
+    { href: "/pour-artistes", label: "Pour Artistes" },
+    { href: "/pour-agents-managers", label: "Pour Agents" },
+    { href: "/pour-lieux-evenements", label: "Pour Lieux" },
+    { href: "/technologie", label: "Technologie" },
+    { href: "/blog", label: "Blog" }
+  ];
   const features = [{
     icon: Users,
     title: "Marketplace Unifiée",
@@ -125,13 +136,24 @@ export default function Landing() {
               </Link>
             </div>
 
-            <div className="flex items-center gap-4">
-              <Button variant="ghost" asChild>
-                <Link to="/auth?tab=signin">Connexion</Link>
-              </Button>
-              <Button asChild>
-                <Link to="/auth?tab=signup">Commencer</Link>
-              </Button>
+            <div className="flex items-center gap-2 sm:gap-4">
+              <div className="hidden sm:flex items-center gap-2">
+                <Button variant="ghost" size="sm" asChild>
+                  <Link to="/auth?tab=signin">Connexion</Link>
+                </Button>
+                <Button size="sm" asChild>
+                  <Link to="/auth?tab=signup">Commencer</Link>
+                </Button>
+              </div>
+              
+              {/* Mobile navigation */}
+              <MobileNavigation 
+                navigationLinks={navigationLinks}
+                authButtons={{
+                  signIn: "/auth?tab=signin",
+                  signUp: "/auth?tab=signup"
+                }}
+              />
             </div>
           </div>
         </div>
