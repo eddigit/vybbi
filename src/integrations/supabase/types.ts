@@ -3021,6 +3021,39 @@ export type Database = {
         }
         Relationships: []
       }
+      security_audit_log: {
+        Row: {
+          action: string
+          created_at: string | null
+          id: string
+          ip_address: unknown | null
+          record_id: string | null
+          table_name: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          action: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          record_id?: string | null
+          table_name: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          action?: string
+          created_at?: string | null
+          id?: string
+          ip_address?: unknown | null
+          record_id?: string | null
+          table_name?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       site_ticker_messages: {
         Row: {
           created_at: string
@@ -3458,7 +3491,9 @@ export type Database = {
           is_public: boolean
           languages: string[]
           location: string
+          onboarding_completed: boolean
           preferred_contact_profile_id: string
+          profile_completion_percentage: number
           profile_type: Database["public"]["Enums"]["profile_type"]
           slug: string
           soundcloud_url: string
@@ -3466,6 +3501,7 @@ export type Database = {
           talents: string[]
           tiktok_url: string
           updated_at: string
+          user_id: string
           venue_capacity: number
           venue_category: string
           website: string
