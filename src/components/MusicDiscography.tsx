@@ -6,6 +6,7 @@ import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { MusicPlayer } from '@/components/MusicPlayer';
+import { RadioSubmissionDialog } from '@/components/RadioSubmissionDialog';
 import { 
   Music, 
   Play, 
@@ -16,9 +17,11 @@ import {
   Users,
   ExternalLink,
   Award,
-  Video
+  Video,
+  Radio
 } from 'lucide-react';
 import { useMusicReleases, MusicRelease } from '@/hooks/useMusicReleases';
+import { useRadioSubmissions } from '@/hooks/useRadioSubmissions';
 import { formatDistanceToNow } from 'date-fns';
 import { fr } from 'date-fns/locale';
 import { cn } from '@/lib/utils';
@@ -52,11 +55,15 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
   const [selectedTrack, setSelectedTrack] = useState<any | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
+  const [radioSubmissionOpen, setRadioSubmissionOpen] = useState(false);
+  const [selectedTrackForRadio, setSelectedTrackForRadio] = useState<any | null>(null);
 
   const { data: releases = [], isLoading, error } = useMusicReleases(
     profileId, 
     isOwner ? 'all' : 'published'
   );
+
+  const { hasAnySubmission, refreshSubmissions } = useRadioSubmissions(profileId);
 
   const publishedReleases = releases?.filter(r => r.status === 'published') || [];
   const draftReleases = releases?.filter(r => r.status === 'draft') || [];
@@ -66,6 +73,15 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
     const trackIndex = playlist.findIndex((t: any) => t.id === track.id);
     setCurrentPlaylistIndex(trackIndex >= 0 ? trackIndex : 0);
     setIsPlayerOpen(true);
+  };
+
+  const openRadioSubmission = (track: any) => {
+    setSelectedTrackForRadio(track);
+    setRadioSubmissionOpen(true);
+  };
+
+  const handleRadioSubmissionSuccess = () => {
+    refreshSubmissions();
   };
 
   const formatDuration = (seconds?: number) => {
@@ -79,7 +95,11 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
     release: any; 
     showStatus?: boolean;
     onClick?: () => void;
-  }> = ({ release, showStatus = false, onClick }) => (
+  }> = ({ release, showStatus = false, onClick }) => {
+    const submissionStatus = hasAnySubmission(release.media_assets || []);
+    const hasAudioFile = release.media_assets?.some((asset: any) => asset.media_type === 'audio');
+
+    return (
     <Card 
       className={cn(
         "cursor-pointer transition-all hover:shadow-md group",
@@ -170,7 +190,7 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
               </div>
             </div>
 
-            <div className="flex items-center gap-2 mt-2">
+            <div className="flex items-center gap-2 mt-2 flex-wrap">
               {release.genre && <Badge variant="secondary">{release.genre}</Badge>}
               {release.explicit_content && <Badge variant="destructive">Explicit</Badge>}
               {release.youtube_url && (
@@ -185,7 +205,38 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
                   Original
                 </Badge>
               )}
+              {submissionStatus && (
+                <Badge 
+                  variant={submissionStatus.status === 'approved' ? 'default' : 'secondary'}
+                  className={
+                    submissionStatus.status === 'approved' 
+                      ? 'bg-green-100 text-green-800 border-green-300'
+                      : 'bg-orange-100 text-orange-800 border-orange-300'
+                  }
+                >
+                  <Radio className="h-3 w-3 mr-1" />
+                  {submissionStatus.status === 'approved' ? 'En Radio' : 'En attente'}
+                </Badge>
+              )}
             </div>
+
+            {/* Radio submission button for owners */}
+            {isOwner && release.status === 'published' && hasAudioFile && !submissionStatus && (
+              <div className="mt-3">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    openRadioSubmission(release);
+                  }}
+                  className="flex items-center gap-2"
+                >
+                  <Radio className="h-4 w-4" />
+                  Soumettre à la Radio
+                </Button>
+              </div>
+            )}
 
             {release.music_collaborators && release.music_collaborators.length > 0 && (
               <div className="flex items-center gap-1 mt-2 text-xs text-muted-foreground">
@@ -197,7 +248,8 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
         </div>
       </CardContent>
     </Card>
-  );
+    );
+  };
 
   const TrackDetail: React.FC<{ release: any }> = ({ release }) => (
     <div className="space-y-6">
@@ -498,6 +550,16 @@ export const MusicDiscography: React.FC<MusicDiscographyProps> = ({
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Radio Submission Dialog */}
+      {selectedTrackForRadio && (
+        <RadioSubmissionDialog
+          open={radioSubmissionOpen}
+          onOpenChange={setRadioSubmissionOpen}
+          musicRelease={selectedTrackForRadio}
+          onSubmissionSuccess={handleRadioSubmissionSuccess}
+        />
+      )}
     </>
   );
 };

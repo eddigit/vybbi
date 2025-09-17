@@ -11,8 +11,9 @@ import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
-import { Music, Play, Pause, Users, TrendingUp, Clock, Star, Check, X, Plus } from "lucide-react";
+import { Music, Play, Pause, Users, TrendingUp, Clock, Star, Check, X, Plus, Calendar } from "lucide-react";
 
 interface Playlist {
   id: string;
@@ -28,10 +29,14 @@ interface Playlist {
 interface PendingTrack {
   id: string;
   file_name: string;
+  file_url: string;
   artist_name: string;
   artist_avatar: string | null;
   added_at: string;
+  weight: number;
   playlist_name: string;
+  release_title: string;
+  release_cover: string | null;
 }
 
 interface ArtistSubscription {
@@ -110,9 +115,12 @@ export function RadioManagement() {
       .select(`
         id,
         added_at,
+        weight,
         media_assets!inner(
+          id,
           file_name,
-          profiles!inner(display_name, avatar_url)
+          file_url,
+          profiles!inner(id, display_name, avatar_url)
         ),
         radio_playlists!inner(name)
       `)
@@ -120,14 +128,32 @@ export function RadioManagement() {
       .order('added_at', { ascending: true });
 
     if (error) throw error;
-    setPendingTracks(data?.map(track => ({
-      id: track.id,
-      file_name: track.media_assets.file_name,
-      artist_name: track.media_assets.profiles.display_name,
-      artist_avatar: track.media_assets.profiles.avatar_url,
-      added_at: track.added_at,
-      playlist_name: track.radio_playlists.name
-    })) || []);
+    
+    const tracksWithReleaseInfo = await Promise.all(
+      (data || []).map(async (track) => {
+        // Try to find the music release that contains this media asset
+        const { data: releaseData } = await supabase
+          .from('music_releases')
+          .select('title, artist_name, cover_image_url')
+          .eq('profile_id', track.media_assets.profiles.id)
+          .single();
+
+        return {
+          id: track.id,
+          file_name: track.media_assets.file_name,
+          file_url: track.media_assets.file_url,
+          artist_name: track.media_assets.profiles.display_name,
+          artist_avatar: track.media_assets.profiles.avatar_url,
+          added_at: track.added_at,
+          weight: track.weight,
+          playlist_name: track.radio_playlists.name,
+          release_title: releaseData?.title || 'Titre inconnu',
+          release_cover: releaseData?.cover_image_url || null
+        };
+      })
+    );
+
+    setPendingTracks(tracksWithReleaseInfo);
   };
 
   const fetchSubscriptions = async () => {
@@ -384,59 +410,91 @@ export function RadioManagement() {
 
         <TabsContent value="pending" className="space-y-4">
           <h3 className="text-lg font-medium">Morceaux en attente d'approbation</h3>
-          <div className="rounded-md border">
-            <Table>
-              <TableHeader>
-                <TableRow>
-                  <TableHead>Morceau</TableHead>
-                  <TableHead>Artiste</TableHead>
-                  <TableHead>Playlist</TableHead>
-                  <TableHead>Ajouté le</TableHead>
-                  <TableHead>Actions</TableHead>
-                </TableRow>
-              </TableHeader>
-              <TableBody>
-                {pendingTracks.map((track) => (
-                  <TableRow key={track.id}>
-                    <TableCell className="font-medium">{track.file_name}</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        {track.artist_avatar && (
-                          <img
-                            src={track.artist_avatar}
-                            alt={track.artist_name}
-                            className="h-6 w-6 rounded-full"
-                          />
-                        )}
-                        {track.artist_name}
+          <div className="space-y-4">
+            {pendingTracks.map((track) => (
+              <Card key={track.id}>
+                <CardContent className="p-4">
+                  <div className="flex items-start gap-4">
+                    {/* Track/Release Cover */}
+                    <div className="relative">
+                      <Avatar className="h-16 w-16 rounded-lg">
+                        <AvatarImage 
+                          src={track.release_cover || track.artist_avatar} 
+                          alt={track.release_title} 
+                        />
+                        <AvatarFallback className="rounded-lg">
+                          <Music className="h-6 w-6" />
+                        </AvatarFallback>
+                      </Avatar>
+                      
+                      {/* Play button */}
+                      <Button
+                        size="sm"
+                        className="absolute inset-0 m-auto h-8 w-8 rounded-full opacity-0 hover:opacity-100 transition-opacity"
+                        onClick={() => {
+                          // Create audio element and play
+                          const audio = new Audio(track.file_url);
+                          audio.play().catch(console.error);
+                        }}
+                      >
+                        <Play className="h-4 w-4" />
+                      </Button>
+                    </div>
+
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-start justify-between">
+                        <div className="min-w-0 flex-1">
+                          <h4 className="font-semibold text-lg truncate">{track.release_title}</h4>
+                          <p className="text-muted-foreground truncate">{track.artist_name}</p>
+                          <p className="text-sm text-muted-foreground truncate">Fichier: {track.file_name}</p>
+                        </div>
+                        
+                        <Badge variant="outline">
+                          {track.playlist_name}
+                        </Badge>
                       </div>
-                    </TableCell>
-                    <TableCell>{track.playlist_name}</TableCell>
-                    <TableCell>
-                      {new Date(track.added_at).toLocaleDateString('fr-FR')}
-                    </TableCell>
-                    <TableCell>
-                      <div className="flex gap-2">
+
+                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-1">
+                          <Calendar className="h-3 w-3" />
+                          {new Date(track.added_at).toLocaleDateString('fr-FR')}
+                        </div>
+                        <div>Poids: {track.weight}</div>
+                      </div>
+
+                      <div className="flex gap-2 mt-3">
                         <Button
                           size="sm"
-                          variant="outline"
                           onClick={() => approveTrack(track.id, true)}
+                          className="flex items-center gap-2"
                         >
                           <Check className="h-4 w-4" />
+                          Approuver
                         </Button>
                         <Button
                           size="sm"
                           variant="outline"
                           onClick={() => approveTrack(track.id, false)}
+                          className="flex items-center gap-2"
                         >
                           <X className="h-4 w-4" />
+                          Rejeter
                         </Button>
                       </div>
-                    </TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
+            
+            {pendingTracks.length === 0 && (
+              <Card>
+                <CardContent className="p-6 text-center text-muted-foreground">
+                  <Music className="h-8 w-8 mx-auto mb-2" />
+                  <p>Aucun morceau en attente d'approbation</p>
+                </CardContent>
+              </Card>
+            )}
           </div>
         </TabsContent>
 
