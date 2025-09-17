@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
+import { useQueryClient } from '@tanstack/react-query';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -62,6 +63,7 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
   const [collaborators, setCollaborators] = useState<Collaborator[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const form = useForm<MusicReleaseForm>({
     resolver: zodResolver(musicReleaseSchema),
@@ -287,6 +289,10 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
           setCoverImage('');
           setAudioFile(null);
           setCollaborators([]);
+          
+          // Invalidate music releases cache to refresh the list
+          await queryClient.invalidateQueries({ queryKey: ['music-releases', profileId] });
+          
           onSuccess?.();
           return;
         }
@@ -328,6 +334,10 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
       setCoverImage('');
       setAudioFile(null);
       setCollaborators([]);
+      
+      // Invalidate music releases cache to refresh the list
+      await queryClient.invalidateQueries({ queryKey: ['music-releases', profileId] });
+      
       onSuccess?.();
 
     } catch (error) {
