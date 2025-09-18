@@ -78,18 +78,14 @@ export function WebTVScheduler({ onEventCreated }: WebTVSchedulerProps) {
       scheduledDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
 
       const { error } = await supabase
-        .from('webtv_events')
+        .from('webtv_events' as any)
         .insert({
           title: title.trim(),
           description: description.trim(),
-          youtube_url: youtubeUrl.trim(),
-          scheduled_at: scheduledDate.toISOString(),
-          duration_minutes: duration,
-          host_name: profile.display_name || 'Artiste Vybbi',
-          tags,
+          youtube_video_id: videoId,
+          scheduled_for: scheduledDate.toISOString(),
           created_by: user.id,
           is_live: false,
-          viewer_count: 0,
         });
 
       if (error) throw error;

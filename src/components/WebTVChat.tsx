@@ -25,6 +25,26 @@ interface ChatMessage {
   };
 }
 
+interface WebTVChatRecord {
+  id: string;
+  event_id: string;
+  user_id: string;
+  message: string;
+  created_at: string;
+}
+
+interface WebTVEventRecord {
+  id: string;
+  title: string;
+  description?: string;
+  youtube_video_id?: string;
+  scheduled_for: string;
+  is_live: boolean;
+  created_by: string;
+  created_at: string;
+  updated_at: string;
+}
+
 interface WebTVChatProps {
   eventId: string;
   eventTitle: string;
@@ -65,7 +85,7 @@ export function WebTVChat({ eventId, eventTitle, isLive }: WebTVChatProps) {
   const fetchMessages = async () => {
     try {
       const { data, error } = await supabase
-        .from('webtv_chat_messages')
+        .from('webtv_chat_messages' as any)
         .select(`
           id,
           user_id,
@@ -83,7 +103,7 @@ export function WebTVChat({ eventId, eventTitle, isLive }: WebTVChatProps) {
 
       if (error) throw error;
 
-      const formattedMessages = data?.map(msg => ({
+      const formattedMessages = data?.map((msg: any) => ({
         id: msg.id,
         user_id: msg.user_id,
         message: msg.message,
@@ -117,38 +137,23 @@ export function WebTVChat({ eventId, eventTitle, isLive }: WebTVChatProps) {
           filter: `event_id=eq.${eventId}`,
         },
         async (payload) => {
-          // Fetch the complete message with user data
-          const { data } = await supabase
-            .from('webtv_chat_messages')
-            .select(`
-              id,
-              user_id,
-              message,
-              created_at,
-              profiles:user_id (
-                display_name,
-                avatar_url,
-                profile_type
-              )
-            `)
-            .eq('id', payload.new.id)
-            .single();
+          // Simplement ajouter le nouveau message depuis le payload
+          const newMsg = {
+            id: payload.new.id,
+            user_id: payload.new.user_id,
+            message: payload.new.message,
+            created_at: payload.new.created_at,
+            user: {
+              display_name: 'Utilisateur',
+              avatar_url: undefined,
+              profile_type: 'user'
+            }
+          };
 
-          if (data) {
-            const newMsg = {
-              id: data.id,
-              user_id: data.user_id,
-              message: data.message,
-              created_at: data.created_at,
-              user: {
-                display_name: data.profiles?.display_name || 'Utilisateur',
-                avatar_url: data.profiles?.avatar_url,
-                profile_type: data.profiles?.profile_type || 'user'
-              }
-            };
-
-            setMessages(prev => [...prev, newMsg]);
-          }
+          setMessages(prev => [...prev, newMsg]);
+          
+          // Optionnellement, refetch les messages pour avoir les données complètes
+          fetchMessages();
         }
       )
       .on('presence', { event: 'sync' }, () => {
@@ -174,7 +179,7 @@ export function WebTVChat({ eventId, eventTitle, isLive }: WebTVChatProps) {
     setIsLoading(true);
     try {
       const { error } = await supabase
-        .from('webtv_chat_messages')
+        .from('webtv_chat_messages' as any)
         .insert({
           event_id: eventId,
           user_id: user.id,

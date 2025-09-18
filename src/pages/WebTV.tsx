@@ -21,16 +21,13 @@ import { fr } from 'date-fns/locale';
 interface WebTVEvent {
   id: string;
   title: string;
-  description: string;
-  youtube_url: string;
-  scheduled_at: string;
-  duration_minutes: number;
-  host_name: string;
-  thumbnail_url?: string;
+  description?: string;
+  youtube_video_id?: string;
+  scheduled_for: string;
   is_live: boolean;
-  viewer_count: number;
-  tags: string[];
   created_by: string;
+  created_at: string;
+  updated_at: string;
 }
 
 export default function WebTV() {
@@ -59,33 +56,33 @@ export default function WebTV() {
   const fetchEvents = async () => {
     try {
       const { data, error } = await supabase
-        .from('webtv_events')
+        .from('webtv_events' as any)
         .select('*')
-        .order('scheduled_at', { ascending: true });
+        .order('scheduled_for', { ascending: true });
 
       if (error) throw error;
 
       const now = new Date();
-      const events = data || [];
+      const events = (data as any[]) || [];
       
       // Find current live event
-      const live = events.find(event => 
-        event.is_live && new Date(event.scheduled_at) <= now
+      const live = events.find((event: any) => 
+        event.is_live && new Date(event.scheduled_for) <= now
       );
       
       // Filter upcoming and past events
-      const upcoming = events.filter(event => 
-        !event.is_live && new Date(event.scheduled_at) > now
+      const upcoming = events.filter((event: any) => 
+        !event.is_live && new Date(event.scheduled_for) > now
       );
       
-      const past = events.filter(event => 
-        new Date(event.scheduled_at) < now && !event.is_live
+      const past = events.filter((event: any) => 
+        new Date(event.scheduled_for) < now && !event.is_live
       );
 
-      setCurrentEvent(live || null);
-      setUpcomingEvents(upcoming.slice(0, 5));
-      setPastEvents(past.slice(0, 10));
-      setViewerCount(live?.viewer_count || Math.floor(Math.random() * 50) + 20);
+      setCurrentEvent(live as WebTVEvent || null);
+      setUpcomingEvents(upcoming.slice(0, 5) as WebTVEvent[]);
+      setPastEvents(past.slice(0, 10) as WebTVEvent[]);
+      setViewerCount(Math.floor(Math.random() * 50) + 20);
       
     } catch (error) {
       console.error('Error fetching events:', error);
@@ -171,7 +168,7 @@ export default function WebTV() {
               <Card className="overflow-hidden">
                 <CardContent className="p-0">
                   <YouTubePlayer
-                    videoId={extractYouTubeVideoId(currentEvent.youtube_url) || ''}
+                    videoId={currentEvent.youtube_video_id || ''}
                     className="w-full"
                     autoplay={true}
                     onPlay={() => console.log('Video started')}
@@ -202,20 +199,12 @@ export default function WebTV() {
                     <div>
                       <h2 className="text-xl font-semibold">{currentEvent.title}</h2>
                       <p className="text-muted-foreground text-sm">
-                        <AutoTranslate text="Animé par" /> {currentEvent.host_name}
+                        <AutoTranslate text="Événement Web TV" />
                       </p>
-                      <p className="text-sm mt-2">{currentEvent.description}</p>
+                      {currentEvent.description && (
+                        <p className="text-sm mt-2">{currentEvent.description}</p>
+                      )}
                     </div>
-                    
-                    {currentEvent.tags.length > 0 && (
-                      <div className="flex flex-wrap gap-1">
-                        {currentEvent.tags.map((tag, index) => (
-                          <Badge key={index} variant="secondary" className="text-xs">
-                            {tag}
-                          </Badge>
-                        ))}
-                      </div>
-                    )}
                   </div>
                 </CardContent>
               </Card>
@@ -236,7 +225,7 @@ export default function WebTV() {
                       <AutoTranslate text="Prochain événement" />: {' '}
                       <span className="font-medium">{upcomingEvents[0].title}</span>
                       {' '}
-                      <AutoTranslate text="dans" /> {formatDistanceToNow(new Date(upcomingEvents[0].scheduled_at), { locale: fr })}
+                      <AutoTranslate text="dans" /> {formatDistanceToNow(new Date(upcomingEvents[0].scheduled_for), { locale: fr })}
                     </p>
                   )}
                 </CardContent>
@@ -261,9 +250,9 @@ export default function WebTV() {
                       <CardContent className="p-4">
                         <div className="flex gap-4">
                           <div className="flex-shrink-0 w-24 h-16 bg-muted rounded overflow-hidden">
-                            {event.thumbnail_url ? (
+                            {event.youtube_video_id ? (
                               <img 
-                                src={event.thumbnail_url} 
+                                src={getYouTubeThumbnail(event.youtube_video_id, 'medium')} 
                                 alt={event.title}
                                 className="w-full h-full object-cover"
                               />
@@ -276,16 +265,16 @@ export default function WebTV() {
                           <div className="flex-1 min-w-0">
                             <h4 className="font-medium truncate">{event.title}</h4>
                             <p className="text-sm text-muted-foreground">
-                              <AutoTranslate text="Par" /> {event.host_name}
+                              <AutoTranslate text="Web TV Event" />
                             </p>
                             <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                {new Date(event.scheduled_at).toLocaleDateString('fr-FR')}
+                                {new Date(event.scheduled_for).toLocaleDateString('fr-FR')}
                               </span>
                               <span className="flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                {new Date(event.scheduled_at).toLocaleTimeString('fr-FR', { 
+                                {new Date(event.scheduled_for).toLocaleTimeString('fr-FR', { 
                                   hour: '2-digit', 
                                   minute: '2-digit' 
                                 })}
@@ -314,9 +303,9 @@ export default function WebTV() {
                       <CardContent className="p-4">
                         <div className="flex gap-4">
                           <div className="flex-shrink-0 w-24 h-16 bg-muted rounded overflow-hidden">
-                            {event.youtube_url && (
+                            {event.youtube_video_id && (
                               <img 
-                                src={getYouTubeThumbnail(extractYouTubeVideoId(event.youtube_url) || '', 'medium')}
+                                src={getYouTubeThumbnail(event.youtube_video_id, 'medium')}
                                 alt={event.title}
                                 className="w-full h-full object-cover"
                               />
@@ -325,12 +314,12 @@ export default function WebTV() {
                           <div className="flex-1 min-w-0">
                             <h4 className="font-medium truncate">{event.title}</h4>
                             <p className="text-sm text-muted-foreground">
-                              <AutoTranslate text="Par" /> {event.host_name}
+                              <AutoTranslate text="Web TV Event" />
                             </p>
                             <div className="flex items-center gap-4 text-xs text-muted-foreground mt-1">
                               <span className="flex items-center gap-1">
                                 <Calendar className="h-3 w-3" />
-                                {new Date(event.scheduled_at).toLocaleDateString('fr-FR')}
+                                {new Date(event.scheduled_for).toLocaleDateString('fr-FR')}
                               </span>
                               <Badge variant="outline" className="text-xs">
                                 <AutoTranslate text="Replay" />
