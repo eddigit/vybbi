@@ -68,7 +68,23 @@ const AdminModeration = () => {
   const [selectedProfiles, setSelectedProfiles] = useState<string[]>([]);
   const [adminMessage, setAdminMessage] = useState("");
   const [messageDialogOpen, setMessageDialogOpen] = useState(false);
+  const [userTypeFilter, setUserTypeFilter] = useState<string>('');
+  const [activeTab, setActiveTab] = useState('messages');
   const fetchedRef = useRef(false);
+
+  // Parse URL parameters on load
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const tabParam = params.get('tab');
+    const typeParam = params.get('type');
+    
+    if (tabParam) {
+      setActiveTab(tabParam);
+    }
+    if (typeParam) {
+      setUserTypeFilter(typeParam);
+    }
+  }, []);
 
   // Compute isAdmin once to avoid re-renders
   const isAdmin = useMemo(() => !authLoading && hasRole('admin'), [hasRole, authLoading]);
@@ -114,11 +130,11 @@ const AdminModeration = () => {
     return profileMap;
   };
 
-  // Don't redirect immediately - wait for auth to load
+  // Fetch data when auth is ready and user is admin
   useEffect(() => {
-    if (!authLoading && !hasRole('admin')) {
-      window.location.href = '/dashboard';
-      return;
+    if (!authLoading && hasRole('admin') && !fetchedRef.current) {
+      fetchedRef.current = true;
+      fetchData();
     }
   }, [hasRole, authLoading]);
 
@@ -360,6 +376,59 @@ const AdminModeration = () => {
     }
   };
 
+  // Toggle profile public status
+  const handleToggleProfilePublic = async (profileId: string, currentStatus: boolean) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .update({ is_public: !currentStatus })
+        .eq('id', profileId);
+
+      if (error) throw error;
+      
+      toast({ 
+        title: "Succès", 
+        description: `Profil ${!currentStatus ? 'activé' : 'désactivé'} avec succès` 
+      });
+      fetchData();
+    } catch (error) {
+      console.error('Error toggling profile status:', error);
+      toast({ 
+        title: "Erreur", 
+        description: "Impossible de modifier le statut du profil", 
+        variant: "destructive" 
+      });
+    }
+  };
+
+  // Delete profile
+  const handleDeleteProfile = async (profileId: string) => {
+    try {
+      const { error } = await supabase
+        .from('profiles')
+        .delete()
+        .eq('id', profileId);
+
+      if (error) throw error;
+      
+      toast({ title: "Succès", description: "Profil supprimé avec succès" });
+      fetchData();
+    } catch (error) {
+      console.error('Error deleting profile:', error);
+      toast({ 
+        title: "Erreur", 
+        description: "Impossible de supprimer le profil", 
+        variant: "destructive" 
+      });
+    }
+  };
+
+  // Filter profiles by type
+  const filteredProfiles = useMemo(() => {
+    if (!userTypeFilter) return profiles;
+    return profiles.filter(profile => profile.profile_type === userTypeFilter);
+  }, [profiles, userTypeFilter]);
+
 
   if (authLoading) {
     return (
@@ -519,12 +588,12 @@ const AdminModeration = () => {
         </Dialog>
       </div>
 
-      <Tabs defaultValue="messages" className="space-y-4">
+      <Tabs value={activeTab} onValueChange={setActiveTab} className="space-y-4">
         <TabsList>
           <TabsTrigger value="messages">Messages ({messages.length})</TabsTrigger>
           <TabsTrigger value="events">Événements ({events.length})</TabsTrigger>
           <TabsTrigger value="annonces">Annonces ({annonces.length})</TabsTrigger>
-          <TabsTrigger value="users">Utilisateurs ({profiles.length})</TabsTrigger>
+          <TabsTrigger value="users">Utilisateurs ({filteredProfiles.length}/{profiles.length})</TabsTrigger>
         </TabsList>
 
         <TabsContent value="messages" className="space-y-4">
@@ -747,16 +816,97 @@ const AdminModeration = () => {
             <CardHeader>
               <CardTitle className="flex items-center gap-2">
                 <UserX className="h-5 w-5" />
-                Utilisateurs
+                Gestion des Utilisateurs
               </CardTitle>
               <CardDescription>
-                Gérez tous les utilisateurs de la plateforme
+                Gérez et modérez tous les utilisateurs de la plateforme
               </CardDescription>
             </CardHeader>
-            <CardContent>
+            <CardContent className="space-y-4">
+              {/* Filtres par type */}
+              <div className="flex gap-2 flex-wrap">
+                <Button 
+                  variant={userTypeFilter === '' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserTypeFilter('')}
+                >
+                  Tous ({profiles.length})
+                </Button>
+                <Button 
+                  variant={userTypeFilter === 'artist' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserTypeFilter('artist')}
+                >
+                  Artistes ({profiles.filter(p => p.profile_type === 'artist').length})
+                </Button>
+                <Button 
+                  variant={userTypeFilter === 'lieu' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserTypeFilter('lieu')}
+                >
+                  Lieux ({profiles.filter(p => p.profile_type === 'lieu').length})
+                </Button>
+                <Button 
+                  variant={userTypeFilter === 'agent' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserTypeFilter('agent')}
+                >
+                  Agents ({profiles.filter(p => p.profile_type === 'agent').length})
+                </Button>
+                <Button 
+                  variant={userTypeFilter === 'manager' ? 'default' : 'outline'}
+                  size="sm"
+                  onClick={() => setUserTypeFilter('manager')}
+                >
+                  Managers ({profiles.filter(p => p.profile_type === 'manager').length})
+                </Button>
+              </div>
+
+              {/* Actions en lot */}
+              <div className="flex gap-2 flex-wrap">
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => {
+                    setSelectedProfiles(filteredProfiles.map(p => p.id));
+                  }}
+                >
+                  Sélectionner tout ({filteredProfiles.length})
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setSelectedProfiles([])}
+                >
+                  Déselectionner
+                </Button>
+                <Button 
+                  variant="outline" 
+                  size="sm"
+                  onClick={() => setMessageDialogOpen(true)}
+                  disabled={selectedProfiles.length === 0}
+                >
+                  <Send className="h-4 w-4 mr-2" />
+                  Message ({selectedProfiles.length})
+                </Button>
+              </div>
+
               <Table>
                 <TableHeader>
                   <TableRow>
+                    <TableHead className="w-12">
+                      <input 
+                        type="checkbox" 
+                        checked={selectedProfiles.length > 0 && selectedProfiles.length === filteredProfiles.length}
+                        onChange={(e) => {
+                          if (e.target.checked) {
+                            setSelectedProfiles(filteredProfiles.map(p => p.id));
+                          } else {
+                            setSelectedProfiles([]);
+                          }
+                        }}
+                      />
+                    </TableHead>
                     <TableHead>Nom</TableHead>
                     <TableHead>Type</TableHead>
                     <TableHead>Statut</TableHead>
@@ -765,8 +915,15 @@ const AdminModeration = () => {
                   </TableRow>
                 </TableHeader>
                 <TableBody>
-                  {profiles.map((profile) => (
+                  {filteredProfiles.map((profile) => (
                     <TableRow key={profile.id}>
+                      <TableCell>
+                        <input
+                          type="checkbox"
+                          checked={selectedProfiles.includes(profile.id)}
+                          onChange={() => toggleProfileSelection(profile.id)}
+                        />
+                      </TableCell>
                       <TableCell className="font-medium">{profile.display_name}</TableCell>
                       <TableCell>
                         <Badge variant="outline">
@@ -782,16 +939,56 @@ const AdminModeration = () => {
                         {formatDistanceToNow(new Date(profile.created_at), { addSuffix: true, locale: fr })}
                       </TableCell>
                       <TableCell>
-                        <Button 
-                          variant="outline" 
-                          size="sm"
-                          onClick={() => {
-                            setSelectedProfiles([profile.id]);
-                            setMessageDialogOpen(true);
-                          }}
-                        >
-                          <Send className="h-4 w-4" />
-                        </Button>
+                        <div className="flex gap-1">
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              window.open(`/artist/${profile.id}`, '_blank');
+                            }}
+                          >
+                            <Eye className="h-3 w-3" />
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => handleToggleProfilePublic(profile.id, profile.is_public)}
+                            title={profile.is_public ? 'Désactiver le profil' : 'Activer le profil'}
+                          >
+                            {profile.is_public ? '🔒' : '🔓'}
+                          </Button>
+                          <Button 
+                            variant="outline" 
+                            size="sm"
+                            onClick={() => {
+                              setSelectedProfiles([profile.id]);
+                              setMessageDialogOpen(true);
+                            }}
+                          >
+                            <Send className="h-3 w-3" />
+                          </Button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <Button variant="outline" size="sm">
+                                <Trash2 className="h-3 w-3" />
+                              </Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent>
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Supprimer ce profil ?</AlertDialogTitle>
+                                <AlertDialogDescription>
+                                  Cette action est irréversible. Le profil "{profile.display_name}" sera définitivement supprimé.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel>Annuler</AlertDialogCancel>
+                                <AlertDialogAction onClick={() => handleDeleteProfile(profile.id)}>
+                                  Supprimer
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
                       </TableCell>
                     </TableRow>
                   ))}

@@ -276,16 +276,53 @@ export default function AdminDashboard() {
           {/* Existing users content */}
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             {Object.entries(stats?.usersByType || {}).map(([type, count]) => (
-              <Card key={type}>
-                <CardHeader>
-                  <CardTitle className="capitalize">{type}s</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div className="text-3xl font-bold">{count}</div>
-                </CardContent>
+              <Card key={type} className="hover:shadow-md transition-shadow cursor-pointer">
+                <Link to={`/admin/moderation?tab=users&type=${type}`} className="block">
+                  <CardHeader>
+                    <CardTitle className="capitalize flex items-center gap-2">
+                      <Users className="h-5 w-5" />
+                      {type}s
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="text-3xl font-bold">{count}</div>
+                    <p className="text-sm text-muted-foreground">
+                      Cliquer pour gérer
+                    </p>
+                  </CardContent>
+                </Link>
               </Card>
             ))}
           </div>
+
+          {/* Quick actions for user management */}
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Shield className="h-5 w-5" />
+                Gestion Utilisateurs
+              </CardTitle>
+              <CardDescription>
+                Actions rapides pour administrer les comptes utilisateurs
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid gap-2 md:grid-cols-2">
+                <Button asChild variant="outline">
+                  <Link to="/admin/moderation?tab=users">
+                    <Users className="h-4 w-4 mr-2" />
+                    Tous les Utilisateurs
+                  </Link>
+                </Button>
+                <Button asChild variant="outline">
+                  <Link to="/admin/moderation?tab=users&type=artist">
+                    <Users className="h-4 w-4 mr-2" />
+                    Artistes Uniquement
+                  </Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </TabsContent>
 
         <TabsContent value="content" className="space-y-6">
