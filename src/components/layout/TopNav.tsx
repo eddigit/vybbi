@@ -20,7 +20,8 @@ import {
   MessageCircle,
   BookOpen,
   Link as LinkIcon,
-  Hash
+  Hash,
+  Radio
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -35,6 +36,7 @@ import { Button } from "@/components/ui/button";
 const artistItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artists", url: "/artists", icon: Music },
+  { title: "Web TV", url: "/webtv", icon: Radio },
   { title: "Recherche Avancée", url: "/recherche-avancee", icon: UserSearch },
   { title: "Agents", url: "/profiles?type=agent", icon: UserSearch },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
@@ -46,6 +48,7 @@ const artistItems = [
 const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
+  { title: "Web TV", url: "/webtv", icon: Radio },
   { title: "Recherche IA", url: "/recherche-avancee", icon: UserSearch },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
@@ -57,6 +60,7 @@ const getAgentItems = (profileId: string) => [
 const getManagerItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Partenaires", url: "/partners", icon: Users },
+  { title: "Web TV", url: "/webtv", icon: Radio },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Campagnes", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
@@ -69,6 +73,7 @@ const getManagerItems = (profileId: string) => [
 const getLieuItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
+  { title: "Web TV", url: "/webtv", icon: Radio },
   { title: "Recherche IA", url: "/recherche-avancee", icon: UserSearch },
   { title: "Agents", url: "/profiles?type=agent", icon: UserSearch },
   { title: "Lieux", url: "/lieux", icon: MapPin },
@@ -109,6 +114,7 @@ export function TopNav() {
   const publicItems = !profile ? [
     { title: "Top Artistes", url: "/top-artistes" },
     { title: "Nos Artistes", url: "/artists" },
+    { title: "Web TV", url: "/webtv" },
     { title: "Nos Partenaires", url: "/partners" },
     { title: "Nos Lieux", url: "/lieux" },
     { title: "À propos", url: "/a-propos" },

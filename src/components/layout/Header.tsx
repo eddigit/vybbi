@@ -1,7 +1,7 @@
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
-import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -145,6 +145,12 @@ export function Header() {
                   <Link to="/annonces" className="flex items-center">
                     <Megaphone className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="text-sm"><AutoTranslate text="Annonces" /></span>
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link to="/webtv" className="flex items-center">
+                    <Radio className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
+                    <span className="text-sm"><AutoTranslate text="Web TV" /></span>
                   </Link>
                 </DropdownMenuItem>
 
