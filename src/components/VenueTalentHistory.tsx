@@ -8,6 +8,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { fr } from 'date-fns/locale';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 interface ArtistHistory {
   id: string;
@@ -168,7 +169,7 @@ export function VenueTalentHistory({ venueProfileId }: VenueTalentHistoryProps) 
                 )}
                 
                 <Button asChild size="sm" variant="outline" className="h-6 text-xs w-full">
-                  <Link to={`/artists/${history.artist.id}`}>
+                  <Link to={getProfileUrl(history.artist)}>
                     Voir le profil
                   </Link>
                 </Button>

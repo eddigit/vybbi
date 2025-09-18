@@ -15,6 +15,7 @@ import {
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 export function MobileTabBar() {
   const location = useLocation();
@@ -34,7 +35,7 @@ export function MobileTabBar() {
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Communautés", href: "/communities", icon: Hash },
-          { name: "Profil", href: `/artists/${profile.id}`, icon: User },
+          { name: "Profil", href: getProfileUrl(profile), icon: User },
         ];
       case 'agent':
         return [

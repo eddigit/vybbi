@@ -8,6 +8,7 @@ import { MapPin, ExternalLink, MessageSquare, Star, Users, Briefcase, Mail, Phon
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 interface PartnerProfileProps {
   partnerId?: string;
@@ -224,7 +225,7 @@ export default function PartnerProfile({ partnerId }: PartnerProfileProps) {
                           )}
                         </div>
                         <Button size="sm" variant="outline" asChild>
-                          <Link to={`/artists/${artist.id}`}>Voir</Link>
+                          <Link to={getProfileUrl(artist)}>Voir</Link>
                         </Button>
                       </div>
                     </div>

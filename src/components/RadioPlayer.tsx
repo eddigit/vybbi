@@ -4,6 +4,7 @@ import { Slider } from "@/components/ui/slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
 import { Link, useLocation } from "react-router-dom";
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 export function RadioPlayer() {
   const location = useLocation();
@@ -72,7 +73,7 @@ export function RadioPlayer() {
                       {currentTrack.title}
                     </p>
                     <Link
-                      to={`/artists/${currentTrack.artist.id}`}
+                      to={`/artistes/${currentTrack.artist.id}`}
                       className="hidden sm:flex flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
                       aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
                     >

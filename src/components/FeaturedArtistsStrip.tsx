@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 interface FeaturedArtistsStripProps {
   className?: string;
@@ -74,7 +75,7 @@ export default function FeaturedArtistsStrip({ className }: FeaturedArtistsStrip
               {featuredArtists.map((artist) => (
                 <Link
                   key={artist.id}
-                  to={`/artists/${artist.id}`}
+                  to={getProfileUrl(artist)}
                   className="flex-shrink-0 group"
                 >
                   <div className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-white/50 transition-colors">

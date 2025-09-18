@@ -10,6 +10,7 @@ import { MapPin, Star, Music, Users, Calendar } from "lucide-react";
 import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
+import { getProfileUrl } from '@/hooks/useProfileResolver';
 
 export default function Profiles() {
   const { user } = useAuth();
@@ -260,12 +261,7 @@ export default function Profiles() {
               
               <div className="flex gap-2">
                 <Button size="sm" className="flex-1" asChild>
-                  <Link to={
-                    profile.profile_type === 'artist' ? `/artists/${profile.id}` :
-                    ['agent', 'manager', 'academie', 'sponsors', 'media', 'agence', 'influenceur'].includes(profile.profile_type) ? `/partners/${profile.id}` :
-                    profile.profile_type === 'lieu' ? `/lieux/${profile.id}` :
-                    `/profiles/${profile.id}`
-                  }>
+                  <Link to={getProfileUrl(profile)}>
                     Voir le profil
                   </Link>
                 </Button>

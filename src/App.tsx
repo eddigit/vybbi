@@ -4,7 +4,7 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { BrowserRouter, Routes, Route, useLocation, useNavigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation, useNavigate, Navigate } from "react-router-dom";
 import { HelmetProvider } from "react-helmet-async";
 import { useEffect } from "react";
 import { Layout } from "@/components/layout/Layout";
@@ -151,12 +151,12 @@ const App = () => (
                       <Route path="/lieux/:slug" element={<VenueProfileBySlug />} />
                       <Route path="/partners/:slug" element={<PartnerProfileBySlug />} />
                       
-                      {/* Legacy UUID URLs for backwards compatibility */}
-                      <Route path="/artists/:id" element={<ArtistProfile />} />
-                      <Route path="/lieux/:id" element={<VenueProfile />} />
-                      <Route path="/partners/:id" element={<PartnerProfile />} />
-                      <Route path="/agents/:id" element={<PartnerProfile />} />
-                      <Route path="/managers/:id" element={<PartnerProfile />} />
+        // Améliorer les routes pour rediriger automatiquement les anciennes URLs vers les slugs
+        <Route path="/artists/:id" element={<Navigate to="/artistes" replace />} />
+        <Route path="/lieux/:id" element={<Navigate to="/lieux" replace />} />
+        <Route path="/partners/:id" element={<Navigate to="/partners" replace />} />
+        <Route path="/agents/:id" element={<Navigate to="/partners" replace />} />
+        <Route path="/managers/:id" element={<Navigate to="/partners" replace />} />
                       
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/partners" element={<Partners />} />
