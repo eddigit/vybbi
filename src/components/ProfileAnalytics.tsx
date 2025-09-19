@@ -81,15 +81,15 @@ export function ProfileAnalytics({ profileId, className = '' }: ProfileAnalytics
       <CardContent className="space-y-4">
         {/* Main Metrics */}
         <div className="grid grid-cols-2 gap-3">
-          <div className="text-center p-3 bg-white/50 dark:bg-white/5 rounded-lg">
-            <div className="flex items-center justify-center gap-1 text-blue-600 dark:text-blue-400 mb-1">
+          <div className="text-center p-3 bg-secondary/50 rounded-lg">
+            <div className="flex items-center justify-center gap-1 text-blue-400 mb-1">
               <Eye className="h-4 w-4" />
             </div>
             <div className="text-2xl font-bold text-foreground">{totalViews}</div>
             <div className="text-xs text-muted-foreground">Vues totales</div>
           </div>
-          <div className="text-center p-3 bg-white/50 dark:bg-white/5 rounded-lg">
-            <div className="flex items-center justify-center gap-1 text-green-600 dark:text-green-400 mb-1">
+          <div className="text-center p-3 bg-secondary/50 rounded-lg">
+            <div className="flex items-center justify-center gap-1 text-green-400 mb-1">
               <Users className="h-4 w-4" />
             </div>
             <div className="text-2xl font-bold text-foreground">{stats.unique_visitors}</div>

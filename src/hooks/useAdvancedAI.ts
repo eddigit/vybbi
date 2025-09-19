@@ -255,7 +255,7 @@ export function useAdvancedAI(agentId?: string) {
     // Estimation du temps de conversion
     const timeToConversion = behavioralScore.urgencyLevel > 70 ? 
       Math.max(5, 30 - (behavioralScore.urgencyLevel - 70)) :
-      Math.max(15, 60 - behavioralScore.engagementPattern === 'high' ? 20 : 0);
+      Math.max(15, 60 - (behavioralScore.engagementPattern === 'high' ? 20 : 0));
 
     // Nombre optimal de touchpoints
     const optimalTouchpoints = behavioralScore.engagementPattern === 'high' ? 
@@ -336,7 +336,7 @@ export function useAdvancedAI(agentId?: string) {
         const recommendations = generatePersonalizedRecommendations(
           prospect, 
           behavioralScore, 
-          prospect.agent?.performance_metrics
+          null // Agent performance metrics non disponibles pour l'instant
         );
         
         const prediction = generateMLPredictions(

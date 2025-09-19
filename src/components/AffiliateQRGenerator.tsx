@@ -84,7 +84,7 @@ export const AffiliateQRGenerator = ({ link, open, onOpenChange }: AffiliateQRGe
         <div className="space-y-6">
           {/* QR Code Display */}
           <div className="flex justify-center">
-            <div className="p-4 bg-white rounded-lg border">
+            <div className="p-4 bg-card rounded-lg border border-border">
               <img
                 src={qrCodeUrl}
                 alt="QR Code"

@@ -78,7 +78,7 @@ export default function FeaturedArtistsStrip({ className }: FeaturedArtistsStrip
                   to={getProfileUrl(artist)}
                   className="flex-shrink-0 group"
                 >
-                  <div className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-white/50 transition-colors">
+                  <div className="flex flex-col items-center gap-2 p-2 rounded-lg hover:bg-accent/50 transition-colors">
                     <Avatar className="h-14 w-14 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
                       <AvatarImage 
                         src={artist.avatar_url || ''} 

@@ -235,7 +235,7 @@ export default function PredictiveAnalyticsDashboard() {
           <CardContent>
             <div className="text-3xl font-bold text-secondary">{predictiveMetrics.highConfidenceDeals}</div>
             <p className="text-xs text-muted-foreground">
-              Probabilité > 70%
+              Probabilité &gt; 70%
             </p>
           </CardContent>
         </Card>

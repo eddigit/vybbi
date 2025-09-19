@@ -285,8 +285,8 @@ export default function WhatsAppSender({ isOpen, onClose, selectedProspect, onMe
                     <Phone className="h-4 w-4" />
                     <span className="text-sm font-medium">À: {whatsappNumber}</span>
                   </div>
-                  <div className="whitespace-pre-wrap text-sm bg-white p-3 rounded border">
-                    {getFinalMessage()}
+                    <div className="whitespace-pre-wrap text-sm bg-card p-3 rounded border border-border">
+                      {getFinalMessage()}
                   </div>
                 </div>
                 
