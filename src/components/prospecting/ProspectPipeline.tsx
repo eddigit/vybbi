@@ -3,6 +3,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
+import { useIsMobile } from '@/hooks/use-mobile';
+import { useProspects } from '@/hooks/useProspects';
+import { addHapticFeedback } from '@/utils/mobileHelpers';
 import { 
   LayoutGrid, 
   BarChart3, 
@@ -11,15 +14,20 @@ import {
   Filter,
   Download,
   Settings,
-  Zap
+  Zap,
+  Smartphone
 } from 'lucide-react';
 import ProspectKanbanBoard from './ProspectKanbanBoard';
+import MobileKanbanView from './MobileKanbanView';
 import CommercialDashboard from './CommercialDashboard';
 import ProspectDialog from './ProspectDialog';
 import ProspectingEmailSender from './ProspectingEmailSender';
 import WhatsAppSender from './WhatsAppSender';
 import TaskManager from './TaskManager';
 import HotProspectsDetector from './HotProspectsDetector';
+import OfflineSyncProvider from './OfflineSyncProvider';
+import PullToRefresh from './PullToRefresh';
+import MobileTouchOptimizer from './MobileTouchOptimizer';
 
 // Import from centralized types
 import { SupabaseProspect } from '@/hooks/useProspects';
@@ -29,6 +37,8 @@ interface Prospect extends SupabaseProspect {
 }
 
 export default function ProspectPipeline() {
+  const isMobile = useIsMobile();
+  const { prospects, loading, refetch } = useProspects();
   const [selectedView, setSelectedView] = useState('kanban');
   const [prospectDialogOpen, setProspectDialogOpen] = useState(false);
   const [selectedProspectId, setSelectedProspectId] = useState<string | undefined>();
@@ -56,12 +66,31 @@ export default function ProspectPipeline() {
   };
 
   const handleProspectUpdated = () => {
-    // Refresh data logic here
-    window.location.reload();
+    refetch();
+  };
+
+  const handleRefresh = async () => {
+    addHapticFeedback('light');
+    await refetch();
+  };
+
+  const handleArchiveProspect = (prospect: Prospect) => {
+    // Archive prospect logic
+    addHapticFeedback('medium');
+    console.log('Archiving prospect:', prospect.id);
+  };
+
+  const handleRejectProspect = (prospect: Prospect) => {
+    // Reject prospect logic  
+    addHapticFeedback('heavy');
+    console.log('Rejecting prospect:', prospect.id);
   };
 
   return (
-    <div className="container mx-auto p-4 lg:p-6 space-y-6">
+    <OfflineSyncProvider>
+      <MobileTouchOptimizer>
+        <PullToRefresh onRefresh={handleRefresh} disabled={loading}>
+          <div className="container mx-auto p-4 lg:p-6 space-y-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
@@ -169,20 +198,31 @@ export default function ProspectPipeline() {
             <CardHeader>
               <CardTitle className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
-                  <LayoutGrid className="h-5 w-5" />
-                  Pipeline Visuel
+                  {isMobile ? <Smartphone className="h-5 w-5" /> : <LayoutGrid className="h-5 w-5" />}
+                  Pipeline Visuel {isMobile && '(Mobile)'}
                 </div>
                 <Badge variant="outline" className="hidden md:inline-flex">
-                  Drag & Drop
+                  {isMobile ? 'Swipe Gestures' : 'Drag & Drop'}
                 </Badge>
               </CardTitle>
             </CardHeader>
             <CardContent className="p-2 md:p-6">
-              <ProspectKanbanBoard
-                onProspectSelect={handleProspectSelect}
-                onEmailProspect={handleEmailProspect}
-                onWhatsAppProspect={handleWhatsAppProspect}
-              />
+              {isMobile ? (
+                <MobileKanbanView
+                  prospects={prospects}
+                  onProspectSelect={handleProspectSelect}
+                  onEmailProspect={handleEmailProspect}
+                  onWhatsAppProspect={handleWhatsAppProspect}
+                  onArchiveProspect={handleArchiveProspect}
+                  onRejectProspect={handleRejectProspect}
+                />
+              ) : (
+                <ProspectKanbanBoard
+                  onProspectSelect={handleProspectSelect}
+                  onEmailProspect={handleEmailProspect}
+                  onWhatsAppProspect={handleWhatsAppProspect}
+                />
+              )}
             </CardContent>
           </Card>
         </TabsContent>
@@ -291,6 +331,9 @@ export default function ProspectPipeline() {
           onMessageSent={handleProspectUpdated}
         />
       )}
-    </div>
+          </div>
+        </PullToRefresh>
+      </MobileTouchOptimizer>
+    </OfflineSyncProvider>
   );
 }
