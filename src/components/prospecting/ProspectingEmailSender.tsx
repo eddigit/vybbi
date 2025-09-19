@@ -15,10 +15,11 @@ import { Mail, Eye, Send, User, Building, Loader2 } from "lucide-react";
 interface Prospect {
   id: string;
   contact_name: string;
-  email: string;
+  email?: string;
   company_name?: string;
   prospect_type: string;
   status: string;
+  qualification_score?: number;
 }
 
 interface EmailTemplate {
@@ -148,7 +149,14 @@ export default function ProspectingEmailSender({
   };
 
   const handleSendEmail = async () => {
-    if (!selectedProspect || !selectedTemplate) return;
+    if (!selectedProspect?.email || !selectedTemplate) {
+      toast({
+        title: "Erreur",
+        description: "Email du prospect manquant ou template non sélectionné",
+        variant: "destructive",
+      });
+      return;
+    }
     setIsSending(true);
     try {
       // Send via internal templates
@@ -269,7 +277,7 @@ export default function ProspectingEmailSender({
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4 text-muted-foreground" />
-                  <span className="text-sm">{selectedProspect.email}</span>
+                  <span className="text-sm">{selectedProspect.email || "Pas d'email"}</span>
                 </div>
                 {selectedProspect.company_name && (
                   <div className="flex items-center gap-2">
@@ -409,13 +417,13 @@ export default function ProspectingEmailSender({
                   <Button variant="outline" onClick={() => setActiveTab("customize")}>
                     Retour à la personnalisation
                   </Button>
-                  <Button onClick={handleSendEmail} disabled={isSending} className="flex items-center gap-2">
+                  <Button onClick={handleSendEmail} disabled={isSending || !selectedProspect?.email} className="flex items-center gap-2">
                     {isSending ? (
                       <Loader2 className="h-4 w-4 animate-spin" />
                     ) : (
                       <Send className="h-4 w-4" />
                     )}
-                    {isSending ? 'Envoi en cours...' : "Envoyer l'email"}
+                    {isSending ? 'Envoi en cours...' : !selectedProspect?.email ? "Email manquant" : "Envoyer l'email"}
                   </Button>
                 </div>
               </div>

@@ -50,10 +50,7 @@ export default function ProspectPipeline() {
   const handleEmailProspect = (prospect: Prospect) => {
     if (!prospect.email) return;
     
-    setSelectedProspect({
-      ...prospect,
-      email: prospect.email || ''
-    } as any);
+    setSelectedProspect(prospect);
     setEmailSenderOpen(true);
   };
 
