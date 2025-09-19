@@ -16,6 +16,7 @@ import WhatsAppSender from '@/components/prospecting/WhatsAppSender';
 import WorkflowManager from '@/components/prospecting/WorkflowManager';
 import TaskManager from '@/components/prospecting/TaskManager';
 import HotProspectsDetector from '@/components/prospecting/HotProspectsDetector';
+import ProspectPipeline from '@/components/prospecting/ProspectPipeline';
 import { 
   Users, 
   TrendingUp, 
@@ -68,6 +69,11 @@ interface VybbiAgent {
 }
 
 export default function AdminProspecting() {
+  // Redirect to the new Pipeline interface
+  return <ProspectPipeline />;
+}
+
+function AdminProspectingLegacy() {
   const { user } = useAuth();
   const { toast } = useToast();
   const [stats, setStats] = useState<ProspectingStats>({
