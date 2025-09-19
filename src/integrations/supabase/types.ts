@@ -703,6 +703,135 @@ export type Database = {
           },
         ]
       }
+      automation_executions: {
+        Row: {
+          completed_at: string | null
+          current_step_id: string | null
+          id: string
+          metadata: Json | null
+          prospect_id: string
+          started_at: string | null
+          status: string | null
+          workflow_id: string
+        }
+        Insert: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          id?: string
+          metadata?: Json | null
+          prospect_id: string
+          started_at?: string | null
+          status?: string | null
+          workflow_id: string
+        }
+        Update: {
+          completed_at?: string | null
+          current_step_id?: string | null
+          id?: string
+          metadata?: Json | null
+          prospect_id?: string
+          started_at?: string | null
+          status?: string | null
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_executions_current_step_id_fkey"
+            columns: ["current_step_id"]
+            isOneToOne: false
+            referencedRelation: "automation_steps"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_executions_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "automation_executions_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_steps: {
+        Row: {
+          channel: string
+          conditions: Json | null
+          content: string | null
+          created_at: string | null
+          delay_hours: number | null
+          id: string
+          order_number: number
+          template_id: string | null
+          workflow_id: string
+        }
+        Insert: {
+          channel: string
+          conditions?: Json | null
+          content?: string | null
+          created_at?: string | null
+          delay_hours?: number | null
+          id?: string
+          order_number: number
+          template_id?: string | null
+          workflow_id: string
+        }
+        Update: {
+          channel?: string
+          conditions?: Json | null
+          content?: string | null
+          created_at?: string | null
+          delay_hours?: number | null
+          id?: string
+          order_number?: number
+          template_id?: string | null
+          workflow_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "automation_steps_workflow_id_fkey"
+            columns: ["workflow_id"]
+            isOneToOne: false
+            referencedRelation: "automation_workflows"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      automation_workflows: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          is_active: boolean | null
+          name: string
+          trigger_type: string
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          trigger_type: string
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          trigger_type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       availability_slots: {
         Row: {
           artist_profile_id: string
@@ -1532,6 +1661,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      integrations: {
+        Row: {
+          config: Json | null
+          created_at: string | null
+          id: string
+          is_active: boolean | null
+          last_sync_at: string | null
+          name: string
+          status: string | null
+          type: string
+          updated_at: string | null
+        }
+        Insert: {
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          name: string
+          status?: string | null
+          type: string
+          updated_at?: string | null
+        }
+        Update: {
+          config?: Json | null
+          created_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          last_sync_at?: string | null
+          name?: string
+          status?: string | null
+          type?: string
+          updated_at?: string | null
+        }
+        Relationships: []
       }
       manager_artists: {
         Row: {
@@ -2457,6 +2622,56 @@ export type Database = {
           },
           {
             foreignKeyName: "prospect_interactions_prospect_id_fkey"
+            columns: ["prospect_id"]
+            isOneToOne: false
+            referencedRelation: "prospects"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      prospect_meetings: {
+        Row: {
+          agenda: string | null
+          created_at: string | null
+          duration: number | null
+          id: string
+          location: string | null
+          meeting_time: string
+          meeting_type: string
+          notes: string | null
+          prospect_id: string
+          status: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          agenda?: string | null
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          location?: string | null
+          meeting_time: string
+          meeting_type?: string
+          notes?: string | null
+          prospect_id: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          agenda?: string | null
+          created_at?: string | null
+          duration?: number | null
+          id?: string
+          location?: string | null
+          meeting_time?: string
+          meeting_type?: string
+          notes?: string | null
+          prospect_id?: string
+          status?: string | null
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "prospect_meetings_prospect_id_fkey"
             columns: ["prospect_id"]
             isOneToOne: false
             referencedRelation: "prospects"
@@ -3546,6 +3761,80 @@ export type Database = {
         }
         Relationships: []
       }
+      webhook_deliveries: {
+        Row: {
+          delivered_at: string | null
+          event_type: string
+          id: string
+          payload: Json
+          response_body: string | null
+          response_status: number | null
+          success: boolean | null
+          webhook_id: string
+        }
+        Insert: {
+          delivered_at?: string | null
+          event_type: string
+          id?: string
+          payload: Json
+          response_body?: string | null
+          response_status?: number | null
+          success?: boolean | null
+          webhook_id: string
+        }
+        Update: {
+          delivered_at?: string | null
+          event_type?: string
+          id?: string
+          payload?: Json
+          response_body?: string | null
+          response_status?: number | null
+          success?: boolean | null
+          webhook_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "webhook_deliveries_webhook_id_fkey"
+            columns: ["webhook_id"]
+            isOneToOne: false
+            referencedRelation: "webhook_subscriptions"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      webhook_subscriptions: {
+        Row: {
+          created_at: string | null
+          events: string[]
+          headers: Json | null
+          id: string
+          is_active: boolean | null
+          name: string
+          updated_at: string | null
+          url: string
+        }
+        Insert: {
+          created_at?: string | null
+          events: string[]
+          headers?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name: string
+          updated_at?: string | null
+          url: string
+        }
+        Update: {
+          created_at?: string | null
+          events?: string[]
+          headers?: Json | null
+          id?: string
+          is_active?: boolean | null
+          name?: string
+          updated_at?: string | null
+          url?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       safe_profiles: {
@@ -4209,6 +4498,7 @@ export type Database = {
         | "converted"
         | "rejected"
         | "unresponsive"
+        | "meeting_scheduled"
       prospect_type: "artist" | "venue" | "agent" | "manager"
       representation_status: "pending" | "accepted" | "rejected" | "revoked"
       roadmap_item_status:
@@ -4400,6 +4690,7 @@ export const Constants = {
         "converted",
         "rejected",
         "unresponsive",
+        "meeting_scheduled",
       ],
       prospect_type: ["artist", "venue", "agent", "manager"],
       representation_status: ["pending", "accepted", "rejected", "revoked"],

@@ -147,7 +147,10 @@ function AdminProspectingLegacy() {
         activeAgents: agentsData?.length || 0
       });
 
-      setProspects(prospectsData || []);
+        setProspects((prospectsData || []).map(p => ({
+          ...p,
+          status: p.status === 'meeting_scheduled' ? 'qualified' : p.status
+        })) as Prospect[]);
       setAgents(agentsData || []);
 
     } catch (error) {
