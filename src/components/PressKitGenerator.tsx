@@ -56,22 +56,34 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
     
     try {
       toast({
-        title: "Génération en cours...",
-        description: "Création du PDF professionnel, veuillez patienter.",
+        title: "Génération Vybbi Press Kit...",
+        description: "Création du PDF professionnel haute qualité, veuillez patienter.",
       });
 
-      // Configuration pour une qualité optimale
+      // Configuration optimisée pour le thème dark Vybbi
       const canvas = await html2canvas(templateRef.current, {
-        scale: 2,
+        scale: 3, // Qualité maximum pour impression professionnelle
         useCORS: true,
-        allowTaint: true,
-        backgroundColor: '#ffffff',
+        allowTaint: false,
+        backgroundColor: null, // Respecter le CSS natif (thème dark)
         logging: false,
+        removeContainer: true,
+        foreignObjectRendering: true,
         width: templateRef.current.scrollWidth,
-        height: templateRef.current.scrollHeight
+        height: templateRef.current.scrollHeight,
+        windowWidth: 1200, // Simule un écran large pour meilleur rendu
+        windowHeight: 1600,
+        imageTimeout: 15000, // Plus de temps pour charger les images
+        onclone: (clonedDoc) => {
+          // Optimisations pour le document cloné
+          const clonedElement = clonedDoc.querySelector('[data-html2canvas-ignore]');
+          if (clonedElement) {
+            (clonedElement as HTMLElement).style.display = 'none';
+          }
+        }
       });
 
-      // Créer le PDF avec jsPDF
+      // Créer le PDF avec métadonnées Vybbi
       const pdf = new jsPDF({
         orientation: 'portrait',
         unit: 'mm',
@@ -79,22 +91,34 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
         compress: true
       });
 
-      // Calculer les dimensions pour ajuster à la page A4
+      // Métadonnées PDF professionnelles
+      pdf.setProperties({
+        title: `${profileData.display_name} - Press Kit Vybbi`,
+        subject: `Press Kit professionnel de ${profileData.display_name} - Généré par Vybbi`,
+        author: 'Vybbi Platform',
+        keywords: `${profileData.display_name}, press kit, artist, music, vybbi, ${profileData.genres?.join(', ') || ''}`,
+        creator: 'Vybbi - Platform for Artists & Venues'
+      });
+
+      // Calculer les dimensions pour ajuster parfaitement à A4
       const imgWidth = 210; // A4 width in mm
       const pageHeight = 297; // A4 height in mm
       const imgHeight = (canvas.height * imgWidth) / canvas.width;
       
       let heightLeft = imgHeight;
       let position = 0;
+      let pageNumber = 1;
 
-      // Ajouter la première page
+      // Ajouter la première page avec qualité optimale
       pdf.addImage(
-        canvas.toDataURL('image/jpeg', 0.95),
-        'JPEG',
+        canvas.toDataURL('image/png', 1.0), // PNG qualité maximale
+        'PNG',
         0,
         position,
         imgWidth,
-        imgHeight
+        imgHeight,
+        undefined,
+        'FAST' // Compression rapide mais qualité préservée
       );
       heightLeft -= pageHeight;
 
@@ -102,31 +126,38 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
       while (heightLeft >= 0) {
         position = heightLeft - imgHeight;
         pdf.addPage();
+        pageNumber++;
+        
         pdf.addImage(
-          canvas.toDataURL('image/jpeg', 0.95),
-          'JPEG',
+          canvas.toDataURL('image/png', 1.0),
+          'PNG',
           0,
           position,
           imgWidth,
-          imgHeight
+          imgHeight,
+          undefined,
+          'FAST'
         );
         heightLeft -= pageHeight;
       }
 
+      // Nom de fichier professionnel avec timestamp
+      const timestamp = new Date().toISOString().split('T')[0];
+      const fileName = `${profileData.display_name.replace(/[^a-zA-Z0-9]/g, '_')}_PressKit_Vybbi_${timestamp}.pdf`;
+      
       // Télécharger le PDF
-      const fileName = `${profileData.display_name.replace(/[^a-zA-Z0-9]/g, '_')}_PressKit.pdf`;
       pdf.save(fileName);
       
       toast({
-        title: "Press Kit généré avec succès !",
-        description: "Votre press kit professionnel a été téléchargé.",
+        title: "Press Kit Vybbi généré avec succès !",
+        description: `${fileName} - PDF professionnel haute qualité prêt à partager.`,
       });
       
     } catch (error) {
-      console.error('Erreur génération PDF:', error);
+      console.error('Erreur génération Press Kit Vybbi:', error);
       toast({
-        title: "Erreur",
-        description: "Impossible de générer le press kit. Veuillez réessayer.",
+        title: "Erreur génération Press Kit",
+        description: "Impossible de générer le press kit Vybbi. Veuillez vérifier vos photos et réessayer.",
         variant: "destructive"
       });
     } finally {
@@ -154,9 +185,9 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
       <DialogContent className="sm:max-w-[500px]">
         <DialogHeader>
           <DialogTitle>Générateur de Press Kit</DialogTitle>
-          <DialogDescription>
-            Créez un press kit professionnel pour promouvoir votre musique auprès des organisateurs et médias.
-          </DialogDescription>
+            <DialogDescription>
+              Créez un press kit professionnel Vybbi pour promouvoir votre musique auprès des organisateurs, médias et professionnels de l'industrie musicale.
+            </DialogDescription>
         </DialogHeader>
         
         <div className="space-y-4">
@@ -193,10 +224,11 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
               <div className="text-sm">
                 <div className="font-medium mb-1">Aperçu du contenu :</div>
                 <ul className="text-xs text-muted-foreground space-y-1">
-                  <li>• Format PDF professionnel haute qualité</li>
-                  <li>• Design aux couleurs de votre marque</li>
-                  <li>• Prêt pour impression et envoi digital</li>
+                  <li>• PDF haute qualité avec thème dark Vybbi</li>
+                  <li>• Design professionnel aux couleurs de la marque</li>
+                  <li>• Optimisé pour impression et partage digital</li>
                   <li>• Conforme aux standards de l'industrie musicale</li>
+                  <li>• Toutes vos informations et médias inclus</li>
                 </ul>
               </div>
             </CardContent>
@@ -232,10 +264,10 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
           </div>
 
           {showPreview && (
-            <div className="mt-6 border rounded-lg overflow-hidden bg-gray-50">
-              <div className="p-4 bg-muted text-center">
+            <div className="mt-6 border rounded-lg overflow-hidden" style={{ backgroundColor: 'hsl(220 13% 9%)' }}>
+              <div className="p-4 bg-muted/30 text-center border-b border-border">
                 <p className="text-sm text-muted-foreground">
-                  Aperçu du Press Kit - Le PDF final aura une qualité optimale
+                  Aperçu du Press Kit Vybbi - Le PDF final aura une qualité optimale
                 </p>
               </div>
               <div className="max-h-96 overflow-y-auto">
