@@ -21,17 +21,11 @@ import WhatsAppSender from './WhatsAppSender';
 import TaskManager from './TaskManager';
 import HotProspectsDetector from './HotProspectsDetector';
 
-interface Prospect {
-  id: string;
-  contact_name: string;
-  company_name?: string;
-  email?: string;
-  phone?: string;
-  whatsapp_number?: string;
-  prospect_type: string;
-  status: string;
-  qualification_score: number;
-  estimated_budget?: number;
+// Import from centralized types
+import { SupabaseProspect } from '@/hooks/useProspects';
+
+interface Prospect extends SupabaseProspect {
+  // Keep backward compatibility with old interface
 }
 
 export default function ProspectPipeline() {
@@ -57,17 +51,7 @@ export default function ProspectPipeline() {
   const handleWhatsAppProspect = (prospect: Prospect) => {
     if (!prospect.whatsapp_number && !prospect.phone) return;
     
-    setSelectedProspect({
-      id: prospect.id,
-      contact_name: prospect.contact_name,
-      email: prospect.email,
-      phone: prospect.phone,
-      whatsapp_number: prospect.whatsapp_number,
-      company_name: prospect.company_name,
-      prospect_type: prospect.prospect_type,
-      status: prospect.status,
-      qualification_score: prospect.qualification_score
-    });
+    setSelectedProspect(prospect as any);
     setWhatsappSenderOpen(true);
   };
 

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { supabase } from '@/integrations/supabase/client';
-import { useToast } from '@/hooks/use-toast';
+import { useProspects, SupabaseProspect } from '@/hooks/useProspects';
 import { 
   User, 
   Building, 
@@ -28,22 +27,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 
-interface Prospect {
-  id: string;
-  contact_name: string;
-  company_name?: string;
-  email?: string;
-  phone?: string;
-  prospect_type: string;
-  status: 'new' | 'contacted' | 'qualified' | 'proposition' | 'negotiation' | 'converted' | 'rejected' | 'unresponsive' | 'interested';
-  qualification_score: number;
-  estimated_budget?: number;
-  priority_level?: 'low' | 'medium' | 'high' | 'critical';
-  last_contact_at?: string;
-  next_follow_up_at?: string;
-  created_at: string;
-  assigned_agent_id?: string;
-}
+// Use the Supabase prospect type
+type Prospect = SupabaseProspect;
 
 interface KanbanColumn {
   id: string;
@@ -109,35 +94,8 @@ export default function ProspectKanbanBoard({
   onEmailProspect, 
   onWhatsAppProspect 
 }: ProspectKanbanBoardProps) {
-  const [prospects, setProspects] = useState<Prospect[]>([]);
-  const [loading, setLoading] = useState(true);
-  const { toast } = useToast();
-
-  useEffect(() => {
-    loadProspects();
-  }, []);
-
-  const loadProspects = async () => {
-    try {
-      setLoading(true);
-      const { data, error } = await supabase
-        .from('prospects')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-      setProspects((data || []) as Prospect[]);
-    } catch (error) {
-      console.error('Error loading prospects:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de charger les prospects",
-        variant: "destructive",
-      });
-    } finally {
-      setLoading(false);
-    }
-  };
+  // Use the optimized hook
+  const { prospects, loading, updateProspectStatus } = useProspects();
 
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
@@ -147,43 +105,19 @@ export default function ProspectKanbanBoard({
     
     if (!targetColumn) return;
 
-    const newStatus = targetColumn.status[0] as Prospect['status']; // Use first status in column
+    const newStatus = targetColumn.status[0]; // Use first status in column
     
-    try {
-        const { error } = await supabase
-          .from('prospects')
-          .update({ status: newStatus as any })
-          .eq('id', draggableId);
-
-      if (error) throw error;
-
-        setProspects(prev => 
-          prev.map(prospect => 
-            prospect.id === draggableId 
-              ? { ...prospect, status: newStatus as any }
-              : prospect
-          )
-        );
-
-      toast({
-        title: "Prospect mis à jour",
-        description: `Statut changé vers "${targetColumn.title}"`,
-      });
-    } catch (error) {
-      console.error('Error updating prospect:', error);
-      toast({
-        title: "Erreur",
-        description: "Impossible de mettre à jour le prospect",
-        variant: "destructive",
-      });
-    }
+    // Use the hook's update function
+    await updateProspectStatus(draggableId, newStatus);
   };
 
   const getProspectsForColumn = (columnStatuses: string[]) => {
     return prospects.filter(prospect => columnStatuses.includes(prospect.status));
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityColor = (priority?: string) => {
+    if (!priority) return 'bg-gray-500';
+    
     const colors = {
       critical: 'bg-red-500',
       high: 'bg-orange-500',
@@ -312,10 +246,10 @@ export default function ProspectKanbanBoard({
                                   <div className="mb-2">
                                     <div className="flex items-center justify-between text-xs mb-1">
                                       <span>Qualification</span>
-                                      <span>{prospect.qualification_score}%</span>
+                                      <span>{prospect.qualification_score || 0}%</span>
                                     </div>
                                     <Progress 
-                                      value={prospect.qualification_score} 
+                                      value={prospect.qualification_score || 0} 
                                       className="h-1" 
                                     />
                                   </div>
