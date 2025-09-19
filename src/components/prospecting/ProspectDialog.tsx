@@ -40,7 +40,7 @@ interface Prospect {
   youtube_url?: string;
   facebook_url?: string;
   social_media?: any;
-  status: 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive';
+  status: 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive' | 'meeting_scheduled';
   qualification_score: number;
   influence_score?: number;
   priority_level?: 'low' | 'medium' | 'high' | 'critical';

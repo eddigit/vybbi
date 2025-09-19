@@ -50,7 +50,7 @@ interface Prospect {
   email?: string;
   phone?: string;
   whatsapp_number?: string;
-  status: 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive';
+  status: 'new' | 'contacted' | 'qualified' | 'interested' | 'converted' | 'rejected' | 'unresponsive' | 'meeting_scheduled';
   qualification_score: number;
   assigned_agent_id?: string;
   last_contact_at?: string;
