@@ -4,7 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { useIsMobile } from '@/hooks/use-mobile';
-import { useProspects } from '@/hooks/useProspects';
+import { useProspects, ProspectFilters as FilterType } from '@/hooks/useProspects';
 import { addHapticFeedback } from '@/utils/mobileHelpers';
 import { 
   LayoutGrid, 
@@ -15,7 +15,9 @@ import {
   Download,
   Settings,
   Zap,
-  Smartphone
+  Smartphone,
+  List,
+  Search
 } from 'lucide-react';
 import ProspectKanbanBoard from './ProspectKanbanBoard';
 import MobileKanbanView from './MobileKanbanView';
@@ -28,6 +30,10 @@ import HotProspectsDetector from './HotProspectsDetector';
 import OfflineSyncProvider from './OfflineSyncProvider';
 import PullToRefresh from './PullToRefresh';
 import MobileTouchOptimizer from './MobileTouchOptimizer';
+import ProspectFilters from './ProspectFilters';
+import BulkActionsPanel from './BulkActionsPanel';
+import IntelligentSearch from './IntelligentSearch';
+import ListView from './ListView';
 
 // Import from centralized types
 import { SupabaseProspect } from '@/hooks/useProspects';
@@ -38,13 +44,18 @@ interface Prospect extends SupabaseProspect {
 
 export default function ProspectPipeline() {
   const isMobile = useIsMobile();
-  const { prospects, loading, refetch } = useProspects();
+  const [filters, setFilters] = useState<FilterType>({});
+  const [searchQuery, setSearchQuery] = useState('');
+  const [filteredProspects, setFilteredProspects] = useState<Prospect[]>([]);
+  const { prospects, loading, refetch } = useProspects(filters);
   const [selectedView, setSelectedView] = useState('kanban');
   const [prospectDialogOpen, setProspectDialogOpen] = useState(false);
   const [selectedProspectId, setSelectedProspectId] = useState<string | undefined>();
   const [emailSenderOpen, setEmailSenderOpen] = useState(false);
   const [whatsappSenderOpen, setWhatsappSenderOpen] = useState(false);
   const [selectedProspect, setSelectedProspect] = useState<Prospect | undefined>();
+  const [selectedProspects, setSelectedProspects] = useState<string[]>([]);
+  const [showFilters, setShowFilters] = useState(false);
 
   const handleProspectSelect = (prospect: Prospect) => {
     setSelectedProspectId(prospect.id);
@@ -86,6 +97,50 @@ export default function ProspectPipeline() {
     console.log('Rejecting prospect:', prospect.id);
   };
 
+  const handleSearchResults = (results: Prospect[]) => {
+    setFilteredProspects(results);
+  };
+
+  const handleSearchChange = (query: string) => {
+    setSearchQuery(query);
+  };
+
+  const handleFiltersChange = (newFilters: FilterType) => {
+    setFilters(newFilters);
+  };
+
+  const handleFiltersReset = () => {
+    setFilters({});
+    setSearchQuery('');
+    setFilteredProspects([]);
+  };
+
+  const handleProspectToggle = (prospectId: string) => {
+    setSelectedProspects(prev => 
+      prev.includes(prospectId) 
+        ? prev.filter(id => id !== prospectId)
+        : [...prev, prospectId]
+    );
+  };
+
+  const handleSelectAll = () => {
+    const currentProspects = filteredProspects.length > 0 ? filteredProspects : prospects;
+    setSelectedProspects(currentProspects.map(p => p.id));
+  };
+
+  const handleSelectNone = () => {
+    setSelectedProspects([]);
+  };
+
+  const handleDeleteProspect = (prospect: Prospect) => {
+    // Delete prospect logic
+    addHapticFeedback('heavy');
+    console.log('Deleting prospect:', prospect.id);
+  };
+
+  // Use filtered prospects if search is active, otherwise use all prospects
+  const displayProspects = filteredProspects.length > 0 || searchQuery ? filteredProspects : prospects;
+
   return (
     <OfflineSyncProvider>
       <MobileTouchOptimizer>
@@ -112,9 +167,18 @@ export default function ProspectPipeline() {
             Nouveau Prospect
           </Button>
           
-          <Button variant="outline" size="sm">
+          <Button 
+            variant={showFilters ? "default" : "outline"} 
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+          >
             <Filter className="mr-2 h-4 w-4" />
             Filtres
+            {Object.keys(filters).length > 0 && (
+              <Badge variant="secondary" className="ml-2 h-4 w-4 p-0 text-xs">
+                {Object.keys(filters).length}
+              </Badge>
+            )}
           </Button>
           
           <Button variant="outline" size="sm">
@@ -124,12 +188,45 @@ export default function ProspectPipeline() {
         </div>
       </div>
 
+      {/* Intelligent Search */}
+      <div className="flex flex-col sm:flex-row gap-4 items-center">
+        <div className="flex-1 w-full">
+          <IntelligentSearch
+            prospects={prospects}
+            onSearchResults={handleSearchResults}
+            onSearchChange={handleSearchChange}
+            placeholder="Rechercher par nom, entreprise, email, téléphone..."
+          />
+        </div>
+      </div>
+
+      {/* Advanced Filters */}
+      {showFilters && (
+        <ProspectFilters
+          filters={filters}
+          onFiltersChange={handleFiltersChange}
+          onReset={handleFiltersReset}
+          resultsCount={displayProspects.length}
+        />
+      )}
+
+      {/* Bulk Actions */}
+      {selectedProspects.length > 0 && (
+        <BulkActionsPanel
+          selectedProspects={selectedProspects}
+          allProspects={displayProspects}
+          onSelectAll={handleSelectAll}
+          onSelectNone={handleSelectNone}
+          onProspectsUpdated={handleProspectUpdated}
+        />
+      )}
+
       {/* Quick Stats Bar - Mobile Optimized */}
       <Card className="bg-gradient-to-r from-primary/10 to-secondary/10">
         <CardContent className="p-4">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <div className="text-center">
-              <div className="text-lg md:text-2xl font-bold text-primary">142</div>
+              <div className="text-lg md:text-2xl font-bold text-primary">{displayProspects.length}</div>
               <div className="text-xs md:text-sm text-muted-foreground">Prospects Actifs</div>
             </div>
             <div className="text-center">
@@ -150,13 +247,21 @@ export default function ProspectPipeline() {
 
       {/* Main Tabs */}
       <Tabs value={selectedView} onValueChange={setSelectedView}>
-        <TabsList className="grid w-full grid-cols-2 md:grid-cols-5 h-auto">
+        <TabsList className="grid w-full grid-cols-3 md:grid-cols-6 h-auto">
           <TabsTrigger 
             value="kanban" 
             className="flex items-center justify-center gap-2 p-2 md:p-3"
           >
             <LayoutGrid className="h-4 w-4" />
             <span className="hidden sm:inline">Pipeline</span>
+          </TabsTrigger>
+          
+          <TabsTrigger 
+            value="list" 
+            className="flex items-center justify-center gap-2 p-2 md:p-3"
+          >
+            <List className="h-4 w-4" />
+            <span className="hidden sm:inline">Liste</span>
           </TabsTrigger>
           
           <TabsTrigger 
@@ -209,7 +314,7 @@ export default function ProspectPipeline() {
             <CardContent className="p-2 md:p-6">
               {isMobile ? (
                 <MobileKanbanView
-                  prospects={prospects}
+                  prospects={displayProspects}
                   onProspectSelect={handleProspectSelect}
                   onEmailProspect={handleEmailProspect}
                   onWhatsAppProspect={handleWhatsAppProspect}
@@ -225,6 +330,20 @@ export default function ProspectPipeline() {
               )}
             </CardContent>
           </Card>
+        </TabsContent>
+
+        {/* List View */}
+        <TabsContent value="list" className="space-y-4">
+          <ListView
+            prospects={displayProspects}
+            selectedProspects={selectedProspects}
+            onProspectSelect={handleProspectSelect}
+            onProspectToggle={handleProspectToggle}
+            onEmailProspect={handleEmailProspect}
+            onWhatsAppProspect={handleWhatsAppProspect}
+            onArchiveProspect={handleArchiveProspect}
+            onDeleteProspect={handleDeleteProspect}
+          />
         </TabsContent>
 
         {/* Commercial Dashboard */}
