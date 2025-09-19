@@ -24,6 +24,8 @@ import {
   AlertCircle,
   RefreshCw
 } from 'lucide-react';
+import { ProspectNotificationCenter } from './ProspectNotificationCenter';
+import { ProspectNotificationBadge } from './ProspectNotificationBadge';
 import {
   LineChart,
   Line,
@@ -321,16 +323,22 @@ export default function CommercialDashboard({ refreshInterval = 300000 }: Commer
     <div className="space-y-6">
       {/* Header with refresh */}
       <div className="flex justify-between items-center">
-        <div>
-          <h2 className="text-2xl font-bold">Dashboard Commercial</h2>
-          <p className="text-muted-foreground">
-            Dernière mise à jour: {lastUpdated.toLocaleTimeString('fr-FR')}
-          </p>
+        <div className="flex items-center gap-4">
+          <div>
+            <h2 className="text-2xl font-bold">Dashboard Commercial</h2>
+            <p className="text-muted-foreground">
+              Dernière mise à jour: {lastUpdated.toLocaleTimeString('fr-FR')}
+            </p>
+          </div>
+          <ProspectNotificationBadge />
         </div>
-        <Button onClick={loadDashboardData} variant="outline" size="sm">
-          <RefreshCw className="mr-2 h-4 w-4" />
-          Actualiser
-        </Button>
+        <div className="flex items-center gap-2">
+          <ProspectNotificationCenter />
+          <Button onClick={loadDashboardData} variant="outline" size="sm">
+            <RefreshCw className="mr-2 h-4 w-4" />
+            Actualiser
+          </Button>
+        </div>
       </div>
 
       {/* Key Metrics Grid */}
