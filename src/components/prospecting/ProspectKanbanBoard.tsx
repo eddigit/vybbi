@@ -100,15 +100,28 @@ export default function ProspectKanbanBoard({
   const handleDragEnd = async (result: DropResult) => {
     if (!result.destination) return;
 
-    const { draggableId, destination } = result;
-    const targetColumn = columns[destination.droppableId as any];
+    const { draggableId, destination, source } = result;
     
+    // Convert droppableId back to number (column index)
+    const sourceColumnIndex = parseInt(source.droppableId);
+    const destinationColumnIndex = parseInt(destination.droppableId);
+    
+    // If dropped in same position, do nothing
+    if (sourceColumnIndex === destinationColumnIndex && source.index === destination.index) {
+      return;
+    }
+    
+    const targetColumn = columns[destinationColumnIndex];
     if (!targetColumn) return;
 
     const newStatus = targetColumn.status[0]; // Use first status in column
     
-    // Use the hook's update function
-    await updateProspectStatus(draggableId, newStatus);
+    try {
+      // Use the hook's update function
+      await updateProspectStatus(draggableId, newStatus);
+    } catch (error) {
+      console.error('Erreur lors de la mise à jour du prospect:', error);
+    }
   };
 
   const getProspectsForColumn = (columnStatuses: string[]) => {
@@ -184,13 +197,15 @@ export default function ProspectKanbanBoard({
                   
                   <Droppable droppableId={columnIndex.toString()}>
                     {(provided, snapshot) => (
-                      <CardContent
+                       <CardContent
                         ref={provided.innerRef}
                         {...provided.droppableProps}
-                        className={`space-y-3 min-h-[400px] ${
-                          snapshot.isDraggingOver ? 'bg-muted/50' : ''
+                        className={`space-y-3 min-h-[400px] transition-all duration-200 ${
+                          snapshot.isDraggingOver 
+                            ? 'bg-primary/5 ring-2 ring-primary/20 ring-inset' 
+                            : ''
                         }`}
-                      >
+                       >
                         {columnProspects.map((prospect, index) => (
                           <Draggable 
                             key={prospect.id} 
@@ -198,12 +213,14 @@ export default function ProspectKanbanBoard({
                             index={index}
                           >
                             {(provided, snapshot) => (
-                              <Card
+                               <Card
                                 ref={provided.innerRef}
                                 {...provided.draggableProps}
                                 {...provided.dragHandleProps}
-                                className={`cursor-pointer transition-all hover:shadow-md ${
-                                  snapshot.isDragging ? 'shadow-lg rotate-3' : ''
+                                className={`cursor-move transition-all duration-200 hover:shadow-md border-l-4 border-l-primary/20 ${
+                                  snapshot.isDragging 
+                                    ? 'shadow-2xl rotate-2 scale-105 ring-2 ring-primary/30 bg-background/95' 
+                                    : 'hover:shadow-lg hover:scale-102'
                                 }`}
                               >
                                 <CardContent className="p-3">
