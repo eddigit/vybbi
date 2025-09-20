@@ -4,7 +4,7 @@ import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
 import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
-import { ChatButton } from "../ChatButton";
+
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -28,7 +28,6 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </div>
         <Footer />
-        <ChatButton />
       </>
     );
   }
@@ -42,7 +41,6 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </main>
         <Footer />
-        <ChatButton />
       </div>
     );
   }
@@ -64,7 +62,7 @@ export function Layout({ children }: LayoutProps) {
       <div className="hidden md:block">
         <Footer />
       </div>
-      <ChatButton />
+      
     </div>
   );
 }

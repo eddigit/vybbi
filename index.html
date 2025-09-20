@@ -47,7 +47,32 @@
     <script type="module" src="/src/main.tsx"></script>
     
     <!-- Start of HubSpot Embed Code -->
-    <script type="text/javascript" id="hs-script-loader" async defer src="//js-eu1.hs-scripts.com/146927519.js"></script>
+    <script>
+      window.hsConversationsSettings = { loadImmediately: true };
+      window.hsConversationsOnReady = window.hsConversationsOnReady || [];
+      window.hsConversationsOnReady.push(function () {
+        try { console.log('[HubSpot] Conversations ready'); window.HubSpotConversations?.widget?.open(); } catch (e) {}
+      });
+    </script>
+    <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/146927519.js"></script>
+    <style>
+      /* Ensure HubSpot chat floats above radio player and mobile tab bar */
+      #hubspot-messages-iframe-container,
+      .hubspot-messages-iframe-container,
+      .hs-widget-container,
+      .hs-chat-widget,
+      .hs-beacon-container {
+        z-index: 99999 !important;
+      }
+      @media (max-width: 767px) {
+        #hubspot-messages-iframe-container,
+        .hubspot-messages-iframe-container { bottom: 144px !important; }
+      }
+      @media (min-width: 768px) {
+        #hubspot-messages-iframe-container,
+        .hubspot-messages-iframe-container { bottom: 96px !important; }
+      }
+    </style>
     <!-- End of HubSpot Embed Code -->
   </body>
 </html>
