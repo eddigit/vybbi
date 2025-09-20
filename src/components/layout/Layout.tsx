@@ -31,6 +31,7 @@ export function Layout({ children }: LayoutProps) {
         </div>
         <Footer />
         <CookieConsentBanner />
+        <ChatButton />
       </>
     );
   }
