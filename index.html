@@ -31,6 +31,10 @@
     <!-- Performance et optimisation -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="dns-prefetch" href="https://api.vybbi.com">
+    <link rel="dns-prefetch" href="//js-eu1.hs-scripts.com">
+    <link rel="dns-prefetch" href="//js.hs-scripts.com">
+    <link rel="preconnect" href="https://js-eu1.hs-scripts.com" crossorigin>
+    <link rel="preconnect" href="https://js.hs-scripts.com" crossorigin>
 
     <meta property="og:title" content="Vybbi - La plateforme qui connecte les talents" />
     <meta property="og:description" content="Plateforme de gestion des agents, tourneurs et apporteurs d'affaires dans l'industrie musicale" />
@@ -48,13 +52,57 @@
     
     <!-- Start of HubSpot Embed Code -->
     <script>
-      window.hsConversationsSettings = { loadImmediately: true };
-      window.hsConversationsOnReady = window.hsConversationsOnReady || [];
-      window.hsConversationsOnReady.push(function () {
-        try { console.log('[HubSpot] Conversations ready'); window.HubSpotConversations?.widget?.open(); } catch (e) {}
-      });
+      (function() {
+        window.hsConversationsSettings = { loadImmediately: true };
+        window.hsConversationsOnReady = window.hsConversationsOnReady || [];
+        window.hsConversationsOnReady.push(function () {
+          try {
+            console.log('[HubSpot] Conversations ready → opening widget');
+            window.HubSpotConversations?.widget?.open();
+          } catch (e) { console.warn('[HubSpot] onReady error', e); }
+        });
+
+        function loadHubspot(src, onload, onerror) {
+          var s = document.createElement('script');
+          s.type = 'text/javascript';
+          s.id = 'hs-script-loader';
+          s.async = true;
+          s.defer = true;
+          s.src = src;
+          s.onload = onload;
+          s.onerror = onerror;
+          document.head.appendChild(s);
+          return s;
+        }
+
+        var loaded = false;
+        var euSrc = '//js-eu1.hs-scripts.com/146927519.js';
+        var usSrc = '//js.hs-scripts.com/146927519.js';
+
+        function markLoaded(region) {
+          if (loaded) return;
+          loaded = true;
+          console.log('[HubSpot] Script loaded (' + region + ').');
+        }
+
+        // Try EU first, fallback to US on error or timeout
+        var timeout = setTimeout(function () {
+          if (!loaded) {
+            console.warn('[HubSpot] EU script timeout → falling back to US.');
+            loadHubspot(usSrc, function(){ markLoaded('US'); }, function(){ console.error('[HubSpot] US script failed to load'); });
+          }
+        }, 4000);
+
+        loadHubspot(euSrc, function(){
+          clearTimeout(timeout);
+          markLoaded('EU');
+        }, function(){
+          clearTimeout(timeout);
+          console.warn('[HubSpot] EU script failed → falling back to US.');
+          loadHubspot(usSrc, function(){ markLoaded('US'); }, function(){ console.error('[HubSpot] US script failed to load'); });
+        });
+      })();
     </script>
-    <script type="text/javascript" id="hs-script-loader" async defer src="//js.hs-scripts.com/146927519.js"></script>
     <style>
       /* Ensure HubSpot chat floats above radio player and mobile tab bar */
       #hubspot-messages-iframe-container,
@@ -73,6 +121,7 @@
         .hubspot-messages-iframe-container { bottom: 96px !important; }
       }
     </style>
+
     <!-- End of HubSpot Embed Code -->
   </body>
 </html>
