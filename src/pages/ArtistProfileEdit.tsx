@@ -16,6 +16,8 @@ import { Profile, MediaAsset, MediaType } from '@/lib/types';
 import { LANGUAGES } from '@/lib/languages';
 import { HeaderImageEditor } from '@/components/HeaderImageEditor';
 import { TALENTS, TALENT_CATEGORIES, getTalentById } from '@/lib/talents';
+import { MusicDiscography } from '@/components/MusicDiscography';
+import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
 
 export default function ArtistProfileEdit() {
   const { id } = useParams<{ id: string }>();
@@ -680,6 +682,27 @@ export default function ArtistProfileEdit() {
                   Pour utiliser le contact indirect, vous devez d'abord être lié à un agent ou un manager.
                 </div>
               )}
+            </div>
+          </div>
+
+          {/* Add New Music Section */}
+          <div>
+            <Label className="text-base font-semibold">Ajouter une nouvelle musique</Label>
+            <div className="mt-4">
+              <MusicReleaseWidget profileId={profile?.id || ''} />
+            </div>
+          </div>
+
+          {/* Music Management Section */}
+          <div>
+            <Label className="text-base font-semibold">Gérer vos musiques existantes</Label>
+            <div className="mt-4">
+              <MusicDiscography 
+                profileId={profile?.id || ''} 
+                isOwner={true}
+                compactMode={false}
+                talents={formData.talents}
+              />
             </div>
           </div>
 

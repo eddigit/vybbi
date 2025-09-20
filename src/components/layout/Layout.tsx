@@ -31,7 +31,6 @@ export function Layout({ children }: LayoutProps) {
         </div>
         <Footer />
         <CookieConsentBanner />
-        <ChatButton />
       </>
     );
   }
@@ -46,7 +45,6 @@ export function Layout({ children }: LayoutProps) {
         </main>
         <Footer />
         <CookieConsentBanner />
-        <ChatButton />
       </div>
     );
   }
@@ -69,7 +67,6 @@ export function Layout({ children }: LayoutProps) {
         <Footer />
       </div>
       <CookieConsentBanner />
-      <ChatButton />
     </div>
   );
 }

@@ -31,7 +31,7 @@ export function RadioControls({ className = '' }: RadioControlsProps) {
     totalRequests: requests.length,
     queueLength: queue.length,
     averageWaitTime: queue.length * 3.5, // minutes
-    activeUsers: new Set(requests.map(r => r.requester_id)).size
+    activeUsers: new Set(requests.map(r => r.user_id)).size
   };
 
   return (
@@ -170,10 +170,10 @@ export function RadioControls({ className = '' }: RadioControlsProps) {
                         
                         <div className="flex-1 min-w-0">
                           <h4 className="font-medium truncate">
-                            {request.media_asset?.file_name?.replace(/\.[^/.]+$/, '') || 'Titre inconnu'}
+                            {request.file_name?.replace(/\.[^/.]+$/, '') || 'Titre inconnu'}
                           </h4>
                           <p className="text-sm text-muted-foreground truncate">
-                            {request.artist?.display_name || 'Artiste inconnu'}
+                            {request.artist_name || 'Artiste inconnu'}
                           </p>
                           {request.message && (
                             <p className="text-xs text-muted-foreground italic mt-1 truncate">
@@ -186,7 +186,7 @@ export function RadioControls({ className = '' }: RadioControlsProps) {
                           <Badge variant="outline" className="text-xs">
                             {request.votes_count} vote{request.votes_count > 1 ? 's' : ''}
                           </Badge>
-                          {request.is_priority && (
+                          {request.priority > 0 && (
                             <Badge variant="destructive" className="text-xs ml-1">
                               Priorité
                             </Badge>

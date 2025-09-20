@@ -17,6 +17,7 @@ import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { usePWAUpdate } from '@/hooks/usePWAUpdate';
 import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
+import { ChatButton } from '@/components/ChatButton';
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
 import Campaigns from "./pages/Campaigns";
@@ -232,6 +233,7 @@ const App = () => (
                     </Routes>
                     </Layout>
                     <RadioPlayer />
+                    <ChatButton />
                     <PWAInstallPrompt />
                     <OfflineIndicator />
                     <PWAUpdateHandler />

@@ -20,7 +20,16 @@ import { MusicRelease } from '@/hooks/useMusicReleases';
 interface RadioRequestDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  musicRelease: MusicRelease;
+  musicRelease?: MusicRelease & {
+    media_assets?: Array<{
+      id: string;
+      file_url: string;
+      file_name: string;
+      media_type: string;
+      preview_url?: string;
+      duration_seconds?: number;
+    }>;
+  };
 }
 
 export function RadioRequestDialog({
@@ -33,7 +42,7 @@ export function RadioRequestDialog({
   const { submitRequest, submitting } = useRadioRequests();
 
   const getAudioAsset = () => {
-    return musicRelease.media_assets?.find(asset => asset.media_type === 'audio');
+    return musicRelease?.media_assets?.find(asset => asset.media_type === 'audio');
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -44,7 +53,7 @@ export function RadioRequestDialog({
 
     const success = await submitRequest(
       audioAsset.id,
-      musicRelease.id,
+      musicRelease?.id,
       message.trim() || undefined,
       priority[0]
     );
@@ -91,8 +100,8 @@ export function RadioRequestDialog({
           <div className="flex items-center gap-4 p-4 bg-muted/50 rounded-lg">
             <Avatar className="h-16 w-16 rounded-lg">
               <AvatarImage 
-                src={musicRelease.cover_image_url} 
-                alt={musicRelease.title}
+                src={musicRelease?.cover_image_url} 
+                alt={musicRelease?.title}
                 className="rounded-lg"
               />
               <AvatarFallback className="rounded-lg">
@@ -102,12 +111,12 @@ export function RadioRequestDialog({
             
             <div className="flex-1 min-w-0">
               <h3 className="font-semibold text-lg truncate">
-                {musicRelease.title}
+                {musicRelease?.title || 'Titre non disponible'}
               </h3>
               <p className="text-muted-foreground truncate">
-                {musicRelease.artist_name}
+                {musicRelease?.artist_name || 'Artiste non disponible'}
               </p>
-              {musicRelease.genre && (
+              {musicRelease?.genre && (
                 <Badge variant="secondary" className="mt-1">
                   {musicRelease.genre}
                 </Badge>

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
@@ -17,11 +17,31 @@ declare global {
 
 export function ChatButton() {
   const location = useLocation();
+  const [hubspotAvailable, setHubspotAvailable] = useState(false);
   
   // Don't show on auth pages, show everywhere else
   const isAuth = location.pathname.startsWith('/auth') || location.pathname === '/forgot-password' || location.pathname === '/reset-password';
   
-  if (isAuth) {
+  // Check if HubSpot is available
+  useEffect(() => {
+    const checkHubSpot = () => {
+      const hubspotContainer = document.getElementById('hubspot-messages-iframe-container');
+      const hubspotWidget = document.querySelector('.hubspot-messages-iframe-container, .hs-widget-container');
+      const hasHubspotAPI = window.HubSpotConversations?.widget;
+      
+      if (hubspotContainer || hubspotWidget || hasHubspotAPI) {
+        setHubspotAvailable(true);
+      }
+    };
+    
+    // Check immediately and then periodically
+    checkHubSpot();
+    const interval = setInterval(checkHubSpot, 2000);
+    
+    return () => clearInterval(interval);
+  }, []);
+  
+  if (isAuth || hubspotAvailable) {
     return null;
   }
 
@@ -34,27 +54,47 @@ export function ChatButton() {
   const handleChatClick = () => {
     console.log('ChatButton clicked');
     
-    // Show HubSpot launcher first
+    // Enhanced HubSpot activation
     const hubspotContainer = document.getElementById('hubspot-messages-iframe-container');
+    const allHubspotContainers = document.querySelectorAll('.hubspot-messages-iframe-container, .hs-widget-container');
+    
+    // Activate all HubSpot containers
     if (hubspotContainer) {
       hubspotContainer.classList.add('hubspot-active');
       console.log('HubSpot container revealed');
     }
     
-    // Try to open HubSpot widget
-    if (window.HubSpotConversations) {
-      try {
-        window.HubSpotConversations.widget.open();
-        console.log('HubSpot widget opened');
-      } catch (error) {
-        console.error('Error opening HubSpot widget:', error);
-        // Fallback to contact page
-        window.location.href = '/contact';
+    allHubspotContainers.forEach(container => {
+      container.classList.add('hubspot-active');
+    });
+    
+    // Wait a bit for HubSpot to initialize if needed
+    const tryOpenWidget = () => {
+      if (window.HubSpotConversations?.widget) {
+        try {
+          window.HubSpotConversations.widget.open();
+          console.log('HubSpot widget opened successfully');
+          return true;
+        } catch (error) {
+          console.error('Error opening HubSpot widget:', error);
+          return false;
+        }
       }
-    } else {
-      console.warn('HubSpot not available, redirecting to contact');
-      // Fallback to contact page if HubSpot not loaded
-      window.location.href = '/contact';
+      return false;
+    };
+    
+    // Try immediately, then with delays if needed
+    if (!tryOpenWidget()) {
+      setTimeout(() => {
+        if (!tryOpenWidget()) {
+          setTimeout(() => {
+            if (!tryOpenWidget()) {
+              console.warn('HubSpot not available after retries, redirecting to contact');
+              window.location.href = '/contact';
+            }
+          }, 1000);
+        }
+      }, 500);
     }
   };
 

@@ -158,30 +158,53 @@
           initializeCookieTracking();
         }
 
-        // Enhanced diagnostics with 8-second poll
-        setTimeout(function() {
-          for (var i = 0; i < 8; i++) {
-            (function(attempt) {
-              setTimeout(function() {
-                if (window.HubSpotConversations && window.HubSpotConversations.widget) {
-                  console.log('[HubSpot] Widget detected on attempt ' + (attempt + 1));
-                  return;
+        // Enhanced widget detection and auto-activation
+        var widgetCheckCount = 0;
+        var maxChecks = 15; // Check for 2 minutes max
+        
+        function checkWidget() {
+          widgetCheckCount++;
+          var widget = document.querySelector('#hubspot-messages-iframe-container, .hs-widget-container, .hs-beacon-container');
+          var iframe = document.querySelector('iframe[src*="hubspot"]');
+          
+          if (widget || iframe) {
+            console.log('✅ HubSpot widget detected:', widget || iframe);
+            window.hubspotReady = true;
+            
+            // Auto-activate widget positioning
+            setTimeout(function() {
+              var containers = document.querySelectorAll('#hubspot-messages-iframe-container, .hubspot-messages-iframe-container');
+              for (var i = 0; i < containers.length; i++) {
+                var container = containers[i];
+                if (container) {
+                  container.style.opacity = '1';
+                  container.style.pointerEvents = 'auto';
+                  container.style.transform = 'translateX(0)';
                 }
-                if (attempt === 7) {
-                  console.warn('[HubSpot] Widget not detected after 8 seconds. Diagnostics:');
-                  console.warn('  - HubSpotConversations present:', !!window.HubSpotConversations);
-                  try {
-                    var prefs = localStorage.getItem('vybbi_cookie_preferences');
-                    console.warn('  - Cookie preferences:', prefs || 'none set');
-                  } catch (e) {
-                    console.warn('  - Cookie preferences: error reading');
-                  }
-                  console.warn('  Possible causes: chatflow not published, ad blocker, network issues');
-                }
-              }, 1000 * (attempt + 1));
-            })(i);
+              }
+              console.log('🎯 HubSpot widget auto-activated');
+            }, 500);
+            
+            return true;
+          } else if (widgetCheckCount < maxChecks) {
+            console.log('⏳ HubSpot widget not yet available (' + widgetCheckCount + '/' + maxChecks + ')');
+            return false;
+          } else {
+            console.warn('❌ HubSpot widget failed to load after maximum attempts');
+            return false;
           }
-        }, 0);
+        }
+        
+        // Check immediately, then every 8 seconds
+        setTimeout(function() {
+          if (!checkWidget()) {
+            var interval = setInterval(function() {
+              if (checkWidget() || widgetCheckCount >= maxChecks) {
+                clearInterval(interval);
+              }
+            }, 8000);
+          }
+        }, 2000); // Wait 2 seconds before starting checks
 
         // Try EU first, fallback to US on error or timeout
         var timeout = setTimeout(function () {
@@ -202,34 +225,64 @@
       })();
     </script>
     <style>
-      /* HubSpot positioning - hidden by default */
+      /* HubSpot positioning - optimized for mobile and desktop */
       #hubspot-messages-iframe-container,
       .hubspot-messages-iframe-container,
       .hs-widget-container,
       .hs-chat-widget,
       .hs-beacon-container {
-        z-index: 99999 !important;
-        transform: translateX(200px) !important;
-        opacity: 0 !important;
-        pointer-events: none !important;
-        transition: all 0.3s ease !important;
+        z-index: 100000 !important;
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
       }
       
-      /* Show HubSpot when activated */
+      /* Default state - visible but positioned correctly */
+      #hubspot-messages-iframe-container,
+      .hubspot-messages-iframe-container {
+        opacity: 1 !important;
+        pointer-events: auto !important;
+        transform: translateX(0) !important;
+      }
+      
+      /* Mobile positioning - above tab bar and radio player */
+      @media (max-width: 767px) {
+        #hubspot-messages-iframe-container,
+        .hubspot-messages-iframe-container { 
+          bottom: 144px !important; /* Au-dessus de la tab bar mobile (64px) + radio player (80px) */
+          right: 16px !important;
+        }
+        
+        /* Adjust when radio player is active */
+        body.radio-player-active #hubspot-messages-iframe-container,
+        body.radio-player-active .hubspot-messages-iframe-container {
+          bottom: 160px !important;
+        }
+      }
+      
+      /* Desktop positioning */
+      @media (min-width: 768px) {
+        #hubspot-messages-iframe-container,
+        .hubspot-messages-iframe-container { 
+          bottom: 24px !important;
+          right: 24px !important;
+        }
+      }
+      
+      /* Enhanced activation state */
       #hubspot-messages-iframe-container.hubspot-active,
       .hubspot-messages-iframe-container.hubspot-active {
-        transform: translateX(0) !important;
-        opacity: 1 !important;
+        transform: scale(1.02) !important;
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2) !important;
+      }
+      
+      /* Ensure HubSpot doesn't interfere with navigation */
+      .hs-beacon-container {
         pointer-events: auto !important;
       }
       
-      @media (max-width: 767px) {
-        #hubspot-messages-iframe-container,
-        .hubspot-messages-iframe-container { bottom: 144px !important; }
-      }
-      @media (min-width: 768px) {
-        #hubspot-messages-iframe-container,
-        .hubspot-messages-iframe-container { bottom: 96px !important; }
+      /* Hide HubSpot on specific pages if needed */
+      body.hide-chat #hubspot-messages-iframe-container,
+      body.hide-chat .hubspot-messages-iframe-container {
+        display: none !important;
       }
     </style>
 
