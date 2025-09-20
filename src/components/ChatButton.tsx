@@ -32,9 +32,29 @@ export function ChatButton() {
   const hasMobileTabBar = !isArtistProfile && !isVenueProfile && !isPartnerProfile;
 
   const handleChatClick = () => {
-    // Open HubSpot chat widget
+    console.log('ChatButton clicked');
+    
+    // Show HubSpot launcher first
+    const hubspotContainer = document.getElementById('hubspot-messages-iframe-container');
+    if (hubspotContainer) {
+      hubspotContainer.classList.add('hubspot-active');
+      console.log('HubSpot container revealed');
+    }
+    
+    // Try to open HubSpot widget
     if (window.HubSpotConversations) {
-      window.HubSpotConversations.widget.open();
+      try {
+        window.HubSpotConversations.widget.open();
+        console.log('HubSpot widget opened');
+      } catch (error) {
+        console.error('Error opening HubSpot widget:', error);
+        // Fallback to contact page
+        window.location.href = '/contact';
+      }
+    } else {
+      console.warn('HubSpot not available, redirecting to contact');
+      // Fallback to contact page if HubSpot not loaded
+      window.location.href = '/contact';
     }
   };
 

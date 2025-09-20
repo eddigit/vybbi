@@ -202,14 +202,27 @@
       })();
     </script>
     <style>
-      /* Ensure HubSpot chat floats above radio player and mobile tab bar */
+      /* HubSpot positioning - hidden by default */
       #hubspot-messages-iframe-container,
       .hubspot-messages-iframe-container,
       .hs-widget-container,
       .hs-chat-widget,
       .hs-beacon-container {
         z-index: 99999 !important;
+        transform: translateX(200px) !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        transition: all 0.3s ease !important;
       }
+      
+      /* Show HubSpot when activated */
+      #hubspot-messages-iframe-container.hubspot-active,
+      .hubspot-messages-iframe-container.hubspot-active {
+        transform: translateX(0) !important;
+        opacity: 1 !important;
+        pointer-events: auto !important;
+      }
+      
       @media (max-width: 767px) {
         #hubspot-messages-iframe-container,
         .hubspot-messages-iframe-container { bottom: 144px !important; }
