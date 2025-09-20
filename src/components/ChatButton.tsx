@@ -42,8 +42,8 @@ export function ChatButton() {
     <Button 
       onClick={handleChatClick}
       size="icon"
-      className={`fixed right-4 z-[61] bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-none shadow-lg transition-all duration-300 hover:scale-110 ${
-        hasMobileTabBar ? 'bottom-32 md:bottom-20' : 'bottom-20'
+      className={`fixed right-4 z-[70] bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-none shadow-lg transition-all duration-300 hover:scale-110 ${
+        hasMobileTabBar ? 'bottom-36 md:bottom-24' : 'bottom-24'
       }`}
     >
       <MessageCircle className="h-5 w-5" />
