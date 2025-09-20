@@ -1,16 +1,31 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
+import { useSearchParams } from 'react-router-dom';
 import VybbiChat from '@/components/DualAIChat';
-import { Bot, Database, Users, TrendingUp, MessageCircle, Search, Calendar } from 'lucide-react';
+import SupportChatPanel from '@/components/SupportChatPanel';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Bot, Database, Users, TrendingUp, MessageCircle, Search, Calendar, HeadphonesIcon } from 'lucide-react';
 import vybbiLogo from '@/assets/vybbi-logo.png';
 
 const Chat = () => {
+  const [searchParams] = useSearchParams();
+  const [activeTab, setActiveTab] = useState(searchParams.get('tab') || 'assistant');
+
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    if (tab === 'support') {
+      setActiveTab('support');
+    } else {
+      setActiveTab('assistant');
+    }
+  }, [searchParams]);
+
   return (
     <>
       <Helmet>
-        <title>Vybbi - Assistant IA Musical Intelligent</title>
-        <meta name="description" content="Chattez avec Vybbi, l'assistant IA qui connaît toute la plateforme musicale. Trouvez des artistes, organisez des événements, découvrez des opportunités." />
-        <meta name="keywords" content="Vybbi, assistant IA musical, booking artistes, événements musicaux, plateforme musique" />
+        <title>Vybbi - Assistant IA & Support</title>
+        <meta name="description" content="Chattez avec Vybbi, l'assistant IA musical intelligent, ou contactez notre support pour une aide personnalisée." />
+        <meta name="keywords" content="Vybbi, assistant IA musical, support client, booking artistes, événements musicaux" />
       </Helmet>
 
       <div className="min-h-screen bg-gradient-to-br from-background via-background to-muted/20">
@@ -26,7 +41,7 @@ const Chat = () => {
               </h1>
             </div>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              L'assistant IA qui connaît toute la plateforme musicale pour vous accompagner
+              Assistant IA musical intelligent et support personnalisé
             </p>
           </div>
 
@@ -73,29 +88,57 @@ const Chat = () => {
             </div>
           </div>
 
-          {/* Chat Interface */}
+          {/* Chat Interface with Tabs */}
           <div className="max-w-4xl mx-auto">
-            <VybbiChat className="shadow-xl border-0 bg-card/80 backdrop-blur-sm" />
+            <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+              <TabsList className="grid w-full grid-cols-2 mb-6">
+                <TabsTrigger value="assistant" className="flex items-center gap-2">
+                  <Bot className="h-4 w-4" />
+                  Assistant IA
+                </TabsTrigger>
+                <TabsTrigger value="support" className="flex items-center gap-2">
+                  <HeadphonesIcon className="h-4 w-4" />
+                  Support
+                </TabsTrigger>
+              </TabsList>
+              
+              <TabsContent value="assistant">
+                <VybbiChat className="shadow-xl border-0 bg-card/80 backdrop-blur-sm" />
+              </TabsContent>
+              
+              <TabsContent value="support">
+                <SupportChatPanel />
+              </TabsContent>
+            </Tabs>
           </div>
 
           {/* Footer Info */}
           <div className="text-center mt-8 text-sm text-muted-foreground">
-            <p>🧠 Vybbi apprend de chaque interaction pour mieux vous accompagner</p>
-            <p className="mt-1">Limite de 1000 caractères par message • Historique des conversations sauvegardé</p>
-            <div className="flex items-center justify-center gap-4 mt-2">
-              <span className="flex items-center gap-1">
-                <Users className="h-3 w-3" />
-                Profils
-              </span>
-              <span className="flex items-center gap-1">
-                <Calendar className="h-3 w-3" />
-                Événements
-              </span>
-              <span className="flex items-center gap-1">
-                <MessageCircle className="h-3 w-3" />
-                Annonces
-              </span>
-            </div>
+            {activeTab === 'assistant' ? (
+              <>
+                <p>🧠 Vybbi apprend de chaque interaction pour mieux vous accompagner</p>
+                <p className="mt-1">Limite de 1000 caractères par message • Historique des conversations sauvegardé</p>
+                <div className="flex items-center justify-center gap-4 mt-2">
+                  <span className="flex items-center gap-1">
+                    <Users className="h-3 w-3" />
+                    Profils
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <Calendar className="h-3 w-3" />
+                    Événements
+                  </span>
+                  <span className="flex items-center gap-1">
+                    <MessageCircle className="h-3 w-3" />
+                    Annonces
+                  </span>
+                </div>
+              </>
+            ) : (
+              <>
+                <p>💬 Notre équipe support est disponible en temps réel</p>
+                <p className="mt-1">Réponse généralement sous 2 minutes • Lundi-Vendredi 9h-18h</p>
+              </>
+            )}
           </div>
         </div>
       </div>
