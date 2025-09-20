@@ -28,6 +28,7 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </div>
         <Footer />
+        <ChatButton />
       </>
     );
   }
@@ -41,6 +42,7 @@ export function Layout({ children }: LayoutProps) {
           {children}
         </main>
         <Footer />
+        <ChatButton />
       </div>
     );
   }
