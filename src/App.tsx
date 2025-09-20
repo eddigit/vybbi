@@ -207,7 +207,7 @@ const App = () => (
                       <Route path="/admin/prospecting" element={<AdminProspecting />} />
                       <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
                       <Route path="/admin/mock-profiles" element={<AdminMockProfiles />} />
-                      <Route path="/chat" element={<Chat />} />
+                      <Route path="/chat" element={<Navigate to="/" replace />} />
                       <Route path="/affiliation" element={<InfluenceurDashboard />} />
                       <Route path="/influenceurs/:slug" element={<ArtistProfileBySlug />} />
                       <Route path="/blog" element={<Blog />} />
