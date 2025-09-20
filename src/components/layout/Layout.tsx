@@ -5,7 +5,7 @@ import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
 import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
-// import { ChatButton } from "@/components/ChatButton";
+import { ChatButton } from "@/components/ChatButton";
 
 
 interface LayoutProps {
@@ -31,6 +31,7 @@ export function Layout({ children }: LayoutProps) {
         </div>
         <Footer />
         <CookieConsentBanner />
+        <ChatButton />
       </>
     );
   }
@@ -45,6 +46,7 @@ export function Layout({ children }: LayoutProps) {
         </main>
         <Footer />
         <CookieConsentBanner />
+        <ChatButton />
       </div>
     );
   }
@@ -67,6 +69,7 @@ export function Layout({ children }: LayoutProps) {
         <Footer />
       </div>
       <CookieConsentBanner />
+      <ChatButton />
     </div>
   );
 }
