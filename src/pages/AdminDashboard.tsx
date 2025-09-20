@@ -25,6 +25,7 @@ import {
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { RadioManagement } from "@/components/admin/RadioManagement";
+import { RadioPlaylistManager } from "@/components/admin/RadioPlaylistManager";
 import { VybbiChat } from "@/components/admin/VybbiChat";
 import { VybbiConfig } from "@/components/admin/VybbiConfig";
 import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
@@ -384,7 +385,10 @@ export default function AdminDashboard() {
               </CardDescription>
             </CardHeader>
             <CardContent>
-              <RadioManagement />
+              <div className="space-y-6">
+                <RadioManagement />
+                <RadioPlaylistManager />
+              </div>
             </CardContent>
           </Card>
         </TabsContent>
