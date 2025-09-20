@@ -82,7 +82,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
 
     // Ajouter des styles de base pour une meilleure prévisualisation
     const styledHtml = `
-      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; background: white;">
+      <div style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; background: hsl(var(--card));">
         ${processedHtml}
       </div>
     `;
@@ -164,7 +164,7 @@ export const EmailPreview: React.FC<EmailPreviewProps> = ({
             <div className="flex justify-center p-4 bg-muted/30">
               <div 
                 style={getViewportStyle()} 
-                className="border border-border rounded-lg overflow-auto bg-white shadow-sm transition-all duration-300"
+                className="border border-border rounded-lg overflow-auto bg-card shadow-sm transition-all duration-300"
               >
                 <iframe
                   srcDoc={processHtmlWithVariables()}

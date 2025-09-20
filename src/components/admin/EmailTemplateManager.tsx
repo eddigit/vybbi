@@ -1225,7 +1225,7 @@ export const EmailTemplateManager: React.FC = () => {
                         </div>
                         <div className="flex-1 p-4 bg-gray-50 overflow-auto">
                           <div 
-                            className="bg-white p-4 rounded shadow-sm"
+                            className="bg-card p-4 rounded shadow-sm"
                             dangerouslySetInnerHTML={{ __html: formData.html_content }}
                           />
                         </div>
@@ -1235,7 +1235,7 @@ export const EmailTemplateManager: React.FC = () => {
                     {editorMode === 'preview' && (
                       <div className="p-4 bg-gray-50 h-full overflow-auto">
                         <div 
-                          className="bg-white p-4 rounded shadow-sm max-w-2xl mx-auto"
+                          className="bg-card p-4 rounded shadow-sm max-w-2xl mx-auto"
                           dangerouslySetInnerHTML={{ __html: formData.html_content }}
                         />
                       </div>

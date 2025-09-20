@@ -244,7 +244,7 @@ export const EmailDragDropEditor: React.FC<EmailDragDropEditorProps> = ({
             {activeTab === 'preview' && (
               <div className="bg-gray-100 p-8 rounded-lg">
                 <div 
-                  className="max-w-lg mx-auto bg-white p-8 rounded-lg shadow-lg"
+                  className="max-w-lg mx-auto bg-card p-8 rounded-lg shadow-lg"
                   dangerouslySetInnerHTML={{ __html: generateEmailHtml(blocks).split('<body')[1]?.split('</body>')[0]?.replace('style="margin: 0; padding: 20px; font-family: Arial, sans-serif; background-color: #f4f4f4;">', '') || '' }}
                 />
               </div>

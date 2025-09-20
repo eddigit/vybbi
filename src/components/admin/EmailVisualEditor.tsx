@@ -328,7 +328,7 @@ export const EmailVisualEditor: React.FC<EmailVisualEditorProps> = ({
           <CardTitle>Aperçu du Template</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="border rounded-lg p-4 bg-white">
+          <div className="border rounded-lg p-4 bg-card">
             <div
               ref={previewRef}
               className="email-preview"

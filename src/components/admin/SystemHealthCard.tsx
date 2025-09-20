@@ -15,26 +15,26 @@ export function SystemHealthCard({ health }: SystemHealthProps) {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case 'ok':
-        return <CheckCircle className="h-4 w-4 text-green-600" />;
+        return <CheckCircle className="h-4 w-4 text-success" />;
       case 'warning':
-        return <AlertTriangle className="h-4 w-4 text-orange-600" />;
+        return <AlertTriangle className="h-4 w-4 text-warning" />;
       case 'error':
-        return <XCircle className="h-4 w-4 text-red-600" />;
+        return <XCircle className="h-4 w-4 text-destructive" />;
       default:
-        return <AlertTriangle className="h-4 w-4 text-gray-600" />;
+        return <AlertTriangle className="h-4 w-4 text-muted-foreground" />;
     }
   };
 
   const getStatusBadge = (status: string) => {
     switch (status) {
       case 'ok':
-        return <Badge className="bg-green-100 text-green-800">Optimal</Badge>;
+        return <Badge variant="secondary" className="bg-success/10 text-success border-success/20">Optimal</Badge>;
       case 'warning':
-        return <Badge className="bg-orange-100 text-orange-800">Attention</Badge>;
+        return <Badge variant="secondary" className="bg-warning/10 text-warning border-warning/20">Attention</Badge>;
       case 'error':
-        return <Badge className="bg-red-100 text-red-800">Critique</Badge>;
+        return <Badge variant="destructive" className="bg-destructive/10 text-destructive border-destructive/20">Critique</Badge>;
       default:
-        return <Badge className="bg-gray-100 text-gray-800">Inconnu</Badge>;
+        return <Badge variant="secondary" className="bg-muted text-muted-foreground">Inconnu</Badge>;
     }
   };
 
@@ -82,36 +82,36 @@ export function SystemHealthCard({ health }: SystemHealthProps) {
             key={item.title}
             className={`flex items-center justify-between p-3 rounded-lg border ${
               item.status === 'ok' 
-                ? 'border-green-200 bg-green-50' 
+                ? 'border-success/20 bg-success/5' 
                 : item.status === 'warning'
-                ? 'border-orange-200 bg-orange-50'
-                : 'border-red-200 bg-red-50'
+                ? 'border-warning/20 bg-warning/5'
+                : 'border-destructive/20 bg-destructive/5'
             }`}
           >
             <div className="flex items-center gap-3">
               <item.icon className={`h-5 w-5 ${
                 item.status === 'ok' 
-                  ? 'text-green-600' 
+                  ? 'text-success' 
                   : item.status === 'warning'
-                  ? 'text-orange-600'
-                  : 'text-red-600'
+                  ? 'text-warning'
+                  : 'text-destructive'
               }`} />
               <div>
                 <h4 className={`font-medium ${
                   item.status === 'ok' 
-                    ? 'text-green-800' 
+                    ? 'text-success' 
                     : item.status === 'warning'
-                    ? 'text-orange-800'
-                    : 'text-red-800'
+                    ? 'text-warning'
+                    : 'text-destructive'
                 }`}>
                   {item.title}
                 </h4>
                 <p className={`text-sm ${
                   item.status === 'ok' 
-                    ? 'text-green-600' 
+                    ? 'text-success/80' 
                     : item.status === 'warning'
-                    ? 'text-orange-600'
-                    : 'text-red-600'
+                    ? 'text-warning/80'
+                    : 'text-destructive/80'
                 }`}>
                   {item.description}
                 </p>
