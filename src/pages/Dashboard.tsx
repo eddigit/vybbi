@@ -1,5 +1,5 @@
 
-import { VybbiAssistant } from "@/components/VybbiAssistant";
+
 import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
 import PartnerDashboard from "@/pages/PartnerDashboard";
@@ -109,8 +109,6 @@ export default function Dashboard() {
           <CommissionDistribution />
         </div>
         
-        {/* Assistant Vybbi */}
-        <VybbiAssistant context="dashboard" variant="floating" />
         
         {/* Welcome Modal */}
         {profile && (
@@ -181,8 +179,6 @@ export default function Dashboard() {
         <CommissionDistribution />
         </div>
         
-        {/* Assistant Vybbi */}
-        <VybbiAssistant context="dashboard" variant="floating" />
         
         {/* Welcome Modal */}
         {profile && (

@@ -12,7 +12,7 @@ import { Search, MapPin, Calendar, Euro, MessageCircle, FileText, Plus, Filter, 
 import { Link, useNavigate } from "react-router-dom";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Textarea } from "@/components/ui/textarea";
-import { VybbiAssistant } from "@/components/VybbiAssistant";
+
 
 interface AnnonceWithProfile {
   id: string;
@@ -614,8 +614,6 @@ export function AnnoncesWall() {
         </DialogContent>
       </Dialog>
       
-      {/* Assistant Vybbi pour les annonces */}
-      <VybbiAssistant context="annonces" variant="floating" />
     </div>
   );
 }

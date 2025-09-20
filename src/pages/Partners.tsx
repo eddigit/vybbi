@@ -10,7 +10,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { supabase } from '@/integrations/supabase/client';
 import { Profile, ProfileType } from '@/lib/types';
 import { getProfileUrl } from '@/hooks/useProfileResolver';
-import { VybbiAssistant } from "@/components/VybbiAssistant";
+
 import { SEOHead } from '@/components/SEOHead';
 
 const partnerTypes: ProfileType[] = ['manager', 'agent', 'academie', 'sponsors', 'media', 'influenceur', 'agence'];
@@ -246,8 +246,6 @@ export default function Partners() {
         )}
       </div>
       
-      {/* Assistant Vybbi */}
-      <VybbiAssistant context="recherche-partenaires" variant="floating" />
     </>
   );
 }

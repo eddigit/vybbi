@@ -53,6 +53,73 @@
     <!-- Start of HubSpot Embed Code -->
     <script>
       (function() {
+        // Cookie consent bridge for HubSpot
+        function checkCookieConsent() {
+          try {
+            var preferences = localStorage.getItem('vybbi_cookie_preferences');
+            if (preferences) {
+              var parsed = JSON.parse(preferences);
+              if (parsed.analytics || parsed.marketing) {
+                console.log('[HubSpot] Cookie consent granted → enabling tracking');
+                window._hsq = window._hsq || [];
+                window._hsq.push(['doNotTrack', false]);
+                return true;
+              }
+            }
+          } catch (e) {
+            console.warn('[HubSpot] Cookie consent check failed:', e);
+          }
+          return false;
+        }
+
+        // SPA tracking for HubSpot
+        function setupSPATracking() {
+          var currentPath = location.pathname;
+          
+          // Override pushState and replaceState
+          var originalPushState = history.pushState;
+          var originalReplaceState = history.replaceState;
+          
+          history.pushState = function() {
+            originalPushState.apply(history, arguments);
+            setTimeout(function() {
+              if (currentPath !== location.pathname) {
+                currentPath = location.pathname;
+                console.log('[HubSpot] SPA navigation detected → tracking path:', currentPath);
+                window._hsq = window._hsq || [];
+                window._hsq.push(['setPath', location.pathname]);
+                window._hsq.push(['trackPageView']);
+              }
+            }, 100);
+          };
+          
+          history.replaceState = function() {
+            originalReplaceState.apply(history, arguments);
+            setTimeout(function() {
+              if (currentPath !== location.pathname) {
+                currentPath = location.pathname;
+                console.log('[HubSpot] SPA replace detected → tracking path:', currentPath);
+                window._hsq = window._hsq || [];
+                window._hsq.push(['setPath', location.pathname]);
+                window._hsq.push(['trackPageView']);
+              }
+            }, 100);
+          };
+          
+          // Listen for popstate (back/forward buttons)
+          window.addEventListener('popstate', function() {
+            setTimeout(function() {
+              if (currentPath !== location.pathname) {
+                currentPath = location.pathname;  
+                console.log('[HubSpot] Popstate detected → tracking path:', currentPath);
+                window._hsq = window._hsq || [];
+                window._hsq.push(['setPath', location.pathname]);
+                window._hsq.push(['trackPageView']);
+              }
+            }, 100);
+          });
+        }
+
         window.hsConversationsSettings = { loadImmediately: true };
         window.hsConversationsOnReady = window.hsConversationsOnReady || [];
         window.hsConversationsOnReady.push(function () {
@@ -83,7 +150,30 @@
           if (loaded) return;
           loaded = true;
           console.log('[HubSpot] Script loaded (' + region + ').');
+          setupSPATracking();
+          checkCookieConsent();
         }
+
+        // Enhanced diagnostics with 10-second poll
+        setTimeout(function() {
+          for (var i = 0; i < 10; i++) {
+            (function(attempt) {
+              setTimeout(function() {
+                if (window.HubSpotConversations && window.HubSpotConversations.widget) {
+                  console.log('[HubSpot] Widget detected on attempt ' + (attempt + 1));
+                  return;
+                }
+                if (attempt === 9) {
+                  console.warn('[HubSpot] Widget not detected after 10 seconds. Possible causes:');
+                  console.warn('  1. Chatflow not published or targeting rules exclude this visitor');
+                  console.warn('  2. Cookie consent not granted for marketing/analytics');
+                  console.warn('  3. Ad blocker preventing HubSpot scripts');
+                  console.warn('  4. Network connectivity issues');
+                }
+              }, 1000 * (attempt + 1));
+            })(i);
+          }
+        }, 0);
 
         // Try EU first, fallback to US on error or timeout
         var timeout = setTimeout(function () {
