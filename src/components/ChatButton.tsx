@@ -2,7 +2,6 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
-import { useRadioPlayer } from '@/hooks/useRadioPlayer';
 
 // Extend Window interface for HubSpot
 declare global {
@@ -18,12 +17,11 @@ declare global {
 
 export function ChatButton() {
   const location = useLocation();
-  const { currentTrack } = useRadioPlayer();
   
-  // Don't show on auth pages, show everywhere else when radio is active
+  // Don't show on auth pages, show everywhere else
   const isAuth = location.pathname.startsWith('/auth') || location.pathname === '/forgot-password' || location.pathname === '/reset-password';
   
-  if (isAuth || !currentTrack) {
+  if (isAuth) {
     return null;
   }
 
