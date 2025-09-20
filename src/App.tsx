@@ -91,6 +91,7 @@ import Contact from './pages/Contact';
 import SystemTest from './pages/SystemTest';
 import AdminProspecting from "./pages/AdminProspecting";
 import WebTV from "./pages/WebTV";
+import Radio from "./pages/Radio";
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
@@ -226,6 +227,7 @@ const App = () => (
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/system-test" element={<SystemTest />} />
                       <Route path="/webtv" element={<WebTV />} />
+                      <Route path="/radio" element={<Radio />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                     </Layout>

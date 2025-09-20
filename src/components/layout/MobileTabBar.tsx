@@ -10,7 +10,8 @@ import {
   MapPin,
   User,
   Megaphone,
-  Hash
+  Hash,
+  Radio
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
@@ -26,6 +27,7 @@ export function MobileTabBar() {
   const publicTabs = !profile ? [
     { name: "Annonces", href: "/annonces", icon: Megaphone },
     { name: "Artistes", href: "/nos-artistes", icon: Users },
+    { name: "Radio", href: "/radio", icon: Radio },
   ] : [];
 
   const getMainTabs = () => {
@@ -33,37 +35,37 @@ export function MobileTabBar() {
       case 'artist':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Radio", href: "/radio", icon: Radio },
           { name: "Messages", href: "/messages", icon: MessageSquare },
-          { name: "Communautés", href: "/communities", icon: Hash },
           { name: "Profil", href: getProfileUrl(profile), icon: User },
         ];
       case 'agent':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Radio", href: "/radio", icon: Radio },
           { name: "Messages", href: "/messages", icon: MessageSquare },
-          { name: "Communautés", href: "/communities", icon: Hash },
           { name: "Profil", href: `/profiles`, icon: User },
         ];
       case 'manager':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Radio", href: "/radio", icon: Radio },
           { name: "Messages", href: "/messages", icon: MessageSquare },
-          { name: "Communautés", href: "/communities", icon: Hash },
           { name: "Profil", href: `/profiles`, icon: User },
         ];
       case 'lieu':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Radio", href: "/radio", icon: Radio },
           { name: "Messages", href: "/messages", icon: MessageSquare },
-          { name: "Communautés", href: "/communities", icon: Hash },
           { name: "Profil", href: `/lieux/${profile.id}`, icon: User },
         ];
       default:
         // Inclut les admins et autres types
         return [
           { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+          { name: "Radio", href: "/radio", icon: Radio },
           { name: "Messages", href: "/messages", icon: MessageSquare },
-          { name: "Communautés", href: "/communities", icon: Hash },
           { name: "Profil", href: `/profiles`, icon: User },
         ];
     }
