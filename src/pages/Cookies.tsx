@@ -4,15 +4,33 @@ import { Button } from "@/components/ui/button";
 import { Switch } from "@/components/ui/switch";
 import { Cookie, Settings, BarChart3, Palette, Shield, Clock, Trash2 } from "lucide-react";
 import { SEOHead } from "@/components/SEOHead";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useToast } from "@/hooks/use-toast";
 
 export default function CookiesPage() {
+  const { toast } = useToast();
   const [cookiePreferences, setCookiePreferences] = useState({
     essential: true, // Always true, cannot be disabled
-    analytics: true,
-    preferences: true,
+    analytics: false,
+    preferences: false,
     marketing: false
   });
+
+  // Load preferences from localStorage on mount
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('vybbi_cookie_preferences');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setCookiePreferences(prev => ({
+          ...prev,
+          ...parsed
+        }));
+      }
+    } catch (error) {
+      console.warn('Failed to load cookie preferences:', error);
+    }
+  }, []);
 
   const cookieCategories = [
     {
@@ -79,10 +97,14 @@ export default function CookiesPage() {
   };
 
   const savePreferences = () => {
-    // Save preferences to localStorage or send to server
     localStorage.setItem('vybbi_cookie_preferences', JSON.stringify(cookiePreferences));
-    console.log('Cookie preferences saved:', cookiePreferences);
-    // In a real implementation, you would also apply these preferences
+    window.dispatchEvent(new CustomEvent('vybbi:cookie-preferences-updated', { 
+      detail: { preferences: cookiePreferences } 
+    }));
+    toast({
+      title: "Préférences enregistrées",
+      description: "Vos préférences de cookies ont été mises à jour avec succès."
+    });
   };
 
   const acceptAll = () => {
@@ -94,6 +116,13 @@ export default function CookiesPage() {
     };
     setCookiePreferences(allAccepted);
     localStorage.setItem('vybbi_cookie_preferences', JSON.stringify(allAccepted));
+    window.dispatchEvent(new CustomEvent('vybbi:cookie-preferences-updated', { 
+      detail: { preferences: allAccepted } 
+    }));
+    toast({
+      title: "Tous les cookies acceptés",
+      description: "Vous avez accepté tous les types de cookies."
+    });
   };
 
   const rejectOptional = () => {
@@ -105,6 +134,13 @@ export default function CookiesPage() {
     };
     setCookiePreferences(essentialOnly);
     localStorage.setItem('vybbi_cookie_preferences', JSON.stringify(essentialOnly));
+    window.dispatchEvent(new CustomEvent('vybbi:cookie-preferences-updated', { 
+      detail: { preferences: essentialOnly } 
+    }));
+    toast({
+      title: "Cookies optionnels refusés",
+      description: "Seuls les cookies essentiels sont maintenant actifs."
+    });
   };
 
   return (

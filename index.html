@@ -53,8 +53,8 @@
     <!-- Start of HubSpot Embed Code -->
     <script>
       (function() {
-        // Cookie consent bridge for HubSpot
-        function checkCookieConsent() {
+        // Cookie consent bridge for HubSpot (now optional)
+        function initializeCookieTracking() {
           try {
             var preferences = localStorage.getItem('vybbi_cookie_preferences');
             if (preferences) {
@@ -63,13 +63,17 @@
                 console.log('[HubSpot] Cookie consent granted → enabling tracking');
                 window._hsq = window._hsq || [];
                 window._hsq.push(['doNotTrack', false]);
-                return true;
+              } else {
+                console.log('[HubSpot] Cookie consent not granted → disabling tracking');
+                window._hsq = window._hsq || [];
+                window._hsq.push(['doNotTrack', true]);
               }
+            } else {
+              console.log('[HubSpot] No cookie preferences found → chat available without tracking');
             }
           } catch (e) {
-            console.warn('[HubSpot] Cookie consent check failed:', e);
+            console.warn('[HubSpot] Cookie tracking init failed:', e);
           }
-          return false;
         }
 
         // SPA tracking for HubSpot
@@ -151,24 +155,28 @@
           loaded = true;
           console.log('[HubSpot] Script loaded (' + region + ').');
           setupSPATracking();
-          checkCookieConsent();
+          initializeCookieTracking();
         }
 
-        // Enhanced diagnostics with 10-second poll
+        // Enhanced diagnostics with 8-second poll
         setTimeout(function() {
-          for (var i = 0; i < 10; i++) {
+          for (var i = 0; i < 8; i++) {
             (function(attempt) {
               setTimeout(function() {
                 if (window.HubSpotConversations && window.HubSpotConversations.widget) {
                   console.log('[HubSpot] Widget detected on attempt ' + (attempt + 1));
                   return;
                 }
-                if (attempt === 9) {
-                  console.warn('[HubSpot] Widget not detected after 10 seconds. Possible causes:');
-                  console.warn('  1. Chatflow not published or targeting rules exclude this visitor');
-                  console.warn('  2. Cookie consent not granted for marketing/analytics');
-                  console.warn('  3. Ad blocker preventing HubSpot scripts');
-                  console.warn('  4. Network connectivity issues');
+                if (attempt === 7) {
+                  console.warn('[HubSpot] Widget not detected after 8 seconds. Diagnostics:');
+                  console.warn('  - HubSpotConversations present:', !!window.HubSpotConversations);
+                  try {
+                    var prefs = localStorage.getItem('vybbi_cookie_preferences');
+                    console.warn('  - Cookie preferences:', prefs || 'none set');
+                  } catch (e) {
+                    console.warn('  - Cookie preferences: error reading');
+                  }
+                  console.warn('  Possible causes: chatflow not published, ad blocker, network issues');
                 }
               }, 1000 * (attempt + 1));
             })(i);
