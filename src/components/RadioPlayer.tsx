@@ -44,6 +44,7 @@ export function RadioPlayer() {
   const handlePlay = () => {
     if (isYouTubeTrack && youtubePlayerRef.current) {
       youtubePlayerRef.current.play();
+      setIsYoutubePlaying(true);
     } else {
       play();
     }
@@ -52,9 +53,26 @@ export function RadioPlayer() {
   const handlePause = () => {
     if (isYouTubeTrack && youtubePlayerRef.current) {
       youtubePlayerRef.current.pause();
+      setIsYoutubePlaying(false);
     } else {
       pause();
     }
+  };
+
+  const handleNextTrack = () => {
+    if (isYouTubeTrack) {
+      setIsYoutubePlaying(false);
+      setYoutubeProgress(0);
+    }
+    nextTrack();
+  };
+
+  const handlePreviousTrack = () => {
+    if (isYouTubeTrack) {
+      setIsYoutubePlaying(false);
+      setYoutubeProgress(0);
+    }
+    previousTrack();
   };
 
   const handleSeek = (time: number) => {
@@ -99,38 +117,39 @@ export function RadioPlayer() {
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">
         <div className="container mx-auto px-2 py-1.5 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 sm:gap-4">
-            {/* Pochette / Avatar artiste */}
-            <div className="flex-shrink-0">
-              <Avatar className="w-8 h-8 sm:w-12 sm:h-12 ring-1 sm:ring-2 ring-primary/20">
+            {/* Pochette album / Avatar artiste - Cliquable */}
+            <Link
+              to={`/artistes/${currentTrack.artist.id}`}
+              className="flex-shrink-0 group cursor-pointer"
+              aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
+            >
+              <Avatar className="w-8 h-8 sm:w-12 sm:h-12 ring-1 sm:ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-200">
                 <AvatarImage
-                  src={currentTrack.artist.avatar_url || ''}
-                  alt={`Avatar ${currentTrack.artist.display_name}`}
+                  src={currentTrack.cover_image_url || currentTrack.artist.avatar_url || ''}
+                  alt={`${currentTrack.cover_image_url ? 'Pochette' : 'Avatar'} ${currentTrack.title}`}
                 />
                 <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
-                  {currentTrack.artist.display_name.charAt(0)}
+                  {currentTrack.title.charAt(0)}
                 </AvatarFallback>
               </Avatar>
-            </div>
+            </Link>
 
             {/* Infos piste + progression */}
             <div className="flex-1 min-w-0">
               <div className="flex items-center justify-between mb-1">
                 <div className="min-w-0 flex-1">
-                  <div className="flex items-center gap-1 sm:gap-2">
-                    <p className="text-xs sm:text-sm font-medium text-foreground truncate">
+                  <Link
+                    to={`/artistes/${currentTrack.artist.id}`}
+                    className="block group"
+                    aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
+                  >
+                    <p className="text-xs sm:text-sm font-medium text-foreground truncate group-hover:text-primary transition-colors">
                       {currentTrack.title}
                     </p>
-                    <Link
-                      to={`/artistes/${currentTrack.artist.id}`}
-                      className="hidden sm:flex flex-shrink-0 opacity-60 hover:opacity-100 transition-opacity"
-                      aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
-                    >
-                      <ExternalLink className="w-3 h-3" />
-                    </Link>
-                  </div>
-                  <p className="text-xs text-muted-foreground truncate">
-                    {currentTrack.artist.display_name}
-                  </p>
+                    <p className="text-xs text-muted-foreground truncate group-hover:text-primary/80 transition-colors">
+                      {currentTrack.artist.display_name}
+                    </p>
+                  </Link>
                 </div>
                 <div className="hidden sm:block text-xs text-muted-foreground ml-2">
                   {formatTime(progressVal)} / {formatTime(durationVal)}
@@ -154,7 +173,7 @@ export function RadioPlayer() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={previousTrack}
+                onClick={handlePreviousTrack}
                 className="hidden sm:inline-flex w-8 h-8 p-0 hover:bg-primary/10"
                 aria-label="Piste précédente"
               >
@@ -177,7 +196,7 @@ export function RadioPlayer() {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={nextTrack}
+                onClick={handleNextTrack}
                 className="hidden sm:inline-flex w-8 h-8 p-0 hover:bg-primary/10"
                 aria-label="Piste suivante"
               >

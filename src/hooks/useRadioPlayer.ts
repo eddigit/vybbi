@@ -13,6 +13,7 @@ interface Track {
   url: string;
   artist: Artist;
   type: 'media' | 'youtube';
+  cover_image_url?: string;
 }
 
 export function useRadioPlayer() {
@@ -71,7 +72,8 @@ export function useRadioPlayer() {
               display_name: track.artist_name || 'Artiste inconnu',
               avatar_url: track.artist_avatar
             },
-            type: trackType
+            type: trackType,
+            cover_image_url: track.cover_image_url
           };
         });
 
@@ -154,6 +156,7 @@ export function useRadioPlayer() {
             avatar_url: null,
           },
           type: 'media',
+          cover_image_url: null,
         }));
 
       if (!tracks.length) {
@@ -182,6 +185,7 @@ export function useRadioPlayer() {
       avatar_url: '/favicon.ico',
     },
     type: 'media',
+    cover_image_url: null,
   });
 
   useEffect(() => {
