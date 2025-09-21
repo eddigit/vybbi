@@ -3118,7 +3118,8 @@ export type Database = {
           completed: boolean
           duration_seconds: number | null
           id: string
-          media_asset_id: string
+          media_asset_id: string | null
+          music_release_id: string | null
           played_at: string
           playlist_id: string | null
           user_id: string | null
@@ -3127,7 +3128,8 @@ export type Database = {
           completed?: boolean
           duration_seconds?: number | null
           id?: string
-          media_asset_id: string
+          media_asset_id?: string | null
+          music_release_id?: string | null
           played_at?: string
           playlist_id?: string | null
           user_id?: string | null
@@ -3136,7 +3138,8 @@ export type Database = {
           completed?: boolean
           duration_seconds?: number | null
           id?: string
-          media_asset_id?: string
+          media_asset_id?: string | null
+          music_release_id?: string | null
           played_at?: string
           playlist_id?: string | null
           user_id?: string | null
@@ -3147,6 +3150,13 @@ export type Database = {
             columns: ["media_asset_id"]
             isOneToOne: false
             referencedRelation: "media_assets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "radio_play_history_music_release_id_fkey"
+            columns: ["music_release_id"]
+            isOneToOne: false
+            referencedRelation: "music_releases"
             referencedColumns: ["id"]
           },
           {

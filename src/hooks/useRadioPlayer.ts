@@ -171,10 +171,11 @@ export function useRadioPlayer() {
           await supabase
             .from('radio_play_history')
             .insert({
+              media_asset_id: null,
               music_release_id: track.id,
               duration_seconds: Math.floor(audio.currentTime || 0),
               completed
-            });
+            } as any);
           console.log('Track completion logged');
         } catch (error) {
           console.error('Error logging track completion:', error);
