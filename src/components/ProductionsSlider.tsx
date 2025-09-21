@@ -10,6 +10,7 @@ import {
   CarouselPrevious,
 } from "@/components/ui/carousel";
 import { AdaptiveReleaseImage } from '@/components/AdaptiveReleaseImage';
+import { BlockchainCertificationBadge } from '@/components/BlockchainCertificationBadge';
 import { 
   Music, 
   Play, 
@@ -142,8 +143,18 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
 
                         {/* Track Info */}
                         <div className="space-y-2">
-                          <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{release.title}</h3>
-                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">{release.artist_name}</p>
+                          <div className="flex items-start justify-between gap-2">
+                            <div className="flex-1 min-w-0">
+                              <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{release.title}</h3>
+                              <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">{release.artist_name}</p>
+                            </div>
+                            <BlockchainCertificationBadge
+                              musicReleaseId={release.id}
+                              title={release.title}
+                              artist={release.artist_name}
+                              className="ml-2 shrink-0"
+                            />
+                          </div>
                           
                           {release.album_name && (
                             <p className="text-xs text-muted-foreground line-clamp-1">{release.album_name}</p>

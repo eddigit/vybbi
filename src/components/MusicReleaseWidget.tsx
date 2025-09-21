@@ -12,10 +12,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch';
 import { Badge } from '@/components/ui/badge';
 import ImageUpload from '@/components/ImageUpload';
-import { Music, Plus, X, Upload, Video } from 'lucide-react';
+import { Music, Plus, X, Upload, Video, Shield } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 import { supabase } from '@/integrations/supabase/client';
 import { extractYouTubeVideoId, getYouTubeThumbnail } from '@/components/YouTubePlayer';
+import { BlockchainCertifyButton } from '@/components/BlockchainCertifyButton';
+import { BlockchainCertificationBadge } from '@/components/BlockchainCertificationBadge';
+import { BlockchainQRCode } from '@/components/BlockchainQRCode';
+import { useBlockchainCertification } from '@/hooks/useBlockchainCertification';
 
 const musicReleaseSchema = z.object({
   title: z.string().min(1, 'Titre requis'),
@@ -68,6 +72,7 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { certification, isCertified } = useBlockchainCertification(editRelease?.id);
 
   const form = useForm<MusicReleaseForm>({
     resolver: zodResolver(musicReleaseSchema),
@@ -406,6 +411,27 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
         title: "Succès",
         description: "Votre sortie musicale a été ajoutée avec succès."
       });
+
+      // If published, offer blockchain certification
+      if (release && data.status === 'published') {
+        const certificationMetadata = {
+          title: data.title,
+          artist: data.artist_name,
+          isrc: isrcCode,
+          releaseDate: data.release_date || new Date().toISOString().split('T')[0],
+          collaborators: collaborators.map(c => ({
+            name: c.name,
+            role: c.role,
+            royaltyPercentage: c.royalty_percentage
+          }))
+        };
+
+        toast({
+          title: "Certification Blockchain disponible",
+          description: "Vous pouvez maintenant certifier votre œuvre sur la blockchain pour une protection renforcée.",
+          duration: 8000,
+        });
+      }
 
       setIsOpen(false);
       form.reset();
@@ -839,6 +865,82 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
               </SelectContent>
             </Select>
           </div>
+
+          {/* Blockchain Certification Section */}
+          {editRelease && editRelease.status === 'published' && (
+            <div className="space-y-4 border-t pt-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <h3 className="text-lg font-semibold flex items-center gap-2">
+                    <Shield className="h-5 w-5" />
+                    Certification Blockchain
+                  </h3>
+                  <p className="text-sm text-muted-foreground">
+                    Protégez votre œuvre avec une certification immuable sur la blockchain Solana
+                  </p>
+                </div>
+                {isCertified && (
+                  <BlockchainCertificationBadge
+                    musicReleaseId={editRelease.id}
+                    title={editRelease.title}
+                    artist={editRelease.artist_name}
+                  />
+                )}
+              </div>
+
+              {isCertified && certification ? (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="space-y-3">
+                    <div className="bg-green-50 border border-green-200 p-4 rounded-lg">
+                      <div className="flex items-center gap-2 mb-2">
+                        <Shield className="h-4 w-4 text-green-600" />
+                        <span className="font-medium text-green-800">Œuvre Certifiée</span>
+                      </div>
+                      <p className="text-sm text-green-700">
+                        Cette œuvre est protégée par la blockchain et dispose d'une preuve d'antériorité immuable.
+                      </p>
+                      <div className="mt-3 text-xs space-y-1">
+                        <p><span className="font-medium">Transaction:</span> {certification.transaction_hash}</p>
+                        <p><span className="font-medium">Bloc:</span> #{certification.block_number}</p>
+                        <p><span className="font-medium">Date:</span> {new Date(certification.created_at).toLocaleDateString('fr-FR')}</p>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div>
+                    {certification.certificate_url && (
+                      <BlockchainQRCode
+                        verificationUrl={certification.certificate_url}
+                        title={editRelease.title}
+                        size={150}
+                      />
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="bg-muted/50 p-4 rounded-lg">
+                  <p className="text-sm text-muted-foreground mb-4">
+                    La certification blockchain crée une preuve d'antériorité immuable de votre œuvre musicale.
+                  </p>
+                  <BlockchainCertifyButton
+                    musicReleaseId={editRelease.id}
+                    metadata={{
+                      title: editRelease.title,
+                      artist: editRelease.artist_name,
+                      isrc: editRelease.isrc_code || '',
+                      releaseDate: editRelease.release_date || new Date().toISOString().split('T')[0],
+                      collaborators: collaborators.map(c => ({
+                        name: c.name,
+                        role: c.role,
+                        royaltyPercentage: c.royalty_percentage
+                      }))
+                    }}
+                    variant="outline"
+                  />
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Submit Buttons */}
           <div className="flex justify-end space-x-2">

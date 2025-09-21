@@ -865,6 +865,57 @@ export type Database = {
         }
         Relationships: []
       }
+      blockchain_certifications: {
+        Row: {
+          block_number: number | null
+          blockchain_network: string
+          certificate_url: string | null
+          certification_data: Json
+          certification_hash: string
+          certified_by: string | null
+          created_at: string
+          id: string
+          music_release_id: string
+          qr_code_url: string | null
+          solana_signature: string | null
+          status: string
+          transaction_hash: string
+          updated_at: string
+        }
+        Insert: {
+          block_number?: number | null
+          blockchain_network?: string
+          certificate_url?: string | null
+          certification_data?: Json
+          certification_hash: string
+          certified_by?: string | null
+          created_at?: string
+          id?: string
+          music_release_id: string
+          qr_code_url?: string | null
+          solana_signature?: string | null
+          status?: string
+          transaction_hash: string
+          updated_at?: string
+        }
+        Update: {
+          block_number?: number | null
+          blockchain_network?: string
+          certificate_url?: string | null
+          certification_data?: Json
+          certification_hash?: string
+          certified_by?: string | null
+          created_at?: string
+          id?: string
+          music_release_id?: string
+          qr_code_url?: string | null
+          solana_signature?: string | null
+          status?: string
+          transaction_hash?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blocked_users: {
         Row: {
           blocked_user_id: string

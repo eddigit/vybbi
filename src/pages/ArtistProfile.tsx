@@ -37,6 +37,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/u
 import { useMusicReleases } from '@/hooks/useMusicReleases';
 import ArtistStatsWidget from '@/components/ArtistStatsWidget';
 import { OptimizedImage } from '@/components/OptimizedImage';
+import { BlockchainCertificationBadge } from '@/components/BlockchainCertificationBadge';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;

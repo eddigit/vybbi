@@ -1,5 +1,8 @@
 project_id = "fepxacqrrjvnvpgzwhyr"
 
+[functions.blockchain-certify]
+verify_jwt = false
+
 [functions.send-notification]
 verify_jwt = false
 
