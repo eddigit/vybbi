@@ -141,6 +141,28 @@ export function useRadioPlayer() {
 
   useEffect(() => {
     buildPlaylist();
+    
+    // Listen for real-time updates on radio playlists
+    const channel = supabase
+      .channel('radio-playlist-changes')
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'radio_playlists'
+        },
+        (payload) => {
+          console.log('Radio playlist updated:', payload);
+          // Rebuild playlist when any playlist is activated/deactivated
+          buildPlaylist();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, [buildPlaylist]);
 
   // Create/refresh audio element on track change
