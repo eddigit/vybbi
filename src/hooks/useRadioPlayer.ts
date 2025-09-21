@@ -90,8 +90,8 @@ export function useRadioPlayer() {
             (t.type === 'media' && (
               t.url.endsWith('.mp3') || t.url.endsWith('.wav') || t.url.endsWith('.ogg')
             )) ||
-            // YouTube videos  
-            (t.type === 'youtube' && t.url.includes('youtube.com'))
+            // YouTube videos (support both full and short URLs)
+            (t.type === 'youtube' && (t.url.includes('youtube.com') || t.url.includes('youtu.be')))
           )
         );
 
@@ -99,9 +99,10 @@ export function useRadioPlayer() {
           // Deduplicate by release id
           const deduped = Array.from(new Map(playable.map(t => [t.id, t])).values());
           // Shuffle for radio experience
-          const shuffled = [...deduped].sort(() => Math.random() - 0.5);
-          setPlaylist(shuffled);
-          return;
+           const shuffled = [...deduped].sort(() => Math.random() - 0.5);
+           setPlaylist(shuffled);
+           setCurrentTrackIndex(0);
+           return;
         }
 
         console.log('No playable direct audio in managed radio tracks, falling back to legacy assets...');
@@ -169,8 +170,9 @@ export function useRadioPlayer() {
       }
 
       // Shuffle playlist for radio feel
-      const shuffled = [...tracks].sort(() => Math.random() - 0.5);
-      setPlaylist(shuffled);
+       const shuffled = [...tracks].sort(() => Math.random() - 0.5);
+       setPlaylist(shuffled);
+       setCurrentTrackIndex(0);
     } catch (e) {
       console.error('Error building radio playlist:', e);
       setPlaylist([fallbackTrack()]);
@@ -220,6 +222,16 @@ export function useRadioPlayer() {
   useEffect(() => {
     const track = playlist[currentTrackIndex];
     if (!track) return;
+
+    // For YouTube tracks, we don't use HTMLAudioElement. The UI will manage playback via YouTubeRadioPlayer.
+    if (track.type === 'youtube') {
+      if (audioRef.current) {
+        audioRef.current.pause();
+      }
+      setProgress(0);
+      setDuration(0);
+      return;
+    }
 
     const audio = new Audio(track.url);
     audio.volume = volumePct / 100;
