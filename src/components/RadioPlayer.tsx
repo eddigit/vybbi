@@ -28,7 +28,7 @@ export function RadioPlayer() {
   const [youtubeProgress, setYoutubeProgress] = useState(0);
   const [youtubeDuration, setYoutubeDuration] = useState(0);
   const [isYoutubePlaying, setIsYoutubePlaying] = useState(false);
-  const youtubePlayerRef = useRef<any>(null);
+  const youtubePlayerRef = useRef<YouTubeRadioPlayerRef>(null);
 
   if (!currentTrack) return null;
 
@@ -43,9 +43,7 @@ export function RadioPlayer() {
 
   const handlePlay = () => {
     if (isYouTubeTrack && youtubePlayerRef.current) {
-      // Trigger YouTube play via a custom event
-      const event = new CustomEvent('youtube-play');
-      window.dispatchEvent(event);
+      youtubePlayerRef.current.play();
     } else {
       play();
     }
@@ -53,19 +51,15 @@ export function RadioPlayer() {
 
   const handlePause = () => {
     if (isYouTubeTrack && youtubePlayerRef.current) {
-      // Trigger YouTube pause via a custom event
-      const event = new CustomEvent('youtube-pause');
-      window.dispatchEvent(event);
+      youtubePlayerRef.current.pause();
     } else {
       pause();
     }
   };
 
   const handleSeek = (time: number) => {
-    if (isYouTubeTrack) {
-      // Trigger YouTube seek via a custom event
-      const event = new CustomEvent('youtube-seek', { detail: { time } });
-      window.dispatchEvent(event);
+    if (isYouTubeTrack && youtubePlayerRef.current) {
+      youtubePlayerRef.current.seekTo(time);
     } else {
       seek(time);
     }
@@ -88,20 +82,18 @@ export function RadioPlayer() {
     >
       {/* Hidden YouTube Player for audio-only playback */}
       {isYouTubeTrack && youtubeVideoId && (
-        <div className="hidden">
-          <YouTubePlayer
-            videoId={youtubeVideoId}
-            onReady={() => console.log('YouTube player ready')}
-            onPlay={() => setIsYoutubePlaying(true)}
-            onPause={() => setIsYoutubePlaying(false)}
-            onEnded={() => {
-              setIsYoutubePlaying(false);
-              nextTrack();
-            }}
-            onTimeUpdate={(time) => setYoutubeProgress(time)}
-            autoplay={trackIsPlaying}
-          />
-        </div>
+        <YouTubeRadioPlayer
+          ref={youtubePlayerRef}
+          videoId={youtubeVideoId}
+          onReady={(duration) => setYoutubeDuration(duration)}
+          onPlay={() => setIsYoutubePlaying(true)}
+          onPause={() => setIsYoutubePlaying(false)}
+          onEnded={() => {
+            setIsYoutubePlaying(false);
+            nextTrack();
+          }}
+          onTimeUpdate={(time) => setYoutubeProgress(time)}
+        />
       )}
       
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">
