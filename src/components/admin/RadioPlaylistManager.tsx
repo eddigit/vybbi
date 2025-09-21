@@ -246,7 +246,8 @@ export function RadioPlaylistManager() {
       // Set the selected playlist as the active one for radio
       const { error } = await supabase
         .from('radio_playlists')
-        .update({ is_active: false });
+        .update({ is_active: false })
+        .neq('id', playlistId);
 
       if (error) throw error;
 
