@@ -182,16 +182,15 @@ export default function Landing() {
             
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 mt-6 sm:mt-8 leading-tight px-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent block sm:inline">
-                Connectez votre
+                LE réseau social
               </span>
               <br className="hidden sm:block" />
-              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
-              <span className="text-foreground"> au monde</span>
+              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">de la nuit</span> 
+              <span className="text-foreground"> et de l'événement</span>
             </h1>
             
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-3 sm:px-2">
-              Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
-              Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
+              Vybbi devient LA référence sociale pour les artistes, agents et lieux de la nuit. Créez votre carte de visite digitale professionnelle, showcasez votre talent et connectez-vous avec l'écosystème musical mondial. Votre profil devient votre vitrine digitale officielle.
             </p>
 
             <div className="mb-6 sm:mb-8">
@@ -205,7 +204,7 @@ export default function Landing() {
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
               <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
                 <Link to="/auth?tab=signup">
-                  Rejoindre les pionniers
+                  Créer ma carte de visite pro
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
@@ -293,9 +292,9 @@ export default function Landing() {
       <section className="py-12 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Pour tous les acteurs de la scène</h2>
+            <h2 className="text-4xl font-bold mb-4">Votre carte de visite digitale professionnelle</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-              Que vous soyez artiste, agent ou gérant de lieu, Vybbi s'adapte à vos besoins
+              Créez votre profil de référence qui devient votre vitrine officielle dans l'écosystème de la nuit
             </p>
           </div>
 
@@ -307,7 +306,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
             <p className="text-muted-foreground mb-6">
-              DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings grâce à notre moteur de matching IA et Radio Vybbi 24h/24. Certifiez vos œuvres sur la blockchain Solana.
+              <strong>Votre profil devient votre carte de visite mondiale.</strong> Showcasez vos œuvres, photos professionnelles et créations certifiées blockchain. Votre portfolio devient LA référence pour prouver votre talent et votre authenticité auprès des professionnels.
             </p>
             <ul className="text-left space-y-2 text-sm mb-6">
               <li className="flex items-center">
@@ -377,7 +376,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
-                  Gérez vos artistes, développez leurs carrières avec des outils dédiés pour organiser des tournées et maximiser leurs opportunités de bookings. Smart contracts automatisés et portefeuille crypto intégré.
+                  <strong>Showcase de votre portefeuille artistique.</strong> Votre profil révèle qui vous gérez, l'ampleur de votre roster et votre crédibilité business. Les artistes et lieux peuvent voir votre expertise et votre réseau pour vous faire confiance.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -447,7 +446,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
-                  Clubs, festivals, bars, restaurants. Bénéficiez de calendriers synchronisés et trouvez les talents parfaits pour vos événements sur une marketplace unifiée. Billetterie blockchain et tokens d'accès intégrés.
+                  <strong>Vitrine digitale de votre établissement.</strong> Votre profil met en avant votre lieu, votre réputation et vos événements. Intégrez billetterie blockchain ou traditionnelle, et montrez pourquoi les artistes doivent jouer chez vous.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -509,6 +508,66 @@ export default function Landing() {
                 </div>
               </CardContent>
             </Card>
+          </div>
+        </div>
+      </section>
+
+      {/* Social Network Section */}
+      <section className="py-16 px-2 sm:px-6 bg-gradient-to-br from-primary/5 to-accent/5">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold mb-4">Le premier réseau social de l'écosystème nocturne</h2>
+            <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+              Vybbi révolutionne la découverte et le networking professionnel dans l'industrie de la nuit. 
+              Votre profil devient votre référence officielle reconnue par tous les acteurs du secteur.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                  <Users className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">Networking Intelligent</h3>
+                <p className="text-muted-foreground">
+                  Découvrez et connectez-vous avec les professionnels qui correspondent exactement à vos besoins grâce à notre IA de matching avancée.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                  <Star className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">Réputation Vérifiée</h3>
+                <p className="text-muted-foreground">
+                  Système de reviews et certifications blockchain qui garantit l'authenticité des profils et des réalisations professionnelles.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border md:col-span-2 lg:col-span-1">
+              <CardContent className="p-8 text-center">
+                <div className="w-16 h-16 rounded-full bg-gradient-primary flex items-center justify-center mx-auto mb-6 shadow-glow">
+                  <Globe className="w-8 h-8 text-primary-foreground" />
+                </div>
+                <h3 className="text-xl font-bold mb-4 text-foreground">Visibilité Mondiale</h3>
+                <p className="text-muted-foreground">
+                  Votre profil Vybbi devient votre carte de visite officielle, partageable et reconnue dans le monde entier.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="text-center">
+            <Button size="lg" className="text-lg px-8 py-6" asChild>
+              <Link to="/auth?tab=signup">
+                Rejoindre le réseau
+                <ArrowRight className="ml-2 h-5 w-5" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>
