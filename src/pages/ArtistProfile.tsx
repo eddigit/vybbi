@@ -316,7 +316,10 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
               {(artist as any).languages && (artist as any).languages.length > 0 && (
                 <div className="flex gap-1 mb-2 flex-wrap items-center">
                   {(artist as any).languages.slice(0, 4).map((langCode: any) => {
-                    const lang = getLanguageByCode(langCode);
+                    const raw = String(langCode || '').toLowerCase();
+                    const alias: Record<string, string> = { gb: 'en', uk: 'en', us: 'en', 'en-gb': 'en', 'en-us': 'en', br: 'pt', 'pt-br': 'pt', 'pt-pt': 'pt', cn: 'zh', 'zh-cn': 'zh', 'zh-hans': 'zh', 'zh-hant': 'zh', 'fr-fr': 'fr' };
+                    const normalized = alias[raw] || raw.split('-')[0];
+                    const lang = getLanguageByCode(normalized);
                     return (
                       <span
                         key={langCode}

@@ -86,7 +86,10 @@ export const OptimizedProfileCard = memo(({
                 <Languages className="h-3 w-3" />
                 <div className="flex items-center gap-1">
                   {profile.languages.slice(0, 3).map((code) => {
-                    const lang = getLanguageByCode(code);
+                    const raw = String(code || '').toLowerCase();
+                    const alias: Record<string, string> = { gb: 'en', uk: 'en', us: 'en', 'en-gb': 'en', 'en-us': 'en', br: 'pt', 'pt-br': 'pt', 'pt-pt': 'pt', cn: 'zh', 'zh-cn': 'zh', 'zh-hans': 'zh', 'zh-hant': 'zh', 'fr-fr': 'fr' };
+                    const normalized = alias[raw] || raw.split('-')[0];
+                    const lang = getLanguageByCode(normalized);
                     return (
                       <span
                         key={code}
