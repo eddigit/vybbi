@@ -44,18 +44,10 @@ export function useRadioPlayer() {
           // Use direct audio file URL if available
           let audioUrl = '/radio/sample.mp3';
           
-          // Priority order: direct_audio_url > file_url > YouTube > fallback sample
+          // Priority order: file_url > YouTube > fallback sample
           let trackType: 'media' | 'youtube' = 'media';
           
-          if (track.direct_audio_url && (
-            track.direct_audio_url.endsWith('.mp3') || 
-            track.direct_audio_url.endsWith('.wav') || 
-            track.direct_audio_url.endsWith('.ogg') ||
-            track.direct_audio_url.includes('supabase.co')
-          )) {
-            audioUrl = track.direct_audio_url;
-            trackType = 'media';
-          } else if (track.file_url && (
+          if (track.file_url && (
             track.file_url.endsWith('.mp3') || 
             track.file_url.endsWith('.wav') || 
             track.file_url.endsWith('.ogg') ||
