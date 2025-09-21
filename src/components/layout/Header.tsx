@@ -1,7 +1,7 @@
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
-import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Menu, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,8 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationCenter } from "@/components/NotificationCenter";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { cn } from "@/lib/utils";
 
 export function Header() {
   const location = useLocation();
@@ -27,6 +28,7 @@ export function Header() {
   const { toast } = useToast();
   // Removed useNotifications - now handled by NotificationCenter
   const [searchQuery, setSearchQuery] = useState("");
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { translatedText: searchPlaceholder } = useTranslate("Recherche...");
   
 
@@ -51,6 +53,63 @@ export function Header() {
     // La redirection est déjà gérée dans useAuth.ts
   };
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    const handleRouteChange = () => setIsMobileMenuOpen(false);
+    window.addEventListener('popstate', handleRouteChange);
+    return () => window.removeEventListener('popstate', handleRouteChange);
+  }, []);
+
+  // Prevent body scroll when mobile menu is open
+  useEffect(() => {
+    if (isMobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [isMobileMenuOpen]);
+
+  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+
+  // Get main navigation links based on user profile
+  const getMainNavLinks = () => {
+    if (!profile) return [];
+    
+    const baseLinks = [
+      { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+      { href: "/messages", label: "Messages", icon: MessageSquare },
+      { href: "/top-artistes", label: "Top Artistes", icon: Trophy },
+      { href: "/annonces", label: "Annonces", icon: Megaphone },
+      { href: "/radio", label: "Radio", icon: Radio },
+      { href: "/webtv", label: "Web TV", icon: Radio },
+    ];
+
+    // Add profile-specific links
+    if (profile.profile_type === 'agent' || profile.profile_type === 'manager' || profile.profile_type === 'lieu') {
+      baseLinks.push({ href: "/artists", label: "Artistes", icon: Search });
+    }
+    
+    if (profile.profile_type === 'agent' || profile.profile_type === 'manager') {
+      baseLinks.push(
+        { href: "/lieux", label: "Lieux", icon: MapPin },
+        { href: "/events", label: "Événements", icon: Star }
+      );
+    }
+
+    if (profile.profile_type === 'artist') {
+      baseLinks.push(
+        { href: "/profiles?type=agent", label: "Agents", icon: Users },
+        { href: "/profiles?type=manager", label: "Managers", icon: Users }
+      );
+    }
+
+    return baseLinks;
+  };
+
   // Removed notification handling - now in NotificationCenter
 
   return (
@@ -68,12 +127,22 @@ export function Header() {
 
 
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
-          {/* Language Selector - Always visible */}
-          
+          {/* Mobile menu button - Only visible when user is logged in */}
+          {profile && (
+            <Button
+              variant="ghost"
+              size="sm"
+              className="lg:hidden touch-target p-2 z-50 relative"
+              onClick={toggleMobileMenu}
+              aria-label="Toggle menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </Button>
+          )}
           
           {showAdminControls && (
             <>
-
               {/* Search - Hidden on mobile, visible on tablet+ */}
               <form onSubmit={handleSearch} className="hidden lg:block relative">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
@@ -208,6 +277,101 @@ export function Header() {
           )}
         </div>
       </div>
+
+      {/* Mobile Menu Overlay */}
+      {profile && isMobileMenuOpen && (
+        <>
+          {/* Backdrop */}
+          <div 
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
+          />
+          
+          {/* Menu panel */}
+          <div className={cn(
+            "fixed top-[3.5rem] sm:top-[4rem] left-0 right-0 bottom-0 z-50 lg:hidden",
+            "bg-background border-t border-border shadow-lg",
+            "transform transition-transform duration-300 ease-out",
+            "overflow-y-auto"
+          )}>
+            <div className="p-4 pb-safe-bottom space-y-6">
+              {/* User Profile Section */}
+              <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                <Avatar className="h-10 w-10">
+                  <AvatarImage src={profile.avatar_url || ''} />
+                  <AvatarFallback className="bg-gradient-primary text-white">
+                    {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium text-sm truncate">{profile.display_name}</p>
+                  <p className="text-xs text-muted-foreground capitalize">{profile.profile_type}</p>
+                </div>
+              </div>
+
+              {/* Main Navigation */}
+              <nav className="space-y-2">
+                {getMainNavLinks().map((link, index) => {
+                  const Icon = link.icon;
+                  return (
+                    <Link
+                      key={index}
+                      to={link.href}
+                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Icon className="h-5 w-5" />
+                      <span className="font-medium">{link.label}</span>
+                    </Link>
+                  );
+                })}
+              </nav>
+
+              {/* Profile Actions */}
+              <div className="pt-4 border-t border-border space-y-2">
+                <Link
+                  to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
+                       profile.profile_type === 'agent' ? `/partners/${profile.id}` :
+                       profile.profile_type === 'manager' ? `/partners/${profile.id}` :
+                       profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`}
+                  className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <User className="h-5 w-5" />
+                  <span className="font-medium">Mon profil</span>
+                </Link>
+                
+                <Link
+                  to={profile.profile_type === 'artist' ? `/artists/${profile.id}/edit` : 
+                       profile.profile_type === 'agent' ? `/agents/${profile.id}/edit` :
+                       profile.profile_type === 'manager' ? `/managers/${profile.id}/edit` :
+                       profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}/edit`}
+                  className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <Pencil className="h-5 w-5" />
+                  <span className="font-medium">Modifier profil</span>
+                </Link>
+              </div>
+
+              {/* Logout */}
+              <div className="pt-4 border-t border-border">
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    handleLogout();
+                  }}
+                  className="w-full justify-start gap-3 text-destructive border-destructive/20 hover:bg-destructive/10"
+                >
+                  <LogOut className="h-5 w-5" />
+                  <span className="font-medium">Déconnexion</span>
+                </Button>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
     </header>
   );
 }
