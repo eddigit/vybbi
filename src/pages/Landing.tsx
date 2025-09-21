@@ -307,7 +307,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
             <p className="text-muted-foreground mb-6">
-              DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings grâce à notre moteur de matching IA et Radio Vybbi 24h/24.
+              DJs, musiciens, danseurs, performers. Créez votre profil, partagez votre art et trouvez vos prochains bookings grâce à notre moteur de matching IA et Radio Vybbi 24h/24. Certifiez vos œuvres sur la blockchain Solana.
             </p>
             <ul className="text-left space-y-2 text-sm mb-6">
               <li className="flex items-center">
@@ -342,6 +342,22 @@ export default function Landing() {
                 <CheckCircle className="w-4 h-4 text-success mr-2" />
                 <span className="text-card-foreground">Statistiques d'écoute</span>
               </li>
+              <li className="flex items-center">
+                <Blockchain className="w-4 h-4 text-primary mr-2" />
+                <span className="text-card-foreground">Certification blockchain Solana</span>
+              </li>
+              <li className="flex items-center">
+                <Shield className="w-4 h-4 text-primary mr-2" />
+                <span className="text-card-foreground">Protection crypto des œuvres</span>
+              </li>
+              <li className="flex items-center">
+                <CheckCircle className="w-4 h-4 text-primary mr-2" />
+                <span className="text-card-foreground">QR codes de vérification</span>
+              </li>
+              <li className="flex items-center">
+                <Star className="w-4 h-4 text-primary mr-2" />
+                <span className="text-card-foreground">Portfolio NFT intégré</span>
+              </li>
                 </ul>
                 <div className="flex flex-col gap-2">
                   <Button asChild className="w-full">
@@ -361,7 +377,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
-                  Gérez vos artistes, développez leurs carrières avec des outils dédiés pour organiser des tournées et maximiser leurs opportunités de bookings.
+                  Gérez vos artistes, développez leurs carrières avec des outils dédiés pour organiser des tournées et maximiser leurs opportunités de bookings. Smart contracts automatisés et portefeuille crypto intégré.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -396,6 +412,22 @@ export default function Landing() {
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Monétisation internationale</span>
                   </li>
+                  <li className="flex items-center">
+                    <Blockchain className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Smart contracts automatisés</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CreditCard className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Portefeuille crypto dédié</span>
+                  </li>
+                  <li className="flex items-center">
+                    <TrendingUp className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Commissions blockchain</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Zap className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Paiements décentralisés</span>
+                  </li>
                 </ul>
                 <div className="flex flex-col gap-2">
                   <Button asChild className="w-full">
@@ -415,7 +447,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
-                  Clubs, festivals, bars, restaurants. Bénéficiez de calendriers synchronisés et trouvez les talents parfaits pour vos événements sur une marketplace unifiée.
+                  Clubs, festivals, bars, restaurants. Bénéficiez de calendriers synchronisés et trouvez les talents parfaits pour vos événements sur une marketplace unifiée. Billetterie blockchain et tokens d'accès intégrés.
                 </p>
                 <ul className="text-left space-y-2 text-sm mb-6">
                   <li className="flex items-center">
@@ -449,6 +481,22 @@ export default function Landing() {
                   <li className="flex items-center">
                     <CheckCircle className="w-4 h-4 text-success mr-2" />
                     <span className="text-card-foreground">Diversité</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Blockchain className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Billetterie blockchain</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Shield className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Tokens d'accès événements</span>
+                  </li>
+                  <li className="flex items-center">
+                    <CheckCircle className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Vérification crypto artistes</span>
+                  </li>
+                  <li className="flex items-center">
+                    <Zap className="w-4 h-4 text-primary mr-2" />
+                    <span className="text-card-foreground">Paiements instantanés</span>
                   </li>
                 </ul>
                 <div className="flex flex-col gap-2">
