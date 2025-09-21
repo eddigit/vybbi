@@ -38,17 +38,32 @@ export function useRadioPlayer() {
         console.log(`Found ${radioTracks.length} managed radio tracks`);
         
         // Convert radio tracks to Track format
-        const tracks: Track[] = radioTracks.map((track: any) => ({
-          id: track.music_release_id,
-          title: track.title || 'Music Track',
-          url: track.youtube_url || track.spotify_url || track.soundcloud_url || '/radio/sample.mp3',
-          artist: {
-            id: track.artist_profile_id,
-            display_name: track.artist_name || 'Artiste inconnu',
-            avatar_url: track.artist_avatar
-          },
-          type: 'media' as const
-        }));
+        const tracks: Track[] = radioTracks.map((track: any) => {
+          console.log("Processing track:", track);
+          
+          // For now, we'll use the fallback sample since we need direct audio URLs
+          // TODO: Implement proper audio streaming for YouTube/Spotify/SoundCloud
+          let audioUrl = '/radio/sample.mp3';
+          
+          // Check if we have a direct audio file URL (from media_assets)
+          if (track.file_url && (track.file_url.endsWith('.mp3') || track.file_url.endsWith('.wav') || track.file_url.endsWith('.ogg'))) {
+            audioUrl = track.file_url;
+          }
+          
+          console.log("Using audio URL:", audioUrl);
+          
+          return {
+            id: track.music_release_id,
+            title: track.title || 'Music Track',
+            url: audioUrl,
+            artist: {
+              id: track.artist_profile_id,
+              display_name: track.artist_name || 'Artiste inconnu',
+              avatar_url: track.artist_avatar
+            },
+            type: 'media' as const
+          };
+        });
 
         // Shuffle for radio experience
         const shuffled = [...tracks].sort(() => Math.random() - 0.5);
