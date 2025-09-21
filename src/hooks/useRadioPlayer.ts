@@ -69,10 +69,23 @@ export function useRadioPlayer() {
           };
         });
 
-        // Shuffle for radio experience
-        const shuffled = [...tracks].sort(() => Math.random() - 0.5);
-        setPlaylist(shuffled);
-        return;
+        // Keep only tracks with a real direct audio file (not the sample)
+        const playable = tracks.filter(t => 
+          t.url && t.url !== '/radio/sample.mp3' && (
+            t.url.endsWith('.mp3') || t.url.endsWith('.wav') || t.url.endsWith('.ogg')
+          )
+        );
+
+        if (playable.length > 0) {
+          // Deduplicate by release id
+          const deduped = Array.from(new Map(playable.map(t => [t.id, t])).values());
+          // Shuffle for radio experience
+          const shuffled = [...deduped].sort(() => Math.random() - 0.5);
+          setPlaylist(shuffled);
+          return;
+        }
+
+        console.log('No playable direct audio in managed radio tracks, falling back to legacy assets...');
       }
 
       console.log("No managed radio tracks, using fallback method...");
