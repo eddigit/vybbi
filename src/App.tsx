@@ -18,6 +18,7 @@ import { usePWAUpdate } from '@/hooks/usePWAUpdate';
 import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
 import { ChatButton } from '@/components/ChatButton';
+import { ConditionalHomePage } from '@/components/ConditionalHomePage';
 import SocialWall from "./pages/SocialWall";
 import Dashboard from "./pages/Dashboard";
 import Partners from "./pages/Partners";
@@ -195,7 +196,8 @@ const App = () => (
                       <Route path="/nos-artistes" element={<NosArtistes />} />
                       <Route path="/voir-plus" element={<AccesComplet />} />
                       <Route path="/landing" element={<Landing />} />
-                      <Route path="/" element={<SocialWall />} />
+                      <Route path="/feed" element={<SocialWall />} />
+                      <Route path="/" element={<ConditionalHomePage />} />
                       <Route path="/events" element={<EventsManager />} />
                       <Route path="/lieux/:id/edit" element={<VenueProfileEdit />} />
                       <Route path="/admin/roadmap" element={<AdminRoadmap />} />

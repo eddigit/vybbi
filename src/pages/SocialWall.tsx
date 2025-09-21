@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { PostCreator } from "@/components/social/PostCreator";
 import { PostCard } from "@/components/social/PostCard";
@@ -7,6 +8,7 @@ import { useSocialFeed } from "@/hooks/useSocialFeed";
 import { useUserPresence } from "@/hooks/useUserPresence";
 import { Loader2 } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Button } from "@/components/ui/button";
 
 export default function SocialWall() {
   const { user } = useAuth();
@@ -20,9 +22,17 @@ export default function SocialWall() {
   if (!user) {
     return (
       <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <h2 className="text-2xl font-bold mb-4">Connectez-vous pour accéder au mur social</h2>
-          <p className="text-muted-foreground">Rejoignez la communauté Vybbi pour partager et découvrir</p>
+        <div className="text-center space-y-4">
+          <h2 className="text-2xl font-bold mb-4">Connectez-vous pour accéder au feed social</h2>
+          <p className="text-muted-foreground">Rejoignez la communauté Vybbi pour partager et découvrir du contenu.</p>
+          <div className="flex gap-4 justify-center">
+            <Button asChild>
+              <Link to="/auth?tab=signin">Se connecter</Link>
+            </Button>
+            <Button variant="outline" asChild>
+              <Link to="/auth?tab=signup">S'inscrire</Link>
+            </Button>
+          </div>
         </div>
       </div>
     );
