@@ -4213,13 +4213,16 @@ export type Database = {
           artist_avatar: string
           artist_name: string
           artist_profile_id: string
-          file_name: string
-          file_url: string
-          media_asset_id: string
+          cover_image_url: string
+          music_release_id: string
           priority_boost: number
+          soundcloud_url: string
+          spotify_url: string
           subscription_type: string
+          title: string
           track_id: string
           weight: number
+          youtube_url: string
         }[]
       }
       get_safe_profile_data: {

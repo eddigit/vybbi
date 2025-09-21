@@ -39,9 +39,9 @@ export function useRadioPlayer() {
         
         // Convert radio tracks to Track format
         const tracks: Track[] = radioTracks.map((track: any) => ({
-          id: track.media_asset_id,
-          title: track.file_name?.replace(/\.[^/.]+$/, '') || 'Audio Track',
-          url: track.file_url,
+          id: track.music_release_id,
+          title: track.title || 'Music Track',
+          url: track.youtube_url || track.spotify_url || track.soundcloud_url || '/radio/sample.mp3',
           artist: {
             id: track.artist_profile_id,
             display_name: track.artist_name || 'Artiste inconnu',
@@ -171,7 +171,7 @@ export function useRadioPlayer() {
           await supabase
             .from('radio_play_history')
             .insert({
-              media_asset_id: track.id,
+              music_release_id: track.id,
               duration_seconds: Math.floor(audio.currentTime || 0),
               completed
             });
