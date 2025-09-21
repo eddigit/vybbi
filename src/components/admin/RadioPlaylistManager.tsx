@@ -183,10 +183,9 @@ export function RadioPlaylistManager() {
     if (!selectedPlaylist || selectedMusic.length === 0) return;
 
     try {
-      const playlistTracks = selectedMusic.map((musicReleaseId, index) => ({
+      const playlistTracks = selectedMusic.map((musicReleaseId) => ({
         playlist_id: selectedPlaylist,
         music_release_id: musicReleaseId,
-        position: index + 1,
         is_approved: true,
         weight: 1
       }));
@@ -236,6 +235,40 @@ export function RadioPlaylistManager() {
       toast({
         title: "Erreur",
         description: "Impossible de modifier la playlist",
+        variant: "destructive"
+      });
+    }
+  };
+
+  // Launch playlist in radio
+  const launchPlaylist = async (playlistId: string) => {
+    try {
+      // Set the selected playlist as the active one for radio
+      const { error } = await supabase
+        .from('radio_playlists')
+        .update({ is_active: false });
+
+      if (error) throw error;
+
+      const { error: activateError } = await supabase
+        .from('radio_playlists')
+        .update({ is_active: true })
+        .eq('id', playlistId);
+
+      if (activateError) throw activateError;
+
+      toast({
+        title: "Playlist lancée !",
+        description: "La playlist est maintenant diffusée sur la webradio",
+        variant: "default"
+      });
+
+      fetchPlaylists();
+    } catch (error) {
+      console.error('Error launching playlist:', error);
+      toast({
+        title: "Erreur",
+        description: "Impossible de lancer la playlist",
         variant: "destructive"
       });
     }
@@ -436,6 +469,16 @@ export function RadioPlaylistManager() {
                   onClick={() => togglePlaylistStatus(playlist.id, playlist.is_active)}
                 >
                   {playlist.is_active ? 'Désactiver' : 'Activer'}
+                </Button>
+                
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => launchPlaylist(playlist.id)}
+                  disabled={playlist.track_count === 0}
+                  className="bg-green-600 hover:bg-green-700 text-white border-green-600"
+                >
+                  🎵 Lancer
                 </Button>
               </div>
             </CardContent>

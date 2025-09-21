@@ -13,6 +13,7 @@ import {
   Signal
 } from 'lucide-react';
 import { RadioControls } from '@/components/RadioControls';
+import { RadioPlaylistController } from '@/components/RadioPlaylistController';
 import { useRadioPlayer } from '@/hooks/useRadioPlayer';
 import { useRadioRequests } from '@/hooks/useRadioRequests';
 
@@ -171,6 +172,15 @@ export default function RadioPage() {
 
       {/* Contrôles et demandes */}
       <RadioControls />
+
+      {/* Playlists Controller */}
+      <div>
+        <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
+          <Music className="h-6 w-6" />
+          Playlists de la Radio
+        </h2>
+        <RadioPlaylistController />
+      </div>
 
       {/* Informations sur la radio */}
       <Card>
