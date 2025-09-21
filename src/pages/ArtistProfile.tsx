@@ -314,15 +314,23 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
               
               {/* Languages */}
               {(artist as any).languages && (artist as any).languages.length > 0 && (
-                <div className="flex gap-1 mb-2 flex-wrap">
-                  {(artist as any).languages.slice(0, 3).map((lang: any) => (
-                    <Badge key={lang} variant="secondary" className="text-xs bg-white/30 text-white border-white/40 backdrop-blur-sm">
-                      {lang}
-                    </Badge>
-                  ))}
+                <div className="flex gap-1 mb-2 flex-wrap items-center">
+                  {(artist as any).languages.slice(0, 4).map((langCode: any) => {
+                    const lang = getLanguageByCode(langCode);
+                    return (
+                      <span
+                        key={langCode}
+                        aria-label={lang?.name}
+                        title={lang?.name}
+                        className="text-lg drop-shadow"
+                      >
+                        {lang?.flag || '🏳️'}
+                      </span>
+                    );
+                  })}
                 </div>
               )}
-              
+
               {/* Talents */}
               {(artist as any).talents && (artist as any).talents.length > 0 && (
                 <div className="flex gap-1 flex-wrap">

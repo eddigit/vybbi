@@ -3,6 +3,7 @@ import { Card } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MapPin, Languages, Star } from 'lucide-react';
+import { getLanguageByCode } from '@/lib/languages';
 
 interface OptimizedProfileCardProps {
   profile: {
@@ -83,10 +84,24 @@ export const OptimizedProfileCard = memo(({
             {profile.languages && profile.languages.length > 0 && (
               <div className="flex items-center gap-1 text-muted-foreground text-sm">
                 <Languages className="h-3 w-3" />
-                <span>{profile.languages.slice(0, 2).join(', ')}</span>
-                {profile.languages.length > 2 && (
-                  <span>+{profile.languages.length - 2}</span>
-                )}
+                <div className="flex items-center gap-1">
+                  {profile.languages.slice(0, 3).map((code) => {
+                    const lang = getLanguageByCode(code);
+                    return (
+                      <span
+                        key={code}
+                        aria-label={lang?.name}
+                        title={lang?.name}
+                        className="text-base leading-none"
+                      >
+                        {lang?.flag || '🏳️'}
+                      </span>
+                    );
+                  })}
+                  {profile.languages.length > 3 && (
+                    <span className="text-xs">+{profile.languages.length - 3}</span>
+                  )}
+                </div>
               </div>
             )}
           </div>
