@@ -41,11 +41,18 @@ export function useRadioPlayer() {
         const tracks: Track[] = radioTracks.map((track: any) => {
           console.log("Processing track:", track);
           
-          // Use direct audio file URL if available, otherwise fall back to sample
+          // Use direct audio file URL if available
           let audioUrl = '/radio/sample.mp3';
           
-          // Priority: direct file_url > fallback sample
-          if (track.file_url && (
+          // Priority order: direct_audio_url > file_url > fallback sample
+          if (track.direct_audio_url && (
+            track.direct_audio_url.endsWith('.mp3') || 
+            track.direct_audio_url.endsWith('.wav') || 
+            track.direct_audio_url.endsWith('.ogg') ||
+            track.direct_audio_url.includes('supabase.co') // Supabase storage URLs
+          )) {
+            audioUrl = track.direct_audio_url;
+          } else if (track.file_url && (
             track.file_url.endsWith('.mp3') || 
             track.file_url.endsWith('.wav') || 
             track.file_url.endsWith('.ogg') ||

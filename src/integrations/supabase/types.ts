@@ -2015,6 +2015,7 @@ export type Database = {
           cover_image_url: string | null
           created_at: string
           credits: Json | null
+          direct_audio_url: string | null
           distribution_service: string | null
           duration_seconds: number | null
           explicit_content: boolean | null
@@ -2047,6 +2048,7 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           credits?: Json | null
+          direct_audio_url?: string | null
           distribution_service?: string | null
           duration_seconds?: number | null
           explicit_content?: boolean | null
@@ -2079,6 +2081,7 @@ export type Database = {
           cover_image_url?: string | null
           created_at?: string
           credits?: Json | null
+          direct_audio_url?: string | null
           distribution_service?: string | null
           duration_seconds?: number | null
           explicit_content?: boolean | null
@@ -4224,6 +4227,7 @@ export type Database = {
           artist_name: string
           artist_profile_id: string
           cover_image_url: string
+          direct_audio_url: string
           file_url: string
           music_release_id: string
           priority_boost: number

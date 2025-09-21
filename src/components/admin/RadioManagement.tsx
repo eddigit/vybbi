@@ -14,6 +14,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
 import { Music, Play, Pause, Users, TrendingUp, Clock, Star, Check, X, Plus, Calendar } from "lucide-react";
+import { MusicReleaseAudioManager } from "./MusicReleaseAudioManager";
 
 interface Playlist {
   id: string;
@@ -320,6 +321,7 @@ export function RadioManagement() {
       <Tabs defaultValue="playlists" className="space-y-4">
         <TabsList>
           <TabsTrigger value="playlists">Playlists</TabsTrigger>
+          <TabsTrigger value="audio">Fichiers Audio</TabsTrigger>
           <TabsTrigger value="pending">
             Approbations
             {stats.pending_approvals > 0 && (
@@ -534,6 +536,10 @@ export function RadioManagement() {
               </TableBody>
             </Table>
           </div>
+        </TabsContent>
+
+        <TabsContent value="audio" className="space-y-4">
+          <MusicReleaseAudioManager />
         </TabsContent>
       </Tabs>
     </div>
