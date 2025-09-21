@@ -183,9 +183,9 @@ export function RadioPlaylistManager() {
     if (!selectedPlaylist || selectedMusic.length === 0) return;
 
     try {
-      const playlistTracks = selectedMusic.map((mediaAssetId, index) => ({
+      const playlistTracks = selectedMusic.map((musicReleaseId, index) => ({
         playlist_id: selectedPlaylist,
-        media_asset_id: mediaAssetId,
+        music_release_id: musicReleaseId,
         position: index + 1,
         is_approved: true,
         weight: 1

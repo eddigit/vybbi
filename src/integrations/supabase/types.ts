@@ -3165,7 +3165,8 @@ export type Database = {
           id: string
           is_approved: boolean
           last_played_at: string | null
-          media_asset_id: string
+          media_asset_id: string | null
+          music_release_id: string | null
           play_count: number
           playlist_id: string
           weight: number
@@ -3176,7 +3177,8 @@ export type Database = {
           id?: string
           is_approved?: boolean
           last_played_at?: string | null
-          media_asset_id: string
+          media_asset_id?: string | null
+          music_release_id?: string | null
           play_count?: number
           playlist_id: string
           weight?: number
@@ -3187,12 +3189,20 @@ export type Database = {
           id?: string
           is_approved?: boolean
           last_played_at?: string | null
-          media_asset_id?: string
+          media_asset_id?: string | null
+          music_release_id?: string | null
           play_count?: number
           playlist_id?: string
           weight?: number
         }
         Relationships: [
+          {
+            foreignKeyName: "fk_radio_playlist_tracks_music_release"
+            columns: ["music_release_id"]
+            isOneToOne: false
+            referencedRelation: "music_releases"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "radio_playlist_tracks_media_asset_id_fkey"
             columns: ["media_asset_id"]
