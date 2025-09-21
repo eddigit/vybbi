@@ -4,7 +4,9 @@ import { Slider } from "@/components/ui/slider";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
 import { Link, useLocation } from "react-router-dom";
-import { getProfileUrl } from '@/hooks/useProfileResolver';
+import { YouTubeRadioPlayer, YouTubeRadioPlayerRef } from "@/components/YouTubeRadioPlayer";
+import { extractYouTubeVideoId } from "@/components/YouTubePlayer";
+import { useState, useEffect, useRef } from "react";
 
 export function RadioPlayer() {
   const location = useLocation();
@@ -22,15 +24,52 @@ export function RadioPlayer() {
     setVolume,
   } = useRadioPlayer();
 
+  // YouTube player state
+  const [youtubeProgress, setYoutubeProgress] = useState(0);
+  const [youtubeDuration, setYoutubeDuration] = useState(0);
+  const [isYoutubePlaying, setIsYoutubePlaying] = useState(false);
+  const youtubePlayerRef = useRef<any>(null);
+
   if (!currentTrack) return null;
 
-  // Determine if MobileTabBar is present based on current route
-  const isLanding = location.pathname === '/';
-  const isAuth = location.pathname === '/auth';
-  const isArtistProfile = location.pathname.match(/^\/artists\/[^\/]+$/) && !location.pathname.includes('/edit');
-  const isVenueProfile = location.pathname.match(/^\/lieux\/[^\/]+$/) && !location.pathname.includes('/edit');
-  const isPartnerProfile = location.pathname.match(/^\/partners\/[^\/]+$/) && !location.pathname.includes('/edit');
-  const hasMobileTabBar = !(isLanding || isAuth || isArtistProfile || isVenueProfile || isPartnerProfile);
+  // Detect track type
+  const isYouTubeTrack = currentTrack.type === 'youtube';
+  const youtubeVideoId = isYouTubeTrack ? extractYouTubeVideoId(currentTrack.url) : null;
+
+  // Use YouTube state if YouTube track, otherwise use audio state
+  const trackProgress = isYouTubeTrack ? youtubeProgress : progress;
+  const trackDuration = isYouTubeTrack ? youtubeDuration : duration;
+  const trackIsPlaying = isYouTubeTrack ? isYoutubePlaying : isPlaying;
+
+  const handlePlay = () => {
+    if (isYouTubeTrack && youtubePlayerRef.current) {
+      // Trigger YouTube play via a custom event
+      const event = new CustomEvent('youtube-play');
+      window.dispatchEvent(event);
+    } else {
+      play();
+    }
+  };
+
+  const handlePause = () => {
+    if (isYouTubeTrack && youtubePlayerRef.current) {
+      // Trigger YouTube pause via a custom event
+      const event = new CustomEvent('youtube-pause');
+      window.dispatchEvent(event);
+    } else {
+      pause();
+    }
+  };
+
+  const handleSeek = (time: number) => {
+    if (isYouTubeTrack) {
+      // Trigger YouTube seek via a custom event
+      const event = new CustomEvent('youtube-seek', { detail: { time } });
+      window.dispatchEvent(event);
+    } else {
+      seek(time);
+    }
+  };
 
   const formatTime = (seconds: number) => {
     const total = Math.max(0, Math.floor(seconds || 0));
@@ -39,15 +78,32 @@ export function RadioPlayer() {
     return `${mins}:${secs.toString().padStart(2, '0')}`;
   };
 
-  const progressVal = Math.min(Math.floor(progress || 0), Math.floor(duration || 0));
-  const durationVal = Math.floor(duration || 0);
+  const progressVal = Math.min(Math.floor(trackProgress || 0), Math.floor(trackDuration || 0));
+  const durationVal = Math.floor(trackDuration || 0);
 
   return (
     <div 
       className="fixed left-0 right-0 z-[60] animate-slide-up bottom-0 md:bottom-0"
-
       aria-label="Lecteur Radio Vybbi"
     >
+      {/* Hidden YouTube Player for audio-only playback */}
+      {isYouTubeTrack && youtubeVideoId && (
+        <div className="hidden">
+          <YouTubePlayer
+            videoId={youtubeVideoId}
+            onReady={() => console.log('YouTube player ready')}
+            onPlay={() => setIsYoutubePlaying(true)}
+            onPause={() => setIsYoutubePlaying(false)}
+            onEnded={() => {
+              setIsYoutubePlaying(false);
+              nextTrack();
+            }}
+            onTimeUpdate={(time) => setYoutubeProgress(time)}
+            autoplay={trackIsPlaying}
+          />
+        </div>
+      )}
+      
       <div className="bg-gradient-to-r from-card via-card/95 to-card backdrop-blur-lg border-t border-border/50 shadow-2xl pb-safe-bottom">
         <div className="container mx-auto px-2 py-1.5 sm:px-4 sm:py-3">
           <div className="flex items-center gap-2 sm:gap-4">
@@ -95,13 +151,13 @@ export function RadioPlayer() {
                   value={[progressVal]}
                   max={Math.max(1, durationVal)}
                   step={1}
-                  onValueChange={([v]) => seek(v)}
+                  onValueChange={([v]) => handleSeek(v)}
                   className="w-full h-1 cursor-pointer"
                 />
               </div>
             </div>
 
-              {/* Contrôles */}
+            {/* Contrôles */}
             <div className="flex items-center gap-1 sm:gap-3">
               <Button
                 variant="ghost"
@@ -114,12 +170,12 @@ export function RadioPlayer() {
               </Button>
 
               <Button
-                onClick={isPlaying ? pause : play}
+                onClick={trackIsPlaying ? handlePause : handlePlay}
                 size="sm"
                 className="w-8 h-8 sm:w-10 sm:h-10 p-0 bg-gradient-primary hover:opacity-90 transition-all duration-200 hover-glow"
-                aria-label={isPlaying ? 'Pause' : 'Lecture'}
+                aria-label={trackIsPlaying ? 'Pause' : 'Lecture'}
               >
-                {isPlaying ? (
+                {trackIsPlaying ? (
                   <Pause className="w-5 h-5" />
                 ) : (
                   <Play className="w-5 h-5 ml-0.5" />

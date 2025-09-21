@@ -12,7 +12,7 @@ interface Track {
   title: string;
   url: string;
   artist: Artist;
-  type: 'media';
+  type: 'media' | 'youtube';
 }
 
 export function useRadioPlayer() {
@@ -44,21 +44,28 @@ export function useRadioPlayer() {
           // Use direct audio file URL if available
           let audioUrl = '/radio/sample.mp3';
           
-          // Priority order: direct_audio_url > file_url > fallback sample
+          // Priority order: direct_audio_url > file_url > YouTube > fallback sample
+          let trackType: 'media' | 'youtube' = 'media';
+          
           if (track.direct_audio_url && (
             track.direct_audio_url.endsWith('.mp3') || 
             track.direct_audio_url.endsWith('.wav') || 
             track.direct_audio_url.endsWith('.ogg') ||
-            track.direct_audio_url.includes('supabase.co') // Supabase storage URLs
+            track.direct_audio_url.includes('supabase.co')
           )) {
             audioUrl = track.direct_audio_url;
+            trackType = 'media';
           } else if (track.file_url && (
             track.file_url.endsWith('.mp3') || 
             track.file_url.endsWith('.wav') || 
             track.file_url.endsWith('.ogg') ||
-            track.file_url.includes('supabase.co') // Supabase storage URLs
+            track.file_url.includes('supabase.co')
           )) {
             audioUrl = track.file_url;
+            trackType = 'media';
+          } else if (track.youtube_url) {
+            audioUrl = track.youtube_url;
+            trackType = 'youtube';
           }
           
           console.log("Using audio URL:", audioUrl);
@@ -72,14 +79,19 @@ export function useRadioPlayer() {
               display_name: track.artist_name || 'Artiste inconnu',
               avatar_url: track.artist_avatar
             },
-            type: 'media' as const
+            type: trackType
           };
         });
 
-        // Keep only tracks with a real direct audio file (not the sample)
+        // Keep only tracks with playable content (direct audio files or YouTube)
         const playable = tracks.filter(t => 
           t.url && t.url !== '/radio/sample.mp3' && (
-            t.url.endsWith('.mp3') || t.url.endsWith('.wav') || t.url.endsWith('.ogg')
+            // Direct audio files
+            (t.type === 'media' && (
+              t.url.endsWith('.mp3') || t.url.endsWith('.wav') || t.url.endsWith('.ogg')
+            )) ||
+            // YouTube videos  
+            (t.type === 'youtube' && t.url.includes('youtube.com'))
           )
         );
 
