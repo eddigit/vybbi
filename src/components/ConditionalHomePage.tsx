@@ -1,6 +1,6 @@
 import { useAuth } from "@/hooks/useAuth";
-import { Navigate } from "react-router-dom";
 import Landing from "@/pages/Landing";
+import SocialWall from "@/pages/SocialWall";
 
 export function ConditionalHomePage() {
   const { user, loading } = useAuth();
@@ -13,9 +13,9 @@ export function ConditionalHomePage() {
     );
   }
 
-  // If user is authenticated, redirect to feed
+  // If user is authenticated, show social wall directly
   if (user) {
-    return <Navigate to="/feed" replace />;
+    return <SocialWall />;
   }
 
   // If not authenticated, show landing page
