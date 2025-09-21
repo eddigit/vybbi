@@ -4224,6 +4224,7 @@ export type Database = {
           artist_name: string
           artist_profile_id: string
           cover_image_url: string
+          file_url: string
           music_release_id: string
           priority_boost: number
           soundcloud_url: string

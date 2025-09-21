@@ -41,12 +41,16 @@ export function useRadioPlayer() {
         const tracks: Track[] = radioTracks.map((track: any) => {
           console.log("Processing track:", track);
           
-          // For now, we'll use the fallback sample since we need direct audio URLs
-          // TODO: Implement proper audio streaming for YouTube/Spotify/SoundCloud
+          // Use direct audio file URL if available, otherwise fall back to sample
           let audioUrl = '/radio/sample.mp3';
           
-          // Check if we have a direct audio file URL (from media_assets)
-          if (track.file_url && (track.file_url.endsWith('.mp3') || track.file_url.endsWith('.wav') || track.file_url.endsWith('.ogg'))) {
+          // Priority: direct file_url > fallback sample
+          if (track.file_url && (
+            track.file_url.endsWith('.mp3') || 
+            track.file_url.endsWith('.wav') || 
+            track.file_url.endsWith('.ogg') ||
+            track.file_url.includes('supabase.co') // Supabase storage URLs
+          )) {
             audioUrl = track.file_url;
           }
           
