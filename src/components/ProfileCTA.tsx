@@ -56,12 +56,12 @@ export function ProfileCTA({ artist, preferredContact, className = '' }: Profile
   const isExclusiveContact = preferredContact && !artist.accepts_direct_contact;
 
   return (
-    <Card className={`border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 ${className}`}>
-      <CardContent className="p-6">
+    <Card className={`mobile-card border-primary/20 bg-gradient-to-br from-primary/5 to-secondary/5 ${className}`}>
+      <CardContent className="p-4 sm:p-6">
         <div className="text-center space-y-4">
           {/* Main CTA */}
           <div>
-            <h3 className="text-xl font-bold text-foreground mb-2">
+            <h3 className="text-lg sm:text-xl font-bold text-foreground mb-2">
               Réserver {artist.display_name}
             </h3>
             <p className="text-sm text-muted-foreground mb-4">
@@ -87,14 +87,16 @@ export function ProfileCTA({ artist, preferredContact, className = '' }: Profile
               <Button 
                 onClick={handleStartConversation}
                 disabled={loading}
-                className="w-full bg-primary hover:bg-primary/90"
+                className="w-full bg-primary hover:bg-primary/90 mobile-button text-sm sm:text-base"
                 size="lg"
               >
                 <MessageCircle className="h-4 w-4 mr-2" />
-                {loading ? 'Connexion...' : `Contacter ${isExclusiveContact ? contactName : artist.display_name}`}
+                <span className="truncate">
+                  {loading ? 'Connexion...' : `Contacter ${isExclusiveContact ? contactName : artist.display_name}`}
+                </span>
               </Button>
             ) : (
-              <Button asChild className="w-full bg-primary hover:bg-primary/90" size="lg">
+              <Button asChild className="w-full bg-primary hover:bg-primary/90 mobile-button text-sm sm:text-base" size="lg">
                 <Link to="/auth">
                   <MessageCircle className="h-4 w-4 mr-2" />
                   Se connecter pour contacter
@@ -107,7 +109,7 @@ export function ProfileCTA({ artist, preferredContact, className = '' }: Profile
               {contactEmail && (
                 <Button 
                   variant="outline" 
-                  size="sm"
+                  className="touch-target text-xs sm:text-sm"
                   asChild
                 >
                   <a href={`mailto:${contactEmail}`}>
@@ -120,7 +122,7 @@ export function ProfileCTA({ artist, preferredContact, className = '' }: Profile
               {contactPhone && (
                 <Button 
                   variant="outline" 
-                  size="sm"
+                  className="touch-target text-xs sm:text-sm"
                   asChild
                 >
                   <a href={`tel:${contactPhone}`}>
@@ -142,7 +144,7 @@ export function ProfileCTA({ artist, preferredContact, className = '' }: Profile
                 </div>
               )}
               {artist.location && (
-                <span>{artist.location}</span>
+                <span className="truncate">{artist.location}</span>
               )}
             </div>
           </div>

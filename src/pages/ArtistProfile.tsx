@@ -268,10 +268,10 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           slug: (artist as any).slug
         }}
       />
-      <div className="container mx-auto p-6">
+      <div className="container mx-auto px-4 sm:px-6">
         {/* Header Section with Cover Image */}
       <div 
-        className="relative h-64 md:h-80 rounded-xl mb-8 overflow-hidden"
+        className="relative h-56 sm:h-64 md:h-80 rounded-xl mb-6 sm:mb-8 overflow-hidden"
         style={{
           backgroundImage: (artist as any).header_url 
             ? `url(${(artist as any).header_url})` 
@@ -282,44 +282,44 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             : 'center'
         }}
       >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/30 to-black/10"></div>
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/10"></div>
         
         {/* Share Tools - Top Right */}
-        <div className="absolute top-6 right-6">
+        <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
           <ProfileShareTools
             profileUrl={window.location.href}
             artistName={artist.display_name}
           />
         </div>
 
-        <div className="absolute bottom-6 left-6 flex items-end gap-6">
-          <Avatar className="h-24 w-24 md:h-32 md:w-32 ring-4 ring-white/20">
+        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 flex items-end gap-3 sm:gap-6">
+          <Avatar className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 ring-2 sm:ring-4 ring-white/20">
             <AvatarImage src={artist.avatar_url || ''} />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-foreground text-white text-2xl font-bold">
+            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-foreground text-white text-sm sm:text-xl md:text-2xl font-bold">
               {artist.display_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
             </AvatarFallback>
           </Avatar>
-          <div className="text-white">
-            <h1 className="text-3xl md:text-4xl font-bold mb-2 drop-shadow-lg" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.8)'}}>{artist.display_name}</h1>
-            <div className="flex items-center gap-4 text-white/80">
+          <div className="text-white min-w-0 flex-1">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 drop-shadow-lg" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9)'}}>{artist.display_name}</h1>
+            <div className="flex items-center gap-2 sm:gap-4 text-white/90 text-xs sm:text-sm">
               {artist.location && (
                 <div className="flex items-center gap-1">
-                  <MapPin className="h-4 w-4" />
-                  {artist.location}
+                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
+                  <span className="truncate">{artist.location}</span>
                 </div>
               )}
               {artist.experience && (
-                <span>{artist.experience}</span>
+                <span className="hidden sm:inline truncate">{artist.experience}</span>
               )}
             </div>
             {/* Language flags prominently displayed */}
             {(artist as any).languages && (artist as any).languages.length > 0 && (
-              <div className="flex items-center gap-2 mt-2">
-                {(artist as any).languages.map((langCode: string) => {
+              <div className="flex items-center gap-1 sm:gap-2 mt-1 sm:mt-2">
+                {(artist as any).languages.slice(0, 4).map((langCode: string) => {
                   const lang = getLanguageByCode(langCode);
                   return lang ? (
                     <div key={langCode} className="group relative">
-                      <span className="text-2xl" title={lang.name}>
+                      <span className="text-lg sm:text-2xl" title={lang.name}>
                         {lang.flag}
                       </span>
                       <span className="sr-only">{lang.name}</span>
@@ -331,22 +331,22 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             
             {/* Talents display */}
             {(artist as any).talents && (artist as any).talents.length > 0 && (
-              <div className="flex flex-wrap gap-2 mt-3">
+              <div className="flex flex-wrap gap-1 sm:gap-2 mt-2 sm:mt-3">
                 {(artist as any).talents.slice(0, 4).map((talentId: string) => {
                   const talent = getTalentById(talentId);
                   return talent ? (
                     <div 
                       key={talentId} 
-                      className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-1.5 text-sm font-medium"
+                      className="bg-white/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium"
                       title={talent.label}
                     >
-                      <span>{talent.icon}</span>
-                      <span>{talent.label}</span>
+                      <span className="text-xs sm:text-sm">{talent.icon}</span>
+                      <span className="hidden sm:inline">{talent.label}</span>
                     </div>
                   ) : null;
                 })}
                 {(artist as any).talents.length > 4 && (
-                  <div className="bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="bg-white/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
                     +{(artist as any).talents.length - 4}
                   </div>
                 )}
@@ -356,18 +356,18 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6">
         {/* Main Content */}
-        <div className="lg:col-span-2 space-y-8">
+        <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
           
           {/* Bio Section - Moved to top priority */}
           {artist.bio && (
-            <Card>
-              <CardHeader>
-                <CardTitle>À propos</CardTitle>
+            <Card className="mobile-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg sm:text-xl">À propos</CardTitle>
               </CardHeader>
-              <CardContent>
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line">
+              <CardContent className="pt-0">
+                <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-sm sm:text-base">
                   {artist.bio}
                 </p>
               </CardContent>
@@ -378,6 +378,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           <ProductionsSlider
             profileId={artist.id}
             onPlayTrack={(track, playlist) => playTrack(track, playlist)}
+            className="mobile-card"
           />
 
           {/* New Vybbi Statistics Widget */}
@@ -385,36 +386,36 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
 
           {/* Tabbed Content */}
           <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="events">Événements</TabsTrigger>
-              <TabsTrigger value="portfolio">Portfolio</TabsTrigger>
-              <TabsTrigger value="pricing">Tarifs & Booking</TabsTrigger>
-              {isOwner && <TabsTrigger value="manage-events">Mes Événements</TabsTrigger>}
+            <TabsList className="grid w-full grid-cols-4 h-auto">
+              <TabsTrigger value="events" className="text-xs sm:text-sm py-2 sm:py-2.5">Événements</TabsTrigger>
+              <TabsTrigger value="portfolio" className="text-xs sm:text-sm py-2 sm:py-2.5">Portfolio</TabsTrigger>
+              <TabsTrigger value="pricing" className="text-xs sm:text-sm py-2 sm:py-2.5">Tarifs</TabsTrigger>
+              {isOwner && <TabsTrigger value="manage-events" className="text-xs sm:text-sm py-2 sm:py-2.5">Gestion</TabsTrigger>}
             </TabsList>
             
-            <TabsContent value="events" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Événements à venir</CardTitle>
+            <TabsContent value="events" className="mt-4 sm:mt-6">
+              <Card className="mobile-card">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg sm:text-xl">Événements à venir</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-0">
                   <ProfileEvents profileId={artist.id} profileType="artist" />
                 </CardContent>
               </Card>
             </TabsContent>
 
-            <TabsContent value="portfolio" className="mt-6">
-              <Card>
-                <CardHeader>
-                  <CardTitle>Portfolio</CardTitle>
+            <TabsContent value="portfolio" className="mt-4 sm:mt-6">
+              <Card className="mobile-card">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg sm:text-xl">Portfolio</CardTitle>
                 </CardHeader>
-                <CardContent>
+                <CardContent className="pt-0">
                   {imageMedia.length > 0 ? (
-                    <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
+                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
                       {imageMedia.map((item, index) => (
                         <div 
                           key={item.id}
-                          className="aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity"
+                          className="aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity touch-target"
                           onClick={() => handleImageClick(index)}
                         >
                           <img
@@ -426,7 +427,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
                       ))}
                     </div>
                   ) : (
-                    <p className="text-center text-muted-foreground py-8">
+                    <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm sm:text-base">
                       Aucune image dans le portfolio pour le moment.
                     </p>
                   )}
@@ -466,8 +467,8 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           </Tabs>
         </div>
 
-        {/* Sidebar */}
-        <div className="space-y-6">
+        {/* Sidebar - Mobile: Integrate into main flow, Desktop: Traditional sidebar */}
+        <div className="lg:col-span-1 space-y-4 sm:space-y-6 order-first lg:order-last">
           
           {/* Professional CTA Card */}
           <ProfileCTA 
@@ -475,170 +476,46 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
             preferredContact={preferredContact}
           />
 
-          {/* Testimonials & Certifications */}
-          <TestimonialsSection 
-            profileId={artist.id} 
-            isOwner={isOwner}
-          />
-
-          {/* Press Kit Generator */}
-          <PressKitGenerator 
-            profileData={artist}
-            mediaAssets={media}
-            reviews={reviews}
-          />
-
-          {/* Reviews Section - Sidebar */}
-          <Card>
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <div>
-                  <CardTitle className="flex items-center gap-2 text-lg">
-                    <Star className="h-5 w-5" />
-                    Avis
-                  </CardTitle>
-                  {reviews.length > 0 && (
-                    <div className="flex items-center gap-2 mt-2">
-                      <div className="flex items-center">
-                        {[1, 2, 3, 4, 5].map((star) => (
-                          <Star
-                            key={star}
-                            className={`h-4 w-4 ${
-                              star <= Math.round(averageRating)
-                                ? 'fill-primary text-primary'
-                                : 'text-muted-foreground/50'
-                            }`}
-                          />
-                        ))}
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {averageRating.toFixed(1)} ({reviews.length} avis)
-                      </span>
-                    </div>
-                  )}
-                </div>
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {canLeaveReview && !userHasReview && (
-                  <EnhancedReviewForm
-                    artistId={artist.id}
-                    onReviewSubmitted={handleReviewSubmitted}
-                  />
-                )}
-
-                {reviews.length > 0 ? (
-                  <div className="space-y-4 max-h-96 overflow-y-auto">
-                    {reviews.slice(0, 3).map((review) => {
-                      const reviewer = reviewers[review.reviewer_id];
-                      return (
-                        <div key={review.id} className="border-b pb-3 last:border-b-0">
-                          <div className="flex items-start gap-3">
-                            <Avatar className="h-8 w-8">
-                              <AvatarImage src={reviewer?.avatar_url || ''} />
-                              <AvatarFallback className="text-xs">
-                                {reviewer?.display_name?.charAt(0) || 'U'}
-                              </AvatarFallback>
-                            </Avatar>
-                            <div className="flex-1 space-y-1">
-                              <div className="flex items-center gap-2">
-                                <span className="font-medium text-sm">{reviewer?.display_name || 'Utilisateur'}</span>
-                                <div className="flex items-center">
-                                  {[1, 2, 3, 4, 5].map((star) => (
-                                    <Star
-                                      key={star}
-                                      className={`h-3 w-3 ${
-                                        star <= review.rating
-                                          ? 'fill-primary text-primary'
-                                          : 'text-muted-foreground/50'
-                                      }`}
-                                    />
-                                  ))}
-                                </div>
-                              </div>
-                              <p className="text-sm text-muted-foreground line-clamp-2">{review.comment}</p>
-                              <span className="text-xs text-muted-foreground">
-                                {new Date(review.created_at).toLocaleDateString()}
-                              </span>
-                            </div>
-      </div>
-    </div>
-  );
-                    })}
-                    {reviews.length > 3 && (
-                      <p className="text-xs text-center text-muted-foreground">
-                        +{reviews.length - 3} autres avis
-                      </p>
-                    )}
-                  </div>
-                ) : canLeaveReview ? (
-                  <p className="text-center text-muted-foreground py-4 text-sm">
-                    Soyez le premier à laisser un avis.
-                  </p>
-                ) : (
-                  <p className="text-center text-muted-foreground py-4 text-sm">
-                    Aucun avis pour le moment.
-                  </p>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* Owner Edit Button - Separate from CTA */}
+          {/* Owner Edit Button - Mobile optimized */}
           {isOwner && (
-            <>
-              <Card>
-                <CardContent className="p-4">
-                  <Button className="w-full" variant="outline" asChild>
-                    <Link to={`/artists/${id}/edit`}>
-                      <Edit className="h-4 w-4 mr-2" />
-                      Modifier mon profil
-                    </Link>
-                  </Button>
-                </CardContent>
-              </Card>
-              
-              {/* Analytics for profile owner */}
-              <ProfileAnalytics profileId={artist.id} />
-            </>
+            <Card className="mobile-card">
+              <CardContent className="p-4">
+                <Button className="w-full mobile-button" variant="outline" asChild>
+                  <Link to={`/artists/${id}/edit`}>
+                    <Edit className="h-4 w-4 mr-2" />
+                    Modifier mon profil
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
           )}
 
-          {/* Music Releases - Owner Only Widget */}
-          {user && profile && profile.id === artist.id && (
-            <div className="space-y-4">
-              <MusicReleaseWidget profileId={artist.id} />
-            </div>
-          )}
-
-          {/* Analytics avancées - lazy loaded pour le propriétaire */}
-          {artist && artist.user_id === user?.id && (
-            <LazyLoadAnalytics
-              profileId={artist.id}
-              profileType="artist"
-              profileSlug={(artist as any).slug || artist.id}
-              isOwner={true}
+          {/* Testimonials - Hidden on mobile to save space */}
+          <div className="hidden lg:block">
+            <TestimonialsSection 
+              profileId={artist.id} 
+              isOwner={isOwner}
             />
-          )}
+          </div>
 
-          {/* Social Links */}
+          {/* Social Links - Mobile optimized */}
           {socialLinks.length > 0 && (
-            <Card>
-              <CardHeader>
-                <CardTitle className="text-lg">Social Media</CardTitle>
+            <Card className="mobile-card">
+              <CardHeader className="pb-3">
+                <CardTitle className="text-lg sm:text-xl">Social Media</CardTitle>
               </CardHeader>
-              <CardContent>
-                <div className="space-y-3">
+              <CardContent className="pt-0">
+                <div className="grid grid-cols-2 gap-2">
                   {socialLinks.map((link) => (
                     <Button 
                       key={link.platform}
                       variant="outline" 
-                      className="w-full justify-start" 
+                      className="justify-start text-xs sm:text-sm touch-target" 
                       asChild
                     >
                       <a href={link.url} target="_blank" rel="noopener noreferrer">
                         {getSocialIcon(link.platform)}
-                        <span className="ml-2">{link.label}</span>
+                        <span className="ml-1 sm:ml-2 truncate">{link.label}</span>
                       </a>
                     </Button>
                   ))}

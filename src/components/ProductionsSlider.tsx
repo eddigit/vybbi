@@ -53,14 +53,14 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
 
   if (isLoading) {
     return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <Card className={cn("mobile-card", className)}>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
             <Music className="h-5 w-5" />
             Sets & Productions
           </CardTitle>
         </CardHeader>
-        <CardContent>
+        <CardContent className="pt-0">
           <div className="flex items-center justify-center py-12">
             <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
           </div>
@@ -71,15 +71,15 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
 
   if (publishedReleases.length === 0) {
     return (
-      <Card className={className}>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
+      <Card className={cn("mobile-card", className)}>
+        <CardHeader className="pb-3">
+          <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
             <Music className="h-5 w-5" />
             Sets & Productions ({publishedReleases.length})
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <p className="text-center text-muted-foreground py-8">
+        <CardContent className="pt-0">
+          <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm sm:text-base">
             Aucune production disponible pour le moment.
           </p>
         </CardContent>
@@ -88,14 +88,14 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
   }
 
   return (
-    <Card className={className}>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
+    <Card className={cn("mobile-card", className)}>
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center gap-2 text-lg sm:text-xl">
           <Music className="h-5 w-5" />
           Sets & Productions ({publishedReleases.length})
         </CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-0">
         <Carousel
           opts={{
             align: "start",
@@ -107,9 +107,9 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
               const submissionStatus = hasAnySubmission(release.media_assets || []);
               
               return (
-                <CarouselItem key={release.id} className="md:basis-1/2 lg:basis-1/3">
-                  <Card className="h-full cursor-pointer transition-all hover:shadow-md group">
-                    <CardContent className="p-4">
+                <CarouselItem key={release.id} className="basis-full sm:basis-1/2 lg:basis-1/3">
+                  <Card className="h-full cursor-pointer transition-all hover:shadow-md group mobile-card">
+                    <CardContent className="p-3 sm:p-4">
                       <div className="space-y-3">
                         {/* Cover Image with Play Button */}
                         <div className="relative group/image">
@@ -130,20 +130,20 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
                           {/* Play Button Overlay */}
                           <Button
                             size="sm"
-                            className="absolute inset-0 m-auto h-12 w-12 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity"
+                            className="absolute inset-0 m-auto h-10 w-10 sm:h-12 sm:w-12 rounded-full opacity-0 group-hover/image:opacity-100 transition-opacity"
                             onClick={(e) => {
                               e.stopPropagation();
                               onPlayTrack?.(release, publishedReleases);
                             }}
                           >
-                            <Play className="h-5 w-5" />
+                            <Play className="h-4 w-4 sm:h-5 sm:w-5" />
                           </Button>
                         </div>
 
                         {/* Track Info */}
                         <div className="space-y-2">
-                          <h3 className="font-semibold text-base line-clamp-2">{release.title}</h3>
-                          <p className="text-sm text-muted-foreground line-clamp-1">{release.artist_name}</p>
+                          <h3 className="font-semibold text-sm sm:text-base line-clamp-2">{release.title}</h3>
+                          <p className="text-xs sm:text-sm text-muted-foreground line-clamp-1">{release.artist_name}</p>
                           
                           {release.album_name && (
                             <p className="text-xs text-muted-foreground line-clamp-1">{release.album_name}</p>
@@ -151,14 +151,19 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
                         </div>
 
                         {/* Stats */}
-                        <div className="flex items-center gap-3 text-xs text-muted-foreground">
+                        <div className="flex items-center gap-2 sm:gap-3 text-xs text-muted-foreground">
                           {release.release_date && (
                             <div className="flex items-center gap-1">
                               <Calendar className="h-3 w-3" />
-                              {formatDistanceToNow(new Date(release.release_date), { 
-                                addSuffix: true, 
-                                locale: fr 
-                              })}
+                              <span className="hidden sm:inline">
+                                {formatDistanceToNow(new Date(release.release_date), { 
+                                  addSuffix: true, 
+                                  locale: fr 
+                                })}
+                              </span>
+                              <span className="sm:hidden">
+                                {new Date(release.release_date).getFullYear()}
+                              </span>
                             </div>
                           )}
                           
@@ -181,7 +186,8 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
                           {release.is_original_composition && (
                             <Badge variant="outline" className="text-xs">
                               <Award className="h-2 w-2 mr-1" />
-                              Original
+                              <span className="hidden sm:inline">Original</span>
+                              <span className="sm:hidden">Orig</span>
                             </Badge>
                           )}
                           
@@ -196,7 +202,7 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
                               )}
                             >
                               <Radio className="h-2 w-2 mr-1" />
-                              {submissionStatus.status === 'approved' ? 'En Radio' : 'En attente'}
+                              {submissionStatus.status === 'approved' ? 'Radio' : 'Attente'}
                             </Badge>
                           )}
                         </div>
@@ -205,18 +211,20 @@ export const ProductionsSlider: React.FC<ProductionsSliderProps> = ({
                         {(release.spotify_url || release.apple_music_url || release.soundcloud_url) && (
                           <div className="flex gap-1 pt-2">
                             {release.spotify_url && (
-                              <Button variant="outline" size="sm" asChild className="h-7 px-2 text-xs">
+                              <Button variant="outline" size="sm" asChild className="h-6 sm:h-7 px-2 text-xs">
                                 <a href={release.spotify_url} target="_blank" rel="noopener noreferrer">
                                   <ExternalLink className="h-3 w-3 mr-1" />
-                                  Spotify
+                                  <span className="hidden sm:inline">Spotify</span>
+                                  <span className="sm:hidden">S</span>
                                 </a>
                               </Button>
                             )}
                             {release.soundcloud_url && (
-                              <Button variant="outline" size="sm" asChild className="h-7 px-2 text-xs">
+                              <Button variant="outline" size="sm" asChild className="h-6 sm:h-7 px-2 text-xs">
                                 <a href={release.soundcloud_url} target="_blank" rel="noopener noreferrer">
                                   <ExternalLink className="h-3 w-3 mr-1" />
-                                  SoundCloud
+                                  <span className="hidden sm:inline">SoundCloud</span>
+                                  <span className="sm:hidden">SC</span>
                                 </a>
                               </Button>
                             )}
