@@ -76,8 +76,8 @@ export function useAuth() {
             // Redirect to onboarding if not completed
             navigate('/onboarding', { replace: true });
           } else {
-            // Redirect to dashboard after successful login
-            navigate('/dashboard', { replace: true });
+            // Redirect to home page after successful login (ConditionalHomePage will show SocialWall)
+            navigate('/', { replace: true });
           }
         }
       }, 100);
