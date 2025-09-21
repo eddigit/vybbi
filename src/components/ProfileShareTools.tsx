@@ -89,16 +89,16 @@ export function ProfileShareTools({ profileUrl, artistName, className = '' }: Pr
   };
 
   return (
-    <div className={`flex items-center gap-2 ${className}`}>
+    <div className={`flex items-center gap-1 sm:gap-2 ${className}`}>
       {/* Copy Link Button */}
       <Button
         variant="outline"
         size="sm"
         onClick={copyToClipboard}
-        className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+        className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 px-2 sm:px-3"
       >
-        <Copy className="h-4 w-4 mr-2" />
-        Copier le lien
+        <Copy className="h-4 w-4" />
+        <span className="hidden sm:inline sm:ml-2">Copier le lien</span>
       </Button>
 
       {/* QR Code Dialog */}
@@ -108,10 +108,10 @@ export function ProfileShareTools({ profileUrl, artistName, className = '' }: Pr
             variant="outline"
             size="sm"
             onClick={generateQRCode}
-            className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+            className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 px-2 sm:px-3"
           >
-            <QrCode className="h-4 w-4 mr-2" />
-            QR Code
+            <QrCode className="h-4 w-4" />
+            <span className="hidden sm:inline sm:ml-2">QR Code</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">
@@ -140,10 +140,10 @@ export function ProfileShareTools({ profileUrl, artistName, className = '' }: Pr
           <Button
             variant="outline"
             size="sm"
-            className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20"
+            className="bg-white/10 backdrop-blur-sm border-white/20 text-white hover:bg-white/20 px-2 sm:px-3"
           >
-            <Share2 className="h-4 w-4 mr-2" />
-            Partager
+            <Share2 className="h-4 w-4" />
+            <span className="hidden sm:inline sm:ml-2">Partager</span>
           </Button>
         </DialogTrigger>
         <DialogContent className="sm:max-w-md">

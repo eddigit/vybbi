@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit, MessageCircle, Calendar } from 'lucide-react';
+import { MapPin, Star, ExternalLink, Music2, Instagram, Music, Edit, MessageCircle, Calendar, ImageIcon } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -36,6 +36,7 @@ import { MusicPlayer } from '@/components/MusicPlayer';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useMusicReleases } from '@/hooks/useMusicReleases';
 import ArtistStatsWidget from '@/components/ArtistStatsWidget';
+import { OptimizedImage } from '@/components/OptimizedImage';
 
 interface ArtistProfileProps {
   resolvedProfile?: Profile | ResolvedProfile | null;
@@ -63,6 +64,9 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   const [selectedTrack, setSelectedTrack] = useState<any | null>(null);
   const [isPlayerOpen, setIsPlayerOpen] = useState(false);
   const [currentPlaylistIndex, setCurrentPlaylistIndex] = useState(0);
+
+  // Profile views count
+  const [profileViews, setProfileViews] = useState<number>(0);
 
   useEffect(() => {
     if (resolvedProfile) {
@@ -252,6 +256,7 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
   ].filter(link => link.url);
 
   const isOwner = user && 'user_id' in artist && artist.user_id === user.id;
+  const headerImage = (artist as any).header_url;
 
   return (
     <div className="min-h-screen bg-background">
@@ -268,175 +273,185 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           slug: (artist as any).slug
         }}
       />
-      <div className="container mx-auto px-4 sm:px-6">
-        {/* Header Section with Cover Image */}
-      <div 
-        className="relative h-56 sm:h-64 md:h-80 rounded-xl mb-6 sm:mb-8 overflow-hidden"
-        style={{
-          backgroundImage: (artist as any).header_url 
-            ? `url(${(artist as any).header_url})` 
-            : 'linear-gradient(to right, rgba(var(--primary) / 0.2), rgba(168, 85, 247, 0.2), rgba(236, 72, 153, 0.2))',
-          backgroundSize: 'cover',
-          backgroundPosition: (artist as any).header_url 
-            ? `center ${(artist as any).header_position_y || 50}%`
-            : 'center'
-        }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-black/10"></div>
+      
+      {/* Hero Section with Background */}
+      <div className="relative h-64 sm:h-80 overflow-hidden">
+        {headerImage && (
+          <OptimizedImage
+            src={headerImage}
+            alt={`${artist.display_name} header`}
+            className="w-full h-full object-cover"
+          />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/60 to-transparent" />
         
+        {/* Profile Content */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6">
+          <div className="flex items-end gap-3 sm:gap-4">
+            {/* Avatar */}
+            <div className="relative">
+              <Avatar className="h-16 w-16 sm:h-20 sm:w-20 lg:h-24 lg:w-24 border-3 sm:border-4 border-white shadow-lg">
+                <AvatarImage src={artist.avatar_url} alt={artist.display_name} />
+                <AvatarFallback className="text-base sm:text-lg font-bold bg-primary text-primary-foreground">
+                  {artist.display_name.charAt(0)}
+                </AvatarFallback>
+              </Avatar>
+            </div>
+            
+            {/* Info */}
+            <div className="flex-1 min-w-0">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-1 drop-shadow-lg">
+                {artist.display_name}
+              </h1>
+              <div className="flex items-center gap-2 text-white/90 text-sm mb-2">
+                {artist.location && (
+                  <>
+                    <MapPin className="h-4 w-4" />
+                    <span className="drop-shadow">{artist.location}</span>
+                  </>
+                )}
+              </div>
+              
+              {/* Languages */}
+              {(artist as any).languages && (artist as any).languages.length > 0 && (
+                <div className="flex gap-1 mb-2 flex-wrap">
+                  {(artist as any).languages.slice(0, 3).map((lang: any) => (
+                    <Badge key={lang} variant="secondary" className="text-xs bg-white/30 text-white border-white/40 backdrop-blur-sm">
+                      {lang}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+              
+              {/* Talents */}
+              {(artist as any).talents && (artist as any).talents.length > 0 && (
+                <div className="flex gap-1 flex-wrap">
+                  {(artist as any).talents.slice(0, 4).map((talent: any) => (
+                    <Badge key={talent} variant="outline" className="text-xs bg-primary/30 text-white border-primary/60 backdrop-blur-sm">
+                      {talent}
+                    </Badge>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
         {/* Share Tools - Top Right */}
-        <div className="absolute top-4 sm:top-6 right-4 sm:right-6">
+        <div className="absolute top-4 right-4">
           <ProfileShareTools
             profileUrl={window.location.href}
             artistName={artist.display_name}
           />
         </div>
-
-        <div className="absolute bottom-4 sm:bottom-6 left-4 sm:left-6 flex items-end gap-3 sm:gap-6">
-          <Avatar className="h-16 w-16 sm:h-20 sm:w-20 md:h-24 md:w-24 lg:h-32 lg:w-32 ring-2 sm:ring-4 ring-white/20">
-            <AvatarImage src={artist.avatar_url || ''} />
-            <AvatarFallback className="bg-gradient-to-br from-primary to-primary-foreground text-white text-sm sm:text-xl md:text-2xl font-bold">
-              {artist.display_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-            </AvatarFallback>
-          </Avatar>
-          <div className="text-white min-w-0 flex-1">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-bold mb-1 sm:mb-2 drop-shadow-lg" style={{textShadow: '2px 2px 4px rgba(0,0,0,0.9)'}}>{artist.display_name}</h1>
-            <div className="flex items-center gap-2 sm:gap-4 text-white/90 text-xs sm:text-sm">
-              {artist.location && (
-                <div className="flex items-center gap-1">
-                  <MapPin className="h-3 w-3 sm:h-4 sm:w-4" />
-                  <span className="truncate">{artist.location}</span>
-                </div>
-              )}
-              {artist.experience && (
-                <span className="hidden sm:inline truncate">{artist.experience}</span>
-              )}
-            </div>
-            {/* Language flags prominently displayed */}
-            {(artist as any).languages && (artist as any).languages.length > 0 && (
-              <div className="flex items-center gap-1 sm:gap-2 mt-1 sm:mt-2">
-                {(artist as any).languages.slice(0, 4).map((langCode: string) => {
-                  const lang = getLanguageByCode(langCode);
-                  return lang ? (
-                    <div key={langCode} className="group relative">
-                      <span className="text-lg sm:text-2xl" title={lang.name}>
-                        {lang.flag}
-                      </span>
-                      <span className="sr-only">{lang.name}</span>
-                    </div>
-                  ) : null;
-                })}
-              </div>
-            )}
-            
-            {/* Talents display */}
-            {(artist as any).talents && (artist as any).talents.length > 0 && (
-              <div className="flex flex-wrap gap-1 sm:gap-2 mt-2 sm:mt-3">
-                {(artist as any).talents.slice(0, 4).map((talentId: string) => {
-                  const talent = getTalentById(talentId);
-                  return talent ? (
-                    <div 
-                      key={talentId} 
-                      className="bg-white/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full flex items-center gap-1 sm:gap-1.5 text-xs sm:text-sm font-medium"
-                      title={talent.label}
-                    >
-                      <span className="text-xs sm:text-sm">{talent.icon}</span>
-                      <span className="hidden sm:inline">{talent.label}</span>
-                    </div>
-                  ) : null;
-                })}
-                {(artist as any).talents.length > 4 && (
-                  <div className="bg-white/30 backdrop-blur-sm px-2 sm:px-3 py-1 rounded-full text-xs sm:text-sm font-medium">
-                    +{(artist as any).talents.length - 4}
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-        </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8 px-4 sm:px-6">
-        {/* Main Content */}
-        <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
-          
-          {/* Bio Section - Moved to top priority */}
-          {artist.bio && (
-            <Card className="mobile-card">
-              <CardHeader className="pb-3">
-                <CardTitle className="text-lg sm:text-xl">À propos</CardTitle>
-              </CardHeader>
-              <CardContent className="pt-0">
-                <p className="text-muted-foreground leading-relaxed whitespace-pre-line text-sm sm:text-base">
-                  {artist.bio}
-                </p>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Sets & Productions Slider */}
-          <ProductionsSlider
-            profileId={artist.id}
-            onPlayTrack={(track, playlist) => playTrack(track, playlist)}
-            className="mobile-card"
-          />
-
-          {/* New Vybbi Statistics Widget */}
-          <ArtistStatsWidget artistId={artist.id} />
-
-          {/* Tabbed Content */}
-          <Tabs defaultValue="events" className="w-full">
-            <TabsList className="grid w-full grid-cols-4 h-auto">
-              <TabsTrigger value="events" className="text-xs sm:text-sm py-2 sm:py-2.5">Événements</TabsTrigger>
-              <TabsTrigger value="portfolio" className="text-xs sm:text-sm py-2 sm:py-2.5">Portfolio</TabsTrigger>
-              <TabsTrigger value="pricing" className="text-xs sm:text-sm py-2 sm:py-2.5">Tarifs</TabsTrigger>
-              {isOwner && <TabsTrigger value="manage-events" className="text-xs sm:text-sm py-2 sm:py-2.5">Gestion</TabsTrigger>}
-            </TabsList>
+      {/* Main Content */}
+      <div className="container mx-auto px-2 sm:px-4 py-6 sm:py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
+          {/* Main Content */}
+          <div className="lg:col-span-2 space-y-4 sm:space-y-6 lg:space-y-8">
             
-            <TabsContent value="events" className="mt-4 sm:mt-6">
+            {/* Bio */}
+            {artist.bio && (
               <Card className="mobile-card">
                 <CardHeader className="pb-3">
-                  <CardTitle className="text-lg sm:text-xl">Événements à venir</CardTitle>
+                  <CardTitle className="text-lg sm:text-xl">À propos</CardTitle>
                 </CardHeader>
                 <CardContent className="pt-0">
-                  <ProfileEvents profileId={artist.id} profileType="artist" />
+                  <p className="text-muted-foreground leading-relaxed text-sm sm:text-base">
+                    {artist.bio}
+                  </p>
                 </CardContent>
               </Card>
-            </TabsContent>
+            )}
 
-            <TabsContent value="portfolio" className="mt-4 sm:mt-6">
+            {/* Productions Section */}
+            <ProductionsSlider 
+              profileId={artist.id} 
+              onPlayTrack={playTrack} 
+              className="mobile-card"
+            />
+
+            {/* Statistics Cards */}
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-3 sm:gap-4">
               <Card className="mobile-card">
-                <CardHeader className="pb-3">
-                  <CardTitle className="text-lg sm:text-xl">Portfolio</CardTitle>
-                </CardHeader>
-                <CardContent className="pt-0">
-                  {imageMedia.length > 0 ? (
-                    <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
-                      {imageMedia.map((item, index) => (
-                        <div 
-                          key={item.id}
-                          className="aspect-square bg-muted rounded-lg overflow-hidden cursor-pointer hover:opacity-80 transition-opacity touch-target"
-                          onClick={() => handleImageClick(index)}
-                        >
-                          <img
-                            src={item.file_url}
-                            alt={item.description || item.file_name}
-                            className="w-full h-full object-cover"
-                          />
+                <CardContent className="p-3 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl font-bold text-primary">{profileViews || 0}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Vues</div>
+                </CardContent>
+              </Card>
+              
+              <Card className="mobile-card">
+                <CardContent className="p-3 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl font-bold text-primary">{media.length || 0}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Médias</div>
+                </CardContent>
+              </Card>
+
+              <Card className="mobile-card">
+                <CardContent className="p-3 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl font-bold text-primary">{reviews.length || 0}</div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Avis</div>
+                </CardContent>
+              </Card>
+
+              <Card className="mobile-card">
+                <CardContent className="p-3 sm:p-4 text-center">
+                  <div className="text-lg sm:text-2xl font-bold text-primary">
+                    {averageRating > 0 ? averageRating.toFixed(1) : '-'}
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground">Note</div>
+                </CardContent>
+              </Card>
+            </div>
+
+            <Tabs defaultValue="events" className="w-full">
+              <TabsList className="grid w-full grid-cols-4 h-auto">
+                <TabsTrigger value="events" className="text-xs sm:text-sm py-2 sm:py-2.5">Événements</TabsTrigger>
+                <TabsTrigger value="portfolio" className="text-xs sm:text-sm py-2 sm:py-2.5">Portfolio</TabsTrigger>
+                <TabsTrigger value="pricing" className="text-xs sm:text-sm py-2 sm:py-2.5">Tarifs</TabsTrigger>
+                {isOwner && <TabsTrigger value="manage" className="text-xs sm:text-sm py-2 sm:py-2.5">Gestion</TabsTrigger>}
+              </TabsList>
+              
+              <TabsContent value="events" className="space-y-4">
+                <ProfileEvents profileId={artist.id} profileType="artist" />
+              </TabsContent>
+
+              <TabsContent value="portfolio" className="space-y-4">
+                {media.length > 0 ? (
+                  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2 sm:gap-4">
+                    {media.map((asset, index) => (
+                      <div
+                        key={asset.id}
+                        className="relative aspect-square rounded-lg overflow-hidden cursor-pointer hover:scale-105 transition-transform group touch-target"
+                        onClick={() => handleImageClick(index)}
+                      >
+                        <OptimizedImage
+                          src={asset.file_url}
+                          alt={asset.description || `Media ${index + 1}`}
+                          className="w-full h-full object-cover"
+                        />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors" />
+                        <div className="absolute bottom-1 sm:bottom-2 left-1 sm:left-2 right-1 sm:right-2">
+                          <p className="text-white text-xs sm:text-sm font-medium opacity-0 group-hover:opacity-100 transition-opacity truncate drop-shadow">
+                            {asset.description || `Media ${index + 1}`}
+                          </p>
                         </div>
-                      ))}
-                    </div>
-                  ) : (
-                    <p className="text-center text-muted-foreground py-6 sm:py-8 text-sm sm:text-base">
-                      Aucune image dans le portfolio pour le moment.
-                    </p>
-                  )}
-                </CardContent>
-              </Card>
-            </TabsContent>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <Card className="mobile-card">
+                    <CardContent className="py-8 sm:py-12 text-center">
+                      <ImageIcon className="h-8 w-8 sm:h-12 sm:w-12 mx-auto text-muted-foreground mb-4" />
+                      <p className="text-muted-foreground text-sm sm:text-base">Aucun média disponible</p>
+                    </CardContent>
+                  </Card>
+                )}
+              </TabsContent>
 
-            <TabsContent value="pricing" className="mt-6">
-              <div className="space-y-6">
+              <TabsContent value="pricing" className="space-y-6">
                 <PricingIndicator artist={artist} />
                 <RiderTechnicalManager profileId={artist.id} />
                 <DirectContactForm
@@ -449,80 +464,166 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
                   artistId={artist.id}
                   isOwner={isOwner}
                 />
-              </div>
-            </TabsContent>
-
-            {isOwner && (
-              <TabsContent value="manage-events" className="mt-6">
-                <Card>
-                  <CardHeader>
-                    <CardTitle>Gérer mes événements</CardTitle>
-                  </CardHeader>
-                  <CardContent>
-                    <ArtistEventManager artistProfileId={artist.id} isOwner={true} />
-                  </CardContent>
-                </Card>
               </TabsContent>
-            )}
-          </Tabs>
-        </div>
 
-        {/* Sidebar - Mobile: Integrate into main flow, Desktop: Traditional sidebar */}
-        <div className="lg:col-span-1 space-y-4 sm:space-y-6 order-first lg:order-last">
-          
-          {/* Professional CTA Card */}
-          <ProfileCTA 
-            artist={artist} 
-            preferredContact={preferredContact}
-          />
-
-          {/* Owner Edit Button - Mobile optimized */}
-          {isOwner && (
-            <Card className="mobile-card">
-              <CardContent className="p-4">
-                <Button className="w-full mobile-button" variant="outline" asChild>
-                  <Link to={`/artists/${id}/edit`}>
-                    <Edit className="h-4 w-4 mr-2" />
-                    Modifier mon profil
-                  </Link>
-                </Button>
-              </CardContent>
-            </Card>
-          )}
-
-          {/* Testimonials - Hidden on mobile to save space */}
-          <div className="hidden lg:block">
-            <TestimonialsSection 
-              profileId={artist.id} 
-              isOwner={isOwner}
-            />
+              {isOwner && (
+                <TabsContent value="manage" className="space-y-6">
+                  <ArtistEventManager artistProfileId={artist.id} isOwner={true} />
+                </TabsContent>
+              )}
+            </Tabs>
           </div>
 
-          {/* Social Links - Mobile optimized */}
-          {socialLinks.length > 0 && (
+          {/* Sidebar - Mobile: Integrate into main flow, Desktop: Traditional sidebar */}
+          <div className="lg:col-span-1 space-y-4 sm:space-y-6 order-first lg:order-last">
+            
+            {/* Call to Action */}
+            <ProfileCTA 
+              artist={artist} 
+              preferredContact={preferredContact}
+            />
+
+            {/* Owner Edit Button - Mobile optimized */}
+            {isOwner && (
+              <Card className="mobile-card">
+                <CardContent className="p-4">
+                  <Button className="w-full mobile-button" variant="outline" asChild>
+                    <Link to={`/artists/${artist.id}/edit`}>
+                      <Edit className="h-4 w-4 mr-2" />
+                      Modifier mon profil
+                    </Link>
+                  </Button>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Testimonials - Hidden on mobile to save space */}
+            <div className="hidden lg:block">
+              <TestimonialsSection 
+                profileId={artist.id}
+                isOwner={isOwner}
+              />
+            </div>
+
+            {/* Reviews Section */}
             <Card className="mobile-card">
               <CardHeader className="pb-3">
-                <CardTitle className="text-lg sm:text-xl">Social Media</CardTitle>
+                <CardTitle className="text-lg sm:text-xl flex items-center gap-2">
+                  <Star className="h-5 w-5" />
+                  Avis
+                </CardTitle>
+                {reviews.length > 0 && (
+                  <div className="flex items-center gap-2 mt-2">
+                    <div className="flex items-center">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <Star
+                          key={star}
+                          className={`h-4 w-4 ${
+                            star <= Math.round(averageRating)
+                              ? 'fill-primary text-primary'
+                              : 'text-muted-foreground/50'
+                          }`}
+                        />
+                      ))}
+                    </div>
+                    <span className="text-sm text-muted-foreground">
+                      {averageRating.toFixed(1)} ({reviews.length} avis)
+                    </span>
+                  </div>
+                )}
               </CardHeader>
               <CardContent className="pt-0">
-                <div className="grid grid-cols-2 gap-2">
-                  {socialLinks.map((link) => (
-                    <Button 
-                      key={link.platform}
-                      variant="outline" 
-                      className="justify-start text-xs sm:text-sm touch-target" 
-                      asChild
-                    >
-                      <a href={link.url} target="_blank" rel="noopener noreferrer">
-                        {getSocialIcon(link.platform)}
-                        <span className="ml-1 sm:ml-2 truncate">{link.label}</span>
-                      </a>
-                    </Button>
-                  ))}
+                <div className="space-y-4">
+                  {canLeaveReview && !userHasReview && (
+                    <EnhancedReviewForm
+                      artistId={artist.id}
+                      onReviewSubmitted={handleReviewSubmitted}
+                    />
+                  )}
+
+                  {reviews.length > 0 ? (
+                    <div className="space-y-4 max-h-96 overflow-y-auto">
+                      {reviews.slice(0, 3).map((review) => {
+                        const reviewer = reviewers[review.reviewer_id];
+                        return (
+                          <div key={review.id} className="border-b pb-3 last:border-b-0">
+                            <div className="flex items-start gap-3">
+                              <Avatar className="h-8 w-8">
+                                <AvatarImage src={reviewer?.avatar_url || ''} />
+                                <AvatarFallback className="text-xs">
+                                  {reviewer?.display_name?.charAt(0) || 'U'}
+                                </AvatarFallback>
+                              </Avatar>
+                              <div className="flex-1 space-y-1">
+                                <div className="flex items-center gap-2">
+                                  <span className="font-medium text-sm">{reviewer?.display_name || 'Utilisateur'}</span>
+                                  <div className="flex items-center">
+                                    {[1, 2, 3, 4, 5].map((star) => (
+                                      <Star
+                                        key={star}
+                                        className={`h-3 w-3 ${
+                                          star <= review.rating
+                                            ? 'fill-primary text-primary'
+                                            : 'text-muted-foreground/50'
+                                        }`}
+                                      />
+                                    ))}
+                                  </div>
+                                </div>
+                                <p className="text-sm text-muted-foreground line-clamp-2">{review.comment}</p>
+                                <span className="text-xs text-muted-foreground">
+                                  {new Date(review.created_at).toLocaleDateString()}
+                                </span>
+                              </div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                      {reviews.length > 3 && (
+                        <p className="text-xs text-center text-muted-foreground">
+                          +{reviews.length - 3} autres avis
+                        </p>
+                      )}
+                    </div>
+                  ) : canLeaveReview ? (
+                    <p className="text-center text-muted-foreground py-4 text-sm">
+                      Soyez le premier à laisser un avis.
+                    </p>
+                  ) : (
+                    <p className="text-center text-muted-foreground py-4 text-sm">
+                      Aucun avis pour le moment.
+                    </p>
+                  )}
                 </div>
               </CardContent>
             </Card>
-          )}
+
+            {/* Social Links - Mobile optimized */}
+            {socialLinks.length > 0 && (
+              <Card className="mobile-card">
+                <CardHeader className="pb-2 sm:pb-3">
+                  <CardTitle className="text-base sm:text-lg lg:text-xl">Social Media</CardTitle>
+                </CardHeader>
+                <CardContent className="pt-0">
+                  <div className="grid grid-cols-2 gap-2">
+                    {socialLinks.map((link) => (
+                      <Button 
+                        key={link.platform}
+                        variant="outline" 
+                        className="justify-start text-xs sm:text-sm touch-target" 
+                        asChild
+                      >
+                        <a href={link.url} target="_blank" rel="noopener noreferrer">
+                          {getSocialIcon(link.platform)}
+                          <span className="ml-1 sm:ml-2 truncate">{link.label}</span>
+                        </a>
+                      </Button>
+                    ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </div>
         </div>
       </div>
 
@@ -573,7 +674,6 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
           )}
         </DialogContent>
       </Dialog>
-      </div>
     </div>
   );
 }
