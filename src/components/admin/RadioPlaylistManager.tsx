@@ -24,15 +24,20 @@ import {
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 
-interface MediaAsset {
+interface MusicRelease {
   id: string;
-  file_url: string;
-  file_name: string;
-  description?: string;
-  profile_id: string;
-  media_type: string;
+  title: string;
   artist_name: string;
+  album_name?: string;
+  cover_image_url?: string;
+  youtube_url?: string;
+  spotify_url?: string;
+  soundcloud_url?: string;
+  profile_id: string;
+  artist_display_name: string;
   artist_avatar?: string;
+  genre?: string;
+  duration_seconds?: number;
 }
 
 interface Playlist {
@@ -46,7 +51,7 @@ interface Playlist {
 
 export function RadioPlaylistManager() {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const [availableMusic, setAvailableMusic] = useState<MediaAsset[]>([]);
+  const [availableMusic, setAvailableMusic] = useState<MusicRelease[]>([]);
   const [selectedMusic, setSelectedMusic] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
@@ -86,34 +91,39 @@ export function RadioPlaylistManager() {
     }
   };
 
-  // Fetch available music from artists
+  // Fetch available music from music_releases
   const fetchAvailableMusic = async () => {
     try {
       const { data, error } = await supabase
-        .from('media_assets')
+        .from('music_releases')
         .select(`
           id,
-          file_url,
-          file_name,
-          description,
+          title,
+          artist_name,
+          album_name,
+          cover_image_url,
+          youtube_url,
+          spotify_url,
+          soundcloud_url,
           profile_id,
-          media_type,
+          genre,
+          duration_seconds,
           profiles!inner(
             display_name,
             avatar_url,
             profile_type
           )
         `)
-        .eq('media_type', 'audio')
+        .eq('status', 'published')
         .eq('profiles.profile_type', 'artist')
         .eq('profiles.is_public', true);
 
       if (error) throw error;
 
-      const musicWithArtist = data?.map(asset => ({
-        ...asset,
-        artist_name: asset.profiles?.display_name || 'Artiste inconnu',
-        artist_avatar: asset.profiles?.avatar_url
+      const musicWithArtist = data?.map(release => ({
+        ...release,
+        artist_display_name: release.profiles?.display_name || release.artist_name || 'Artiste inconnu',
+        artist_avatar: release.profiles?.avatar_url
       })) || [];
 
       setAvailableMusic(musicWithArtist);
@@ -233,8 +243,9 @@ export function RadioPlaylistManager() {
 
   // Filter music based on search
   const filteredMusic = availableMusic.filter(music =>
-    music.file_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    music.artist_name.toLowerCase().includes(searchTerm.toLowerCase())
+    music.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    music.artist_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    music.artist_display_name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   useEffect(() => {
@@ -389,9 +400,9 @@ export function RadioPlaylistManager() {
                             </Avatar>
                             
                             <div className="flex-1 min-w-0">
-                              <p className="font-medium truncate">{music.file_name}</p>
+                              <p className="font-medium truncate">{music.title}</p>
                               <p className="text-sm text-muted-foreground">
-                                par {music.artist_name}
+                                par {music.artist_display_name}
                               </p>
                             </div>
                             
