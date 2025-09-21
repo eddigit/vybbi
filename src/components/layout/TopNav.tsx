@@ -21,7 +21,8 @@ import {
   BookOpen,
   Link as LinkIcon,
   Hash,
-  Radio
+  Radio,
+  Lock
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -101,6 +102,7 @@ const adminItems = [
   { title: "Régie Publicitaire", url: "/admin/ads", icon: Megaphone },
   { title: "Influenceurs", url: "/admin/influenceurs", icon: Users },
   { title: "Base de Connaissance", url: "/admin/knowledge", icon: BookOpen },
+  { title: "Coffre-Fort", url: "/admin/coffre-fort", icon: Lock },
   { title: "Partners", url: "/partners", icon: Users },
   { title: "Campaigns", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
