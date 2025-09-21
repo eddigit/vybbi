@@ -62,6 +62,7 @@ import Parrainage from "./pages/Parrainage";
 import Influenceurs from "./pages/Influenceurs";
 import AdminCommunication from "./pages/AdminCommunication";
 import AdminDashboard from "./pages/AdminDashboard";
+import AdminCoffreFort from "./pages/AdminCoffreFort";
 import Blog from "./pages/Blog";
 import BlogPost from './pages/BlogPost';
 import Technologie from './pages/Technologie';
@@ -203,6 +204,7 @@ const App = () => (
                       <Route path="/influenceurs" element={<Influenceurs />} />
                       <Route path="/admin/communication" element={<AdminCommunication />} />
                       <Route path="/admin/dashboard" element={<AdminDashboard />} />
+                      <Route path="/admin/coffre-fort" element={<AdminCoffreFort />} />
                       <Route path="/admin/ads" element={<AdminAds />} />
                       <Route path="/admin/influenceurs" element={<AdminInfluenceurs />} />
                       <Route path="/admin/knowledge" element={<AdminKnowledge />} />

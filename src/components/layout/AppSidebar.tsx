@@ -24,7 +24,8 @@ import {
   BookOpen,
   Shield,
   Link as LinkIcon,
-  Hash
+  Hash,
+  Lock
 } from "lucide-react";
 
 import {
@@ -88,6 +89,7 @@ const influenceurItems = [
 
 const adminItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Coffre-Fort", url: "/admin/coffre-fort", icon: Lock },
   { title: "Influenceurs", url: "/admin/influenceurs", icon: Users },
   { title: "Base de Connaissance", url: "/admin/knowledge", icon: BookOpen },
   { title: "Partners", url: "/partners", icon: Users },

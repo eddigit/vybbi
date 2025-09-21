@@ -332,6 +332,45 @@ export type Database = {
           },
         ]
       }
+      admin_secrets: {
+        Row: {
+          category: string
+          created_at: string
+          created_by: string | null
+          description: string | null
+          id: string
+          last_accessed_at: string | null
+          last_accessed_by: string | null
+          name: string
+          updated_at: string
+          value: string
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          last_accessed_by?: string | null
+          name: string
+          updated_at?: string
+          value: string
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          last_accessed_at?: string | null
+          last_accessed_by?: string | null
+          name?: string
+          updated_at?: string
+          value?: string
+        }
+        Relationships: []
+      }
       affiliate_conversions: {
         Row: {
           commission_amount: number | null

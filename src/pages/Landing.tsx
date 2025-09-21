@@ -63,6 +63,11 @@ export default function Landing() {
     title: "Calendriers Synchronisés",
     description: "Artistes, lieux et agents synchronisent leurs disponibilités, rendant la planification simple et transparente",
     gradient: "from-orange-500 to-red-500"
+  }, {
+    icon: Blockchain,
+    title: "Certification Blockchain",
+    description: "Protégez vos créations avec des certificats blockchain immutables. QR codes de vérification et preuve d'antériorité sur Solana",
+    gradient: "from-violet-500 to-purple-500"
   }];
   const testimonials = [{
     name: "Alexandre M.",

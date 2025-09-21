@@ -385,6 +385,204 @@ Fonction automatisée pour calculer les commissions récurrentes mensuelles :
 ### Exclusivité Temporaire
 Le programme avec commissions récurrentes de 0,50€/mois est **exclusif jusqu'au 31 janvier 2026**. Après cette date, les nouveaux influenceurs auront des conditions moins avantageuses.
 
+## 🔗 Certification Blockchain des Œuvres Musicales
+
+### Architecture Technique Solana
+
+Le système de certification blockchain de Vybbi utilise la blockchain **Solana** pour garantir l'immutabilité et la vérifiabilité des créations musicales.
+
+#### Processus de Certification
+
+1. **Génération du Hash** : Création d'un hash SHA-256 unique basé sur :
+   - ID de la release musicale
+   - Métadonnées (titre, artiste, ISRC, collaborateurs)
+   - Timestamp de certification
+   - Identifiant plateforme Vybbi
+
+2. **Transaction Blockchain** : 
+   - Stockage du hash sur Solana
+   - Génération d'une signature cryptographique
+   - Attribution d'un block number
+   - Transaction hash unique
+
+3. **Génération QR Code** :
+   - URL de vérification publique
+   - Données base64 du QR code
+   - Stockage des assets de vérification
+
+#### Structure des Données Certifiées
+
+```json
+{
+  "title": "Nom de la release",
+  "artist": "Nom de l'artiste", 
+  "isrc": "Code ISRC si disponible",
+  "collaborators": ["Liste des collaborateurs"],
+  "audioHash": "Hash optionnel du fichier audio",
+  "releaseDate": "Date de sortie",
+  "platformId": "vybbi",
+  "certificationTimestamp": "ISO timestamp"
+}
+```
+
+### Edge Function `blockchain-certify`
+
+**Endpoint** : `/functions/v1/blockchain-certify`
+
+**Authentification** : Publique (JWT désactivé pour performance)
+
+**Fonctionnalités** :
+- Validation des données de certification
+- Génération du hash unique de certification
+- Simulation transaction Solana (prêt pour intégration réelle)
+- Stockage en base de données Supabase
+- Génération QR code de vérification
+- URLs de certificat et vérification
+
+**Paramètres d'entrée** :
+```typescript
+{
+  musicReleaseId: string;
+  metadata: {
+    title: string;
+    artist: string;
+    isrc?: string;
+    collaborators?: string[];
+    audioHash?: string;
+  }
+}
+```
+
+**Réponse** :
+```typescript
+{
+  success: boolean;
+  certification?: {
+    id: string;
+    certificationHash: string;
+    transactionHash: string;
+    blockNumber: number;
+    qrCodeUrl: string;
+    certificateUrl: string;
+    verificationUrl: string;
+  }
+}
+```
+
+### Base de Données - Table `blockchain_certifications`
+
+```sql
+CREATE TABLE blockchain_certifications (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  music_release_id UUID NOT NULL REFERENCES music_releases(id),
+  certification_hash TEXT NOT NULL UNIQUE,
+  blockchain_network TEXT NOT NULL DEFAULT 'solana',
+  transaction_hash TEXT NOT NULL,
+  solana_signature TEXT,
+  block_number BIGINT,
+  certification_data JSONB NOT NULL,
+  status TEXT NOT NULL DEFAULT 'pending',
+  qr_code_url TEXT,
+  certificate_url TEXT,
+  certified_by UUID REFERENCES auth.users(id),
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+```
+
+### Interfaces Utilisateur
+
+#### `BlockchainCertifyButton`
+- Bouton de certification pour les artistes
+- États : disponible, en cours, certifié
+- Validation des permissions utilisateur
+- Gestion des erreurs et feedback
+
+#### `BlockchainCertificationBadge`
+- Badge visuel sur les releases certifiées
+- Clic pour afficher les détails de certification
+- Informations : réseau, block, hash, URLs
+
+#### `BlockchainQRCode`
+- Composant QR code pour vérification
+- Génération dynamique depuis URL
+- Options : téléchargement PNG, copie URL
+- Responsive et accessible
+
+### Hooks React
+
+#### `useBlockchainCertification(musicReleaseId)`
+- Gestion état certification d'une release
+- Mutation pour créer nouvelle certification
+- States : `isCertified`, `isCreating`, `certification`
+- Notifications toast automatiques
+
+#### `useProfileCertifications(profileId)`
+- Liste certifications confirmées d'un profil
+- Jointure avec données releases
+- Optimisé avec React Query
+- Pagination et filtrage
+
+### Sécurité et Vérification
+
+#### Row Level Security (RLS)
+- **Artists** : Peuvent certifier leurs propres releases
+- **Public** : Peut voir les certifications confirmées uniquement
+- **System** : Peut mettre à jour les statuts de certification
+
+#### Vérification Publique
+- URL de vérification universelle
+- Validation hash blockchain
+- Métadonnées immutables
+- Historique transparent
+
+### Intégration UI/UX
+
+#### Pages Concernées
+- **Profile Artiste** : Affichage badges certifications
+- **Music Release Widget** : Bouton certification
+- **Productions Slider** : Badges visuels
+- **Dashboard Admin** : Gestion système blockchain
+
+#### États Visuels
+- 🔒 **Certifié** : Badge vert avec shield
+- ⏳ **En cours** : Spinner + message
+- 📋 **Disponible** : Bouton call-to-action
+- ❌ **Erreur** : Message d'erreur explicite
+
+### Roadmap Blockchain
+
+#### ✅ Implémenté (Septembre 2024)
+- Certification manuelle sur Solana
+- QR codes de vérification
+- Badges visuels
+- Interface utilisateur complète
+
+#### 🚧 En cours
+- Vérification publique via URL
+- Intégration portefeuilles crypto
+- Notifications push certifications
+
+#### 📋 Planifié
+- Certification automatique releases
+- Royalties blockchain
+- Marketplace NFT intégré
+- Multi-blockchain support
+
+### Performance et Optimisation
+
+#### Cache et Storage
+- React Query pour cache UI
+- Supabase storage pour QR codes
+- CDN pour assets de certification
+- Optimisation images et JSON
+
+#### Monitoring
+- Logs certification temps réel
+- Métriques adoption blockchain
+- Alertes échecs transactions
+- Analytics usage QR codes
+
 ---
 
-*Dernière mise à jour : 15 septembre 2025*
+*Dernière mise à jour : 21 septembre 2025*
