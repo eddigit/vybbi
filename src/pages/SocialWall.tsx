@@ -1,0 +1,92 @@
+import { useEffect, useState } from "react";
+import { useAuth } from "@/hooks/useAuth";
+import { PostCreator } from "@/components/social/PostCreator";
+import { PostCard } from "@/components/social/PostCard";
+import { OnlineUsers } from "@/components/social/OnlineUsers";
+import { useSocialFeed } from "@/hooks/useSocialFeed";
+import { useUserPresence } from "@/hooks/useUserPresence";
+import { Loader2 } from "lucide-react";
+import { ScrollArea } from "@/components/ui/scroll-area";
+
+export default function SocialWall() {
+  const { user } = useAuth();
+  const { posts, loading, error, loadMore, hasMore } = useSocialFeed();
+  useUserPresence(); // Track user's online status
+
+  useEffect(() => {
+    // Auto-load initial posts when component mounts
+  }, []);
+
+  if (!user) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold mb-4">Connectez-vous pour accéder au mur social</h2>
+          <p className="text-muted-foreground">Rejoignez la communauté Vybbi pour partager et découvrir</p>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex min-h-screen bg-background">
+      {/* Main Feed */}
+      <div className="flex-1 max-w-2xl mx-auto">
+        <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 border-b p-4">
+          <h1 className="text-2xl font-bold mb-4">Mur Social Vybbi</h1>
+          <PostCreator />
+        </div>
+
+        <div className="p-4 space-y-6">
+          {loading && posts.length === 0 ? (
+            <div className="flex items-center justify-center py-12">
+              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <span>Chargement du feed...</span>
+            </div>
+          ) : error ? (
+            <div className="text-center py-12 text-red-500">
+              <p>Erreur lors du chargement: {error}</p>
+            </div>
+          ) : posts.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <p>Aucune publication pour le moment.</p>
+              <p className="mt-2">Soyez le premier à partager quelque chose !</p>
+            </div>
+          ) : (
+            <>
+              {posts.map((post) => (
+                <PostCard key={post.id} post={post} />
+              ))}
+              
+              {hasMore && (
+                <div className="flex justify-center py-4">
+                  <button
+                    onClick={loadMore}
+                    disabled={loading}
+                    className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                  >
+                    {loading ? (
+                      <>
+                        <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                        Chargement...
+                      </>
+                    ) : (
+                      "Charger plus"
+                    )}
+                  </button>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+
+      {/* Online Users Sidebar */}
+      <div className="hidden lg:block w-80 border-l">
+        <div className="sticky top-0 h-screen">
+          <OnlineUsers />
+        </div>
+      </div>
+    </div>
+  );
+}

@@ -2306,6 +2306,109 @@ export type Database = {
         }
         Relationships: []
       }
+      post_interactions: {
+        Row: {
+          comment_text: string | null
+          created_at: string
+          id: string
+          interaction_type: string
+          post_id: string
+          profile_id: string
+          user_id: string
+        }
+        Insert: {
+          comment_text?: string | null
+          created_at?: string
+          id?: string
+          interaction_type: string
+          post_id: string
+          profile_id: string
+          user_id: string
+        }
+        Update: {
+          comment_text?: string | null
+          created_at?: string
+          id?: string
+          interaction_type?: string
+          post_id?: string
+          profile_id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_interactions_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "social_posts"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_interactions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_interactions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "post_interactions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      post_media: {
+        Row: {
+          alt_text: string | null
+          created_at: string
+          duration: number | null
+          file_size: number | null
+          id: string
+          media_type: string
+          media_url: string
+          post_id: string
+          thumbnail_url: string | null
+        }
+        Insert: {
+          alt_text?: string | null
+          created_at?: string
+          duration?: number | null
+          file_size?: number | null
+          id?: string
+          media_type: string
+          media_url: string
+          post_id: string
+          thumbnail_url?: string | null
+        }
+        Update: {
+          alt_text?: string | null
+          created_at?: string
+          duration?: number | null
+          file_size?: number | null
+          id?: string
+          media_type?: string
+          media_url?: string
+          post_id?: string
+          thumbnail_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "post_media_post_id_fkey"
+            columns: ["post_id"]
+            isOneToOne: false
+            referencedRelation: "social_posts"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_views: {
         Row: {
           created_at: string
@@ -3643,6 +3746,64 @@ export type Database = {
         }
         Relationships: []
       }
+      social_posts: {
+        Row: {
+          content: string
+          created_at: string
+          id: string
+          post_type: string
+          profile_id: string
+          related_id: string | null
+          updated_at: string
+          user_id: string
+          visibility: string
+        }
+        Insert: {
+          content: string
+          created_at?: string
+          id?: string
+          post_type?: string
+          profile_id: string
+          related_id?: string | null
+          updated_at?: string
+          user_id: string
+          visibility?: string
+        }
+        Update: {
+          content?: string
+          created_at?: string
+          id?: string
+          post_type?: string
+          profile_id?: string
+          related_id?: string | null
+          updated_at?: string
+          user_id?: string
+          visibility?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "social_posts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_posts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "social_posts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       system_config: {
         Row: {
           config_key: string
@@ -3669,6 +3830,125 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      user_follows: {
+        Row: {
+          created_at: string
+          followed_profile_id: string
+          followed_user_id: string
+          follower_profile_id: string
+          follower_user_id: string
+          id: string
+        }
+        Insert: {
+          created_at?: string
+          followed_profile_id: string
+          followed_user_id: string
+          follower_profile_id: string
+          follower_user_id: string
+          id?: string
+        }
+        Update: {
+          created_at?: string
+          followed_profile_id?: string
+          followed_user_id?: string
+          follower_profile_id?: string
+          follower_user_id?: string
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_follows_followed_profile_id_fkey"
+            columns: ["followed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_followed_profile_id_fkey"
+            columns: ["followed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_followed_profile_id_fkey"
+            columns: ["followed_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_follower_profile_id_fkey"
+            columns: ["follower_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_follower_profile_id_fkey"
+            columns: ["follower_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_follows_follower_profile_id_fkey"
+            columns: ["follower_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_presence: {
+        Row: {
+          is_online: boolean
+          last_seen_at: string
+          profile_id: string
+          status_message: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          is_online?: boolean
+          last_seen_at?: string
+          profile_id: string
+          status_message?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          is_online?: boolean
+          last_seen_at?: string
+          profile_id?: string
+          status_message?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_presence_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_presence_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_presence_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       user_roles: {
         Row: {
@@ -4294,6 +4574,18 @@ export type Database = {
         Args: { event_uuid: string }
         Returns: number
       }
+      get_online_users: {
+        Args: { limit_param?: number }
+        Returns: {
+          avatar_url: string
+          display_name: string
+          last_seen_at: string
+          profile_id: string
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          status_message: string
+          user_id: string
+        }[]
+      }
       get_profile_stats: {
         Args: { profile_id: string }
         Returns: Json
@@ -4368,6 +4660,30 @@ export type Database = {
       get_security_status: {
         Args: Record<PropertyKey, never>
         Returns: Json
+      }
+      get_social_feed: {
+        Args: {
+          limit_param?: number
+          offset_param?: number
+          user_id_param: string
+        }
+        Returns: {
+          author_avatar_url: string
+          author_display_name: string
+          author_profile_type: Database["public"]["Enums"]["profile_type"]
+          comments_count: number
+          content: string
+          created_at: string
+          id: string
+          likes_count: number
+          media_attachments: Json
+          post_type: string
+          profile_id: string
+          related_id: string
+          user_has_liked: boolean
+          user_id: string
+          visibility: string
+        }[]
       }
       get_top_artists: {
         Args: { genre_filter?: string; limit_count?: number }
