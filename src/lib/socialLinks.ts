@@ -2,7 +2,7 @@
 export const VYBBI_SOCIAL_LINKS = {
   tiktok: "https://www.tiktok.com/@vybbi_app",
   instagram: "https://www.instagram.com/vybbi_app/",
-  facebook: "https://www.facebook.com/profile.php?id=61580494607824",
+  facebook: "https://www.facebook.com/profile.php?id=61581107798843",
   soundcloud: "https://soundcloud.com/vibby-514717035",
   spotify: "https://open.spotify.com/user/31sfvdw6ahwbhpbbjgwi5lmnr43a",
   linkedin: "https://www.linkedin.com/in/vibby-vibby-01511b384/",
