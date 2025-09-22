@@ -12,7 +12,10 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
   const [offset, setOffset] = useState(0);
 
   const fetchPosts = useCallback(async (reset = false) => {
-    if (!user) return;
+    if (!user) {
+      console.log('🔍 [SocialFeed] No user found, skipping fetch');
+      return;
+    }
 
     try {
       setLoading(true);
@@ -20,6 +23,13 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
 
       const currentOffset = reset ? 0 : offset;
       const limit = 10;
+
+      console.log('🔍 [SocialFeed] Fetching posts:', {
+        userId: user.id,
+        feedType,
+        currentOffset,
+        limit
+      });
 
       // Call the database function to get the social feed
       const { data, error: fetchError } = await supabase.rpc('get_social_feed', {
@@ -29,18 +39,32 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
         feed_type: feedType
       });
 
+      console.log('🔍 [SocialFeed] RPC Response:', {
+        dataLength: data?.length || 0,
+        error: fetchError,
+        rawData: data
+      });
+
       if (fetchError) {
+        console.error('🔍 [SocialFeed] RPC Error:', fetchError);
         throw fetchError;
       }
 
-      const newPosts: SocialPost[] = (data || []).map(post => ({
-        ...post,
-        updated_at: post.created_at, // Use created_at as fallback for updated_at
-        author_profile_id: post.profile_id, // Map profile_id to author_profile_id
-        media_attachments: Array.isArray(post.media_attachments) 
-          ? (post.media_attachments as unknown) as PostMedia[]
-          : []
-      }));
+      // Process the posts
+      const newPosts: SocialPost[] = (data || []).map((post, index) => {
+        console.log(`🔍 [SocialFeed] Processing post ${index}:`, post);
+        
+        return {
+          ...post,
+          updated_at: post.created_at, // Use created_at as fallback for updated_at
+          author_profile_id: post.profile_id, // Map profile_id to author_profile_id
+          media_attachments: Array.isArray(post.media_attachments) 
+            ? (post.media_attachments as unknown) as PostMedia[]
+            : []
+        };
+      });
+
+      console.log('🔍 [SocialFeed] Processed posts:', newPosts.length);
       
       if (reset) {
         setPosts(newPosts);
@@ -52,14 +76,24 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
 
       setHasMore(newPosts.length === limit);
     } catch (err) {
-      console.error('Error fetching social feed:', err);
+      console.error('🔍 [SocialFeed] Error details:', {
+        error: err,
+        message: err instanceof Error ? err.message : 'Unknown error',
+        stack: err instanceof Error ? err.stack : undefined,
+        user: user?.id,
+        feedType
+      });
+      
       const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
-      if (errorMessage.includes('structure of query does not match')) {
-        setError('Erreur de configuration du feed - veuillez recharger la page');
-      } else if (errorMessage.includes('not authenticated')) {
+      
+      if (errorMessage.includes('permission denied') || errorMessage.includes('not authenticated')) {
         setError('Vous devez être connecté pour voir le feed');
+      } else if (errorMessage.includes('function') && errorMessage.includes('does not exist')) {
+        setError('Erreur de configuration du système - contactez le support');
+      } else if (errorMessage.includes('structure of query does not match')) {
+        setError('Erreur de format des données - veuillez recharger la page');
       } else {
-        setError(errorMessage);
+        setError(`Erreur lors du chargement: ${errorMessage}`);
       }
     } finally {
       setLoading(false);
