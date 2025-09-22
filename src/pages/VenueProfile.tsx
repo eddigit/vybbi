@@ -13,6 +13,7 @@ import { VenueGallery } from '@/components/VenueGallery';
 import { VenueCalendar } from '@/components/VenueCalendar';
 import { VenuePartners } from '@/components/VenuePartners';
 import { VenueTalentHistory } from '@/components/VenueTalentHistory';
+import { FollowButton } from '@/components/social/FollowButton';
 
 interface VenueProfileProps {
   venueId?: string;
@@ -145,6 +146,12 @@ export default function VenueProfile({ venueId }: VenueProfileProps = {}) {
         
         {/* Action buttons in header */}
         <div className="absolute top-6 right-6 flex gap-2">
+          <FollowButton 
+            targetUserId={venue.user_id}
+            targetProfileId={venue.id}
+            targetDisplayName={venue.display_name}
+            className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+          />
           {user ? (
             user.id !== venue.user_id && (
               <Button asChild>

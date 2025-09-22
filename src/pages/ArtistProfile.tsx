@@ -33,6 +33,7 @@ import { LazyLoadAnalytics } from '@/components/LazyLoadAnalytics';
 import { SEOHead } from '@/components/SEOHead';
 import { ProductionsSlider } from '@/components/ProductionsSlider';
 import { MusicPlayer } from '@/components/MusicPlayer';
+import { FollowButton } from '@/components/social/FollowButton';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useMusicReleases } from '@/hooks/useMusicReleases';
 import ArtistStatsWidget from '@/components/ArtistStatsWidget';
@@ -345,6 +346,16 @@ export default function ArtistProfile({ resolvedProfile }: ArtistProfileProps) {
                   ))}
                 </div>
               )}
+            </div>
+
+            {/* Follow Button */}
+            <div className="flex justify-end">
+              <FollowButton 
+                targetUserId={(artist as any).user_id || ''}
+                targetProfileId={artist.id}
+                targetDisplayName={artist.display_name}
+                className="bg-white/20 backdrop-blur-sm border-white/30 text-white hover:bg-white/30"
+              />
             </div>
           </div>
         </div>

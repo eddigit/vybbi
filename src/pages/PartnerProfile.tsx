@@ -9,6 +9,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { getProfileUrl } from '@/hooks/useProfileResolver';
+import { FollowButton } from '@/components/social/FollowButton';
 
 interface PartnerProfileProps {
   partnerId?: string;
@@ -151,6 +152,11 @@ export default function PartnerProfile({ partnerId }: PartnerProfileProps) {
               </div>
               
               <div className="flex gap-2">
+                <FollowButton 
+                  targetUserId={partner.user_id}
+                  targetProfileId={partner.id}
+                  targetDisplayName={partner.display_name}
+                />
                 {user ? (
                   user.id !== partner.user_id && (
                     <Button asChild>
