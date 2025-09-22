@@ -4663,6 +4663,7 @@ export type Database = {
       }
       get_social_feed: {
         Args: {
+          feed_type?: string
           limit_param?: number
           offset_param?: number
           user_id_param: string

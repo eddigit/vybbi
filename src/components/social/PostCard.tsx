@@ -9,12 +9,15 @@ import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { SocialPost } from "@/types/social";
 import { useSocialActions } from "@/hooks/useSocialActions";
+import { FollowButton } from "@/components/social/FollowButton";
+import { useAuth } from "@/hooks/useAuth";
 
 interface PostCardProps {
   post: SocialPost;
 }
 
 export function PostCard({ post }: PostCardProps) {
+  const { user } = useAuth();
   const { toggleLike, addComment } = useSocialActions();
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -105,18 +108,30 @@ export function PostCard({ post }: PostCardProps) {
             </Link>
             
             <div className="flex-1">
-              <div className="flex items-center space-x-2">
-                <Link 
-                  to={`/profiles/${post.author_profile_id}`}
-                  className="font-semibold hover:underline"
-                >
-                  {post.author_display_name}
-                </Link>
-                <Badge className={getProfileTypeColor(post.author_profile_type)}>
-                  {getProfileTypeLabel(post.author_profile_type)}
-                </Badge>
-                {getPostTypeIcon(post.post_type) && (
-                  <span className="text-lg">{getPostTypeIcon(post.post_type)}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <Link 
+                    to={`/profiles/${post.author_profile_id}`}
+                    className="font-semibold hover:underline"
+                  >
+                    {post.author_display_name}
+                  </Link>
+                  <Badge className={getProfileTypeColor(post.author_profile_type)}>
+                    {getProfileTypeLabel(post.author_profile_type)}
+                  </Badge>
+                  {getPostTypeIcon(post.post_type) && (
+                    <span className="text-lg">{getPostTypeIcon(post.post_type)}</span>
+                  )}
+                </div>
+                
+                {/* Follow Button - only show if not own post */}
+                {user && post.user_id !== user.id && (
+                  <FollowButton
+                    targetUserId={post.user_id}
+                    targetProfileId={post.author_profile_id}
+                    targetDisplayName={post.author_display_name}
+                    className="ml-2"
+                  />
                 )}
               </div>
               <p className="text-sm text-muted-foreground">

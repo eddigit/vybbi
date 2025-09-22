@@ -70,13 +70,18 @@ export function useAuth() {
         const currentPath = window.location.pathname;
         const shouldRedirect = currentPath === '/' || currentPath === '/auth';
         const isOnboardingCompleted = (profileData as any).onboarding_completed;
+        const userRoles = rolesData?.map(r => r.role) || [];
+        const isAdmin = userRoles.includes('admin');
         
         if (shouldRedirect) {
           if (!isOnboardingCompleted) {
             // Redirect to onboarding if not completed
             navigate('/onboarding', { replace: true });
+          } else if (isAdmin) {
+            // Redirect admins to dashboard
+            navigate('/dashboard', { replace: true });
           } else {
-            // Redirect to home page after successful login (ConditionalHomePage will show SocialWall)
+            // Redirect other users to social wall
             navigate('/', { replace: true });
           }
         }

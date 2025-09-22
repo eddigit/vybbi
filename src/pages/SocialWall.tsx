@@ -6,13 +6,25 @@ import { PostCard } from "@/components/social/PostCard";
 import { OnlineUsers } from "@/components/social/OnlineUsers";
 import { useSocialFeed } from "@/hooks/useSocialFeed";
 import { useUserPresence } from "@/hooks/useUserPresence";
-import { Loader2 } from "lucide-react";
+import { Loader2, Users, Compass, Sparkles } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 export default function SocialWall() {
   const { user } = useAuth();
-  const { posts, loading, error, loadMore, hasMore } = useSocialFeed();
+  const [activeTab, setActiveTab] = useState<'all' | 'following' | 'discover'>('all');
+  
+  // Use different hooks based on active tab
+  const allFeed = useSocialFeed('all');
+  const followingFeed = useSocialFeed('following');
+  const discoverFeed = useSocialFeed('discover');
+  
+  // Get the current feed based on active tab
+  const currentFeed = activeTab === 'following' ? followingFeed : 
+                     activeTab === 'discover' ? discoverFeed : allFeed;
+  
+  const { posts, loading, error, loadMore, hasMore } = currentFeed;
   useUserPresence(); // Track user's online status
 
   useEffect(() => {
@@ -42,9 +54,38 @@ export default function SocialWall() {
     <div className="flex min-h-screen bg-background">
       {/* Main Feed */}
       <div className="flex-1 max-w-2xl mx-auto">
-        <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 border-b p-4">
-          <h1 className="text-2xl font-bold mb-4">Mur Social Vybbi</h1>
-          <PostCreator />
+        <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 border-b">
+          <div className="p-4">
+            <h1 className="text-2xl font-bold mb-4">Mur Social Vybbi</h1>
+            <PostCreator />
+          </div>
+          
+          {/* Feed Tabs */}
+          <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
+            <TabsList className="w-full justify-start rounded-none border-0 bg-transparent p-0">
+              <TabsTrigger 
+                value="all" 
+                className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              >
+                <Sparkles className="w-4 h-4" />
+                <span>Tous</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="following" 
+                className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              >
+                <Users className="w-4 h-4" />
+                <span>Abonnements</span>
+              </TabsTrigger>
+              <TabsTrigger 
+                value="discover" 
+                className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+              >
+                <Compass className="w-4 h-4" />
+                <span>Découvrir</span>
+              </TabsTrigger>
+            </TabsList>
+          </Tabs>
         </div>
 
         <div className="p-4 space-y-6">

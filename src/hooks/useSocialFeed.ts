@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { SocialPost, PostMedia } from "@/types/social";
 
-export function useSocialFeed() {
+export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all') {
   const { user } = useAuth();
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -25,7 +25,8 @@ export function useSocialFeed() {
       const { data, error: fetchError } = await supabase.rpc('get_social_feed', {
         user_id_param: user.id,
         limit_param: limit,
-        offset_param: currentOffset
+        offset_param: currentOffset,
+        feed_type: feedType
       });
 
       if (fetchError) {
@@ -56,7 +57,7 @@ export function useSocialFeed() {
     } finally {
       setLoading(false);
     }
-  }, [user, offset]);
+  }, [user, offset, feedType]);
 
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {
@@ -108,7 +109,7 @@ export function useSocialFeed() {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, refreshFeed]);
+  }, [user, refreshFeed, feedType]);
 
   return {
     posts,
