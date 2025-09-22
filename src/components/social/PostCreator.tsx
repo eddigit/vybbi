@@ -32,7 +32,14 @@ export function PostCreator() {
       toast.success("Publication créée avec succès!");
     } catch (error) {
       console.error("Error creating post:", error);
-      toast.error("Erreur lors de la création de la publication");
+      const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
+      if (errorMessage.includes("violates row-level security")) {
+        toast.error("Vous n'avez pas les permissions pour créer cette publication");
+      } else if (errorMessage.includes("not authenticated")) {
+        toast.error("Vous devez être connecté pour publier");
+      } else {
+        toast.error(`Erreur lors de la création: ${errorMessage}`);
+      }
     } finally {
       setIsSubmitting(false);
     }

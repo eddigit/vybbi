@@ -53,7 +53,14 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
       setHasMore(newPosts.length === limit);
     } catch (err) {
       console.error('Error fetching social feed:', err);
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
+      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
+      if (errorMessage.includes('structure of query does not match')) {
+        setError('Erreur de configuration du feed - veuillez recharger la page');
+      } else if (errorMessage.includes('not authenticated')) {
+        setError('Vous devez être connecté pour voir le feed');
+      } else {
+        setError(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
