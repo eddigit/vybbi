@@ -19,10 +19,24 @@ import {
   Search, 
   PlayCircle,
   Users,
-  Clock
+  Clock,
+  Eye,
+  Edit,
+  Trash2,
+  MoreVertical
 } from 'lucide-react';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { PlaylistTracksDialog } from './PlaylistTracksDialog';
+import { EditPlaylistDialog } from './EditPlaylistDialog';
+import { DeletePlaylistDialog } from './DeletePlaylistDialog';
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu';
 
 interface MusicRelease {
   id: string;
@@ -60,6 +74,12 @@ export function RadioPlaylistManager() {
   const [showCreateDialog, setShowCreateDialog] = useState(false);
   const [showAddMusicDialog, setShowAddMusicDialog] = useState(false);
   const [selectedPlaylist, setSelectedPlaylist] = useState<string | null>(null);
+  
+  // New dialog states
+  const [showTracksDialog, setShowTracksDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
+  const [selectedPlaylistName, setSelectedPlaylistName] = useState('');
   const { toast } = useToast();
 
   // Fetch playlists
@@ -384,7 +404,21 @@ export function RadioPlaylistManager() {
                 </div>
               </div>
               
-              <div className="flex gap-2">
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    setSelectedPlaylist(playlist.id);
+                    setSelectedPlaylistName(playlist.name);
+                    setShowTracksDialog(true);
+                  }}
+                  className="flex-1"
+                >
+                  <Eye className="h-4 w-4 mr-1" />
+                  Voir ({playlist.track_count})
+                </Button>
+
                 <Dialog open={showAddMusicDialog && selectedPlaylist === playlist.id} 
                         onOpenChange={(open) => {
                           setShowAddMusicDialog(open);
@@ -392,7 +426,7 @@ export function RadioPlaylistManager() {
                           else setSelectedPlaylist(null);
                         }}>
                   <DialogTrigger asChild>
-                    <Button variant="outline" size="sm" className="flex-1">
+                    <Button variant="outline" size="sm">
                       <Plus className="h-4 w-4 mr-1" />
                       Ajouter
                     </Button>
@@ -481,6 +515,38 @@ export function RadioPlaylistManager() {
                 >
                   🎵 Lancer
                 </Button>
+
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="sm">
+                      <MoreVertical className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedPlaylist(playlist.id);
+                        setSelectedPlaylistName(playlist.name);
+                        setShowEditDialog(true);
+                      }}
+                    >
+                      <Edit className="h-4 w-4 mr-2" />
+                      Modifier
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setSelectedPlaylist(playlist.id);
+                        setSelectedPlaylistName(playlist.name);
+                        setShowDeleteDialog(true);
+                      }}
+                      className="text-destructive focus:text-destructive"
+                    >
+                      <Trash2 className="h-4 w-4 mr-2" />
+                      Supprimer
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             </CardContent>
           </Card>
@@ -502,6 +568,42 @@ export function RadioPlaylistManager() {
           </CardContent>
         </Card>
       )}
+
+      {/* Dialog Components */}
+      <PlaylistTracksDialog
+        isOpen={showTracksDialog}
+        onClose={() => {
+          setShowTracksDialog(false);
+          setSelectedPlaylist(null);
+          setSelectedPlaylistName('');
+        }}
+        playlistId={selectedPlaylist}
+        playlistName={selectedPlaylistName}
+        onTracksUpdated={fetchPlaylists}
+      />
+
+      <EditPlaylistDialog
+        isOpen={showEditDialog}
+        onClose={() => {
+          setShowEditDialog(false);
+          setSelectedPlaylist(null);
+          setSelectedPlaylistName('');
+        }}
+        playlistId={selectedPlaylist}
+        onPlaylistUpdated={fetchPlaylists}
+      />
+
+      <DeletePlaylistDialog
+        isOpen={showDeleteDialog}
+        onClose={() => {
+          setShowDeleteDialog(false);
+          setSelectedPlaylist(null);
+          setSelectedPlaylistName('');
+        }}
+        playlistId={selectedPlaylist}
+        playlistName={selectedPlaylistName}
+        onPlaylistDeleted={fetchPlaylists}
+      />
     </div>
   );
 }
