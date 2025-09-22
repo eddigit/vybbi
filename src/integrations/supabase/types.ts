@@ -3758,6 +3758,101 @@ export type Database = {
         }
         Relationships: []
       }
+      service_applications: {
+        Row: {
+          applicant_profile_id: string
+          applicant_user_id: string
+          created_at: string
+          id: string
+          message: string | null
+          proposed_fee: number | null
+          service_request_id: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          applicant_profile_id: string
+          applicant_user_id: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          proposed_fee?: number | null
+          service_request_id: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          applicant_profile_id?: string
+          applicant_user_id?: string
+          created_at?: string
+          id?: string
+          message?: string | null
+          proposed_fee?: number | null
+          service_request_id?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "service_applications_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      service_requests: {
+        Row: {
+          budget_max: number | null
+          budget_min: number | null
+          created_at: string
+          created_by: string
+          deadline: string | null
+          description: string
+          event_date: string | null
+          id: string
+          location: string
+          request_type: string
+          requirements: string | null
+          service_category: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          created_by: string
+          deadline?: string | null
+          description: string
+          event_date?: string | null
+          id?: string
+          location: string
+          request_type: string
+          requirements?: string | null
+          service_category: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          budget_max?: number | null
+          budget_min?: number | null
+          created_at?: string
+          created_by?: string
+          deadline?: string | null
+          description?: string
+          event_date?: string | null
+          id?: string
+          location?: string
+          request_type?: string
+          requirements?: string | null
+          service_category?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_ticker_messages: {
         Row: {
           created_at: string

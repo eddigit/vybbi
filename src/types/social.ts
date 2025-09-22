@@ -67,3 +67,44 @@ export interface CreatePostData {
   related_id?: string;
   media_files?: File[];
 }
+
+export interface ServiceRequest {
+  id: string;
+  request_type: 'offer' | 'demand';
+  service_category: 'performance' | 'venue' | 'agent' | 'other';
+  location: string;
+  budget_min?: number;
+  budget_max?: number;
+  event_date?: string;
+  deadline?: string;
+  description: string;
+  requirements?: string;
+  created_by: string;
+  status: 'active' | 'closed' | 'expired';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ServiceApplication {
+  id: string;
+  service_request_id: string;
+  applicant_user_id: string;
+  applicant_profile_id: string;
+  message?: string;
+  proposed_fee?: number;
+  status: 'pending' | 'accepted' | 'rejected';
+  created_at: string;
+  updated_at: string;
+}
+
+export interface CreateServiceRequestData {
+  request_type: 'offer' | 'demand';
+  service_category: 'performance' | 'venue' | 'agent' | 'other';
+  location: string;
+  budget_min?: number;
+  budget_max?: number;
+  event_date?: string;
+  deadline?: string;
+  description: string;
+  requirements?: string;
+}

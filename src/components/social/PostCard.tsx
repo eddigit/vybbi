@@ -1,16 +1,19 @@
-import { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Heart, MessageCircle, Share, MoreHorizontal } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { ServiceRequestCard } from "./ServiceRequestCard";
+import { Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
-import { SocialPost } from "@/types/social";
+import { SocialPost, ServiceRequest } from "@/types/social";
 import { useSocialActions } from "@/hooks/useSocialActions";
 import { FollowButton } from "@/components/social/FollowButton";
 import { useAuth } from "@/hooks/useAuth";
+import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 interface PostCardProps {
   post: SocialPost;
@@ -20,8 +23,32 @@ export function PostCard({ post }: PostCardProps) {
   const { user } = useAuth();
   const { toggleLike, addComment } = useSocialActions();
   const [showComments, setShowComments] = useState(false);
-  const [commentText, setCommentText] = useState("");
+  const [newComment, setNewComment] = useState("");
   const [isLiking, setIsLiking] = useState(false);
+  const [isCommenting, setIsCommenting] = useState(false);
+  const [serviceRequest, setServiceRequest] = useState<ServiceRequest | null>(null);
+
+  // Fetch service request data if this is a service request post
+  useEffect(() => {
+    const fetchServiceRequest = async () => {
+      if (post.post_type === 'service_request' && post.related_id) {
+        try {
+          const { data, error } = await supabase
+            .from('service_requests')
+            .select('*')
+            .eq('id', post.related_id)
+            .single();
+          
+          if (error) throw error;
+          setServiceRequest(data as ServiceRequest);
+        } catch (error) {
+          console.error('Error fetching service request:', error);
+        }
+      }
+    };
+
+    fetchServiceRequest();
+  }, [post.post_type, post.related_id]);
 
   const handleLike = async () => {
     if (isLiking) return;
@@ -37,14 +64,17 @@ export function PostCard({ post }: PostCardProps) {
 
   const handleComment = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commentText.trim()) return;
+    if (!newComment.trim()) return;
 
+    setIsCommenting(true);
     try {
-      await addComment(post.id, commentText.trim());
-      setCommentText("");
+      await addComment(post.id, newComment.trim());
+      setNewComment("");
       setShowComments(true);
     } catch (error) {
       console.error("Error adding comment:", error);
+    } finally {
+      setIsCommenting(false);
     }
   };
 
@@ -88,10 +118,28 @@ export function PostCard({ post }: PostCardProps) {
         return "📷";
       case "video":
         return "🎬";
+      case "service_request":
+        return "🤝";
       default:
         return null;
     }
   };
+
+  // If this is a service request post and we have the data, render ServiceRequestCard
+  if (post.post_type === 'service_request' && serviceRequest) {
+    return (
+      <ServiceRequestCard
+        serviceRequest={serviceRequest}
+        authorName={post.author_display_name}
+        authorAvatar={post.author_avatar_url}
+        authorProfileType={getProfileTypeLabel(post.author_profile_type)}
+        onApply={() => {
+          // TODO: Implement application logic
+          console.log('Apply to service request:', serviceRequest.id);
+        }}
+      />
+    );
+  }
 
   return (
     <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-md hover:shadow-lg transition-all duration-300 group">
@@ -221,45 +269,55 @@ export function PostCard({ post }: PostCardProps) {
             Commenter
           </Button>
 
-          <Button 
-            variant="ghost" 
+          <Button
+            variant="ghost"
             size="sm"
             className="flex-1 rounded-full h-10 hover:bg-muted/50 transition-all"
           >
-            <Share className="w-4 h-4 mr-2" />
+            <Share2 className="w-4 h-4 mr-2" />
             Partager
           </Button>
         </div>
 
         {/* Comments Section */}
         {showComments && (
-          <div className="mt-4 border-t border-border/50 pt-4 space-y-4">
-            <form onSubmit={handleComment}>
-              <div className="flex space-x-3">
-                <input
-                  type="text"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Écrivez un commentaire..."
-                  className="flex-1 px-4 py-2 text-sm bg-muted/30 border border-border/50 rounded-full focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary/20 transition-all"
-                />
-                <Button 
-                  type="submit" 
-                  size="sm" 
-                  disabled={!commentText.trim()}
-                  className="rounded-full px-4 bg-primary/10 hover:bg-primary/20 text-primary border border-primary/20"
-                >
-                  Envoyer
-                </Button>
-              </div>
-            </form>
+          <div className="mt-4 space-y-4 border-t border-border/50 pt-4">
+            {/* Add Comment Form */}
+            {user && (
+              <form onSubmit={handleComment} className="flex space-x-3">
+                <Avatar className="w-8 h-8 flex-shrink-0">
+                  <AvatarImage src={user.user_metadata?.avatar_url} />
+                  <AvatarFallback className="bg-primary/10 text-primary text-xs">
+                    {user.email?.charAt(0) || "U"}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex-1 space-y-2">
+                  <Textarea
+                    placeholder="Écrire un commentaire..."
+                    value={newComment}
+                    onChange={(e) => setNewComment(e.target.value)}
+                    className="min-h-[60px] resize-none border-border/50 bg-muted/30 rounded-lg"
+                  />
+                  <div className="flex justify-end">
+                    <Button 
+                      type="submit" 
+                      size="sm" 
+                      disabled={!newComment.trim() || isCommenting}
+                      className="rounded-full"
+                    >
+                      {isCommenting ? "Publication..." : "Publier"}
+                    </Button>
+                  </div>
+                </div>
+              </form>
+            )}
 
-            {/* TODO: Display existing comments */}
-            <div className="space-y-3 pl-4">
-              <p className="text-sm text-muted-foreground text-center py-4 bg-muted/20 rounded-lg border border-dashed border-border/50">
-                Les commentaires seront affichés ici
-              </p>
-            </div>
+            {/* Comments Display - This would be implemented with a separate component */}
+            {post.comments_count > 0 && (
+              <div className="text-center text-sm text-muted-foreground">
+                {post.comments_count} commentaire{post.comments_count > 1 ? "s" : ""}
+              </div>
+            )}
           </div>
         )}
       </CardContent>

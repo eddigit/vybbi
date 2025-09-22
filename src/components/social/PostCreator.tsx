@@ -5,12 +5,14 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ImageIcon, Music, Video, Calendar, Loader2 } from "lucide-react";
+import { ImageIcon, Music, Video, Calendar, Loader2, Handshake } from "lucide-react";
 import { toast } from "sonner";
+import { ServiceRequestDialog } from "./ServiceRequestDialog";
+import { CreateServiceRequestData } from "@/types/social";
 
 export function PostCreator() {
   const { user, profile } = useAuth();
-  const { createPost } = useSocialActions();
+  const { createPost, createServiceRequest } = useSocialActions();
   const [content, setContent] = useState("");
   const [postType, setPostType] = useState<"text" | "image" | "video" | "music" | "event">("text");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -47,6 +49,20 @@ export function PostCreator() {
 
   const handleFileSelect = () => {
     fileInputRef.current?.click();
+  };
+
+  const handleServiceRequest = async (serviceData: CreateServiceRequestData) => {
+    setIsSubmitting(true);
+    try {
+      await createServiceRequest(serviceData);
+      toast.success("Prestation créée avec succès!");
+    } catch (error) {
+      console.error("Error creating service request:", error);
+      const errorMessage = error instanceof Error ? error.message : "Erreur inconnue";
+      toast.error(`Erreur lors de la création: ${errorMessage}`);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getPlaceholder = () => {
@@ -144,6 +160,20 @@ export function PostCreator() {
                     <Calendar className="w-4 h-4 mr-1" />
                     Événement
                   </Button>
+                  <ServiceRequestDialog 
+                    onSubmit={handleServiceRequest}
+                    isSubmitting={isSubmitting}
+                  >
+                    <Button
+                      type="button"
+                      variant="secondary"
+                      size="sm"
+                      className="rounded-full h-9 px-4 transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200"
+                    >
+                      <Handshake className="w-4 h-4 mr-1" />
+                      Prestation
+                    </Button>
+                  </ServiceRequestDialog>
                 </div>
 
                 <Button

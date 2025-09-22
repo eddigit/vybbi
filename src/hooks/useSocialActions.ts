@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
-import { CreatePostData } from "@/types/social";
+import { CreatePostData, CreateServiceRequestData } from "@/types/social";
 
 export function useSocialActions() {
   const { user, profile } = useAuth();
@@ -145,8 +145,48 @@ export function useSocialActions() {
     }
   };
 
+  const createServiceRequest = async (serviceData: CreateServiceRequestData) => {
+    if (!user || !profile) throw new Error("User not authenticated");
+
+    setLoading(true);
+    try {
+      // First create the service request
+      const { data: serviceRequest, error: serviceError } = await supabase
+        .from('service_requests')
+        .insert({
+          ...serviceData,
+          created_by: user.id
+        })
+        .select()
+        .single();
+
+      if (serviceError) throw serviceError;
+
+      // Then create a social post that references this service request
+      const { data: post, error: postError } = await supabase
+        .from('social_posts')
+        .insert({
+          user_id: user.id,
+          profile_id: profile.id,
+          content: serviceData.description,
+          post_type: 'service_request',
+          visibility: 'public',
+          related_id: serviceRequest.id
+        })
+        .select()
+        .single();
+
+      if (postError) throw postError;
+
+      return { serviceRequest, post };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return {
     createPost,
+    createServiceRequest,
     toggleLike,
     addComment,
     followUser,
