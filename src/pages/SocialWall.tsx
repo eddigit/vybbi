@@ -51,44 +51,51 @@ export default function SocialWall() {
   }
 
   return (
-    <div className="flex min-h-screen bg-background">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
       {/* Main Feed */}
-      <div className="flex-1 max-w-2xl mx-auto">
-        <div className="sticky top-0 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 z-10 border-b">
-          <div className="p-4">
-            <h1 className="text-2xl font-bold mb-4">Mur Social Vybbi</h1>
+      <div className="max-w-2xl mx-auto">
+        <div className="sticky top-0 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 z-20 border-b border-border/50 shadow-sm">
+          <div className="p-6 pb-4">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center">
+                <Sparkles className="w-5 h-5 text-primary-foreground" />
+              </div>
+              <h1 className="text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
+                Mur Social Vybbi
+              </h1>
+            </div>
             <PostCreator />
           </div>
           
           {/* Feed Tabs */}
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-            <TabsList className="w-full justify-start rounded-none border-0 bg-transparent p-0">
+            <TabsList className="w-full justify-start rounded-none border-0 bg-transparent p-0 h-auto">
               <TabsTrigger 
                 value="all" 
-                className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                className="flex items-center space-x-2 px-6 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 hover:bg-muted/50 transition-all"
               >
                 <Sparkles className="w-4 h-4" />
-                <span>Tous</span>
+                <span className="font-medium">Tous</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="following" 
-                className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                className="flex items-center space-x-2 px-6 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 hover:bg-muted/50 transition-all"
               >
                 <Users className="w-4 h-4" />
-                <span>Abonnements</span>
+                <span className="font-medium">Abonnements</span>
               </TabsTrigger>
               <TabsTrigger 
                 value="discover" 
-                className="flex items-center space-x-2 data-[state=active]:border-b-2 data-[state=active]:border-primary rounded-none"
+                className="flex items-center space-x-2 px-6 py-3 rounded-none border-b-2 border-transparent data-[state=active]:border-primary data-[state=active]:bg-primary/5 hover:bg-muted/50 transition-all"
               >
                 <Compass className="w-4 h-4" />
-                <span>Découvrir</span>
+                <span className="font-medium">Découvrir</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
         </div>
 
-        <div className="p-4 space-y-6">
+        <div className="p-6 space-y-6">
           {loading && posts.length === 0 ? (
             <div className="flex items-center justify-center py-12">
               <Loader2 className="h-6 w-6 animate-spin mr-2" />
@@ -124,11 +131,11 @@ export default function SocialWall() {
               ))}
               
               {hasMore && (
-                <div className="flex justify-center py-4">
-                  <button
+                <div className="flex justify-center py-6">
+                  <Button
                     onClick={loadMore}
                     disabled={loading}
-                    className="px-6 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 disabled:opacity-50"
+                    className="rounded-full px-8 py-3 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold shadow-lg"
                   >
                     {loading ? (
                       <>
@@ -138,7 +145,7 @@ export default function SocialWall() {
                     ) : (
                       "Charger plus"
                     )}
-                  </button>
+                  </Button>
                 </div>
               )}
             </>
@@ -147,8 +154,8 @@ export default function SocialWall() {
       </div>
 
       {/* Online Users Sidebar */}
-      <div className="hidden lg:block w-80 border-l">
-        <div className="sticky top-0 h-screen">
+      <div className="hidden lg:block w-80 border-l border-border/50">
+        <div className="sticky top-0 h-screen bg-gradient-to-b from-background/80 to-background/60 backdrop-blur-sm">
           <OnlineUsers />
         </div>
       </div>

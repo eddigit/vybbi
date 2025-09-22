@@ -59,75 +59,80 @@ export function PostCreator() {
   if (!user || !profile) return null;
 
   return (
-    <Card>
-      <CardContent className="p-4">
+    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-lg">
+      <CardContent className="p-6">
         <form onSubmit={handleSubmit}>
-          <div className="flex items-start space-x-3">
-            <Avatar className="w-10 h-10">
+          <div className="flex items-start space-x-4">
+            <Avatar className="w-12 h-12 ring-2 ring-primary/20">
               <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback>
+              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                 {profile.display_name?.charAt(0) || user.email?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             
-            <div className="flex-1">
+            <div className="flex-1 space-y-4">
               <Textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder={getPlaceholder()}
-                className="min-h-[100px] resize-none border-0 p-0 focus:ring-0 text-base"
+                className="min-h-[120px] resize-none border-0 p-4 bg-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 text-base placeholder:text-muted-foreground/60 transition-all"
                 maxLength={1000}
               />
               
               {/* Post Type Selector */}
-              <div className="flex items-center justify-between mt-4 pt-4 border-t">
-                <div className="flex space-x-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-2">
                   <Button
                     type="button"
-                    variant={postType === "text" ? "default" : "outline"}
+                    variant={postType === "text" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => setPostType("text")}
+                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
                   >
-                    Texte
+                    ✏️ Texte
                   </Button>
                   <Button
                     type="button"
-                    variant={postType === "image" ? "default" : "outline"}
+                    variant={postType === "image" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => {
                       setPostType("image");
                       handleFileSelect();
                     }}
+                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
                   >
                     <ImageIcon className="w-4 h-4 mr-1" />
                     Photo
                   </Button>
                   <Button
                     type="button"
-                    variant={postType === "video" ? "default" : "outline"}
+                    variant={postType === "video" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => {
                       setPostType("video");
                       handleFileSelect();
                     }}
+                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
                   >
                     <Video className="w-4 h-4 mr-1" />
                     Vidéo
                   </Button>
                   <Button
                     type="button"
-                    variant={postType === "music" ? "default" : "outline"}
+                    variant={postType === "music" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => setPostType("music")}
+                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
                   >
                     <Music className="w-4 h-4 mr-1" />
                     Musique
                   </Button>
                   <Button
                     type="button"
-                    variant={postType === "event" ? "default" : "outline"}
+                    variant={postType === "event" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => setPostType("event")}
+                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
                   >
                     <Calendar className="w-4 h-4 mr-1" />
                     Événement
@@ -137,7 +142,7 @@ export function PostCreator() {
                 <Button
                   type="submit"
                   disabled={!content.trim() || isSubmitting}
-                  className="ml-4"
+                  className="rounded-full h-10 px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold"
                 >
                   {isSubmitting ? (
                     <>
