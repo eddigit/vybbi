@@ -49,7 +49,7 @@ export function OnlineUsers() {
   };
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-lg backdrop-blur-sm h-full flex flex-col">
+    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-lg backdrop-blur-sm min-h-[380px] max-h-[60vh] flex flex-col">
       <CardHeader className="pb-3">
         <CardTitle className="flex items-center justify-between text-lg">
           <span>En ligne</span>
@@ -63,7 +63,7 @@ export function OnlineUsers() {
       </CardHeader>
 
       <CardContent className="flex-1 flex flex-col pt-0">
-        <ScrollArea className="flex-1">
+        <ScrollArea className="h-[260px] md:h-[320px] lg:h-[380px]">
           {loading ? (
             <div className="flex items-center justify-center py-8">
               <Loader2 className="h-5 w-5 animate-spin mr-2" />

@@ -96,9 +96,7 @@ export function RightSidebar() {
   return (
     <div className="space-y-4">
       {/* Online Users */}
-      <div className="h-[300px]">
-        <OnlineUsers />
-      </div>
+      <OnlineUsers />
 
       {/* News & Updates */}
       <Card className="bg-gradient-to-br from-card to-card/80 border-border/50">
