@@ -239,6 +239,11 @@ export default function Landing() {
               <TickerBanner />
             </div>
             
+            {/* Mobile/Tablet Horizontal Ad Banner */}
+            <div className="mb-6 px-4">
+              <AdSlot slotId="ACCUEIL-MOBILE" width={728} height={90} hideIfEmpty={true} fit="contain" className="w-full max-w-2xl mx-auto" />
+            </div>
+            
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
                 Connectez votre
