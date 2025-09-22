@@ -167,9 +167,9 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{ paddingTop: `calc(6rem + env(safe-area-inset-top))` }}>
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-2 sm:px-4">
-          <div className="hidden xl:grid xl:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
+          <div className="hidden lg:grid lg:grid-cols-[200px_minmax(0,1fr)_200px] gap-8 items-start">
             {/* Left Ad Slot */}
-            <div className="xl:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
+            <div className="lg:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
               <AdSlot slotId="ACCUEIL-GAUCHE" width={200} height={800} hideIfEmpty={true} fit="contain" />
             </div>
             
@@ -227,13 +227,13 @@ export default function Landing() {
         </div>
         
         {/* Right Ad Slot */}
-        <div className="xl:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
+        <div className="lg:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
           <AdSlot slotId="ACCUEIL-DROITE" width={200} height={800} hideIfEmpty={true} fit="contain" />
         </div>
       </div>
       
       {/* Mobile/Tablet Hero Content (visible when grid is hidden) */}
-      <div className="xl:hidden text-center">
+      <div className="lg:hidden text-center">
         <div className="max-w-5xl md:max-w-6xl mx-auto">
             <div className="mb-6 flex justify-center">
               <TickerBanner />
