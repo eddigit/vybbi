@@ -68,7 +68,7 @@ export default function AdminDashboard() {
 
   if (authLoading || statsLoading) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
         <div className="flex items-center justify-center h-64">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
         </div>
@@ -78,7 +78,7 @@ export default function AdminDashboard() {
 
   if (!hasRole('admin')) {
     return (
-      <div className="container mx-auto p-6">
+      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
         <Card>
           <CardContent className="p-6 text-center">
             <Shield className="mx-auto h-12 w-12 text-muted-foreground mb-4" />
@@ -146,7 +146,7 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="container mx-auto p-6 space-y-6">
+    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 space-y-6">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight">Tableau de Bord Admin</h1>

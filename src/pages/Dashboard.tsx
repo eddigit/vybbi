@@ -55,7 +55,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="container mx-auto px-6 py-8">
+      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-8">
         <LoadingSpinner size="lg" text="Chargement de votre tableau de bord..." />
       </div>
     );

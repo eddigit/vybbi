@@ -53,7 +53,7 @@ export default function Lieux() {
   }
 
   return (
-    <div className="container mx-auto p-6">
+    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-4">Nos Lieux</h1>
         <p className="text-muted-foreground mb-6">
