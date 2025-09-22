@@ -1815,6 +1815,39 @@ export type Database = {
         }
         Relationships: []
       }
+      login_attempts: {
+        Row: {
+          attempt_time: string | null
+          blocked_until: string | null
+          email: string
+          failure_reason: string | null
+          id: string
+          ip_address: unknown | null
+          success: boolean | null
+          user_agent: string | null
+        }
+        Insert: {
+          attempt_time?: string | null
+          blocked_until?: string | null
+          email: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+        }
+        Update: {
+          attempt_time?: string | null
+          blocked_until?: string | null
+          email?: string
+          failure_reason?: string | null
+          id?: string
+          ip_address?: unknown | null
+          success?: boolean | null
+          user_agent?: string | null
+        }
+        Relationships: []
+      }
       manager_artists: {
         Row: {
           artist_profile_id: string
@@ -4512,6 +4545,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      cleanup_old_login_attempts: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
       cleanup_old_notifications: {
         Args: Record<PropertyKey, never>
         Returns: number
@@ -4772,6 +4809,10 @@ export type Database = {
         Args: { community_id_param: string; user_id_param: string }
         Returns: boolean
       }
+      is_user_blocked: {
+        Args: { p_email: string }
+        Returns: boolean
+      }
       lock_and_process_tasks: {
         Args: { max_tasks?: number }
         Returns: {
@@ -4784,6 +4825,17 @@ export type Database = {
           template_data: Json
           title: string
         }[]
+      }
+      log_security_event: {
+        Args: {
+          p_email?: string
+          p_event_type: string
+          p_ip_address?: unknown
+          p_metadata?: Json
+          p_user_agent?: string
+          p_user_id?: string
+        }
+        Returns: undefined
       }
       log_sensitive_access: {
         Args: { p_action: string; p_record_id?: string; p_table_name: string }
@@ -4894,6 +4946,16 @@ export type Database = {
         }
         Returns: Json
       }
+      track_login_attempt: {
+        Args: {
+          p_email: string
+          p_failure_reason?: string
+          p_ip_address?: unknown
+          p_success?: boolean
+          p_user_agent?: string
+        }
+        Returns: Json
+      }
       track_music_play: {
         Args: {
           p_duration_played?: number
@@ -4922,6 +4984,10 @@ export type Database = {
       user_owns_profile: {
         Args: { profile_id_param: string }
         Returns: boolean
+      }
+      validate_password_strength: {
+        Args: { password: string }
+        Returns: Json
       }
     }
     Enums: {
