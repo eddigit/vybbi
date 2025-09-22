@@ -33,6 +33,7 @@ import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
 import CommunitySeeder from "@/components/admin/CommunitySeeder";
 import AdminProspecting from "./AdminProspecting";
 import { EmailSystemConfig } from "@/components/admin/EmailSystemConfig";
+import { AdminCacheTools } from "@/components/admin/AdminCacheTools";
 
 interface AdminStats {
   totalUsers: number;
@@ -538,6 +539,7 @@ export default function AdminDashboard() {
 
           {/* Configuration Email SMTP */}
           <EmailSystemConfig />
+          <AdminCacheTools />
         </TabsContent>
       </Tabs>
     </div>

@@ -18,6 +18,24 @@ const AuthCallback = () => {
   }, []);
 
   const handleAuthCallback = async () => {
+    const redirectAfterAuth = async () => {
+      try {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          const { data } = await supabase
+            .from('user_roles')
+            .select('role')
+            .eq('user_id', user.id)
+            .eq('role', 'admin')
+            .maybeSingle();
+          navigate(data?.role === 'admin' ? '/dashboard' : '/');
+        } else {
+          navigate('/');
+        }
+      } catch {
+        navigate('/');
+      }
+    };
     try {
       setLoading(true);
       setError(null);
@@ -61,7 +79,7 @@ const AuthCallback = () => {
         toast.success("Email confirmé avec succès !");
         
         setTimeout(() => {
-          navigate('/dashboard');
+          redirectAfterAuth();
         }, 1200);
         return;
       }
@@ -77,7 +95,7 @@ const AuthCallback = () => {
           console.log('exchangeCodeForSession success:', data);
           setSuccess(true);
           toast.success("Email confirmé avec succès !");
-          setTimeout(() => navigate('/dashboard'), 1200);
+          setTimeout(() => redirectAfterAuth(), 1200);
           return;
         } catch (e1: any) {
           console.warn('exchangeCodeForSession({ code }) failed, retrying with URL:', e1);
@@ -89,7 +107,7 @@ const AuthCallback = () => {
             console.log('exchangeCodeForSession with URL success:', data);
             setSuccess(true);
             toast.success("Email confirmé avec succès !");
-            setTimeout(() => navigate('/dashboard'), 1200);
+            setTimeout(() => redirectAfterAuth(), 1200);
             return;
           } catch (e2: any) {
             console.error('exchangeCodeForSession failed:', e2);
@@ -146,7 +164,7 @@ const AuthCallback = () => {
         setSuccess(true);
         toast.success("Email confirmé avec succès !");
         setTimeout(() => {
-          navigate('/dashboard');
+          redirectAfterAuth();
         }, 1200);
       } else {
         console.log('No session found, user may need to log in');

@@ -16,7 +16,7 @@ import { HelpTooltip, HELP_MESSAGES } from '@/components/HelpTooltips';
 import { LoadingOverlay } from '@/components/LoadingStates';
 
 export default function Auth() {
-  const { user, loading, signUp, signIn } = useAuth();
+  const { user, loading, signUp, signIn, hasRole } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
@@ -62,7 +62,7 @@ export default function Auth() {
   }
 
   if (user) {
-    return <Navigate to="/dashboard" replace />;
+    return <Navigate to={hasRole('admin') ? "/dashboard" : "/"} replace />;
   }
 
   const handleSignIn = async (e: React.FormEvent) => {

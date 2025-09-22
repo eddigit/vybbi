@@ -108,7 +108,7 @@ export default function Onboarding() {
       });
 
       // Navigate to dashboard for all profile types for consistency
-      navigate('/dashboard', { replace: true });
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Error completing onboarding:', error);
       toast({
