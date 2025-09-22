@@ -55,7 +55,7 @@ export default function Dashboard() {
 
   if (loading) {
     return (
-      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-8">
+      <div className="container mx-auto p-6">
         <LoadingSpinner size="lg" text="Chargement de votre tableau de bord..." />
       </div>
     );
@@ -70,7 +70,8 @@ export default function Dashboard() {
   if (hasRole('admin')) {
     // Show admin dashboard with title
     return (
-      <div className="space-y-6">
+      <div className="container mx-auto p-6">
+        <div className="space-y-6">
         
         <div>
           <h1 className="text-3xl font-bold tracking-tight">
@@ -121,6 +122,7 @@ export default function Dashboard() {
           />
         )}
       </div>
+      </div>
     );
   }
 
@@ -143,6 +145,7 @@ export default function Dashboard() {
 
   // Default fallback for unknown profile types
   return (
+    <div className="container mx-auto p-6">
     <div className="space-y-6">
       <div>
         <h1 className="text-3xl font-bold tracking-tight"><AutoTranslate text="Tableau de Bord" /></h1>
@@ -191,5 +194,6 @@ export default function Dashboard() {
           />
         )}
       </div>
-    );
+    </div>
+  );
   }

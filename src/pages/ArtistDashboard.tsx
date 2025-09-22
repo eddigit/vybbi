@@ -125,22 +125,23 @@ export default function ArtistDashboard() {
   ];
 
   return (
-    <div className="space-y-6 px-3 sm:px-4 md:px-6 lg:px-8">
-      {/* Header */}
-      <div className="flex justify-between items-center">
-        <div>
-          <h1 className="text-3xl font-bold">Tableau de bord artiste</h1>
-          <p className="text-muted-foreground">Bienvenue {profile?.display_name}</p>
+    <div className="container mx-auto p-6">
+      <div className="space-y-6">
+        {/* Header */}
+        <div className="flex justify-between items-center">
+          <div>
+            <h1 className="text-3xl font-bold">Tableau de bord artiste</h1>
+            <p className="text-muted-foreground">Bienvenue {profile?.display_name}</p>
+          </div>
+          {profile && (
+            <Button asChild>
+              <Link to={`/artistes/${profile.id}`}>
+                <Eye className="h-4 w-4 mr-2" />
+                Voir mon profil public
+              </Link>
+            </Button>
+          )}
         </div>
-        {profile && (
-          <Button asChild>
-            <Link to={`/artistes/${profile.id}`}>
-              <Eye className="h-4 w-4 mr-2" />
-              Voir mon profil public
-            </Link>
-          </Button>
-        )}
-      </div>
 
       {/* Main Dashboard Content */}
       <Tabs defaultValue="overview" className="space-y-6">
@@ -300,6 +301,7 @@ export default function ArtistDashboard() {
           onNavigate={handleNavigate}
         />
       )}
+    </div>
     </div>
   );
 }

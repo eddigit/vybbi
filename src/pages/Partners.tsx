@@ -120,7 +120,7 @@ export default function Partners() {
         description="Découvrez nos partenaires : managers d'artistes, agents, académies, sponsors, médias et agences. Trouvez les professionnels qui vous accompagneront dans votre carrière musicale."
       />
       
-      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
+      <div className="container mx-auto p-6">
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-4">Nos Partenaires</h1>

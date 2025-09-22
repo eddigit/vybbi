@@ -152,19 +152,20 @@ export const InfluencerDashboard = () => {
   }
 
   return (
-    <div className="space-y-6 px-3 sm:px-4 md:px-6 lg:px-8">
-      <div className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold">Dashboard Influenceur</h1>
-          <p className="text-muted-foreground">
-            Gérez vos liens d'affiliation et suivez vos performances
-          </p>
+    <div className="container mx-auto p-6">
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold">Dashboard Influenceur</h1>
+            <p className="text-muted-foreground">
+              Gérez vos liens d'affiliation et suivez vos performances
+            </p>
+          </div>
+          <Button onClick={() => setShowLinkDialog(true)} className="flex items-center gap-2">
+            <Plus className="h-4 w-4" />
+            Nouveau lien
+          </Button>
         </div>
-        <Button onClick={() => setShowLinkDialog(true)} className="flex items-center gap-2">
-          <Plus className="h-4 w-4" />
-          Nouveau lien
-        </Button>
-      </div>
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -322,6 +323,7 @@ export const InfluencerDashboard = () => {
         open={selectedLink !== null}
         onOpenChange={(open) => !open && setSelectedLink(null)}
       />
+    </div>
     </div>
   );
 };

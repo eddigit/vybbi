@@ -59,7 +59,7 @@ export default function SocialWall() {
   }
 
   return (
-    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8">
+    <div className="container mx-auto p-6">
       {/* LinkedIn-like 3-column layout */}
       <div className="flex w-full gap-6">
         

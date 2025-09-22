@@ -88,7 +88,8 @@ export default function VenueDashboard() {
   ];
 
   return (
-    <div className="space-y-6 px-3 sm:px-4 md:px-6 lg:px-8">
+    <div className="container mx-auto p-6">
+      <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
           <h1 className="text-3xl font-bold">Tableau de bord établissement</h1>
@@ -184,7 +185,8 @@ export default function VenueDashboard() {
           displayName={profile.display_name}
           onNavigate={handleNavigate}
         />
-      )}
+        )}
+      </div>
     </div>
   );
 }

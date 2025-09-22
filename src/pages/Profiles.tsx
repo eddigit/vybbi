@@ -139,7 +139,7 @@ export default function Profiles() {
 
   if (loading) {
     return (
-      <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-8">
+      <div className="container mx-auto p-6 py-8">
         <div className="animate-pulse space-y-4">
           {Array.from({ length: 6 }).map((_, i) => (
             <div key={i} className="h-48 bg-muted rounded-lg" />
@@ -150,7 +150,7 @@ export default function Profiles() {
   }
 
   return (
-    <div className="w-full px-3 sm:px-4 md:px-6 lg:px-8 py-8">
+    <div className="container mx-auto p-6 py-8">
       <div className="mb-8">
         <h1 className="text-3xl font-bold mb-2">Directory</h1>
         <p className="text-muted-foreground">Discover artists, agents, and venues in the music industry</p>
