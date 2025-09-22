@@ -28,7 +28,7 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
         offset_param: currentOffset,
         feed_type: feedType,
         content_filter: contentFilter
-      });
+      } as any);
 
       if (fetchError) {
         throw fetchError;

@@ -4832,12 +4832,20 @@ export type Database = {
         Returns: Json
       }
       get_social_feed: {
-        Args: {
-          feed_type?: string
-          limit_param?: number
-          offset_param?: number
-          user_id_param: string
-        }
+        Args:
+          | {
+              content_filter?: string
+              feed_type?: string
+              limit_param?: number
+              offset_param?: number
+              user_id_param: string
+            }
+          | {
+              feed_type?: string
+              limit_param?: number
+              offset_param?: number
+              user_id_param: string
+            }
         Returns: {
           author_avatar_url: string
           author_display_name: string
