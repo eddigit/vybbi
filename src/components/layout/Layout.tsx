@@ -6,6 +6,7 @@ import { MobileTabBar } from "./MobileTabBar";
 import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 import { ChatButton } from "@/components/ChatButton";
+import { useAuth } from "@/hooks/useAuth";
 
 
 interface LayoutProps {
@@ -14,7 +15,8 @@ interface LayoutProps {
 
 export function Layout({ children }: LayoutProps) {
   const location = useLocation();
-  const isLandingPage = location.pathname === '/';
+  const { user, loading } = useAuth();
+  const isHomePage = location.pathname === '/';
   const isAuthPage = location.pathname === '/auth';
   const isArtistProfilePage = location.pathname.includes('/artists/') && !location.pathname.includes('/edit');
   const isVenueProfilePage = location.pathname.includes('/lieux/') && !location.pathname.includes('/edit');
@@ -23,7 +25,30 @@ export function Layout({ children }: LayoutProps) {
   // Initialize global affiliate tracking
   useAffiliateTracking();
 
-  if (isLandingPage || isAuthPage) {
+  // Show loading if auth is still checking
+  if (loading && isHomePage) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+      </div>
+    );
+  }
+
+  // For home page: show landing layout only if user is NOT authenticated
+  if (isHomePage && !user) {
+    return (
+      <>
+        <div className="pb-10">
+          {children}
+        </div>
+        <Footer />
+        <CookieConsentBanner />
+      </>
+    );
+  }
+
+  // For auth page, use landing layout
+  if (isAuthPage) {
     return (
       <>
         <div className="pb-10">
@@ -49,7 +74,7 @@ export function Layout({ children }: LayoutProps) {
     );
   }
 
-  // For all other pages (dashboard, agent pages, etc.), use responsive navigation
+  // For all other pages (dashboard, agent pages, social wall when authenticated, etc.), use responsive navigation
   return (
     <div className="min-h-screen flex flex-col w-full bg-background relative overflow-x-hidden">
       <Header />

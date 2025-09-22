@@ -30,25 +30,31 @@ export default function SocialWall() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-background/95">
+    <div className="w-full">
+      {/* Header with title */}
+      <div className="mb-6">
+        <h1 className="text-3xl font-bold text-foreground">Mur</h1>
+        <p className="text-muted-foreground mt-1">Découvrez ce qui se passe dans la communauté Vybbi</p>
+      </div>
+
       {/* LinkedIn-like 3-column layout */}
-      <div className="flex w-full max-w-[1400px] mx-auto">
+      <div className="flex w-full gap-6">
         
         {/* Left Sidebar - Profile & Navigation */}
         <div className="hidden xl:block w-80 flex-shrink-0">
-          <div className="fixed w-80 h-screen overflow-y-auto p-4">
+          <div className="sticky top-6">
             <ProfileSidebar />
           </div>
         </div>
 
         {/* Main Feed - Center Column */}
-        <div className="flex-1 min-w-0 xl:px-4">
+        <div className="flex-1 min-w-0">
           <NewsFeed />
         </div>
 
         {/* Right Sidebar - Online Users & News */}
         <div className="hidden lg:block w-80 flex-shrink-0">
-          <div className="fixed w-80 h-screen overflow-y-auto p-4 right-0">
+          <div className="sticky top-6">
             <RightSidebar />
           </div>
         </div>
