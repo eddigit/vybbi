@@ -64,7 +64,7 @@ export default function SocialWall() {
       <div className="flex w-full gap-6">
         
         {/* Left Sidebar - Profile & Navigation */}
-        <div className="hidden xl:block w-80 flex-shrink-0">
+        <div className="hidden lg:block w-64 flex-shrink-0">
           <div className="sticky top-0 space-y-6">
             <ProfileSidebar />
           </div>
@@ -76,7 +76,7 @@ export default function SocialWall() {
         </div>
 
         {/* Right Sidebar - Online Users & News */}
-        <div className="hidden lg:block w-80 flex-shrink-0">
+        <div className="hidden md:block w-64 flex-shrink-0">
           <div className="sticky top-0 space-y-6">
             <RightSidebar />
           </div>
