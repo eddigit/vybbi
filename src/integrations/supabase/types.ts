@@ -3728,6 +3728,7 @@ export type Database = {
           created_at: string | null
           id: string
           ip_address: unknown | null
+          metadata: Json | null
           record_id: string | null
           table_name: string
           user_agent: string | null
@@ -3738,6 +3739,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           ip_address?: unknown | null
+          metadata?: Json | null
           record_id?: string | null
           table_name: string
           user_agent?: string | null
@@ -3748,6 +3750,7 @@ export type Database = {
           created_at?: string | null
           id?: string
           ip_address?: unknown | null
+          metadata?: Json | null
           record_id?: string | null
           table_name?: string
           user_agent?: string | null
