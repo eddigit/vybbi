@@ -35,7 +35,7 @@ export function ProfileSidebar() {
   };
 
   return (
-    <div className="space-y-4">
+    <div className="space-y-4 -mt-6">
       {/* Profile Card */}
       <QuickProfileCard />
       

@@ -33,19 +33,19 @@ export function QuickProfileCard() {
 
   return (
     <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 overflow-hidden">
-      {/* Compact Header with Avatar */}
-      <div className="h-8 bg-gradient-to-r from-primary/20 to-accent/20 relative">
-        <div className="absolute -bottom-4 left-4">
-          <Avatar className="w-12 h-12 ring-4 ring-background">
+      {/* Cover Image */}
+      <div className="h-16 bg-gradient-to-r from-primary/20 to-accent/20 relative">
+        <div className="absolute -bottom-8 left-4">
+          <Avatar className="w-16 h-16 ring-4 ring-background">
             <AvatarImage src={profile.avatar_url || undefined} />
-            <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+            <AvatarFallback className="bg-primary/10 text-primary font-semibold text-lg">
               {profile.display_name?.charAt(0) || user.email?.charAt(0) || "U"}
             </AvatarFallback>
           </Avatar>
         </div>
       </div>
       
-      <CardContent className="pt-6 pb-4">
+      <CardContent className="pt-10 pb-4">
         <div className="space-y-3">
           {/* Name and Type */}
           <div>
