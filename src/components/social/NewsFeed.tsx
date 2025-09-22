@@ -31,27 +31,46 @@ export function NewsFeed() {
       
       {/* Sticky Tabs Header */}
       <div className="sticky top-0 z-10 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b">
-        <div className="p-4">
+        <div className="p-3">
           <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
-            <TabsList className="grid w-full grid-cols-5 h-8">
-              <TabsTrigger value="all" className="flex items-center gap-1 text-xs px-2">
+            <TabsList className="flex h-auto w-full justify-start overflow-x-auto bg-transparent p-0">
+              <TabsTrigger 
+                value="all" 
+                className="flex items-center gap-1.5 px-4 py-2 text-xs font-medium rounded-full border border-border/50 bg-background hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary whitespace-nowrap"
+              >
                 Tous
               </TabsTrigger>
-              <TabsTrigger value="prestations" className="flex items-center gap-1 text-xs px-2">
+              <TabsTrigger 
+                value="prestations" 
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-full border border-border/50 bg-background hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary whitespace-nowrap ml-2"
+              >
                 <Handshake className="h-3 w-3" />
-                Prestations
+                <span className="hidden sm:inline">Prestations</span>
+                <span className="sm:hidden">Prest.</span>
               </TabsTrigger>
-              <TabsTrigger value="events" className="flex items-center gap-1 text-xs px-2">
+              <TabsTrigger 
+                value="events" 
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-full border border-border/50 bg-background hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary whitespace-nowrap ml-2"
+              >
                 <Calendar className="h-3 w-3" />
-                Événements
+                <span className="hidden sm:inline">Événements</span>
+                <span className="sm:hidden">Events</span>
               </TabsTrigger>
-              <TabsTrigger value="annonces" className="flex items-center gap-1 text-xs px-2">
+              <TabsTrigger 
+                value="annonces" 
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-full border border-border/50 bg-background hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary whitespace-nowrap ml-2"
+              >
                 <Megaphone className="h-3 w-3" />
-                Annonces
+                <span className="hidden sm:inline">Annonces</span>
+                <span className="sm:hidden">Ann.</span>
               </TabsTrigger>
-              <TabsTrigger value="messages" className="flex items-center gap-1 text-xs px-2">
+              <TabsTrigger 
+                value="messages" 
+                className="flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-full border border-border/50 bg-background hover:bg-muted data-[state=active]:bg-primary data-[state=active]:text-primary-foreground data-[state=active]:border-primary whitespace-nowrap ml-2"
+              >
                 <MessageSquare className="h-3 w-3" />
-                Messages
+                <span className="hidden sm:inline">Messages</span>
+                <span className="sm:hidden">Msg</span>
               </TabsTrigger>
             </TabsList>
           </Tabs>
