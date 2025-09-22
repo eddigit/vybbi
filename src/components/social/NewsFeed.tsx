@@ -25,14 +25,6 @@ export function NewsFeed() {
       {/* Header with Post Creator */}
       <div className="sticky top-0 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 z-20 border-b border-border/50 shadow-sm">
         <div className="p-4 lg:p-6 pb-4">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-10 h-10 bg-gradient-to-br from-primary to-primary/80 rounded-full flex items-center justify-center">
-              <Sparkles className="w-5 h-5 text-primary-foreground" />
-            </div>
-            <h1 className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-foreground to-foreground/80 bg-clip-text text-transparent">
-              Mur Social
-            </h1>
-          </div>
           <PostCreator />
         </div>
         

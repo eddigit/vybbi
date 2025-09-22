@@ -5,6 +5,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MessageCircle, Loader2 } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -48,100 +49,104 @@ export function OnlineUsers() {
   };
 
   return (
-    <div className="p-4 h-full flex flex-col">
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-lg font-semibold">En ligne</h2>
-        <div className="flex items-center space-x-1">
-          <div className="w-2 h-2 bg-green-500 rounded-full"></div>
-          <span className="text-sm text-muted-foreground">
-            {onlineUsers.length}
-          </span>
-        </div>
-      </div>
+    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-lg backdrop-blur-sm h-full flex flex-col">
+      <CardHeader className="pb-3">
+        <CardTitle className="flex items-center justify-between text-lg">
+          <span>En ligne</span>
+          <div className="flex items-center space-x-1">
+            <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+            <span className="text-sm text-muted-foreground font-normal">
+              {onlineUsers.length}
+            </span>
+          </div>
+        </CardTitle>
+      </CardHeader>
 
-      <ScrollArea className="flex-1">
-        {loading ? (
-          <div className="flex items-center justify-center py-8">
-            <Loader2 className="h-5 w-5 animate-spin mr-2" />
-            <span className="text-sm text-muted-foreground">Chargement...</span>
-          </div>
-        ) : error ? (
-          <div className="text-center py-8 text-red-500 text-sm">
-            Erreur de chargement
-          </div>
-        ) : onlineUsers.length === 0 ? (
-          <div className="text-center py-8 text-muted-foreground text-sm">
-            Aucun utilisateur en ligne
-          </div>
-        ) : (
-          <div className="space-y-3">
-            {onlineUsers.map((user) => (
-              <div key={user.user_id} className="group">
-                <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors">
-          <div className="flex items-center space-x-3 flex-1 min-w-0">
-            <div className="relative">
-              <Link to={`/profiles/${user.profile_id}`}>
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={user.avatar_url || undefined} />
-                  <AvatarFallback>
-                    {user.display_name?.charAt(0) || "U"}
-                  </AvatarFallback>
-                </Avatar>
-              </Link>
-              <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></div>
+      <CardContent className="flex-1 flex flex-col pt-0">
+        <ScrollArea className="flex-1">
+          {loading ? (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="h-5 w-5 animate-spin mr-2" />
+              <span className="text-sm text-muted-foreground">Chargement...</span>
             </div>
-                    
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center space-x-2">
-                        <Link 
-                          to={`/profiles/${user.profile_id}`}
-                          className="font-medium text-sm truncate hover:underline"
-                        >
-                          {user.display_name}
-                        </Link>
-                      </div>
-                      
-                      <Badge 
-                        className={`${getProfileTypeColor(user.profile_type)} text-xs mt-1`}
-                      >
-                        {getProfileTypeLabel(user.profile_type)}
-                      </Badge>
-                      
-                      {user.status_message && (
-                        <p className="text-xs text-muted-foreground mt-1 truncate">
-                          {user.status_message}
-                        </p>
-                      )}
-                      
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Vu {formatDistanceToNow(new Date(user.last_seen_at), { 
-                          addSuffix: true, 
-                          locale: fr 
-                        })}
-                      </p>
-                    </div>
-                  </div>
-
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => handleStartChat(user.user_id)}
-                    className="opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <MessageCircle className="w-4 h-4" />
-                  </Button>
-                </div>
+          ) : error ? (
+            <div className="text-center py-8 text-red-500 text-sm">
+              Erreur de chargement
+            </div>
+          ) : onlineUsers.length === 0 ? (
+            <div className="text-center py-8 text-muted-foreground text-sm">
+              Aucun utilisateur en ligne
+            </div>
+          ) : (
+            <div className="space-y-3">
+              {onlineUsers.map((user) => (
+                <div key={user.user_id} className="group">
+                  <div className="flex items-center justify-between p-3 rounded-lg hover:bg-accent/50 transition-colors">
+            <div className="flex items-center space-x-3 flex-1 min-w-0">
+              <div className="relative">
+                <Link to={`/profiles/${user.profile_id}`}>
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={user.avatar_url || undefined} />
+                    <AvatarFallback>
+                      {user.display_name?.charAt(0) || "U"}
+                    </AvatarFallback>
+                  </Avatar>
+                </Link>
+                <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-background rounded-full"></div>
               </div>
-            ))}
-          </div>
-        )}
-      </ScrollArea>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center space-x-2">
+                          <Link 
+                            to={`/profiles/${user.profile_id}`}
+                            className="font-medium text-sm truncate hover:underline"
+                          >
+                            {user.display_name}
+                          </Link>
+                        </div>
+                        
+                        <Badge 
+                          className={`${getProfileTypeColor(user.profile_type)} text-xs mt-1`}
+                        >
+                          {getProfileTypeLabel(user.profile_type)}
+                        </Badge>
+                        
+                        {user.status_message && (
+                          <p className="text-xs text-muted-foreground mt-1 truncate">
+                            {user.status_message}
+                          </p>
+                        )}
+                        
+                        <p className="text-xs text-muted-foreground mt-1">
+                          Vu {formatDistanceToNow(new Date(user.last_seen_at), { 
+                            addSuffix: true, 
+                            locale: fr 
+                          })}
+                        </p>
+                      </div>
+                    </div>
 
-      <div className="mt-4 pt-4 border-t">
-        <p className="text-xs text-muted-foreground text-center">
-          Cliquez sur un profil pour voir plus d'infos ou sur 💬 pour chatter
-        </p>
-      </div>
-    </div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() => handleStartChat(user.user_id)}
+                      className="opacity-0 group-hover:opacity-100 transition-opacity"
+                    >
+                      <MessageCircle className="w-4 h-4" />
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </ScrollArea>
+
+        <div className="mt-4 pt-4 border-t">
+          <p className="text-xs text-muted-foreground text-center">
+            Cliquez sur un profil pour voir plus d'infos ou sur 💬 pour chatter
+          </p>
+        </div>
+      </CardContent>
+    </Card>
   );
 }
