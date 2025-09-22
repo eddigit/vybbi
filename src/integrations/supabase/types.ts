@@ -4671,7 +4671,7 @@ export type Database = {
         Returns: {
           author_avatar_url: string
           author_display_name: string
-          author_profile_type: Database["public"]["Enums"]["profile_type"]
+          author_profile_type: string
           comments_count: number
           content: string
           created_at: string
