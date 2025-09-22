@@ -82,7 +82,7 @@ export function Layout({ children }: LayoutProps) {
       <div className="hidden md:block">
         <TopNav />
       </div>
-      <main className="flex-1 p-3 sm:p-4 md:p-6 pb-20 md:pb-16 max-w-7xl mx-auto w-full relative overflow-x-hidden">
+      <main className="flex-1 p-2 sm:p-3 md:p-4 pb-16 md:pb-12 w-full relative overflow-x-hidden">
         {children}
       </main>
       {/* Mobile tab bar, hidden on desktop */}

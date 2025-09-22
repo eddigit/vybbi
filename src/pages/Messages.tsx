@@ -226,7 +226,7 @@ export default function Messages() {
   if (!user) {
     console.log('Messages - No user found');
     return (
-      <div className="container mx-auto px-6 py-8 text-center">
+      <div className="w-full px-4 py-8 text-center">
         <p>Connectez-vous pour accéder aux messages.</p>
       </div>
     );
@@ -237,7 +237,7 @@ export default function Messages() {
   if (conversationsLoading) {
     console.log('Messages - Loading conversations...');
     return (
-      <div className="container mx-auto px-6 py-8">
+      <div className="w-full px-4 py-8">
         <div className="animate-pulse">Chargement des conversations...</div>
       </div>
     );
@@ -247,7 +247,7 @@ export default function Messages() {
   if (conversationsError || messagesError) {
     console.log('Messages - Error:', conversationsError || messagesError);
     return (
-      <div className="container mx-auto px-6 py-8 text-center">
+      <div className="w-full px-4 py-8 text-center">
         <p className="text-red-500">
           Erreur: {conversationsError || messagesError}
         </p>
@@ -262,7 +262,7 @@ export default function Messages() {
   // Desktop layout (lg and above)
   if (!isMobile) {
     return (
-      <div className="h-screen flex pb-24 md:pb-24">
+      <div className="h-screen flex pb-16 md:pb-12">
         {/* Left Sidebar - Conversations */}
         <div className="w-80 flex-shrink-0">
           <ConversationList
@@ -322,7 +322,7 @@ export default function Messages() {
 
   // Mobile layout
   return (
-    <div className="h-screen flex flex-col pb-36">
+    <div className="h-screen flex flex-col pb-20">
       {/* Mobile: Show conversation list OR chat */}
       {showConversationList ? (
         <ConversationList
@@ -336,7 +336,7 @@ export default function Messages() {
           onDeleteConversation={deleteConversation || (() => {})}
         />
       ) : (
-        <div className="flex flex-col h-full pb-36">
+        <div className="flex flex-col h-full pb-20">
           <ChatHeader
             conversation={selectedConversation}
             typingUsers={typingUsers}
