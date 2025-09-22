@@ -3,7 +3,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { SocialPost, PostMedia } from "@/types/social";
 
-export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all') {
+export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all', contentFilter: 'all' | 'prestations' | 'events' | 'annonces' | 'messages' = 'all') {
   const { user } = useAuth();
   const [posts, setPosts] = useState<SocialPost[]>([]);
   const [loading, setLoading] = useState(true);
@@ -26,7 +26,8 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
         user_id_param: user.id,
         limit_param: limit,
         offset_param: currentOffset,
-        feed_type: feedType
+        feed_type: feedType,
+        content_filter: contentFilter
       });
 
       if (fetchError) {
@@ -66,7 +67,7 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
     } finally {
       setLoading(false);
     }
-  }, [user, offset, feedType]);
+  }, [user, offset, feedType, contentFilter]);
 
   const loadMore = useCallback(() => {
     if (!loading && hasMore) {
@@ -118,7 +119,7 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [user, refreshFeed, feedType]);
+  }, [user, refreshFeed, feedType, contentFilter]);
 
   return {
     posts,
