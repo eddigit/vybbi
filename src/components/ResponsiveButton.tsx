@@ -17,9 +17,9 @@ export const ResponsiveButton = forwardRef<HTMLButtonElement, ResponsiveButtonPr
         className={cn(
           "touch-target transition-all duration-200",
           // Mobile sizes
-          mobileSize === "sm" && "h-8 px-3 text-xs sm:h-9 sm:px-4 sm:text-sm",
-          mobileSize === "md" && "h-10 px-4 text-sm sm:h-10 sm:px-6 sm:text-base",
-          mobileSize === "lg" && "h-12 px-6 text-base sm:h-12 sm:px-8 sm:text-lg",
+          mobileSize === "sm" && "h-7 px-2.5 text-xs sm:h-8 sm:px-3 sm:text-xs",
+          mobileSize === "md" && "h-8 px-3 text-xs sm:h-8 sm:px-4 sm:text-xs",
+          mobileSize === "lg" && "h-9 px-4 text-xs sm:h-9 sm:px-6 sm:text-sm",
           // Full width on mobile
           fullWidthMobile && "w-full sm:w-auto",
           // Hover effects

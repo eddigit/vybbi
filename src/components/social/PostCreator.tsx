@@ -104,25 +104,25 @@ export function PostCreator() {
               
               {/* Post Type Selector */}
               <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex flex-wrap gap-1.5">
+                <div className="flex flex-wrap gap-1">
                   <Button
                     type="button"
                     variant={postType === "text" ? "default" : "secondary"}
-                    size="sm"
+                    size="xs"
                     onClick={() => setPostType("text")}
-                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
+                    className="rounded-full transition-all hover:scale-105"
                   >
                     ✏️ Texte
                   </Button>
                   <Button
                     type="button"
                     variant={postType === "image" ? "default" : "secondary"}
-                    size="sm"
+                    size="xs"
                     onClick={() => {
                       setPostType("image");
                       handleFileSelect();
                     }}
-                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
+                    className="rounded-full transition-all hover:scale-105"
                   >
                     <ImageIcon className="w-3 h-3 mr-1" />
                     Photo
@@ -130,12 +130,12 @@ export function PostCreator() {
                   <Button
                     type="button"
                     variant={postType === "video" ? "default" : "secondary"}
-                    size="sm"
+                    size="xs"
                     onClick={() => {
                       setPostType("video");
                       handleFileSelect();
                     }}
-                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
+                    className="rounded-full transition-all hover:scale-105"
                   >
                     <Video className="w-3 h-3 mr-1" />
                     Vidéo
@@ -143,9 +143,9 @@ export function PostCreator() {
                   <Button
                     type="button"
                     variant={postType === "music" ? "default" : "secondary"}
-                    size="sm"
+                    size="xs"
                     onClick={() => setPostType("music")}
-                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
+                    className="rounded-full transition-all hover:scale-105"
                   >
                     <Music className="w-3 h-3 mr-1" />
                     Musique
@@ -153,9 +153,9 @@ export function PostCreator() {
                   <Button
                     type="button"
                     variant={postType === "event" ? "default" : "secondary"}
-                    size="sm"
+                    size="xs"
                     onClick={() => setPostType("event")}
-                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
+                    className="rounded-full transition-all hover:scale-105"
                   >
                     <Calendar className="w-3 h-3 mr-1" />
                     Événement
@@ -167,8 +167,8 @@ export function PostCreator() {
                     <Button
                       type="button"
                       variant="secondary"
-                      size="sm"
-                      className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200"
+                      size="xs"
+                      className="rounded-full transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200"
                     >
                       <Handshake className="w-3 h-3 mr-1" />
                       Prestation
@@ -179,7 +179,8 @@ export function PostCreator() {
                 <Button
                   type="submit"
                   disabled={!content.trim() || isSubmitting}
-                  className="rounded-full h-8 px-4 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold text-sm"
+                  size="sm"
+                  className="rounded-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold"
                 >
                   {isSubmitting ? (
                     <>

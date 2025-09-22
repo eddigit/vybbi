@@ -78,8 +78,8 @@ export function FollowButton({
 
   if (checkingFollow) {
     return (
-      <Button variant="outline" size="sm" disabled className={className}>
-        <Loader2 className="w-4 h-4 animate-spin mr-2" />
+      <Button variant="outline" size="xs" disabled className={className}>
+        <Loader2 className="w-3 h-3 animate-spin mr-1" />
         Chargement...
       </Button>
     );
@@ -88,24 +88,24 @@ export function FollowButton({
   return (
     <Button
       variant={isFollowing ? "outline" : "default"}
-      size="sm"
+      size="xs"
       onClick={handleFollowToggle}
       disabled={loading}
       className={className}
     >
       {loading ? (
         <>
-          <Loader2 className="w-4 h-4 animate-spin mr-2" />
+          <Loader2 className="w-3 h-3 animate-spin mr-1" />
           {isFollowing ? "Ne plus suivre..." : "Suivre..."}
         </>
       ) : isFollowing ? (
         <>
-          <UserCheck className="w-4 h-4 mr-2" />
+          <UserCheck className="w-3 h-3 mr-1" />
           Suivi
         </>
       ) : (
         <>
-          <UserPlus className="w-4 h-4 mr-2" />
+          <UserPlus className="w-3 h-3 mr-1" />
           Suivre
         </>
       )}

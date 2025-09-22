@@ -189,8 +189,8 @@ export function PostCard({ post }: PostCardProps) {
             )}
           </div>
 
-          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-            <MoreHorizontal className="w-4 h-4" />
+          <Button variant="ghost" size="xs" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
+            <MoreHorizontal className="w-3 h-3" />
           </Button>
         </div>
       </CardHeader>
@@ -243,19 +243,19 @@ export function PostCard({ post }: PostCardProps) {
         </div>
 
         {/* Action Buttons */}
-        <div className="flex items-center justify-around border-t border-border/50 pt-4">
+        <div className="flex items-center justify-around border-t border-border/50 pt-3">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLike}
             disabled={isLiking}
-            className={`flex-1 rounded-full h-10 transition-all ${
+            className={`flex-1 rounded-full h-8 transition-all text-xs ${
               post.user_has_liked 
                 ? "text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20" 
                 : "hover:bg-muted/50"
             }`}
           >
-            <Heart className={`w-4 h-4 mr-2 transition-all ${post.user_has_liked ? "fill-current scale-110" : ""}`} />
+            <Heart className={`w-3 h-3 mr-1 transition-all ${post.user_has_liked ? "fill-current scale-110" : ""}`} />
             J'aime
           </Button>
 
@@ -263,18 +263,18 @@ export function PostCard({ post }: PostCardProps) {
             variant="ghost"
             size="sm"
             onClick={() => setShowComments(!showComments)}
-            className="flex-1 rounded-full h-10 hover:bg-muted/50 transition-all"
+            className="flex-1 rounded-full h-8 hover:bg-muted/50 transition-all text-xs"
           >
-            <MessageCircle className="w-4 h-4 mr-2" />
+            <MessageCircle className="w-3 h-3 mr-1" />
             Commenter
           </Button>
 
           <Button
             variant="ghost"
             size="sm"
-            className="flex-1 rounded-full h-10 hover:bg-muted/50 transition-all"
+            className="flex-1 rounded-full h-8 hover:bg-muted/50 transition-all text-xs"
           >
-            <Share2 className="w-4 h-4 mr-2" />
+            <Share2 className="w-3 h-3 mr-1" />
             Partager
           </Button>
         </div>
@@ -301,7 +301,7 @@ export function PostCard({ post }: PostCardProps) {
                   <div className="flex justify-end">
                     <Button 
                       type="submit" 
-                      size="sm" 
+                      size="xs" 
                       disabled={!newComment.trim() || isCommenting}
                       className="rounded-full"
                     >
