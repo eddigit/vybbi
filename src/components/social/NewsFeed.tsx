@@ -21,14 +21,16 @@ export function NewsFeed() {
   const { posts, loading, error, loadMore, hasMore } = currentFeed;
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      {/* Header with Post Creator */}
-      <div className="sticky top-0 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 z-20 border-b border-border/50 shadow-sm">
-        <div className="p-4 lg:p-6 pb-4">
+    <div className="w-full max-w-2xl mx-auto space-y-6">
+      {/* Post Creator Widget */}
+      <div className="bg-gradient-to-br from-card to-card/80 border border-border/50 rounded-xl shadow-sm">
+        <div className="p-4 lg:p-6">
           <PostCreator />
         </div>
-        
-        {/* Feed Tabs */}
+      </div>
+
+      {/* Sticky Feed Tabs */}
+      <div className="sticky top-6 bg-background/95 backdrop-blur-xl supports-[backdrop-filter]:bg-background/80 z-20 border border-border/50 rounded-xl shadow-sm">
         <Tabs value={activeTab} onValueChange={(value) => setActiveTab(value as any)} className="w-full">
           <TabsList className="w-full justify-start rounded-none border-0 bg-transparent p-0 h-auto">
             <TabsTrigger 
@@ -57,7 +59,7 @@ export function NewsFeed() {
       </div>
 
       {/* Feed Content */}
-      <div className="p-4 lg:p-6 space-y-6">
+      <div className="space-y-6">
         {loading && posts.length === 0 ? (
           <div className="flex items-center justify-center py-12">
             <Loader2 className="h-6 w-6 animate-spin mr-2" />
