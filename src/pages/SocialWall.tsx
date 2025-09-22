@@ -100,8 +100,22 @@ export default function SocialWall() {
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
-              <p>Aucune publication pour le moment.</p>
-              <p className="mt-2">Soyez le premier à partager quelque chose !</p>
+              {activeTab === 'following' ? (
+                <div>
+                  <p>Aucune publication de vos abonnements.</p>
+                  <p className="mt-2">Suivez des utilisateurs pour voir leurs publications ici !</p>
+                </div>
+              ) : activeTab === 'discover' ? (
+                <div>
+                  <p>Aucune nouvelle publication à découvrir.</p>
+                  <p className="mt-2">Revenez plus tard pour découvrir du nouveau contenu !</p>
+                </div>
+              ) : (
+                <div>
+                  <p>Aucune publication pour le moment.</p>
+                  <p className="mt-2">Soyez le premier à partager quelque chose !</p>
+                </div>
+              )}
             </div>
           ) : (
             <>

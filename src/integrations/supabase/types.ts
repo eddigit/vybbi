@@ -4707,6 +4707,13 @@ export type Database = {
         Args: { event_uuid: string; user_uuid: string }
         Returns: string
       }
+      get_user_follow_stats: {
+        Args: { user_id_param: string }
+        Returns: {
+          followers_count: number
+          following_count: number
+        }[]
+      }
       get_user_profile: {
         Args: { user_id: string }
         Returns: {
