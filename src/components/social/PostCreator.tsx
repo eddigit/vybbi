@@ -83,34 +83,34 @@ export function PostCreator() {
 
   return (
     <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-lg">
-      <CardContent className="p-6">
+      <CardContent className="p-4">
         <form onSubmit={handleSubmit}>
-          <div className="flex items-start space-x-4">
-            <Avatar className="w-12 h-12 ring-2 ring-primary/20">
+          <div className="flex items-start space-x-3">
+            <Avatar className="w-10 h-10 ring-2 ring-primary/20">
               <AvatarImage src={profile.avatar_url || undefined} />
               <AvatarFallback className="bg-primary/10 text-primary font-semibold">
                 {profile.display_name?.charAt(0) || user.email?.charAt(0) || "U"}
               </AvatarFallback>
             </Avatar>
             
-            <div className="flex-1 space-y-4">
+            <div className="flex-1 space-y-3">
               <Textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder={getPlaceholder()}
-                className="min-h-[120px] resize-none border-0 p-4 bg-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 text-base placeholder:text-muted-foreground/60 transition-all"
+                className="min-h-[80px] resize-none border-0 p-3 bg-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground/60 transition-all"
                 maxLength={1000}
               />
               
               {/* Post Type Selector */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-                <div className="flex flex-wrap gap-2">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <div className="flex flex-wrap gap-1.5">
                   <Button
                     type="button"
                     variant={postType === "text" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => setPostType("text")}
-                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
+                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
                   >
                     ✏️ Texte
                   </Button>
@@ -122,9 +122,9 @@ export function PostCreator() {
                       setPostType("image");
                       handleFileSelect();
                     }}
-                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
+                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
                   >
-                    <ImageIcon className="w-4 h-4 mr-1" />
+                    <ImageIcon className="w-3 h-3 mr-1" />
                     Photo
                   </Button>
                   <Button
@@ -135,9 +135,9 @@ export function PostCreator() {
                       setPostType("video");
                       handleFileSelect();
                     }}
-                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
+                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
                   >
-                    <Video className="w-4 h-4 mr-1" />
+                    <Video className="w-3 h-3 mr-1" />
                     Vidéo
                   </Button>
                   <Button
@@ -145,9 +145,9 @@ export function PostCreator() {
                     variant={postType === "music" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => setPostType("music")}
-                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
+                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
                   >
-                    <Music className="w-4 h-4 mr-1" />
+                    <Music className="w-3 h-3 mr-1" />
                     Musique
                   </Button>
                   <Button
@@ -155,9 +155,9 @@ export function PostCreator() {
                     variant={postType === "event" ? "default" : "secondary"}
                     size="sm"
                     onClick={() => setPostType("event")}
-                    className="rounded-full h-9 px-4 transition-all hover:scale-105"
+                    className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105"
                   >
-                    <Calendar className="w-4 h-4 mr-1" />
+                    <Calendar className="w-3 h-3 mr-1" />
                     Événement
                   </Button>
                   <ServiceRequestDialog 
@@ -168,9 +168,9 @@ export function PostCreator() {
                       type="button"
                       variant="secondary"
                       size="sm"
-                      className="rounded-full h-9 px-4 transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200"
+                      className="rounded-full h-7 px-3 text-xs transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200"
                     >
-                      <Handshake className="w-4 h-4 mr-1" />
+                      <Handshake className="w-3 h-3 mr-1" />
                       Prestation
                     </Button>
                   </ServiceRequestDialog>
@@ -179,11 +179,11 @@ export function PostCreator() {
                 <Button
                   type="submit"
                   disabled={!content.trim() || isSubmitting}
-                  className="rounded-full h-10 px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold"
+                  className="rounded-full h-8 px-4 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold text-sm"
                 >
                   {isSubmitting ? (
                     <>
-                      <Loader2 className="w-4 h-4 animate-spin mr-2" />
+                      <Loader2 className="w-3 h-3 animate-spin mr-2" />
                       Publication...
                     </>
                   ) : (
