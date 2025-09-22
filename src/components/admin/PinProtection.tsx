@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "@/components/ui/input-otp";
 import { Shield, Mail, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
+import { useAdminSettings } from "@/hooks/useAdminSettings";
 
 interface PinProtectionProps {
   children: React.ReactNode;
@@ -11,7 +12,6 @@ interface PinProtectionProps {
 }
 
 const CORRECT_PIN = "557577";
-const ADMIN_EMAIL = "vybbiapp@gmail.com";
 const SESSION_STORAGE_KEY = "coffre_fort_access";
 
 export const PinProtection = ({ children, onUnlock }: PinProtectionProps) => {
@@ -19,6 +19,7 @@ export const PinProtection = ({ children, onUnlock }: PinProtectionProps) => {
   const [isUnlocked, setIsUnlocked] = useState(false);
   const [attempts, setAttempts] = useState(0);
   const [isBlocked, setIsBlocked] = useState(false);
+  const { getAdminEmail, getSecuritySettings } = useAdminSettings();
 
   useEffect(() => {
     // Vérifier si l'accès est déjà autorisé dans cette session
@@ -88,6 +89,7 @@ export const PinProtection = ({ children, onUnlock }: PinProtectionProps) => {
   };
 
   const handleRequestReset = () => {
+    const adminEmail = getAdminEmail();
     const subject = encodeURIComponent("Demande de réinitialisation - Code Coffre-Fort Vybbi");
     const body = encodeURIComponent(`Bonjour,
 
@@ -97,7 +99,7 @@ Merci de me fournir le nouveau code d'accès.
 
 Cordialement.`);
     
-    window.open(`mailto:${ADMIN_EMAIL}?subject=${subject}&body=${body}`, '_blank');
+    window.open(`mailto:${adminEmail}?subject=${subject}&body=${body}`, '_blank');
     toast.info("Email de demande ouvert. Contactez l'administrateur pour obtenir le code.");
   };
 

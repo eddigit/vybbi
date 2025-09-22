@@ -371,6 +371,33 @@ export type Database = {
         }
         Relationships: []
       }
+      admin_settings: {
+        Row: {
+          created_at: string | null
+          description: string | null
+          id: string
+          setting_key: string
+          setting_value: Json
+          updated_at: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key: string
+          setting_value: Json
+          updated_at?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          description?: string | null
+          id?: string
+          setting_key?: string
+          setting_value?: Json
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
       affiliate_conversions: {
         Row: {
           commission_amount: number | null
@@ -4457,6 +4484,10 @@ export type Database = {
         Args: { prospect_id: string }
         Returns: string
       }
+      audit_profile_access: {
+        Args: { access_type: string; profile_id: string }
+        Returns: undefined
+      }
       audit_rls_access: {
         Args: { operation: string; table_name: string }
         Returns: undefined
@@ -4523,6 +4554,10 @@ export type Database = {
       generate_slug: {
         Args: { input_text: string }
         Returns: string
+      }
+      get_admin_emails: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
       }
       get_artist_radio_stats: {
         Args: { artist_profile_id: string }

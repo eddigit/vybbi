@@ -5,9 +5,7 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile, UserRole, AppRole } from '@/lib/types';
 import { useToast } from '@/hooks/use-toast';
 import { sendWelcomeEmail, sendAdminNotification } from '@/lib/emailService';
-
-// Email de l'administrateur - à configurer selon vos besoins
-const ADMIN_EMAIL = 'info@vybbi.app';
+import { useAdminSettings } from '@/hooks/useAdminSettings';
 
 export function useAuth() {
   const [user, setUser] = useState<User | null>(null);
@@ -17,6 +15,7 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
   const { toast } = useToast();
   const navigate = useNavigate();
+  const { getAdminEmail, getSecuritySettings } = useAdminSettings();
   // Local rate-limit to avoid 429 from Supabase (60s between attempts)
   const [lastSignUpAttempt, setLastSignUpAttempt] = useState<number | null>(() => {
     const saved = sessionStorage.getItem('lastSignUpAttempt');
@@ -132,7 +131,8 @@ export function useAuth() {
       // Notifier l'administrateur (immédiat)
       setTimeout(async () => {
         try {
-          await sendAdminNotification(ADMIN_EMAIL, displayName, email, profileType);
+          const adminEmail = getAdminEmail();
+          await sendAdminNotification(adminEmail, displayName, email, profileType);
           console.log('Notification admin envoyée');
         } catch (adminEmailError) {
           console.error('Erreur lors de l\'envoi de la notification admin:', adminEmailError);
