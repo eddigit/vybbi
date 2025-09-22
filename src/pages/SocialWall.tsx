@@ -36,7 +36,7 @@ export default function SocialWall() {
         
         {/* Left Sidebar - Profile & Navigation */}
         <div className="hidden xl:block w-80 flex-shrink-0">
-          <div className="sticky top-6 space-y-6">
+          <div className="sticky top-6 space-y-6 -mt-8">
             <ProfileSidebar />
           </div>
         </div>
