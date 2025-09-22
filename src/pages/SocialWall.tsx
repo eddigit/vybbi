@@ -5,6 +5,7 @@ import { NewsFeed } from "@/components/social/NewsFeed";
 import { RightSidebar } from "@/components/social/RightSidebar";
 import { useUserPresence } from "@/hooks/useUserPresence";
 import { Button } from "@/components/ui/button";
+import { AdBanner } from "@/components/social/AdBanner";
 
 export default function SocialWall() {
   const { user } = useAuth();
@@ -72,6 +73,15 @@ export default function SocialWall() {
 
         {/* Main Feed - Center Column */}
         <div className="flex-1 min-w-0">
+          <div className="md:hidden space-y-4 mb-4">
+            <AdBanner 
+              type="horizontal" 
+              title="Offre mobile"
+              description="Profitez d'offres exclusives sur mobile"
+              buttonText="Voir l'offre"
+              imageUrl="/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png"
+            />
+          </div>
           <NewsFeed />
         </div>
 
