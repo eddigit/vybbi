@@ -1,7 +1,7 @@
 import { Play, Pause, Volume2, SkipForward, SkipBack, ExternalLink } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Slider } from "@/components/ui/slider";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { AdaptiveReleaseImage } from "@/components/AdaptiveReleaseImage";
 import { useRadioPlayer } from "@/hooks/useRadioPlayer";
 import { Link, useLocation } from "react-router-dom";
 import { YouTubeRadioPlayer, YouTubeRadioPlayerRef } from "@/components/YouTubeRadioPlayer";
@@ -123,15 +123,14 @@ export function RadioPlayer() {
               className="flex-shrink-0 group cursor-pointer"
               aria-label={`Voir le profil de ${currentTrack.artist.display_name}`}
             >
-              <Avatar className="w-8 h-8 sm:w-12 sm:h-12 ring-1 sm:ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-200">
-                <AvatarImage
+              <div className="ring-1 sm:ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all duration-200 rounded-lg overflow-hidden">
+                <AdaptiveReleaseImage
                   src={currentTrack.cover_image_url || currentTrack.artist.avatar_url || ''}
                   alt={`${currentTrack.cover_image_url ? 'Pochette' : 'Avatar'} ${currentTrack.title}`}
+                  compactMode={true}
+                  className="w-8 h-8 sm:w-12 sm:h-12"
                 />
-                <AvatarFallback className="bg-gradient-primary text-primary-foreground font-semibold">
-                  {currentTrack.title.charAt(0)}
-                </AvatarFallback>
-              </Avatar>
+              </div>
             </Link>
 
             {/* Infos piste + progression */}
