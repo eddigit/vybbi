@@ -140,19 +140,17 @@ export function Header() {
             </div>
           )}
           
-          {/* Mobile menu button - Only visible when user is logged in */}
-          {profile && (
-            <Button
-              variant="ghost"
-              size="sm"
-              className="lg:hidden touch-target p-2 z-[80] relative"
-              onClick={toggleMobileMenu}
-              aria-label="Toggle menu"
-              aria-expanded={isMobileMenuOpen}
-            >
-              {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-            </Button>
-          )}
+          {/* Mobile menu button - Always visible for navigation */}
+          <Button
+            variant="ghost"
+            size="sm"
+            className="lg:hidden touch-target p-2 z-[80] relative"
+            onClick={toggleMobileMenu}
+            aria-label="Toggle menu"
+            aria-expanded={isMobileMenuOpen}
+          >
+            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+          </Button>
           
           {showAdminControls && (
             <>
@@ -298,7 +296,7 @@ export function Header() {
       </div>
 
       {/* Mobile Menu Overlay */}
-      {profile && isMobileMenuOpen && (
+      {isMobileMenuOpen && (
         <>
           {/* Backdrop */}
           <div 
@@ -314,37 +312,112 @@ export function Header() {
             "overflow-y-auto"
           )}>
             <div className="p-4 pb-safe-bottom space-y-6">
-              {/* User Profile Section */}
-              <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                <Avatar className="h-10 w-10">
-                  <AvatarImage src={profile.avatar_url || ''} />
-                  <AvatarFallback className="bg-gradient-primary text-white">
-                    {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex-1 min-w-0">
-                  <p className="font-medium text-sm truncate">{profile.display_name}</p>
-                  <p className="text-xs text-muted-foreground capitalize">{profile.profile_type}</p>
-                </div>
-              </div>
+              {profile ? (
+                <>
+                  {/* User Profile Section - Only when logged in */}
+                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={profile.avatar_url || ''} />
+                      <AvatarFallback className="bg-gradient-primary text-white">
+                        {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium text-sm truncate">{profile.display_name}</p>
+                      <p className="text-xs text-muted-foreground capitalize">{profile.profile_type}</p>
+                    </div>
+                  </div>
 
-              {/* Main Navigation */}
-              <nav className="space-y-2">
-                {getMainNavLinks().map((link, index) => {
-                  const Icon = link.icon;
-                  return (
+                  {/* Main Navigation */}
+                  <nav className="space-y-2">
+                    {getMainNavLinks().map((link, index) => {
+                      const Icon = link.icon;
+                      return (
+                        <Link
+                          key={index}
+                          to={link.href}
+                          className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                          onClick={() => setIsMobileMenuOpen(false)}
+                        >
+                          <Icon className="h-5 w-5" />
+                          <span className="font-medium">{link.label}</span>
+                        </Link>
+                      );
+                    })}
+                  </nav>
+                </>
+              ) : (
+                <>
+                  {/* Guest Menu - Navigation for non-logged users */}
+                  <div className="text-center py-4">
+                    <img 
+                      src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
+                      alt="Vybbi Logo" 
+                      className="w-12 h-12 mx-auto mb-2"
+                    />
+                    <h2 className="text-lg font-bold text-white">Vybbi</h2>
+                    <p className="text-sm text-muted-foreground">Connectez votre talent au monde</p>
+                  </div>
+                  
+                  <nav className="space-y-2">
                     <Link
-                      key={index}
-                      to={link.href}
+                      to="/artists"
                       className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
                       onClick={() => setIsMobileMenuOpen(false)}
                     >
-                      <Icon className="h-5 w-5" />
-                      <span className="font-medium">{link.label}</span>
+                      <Users className="h-5 w-5" />
+                      <span className="font-medium">Artistes</span>
                     </Link>
-                  );
-                })}
-              </nav>
+                    <Link
+                      to="/lieux"
+                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <MapPin className="h-5 w-5" />
+                      <span className="font-medium">Lieux</span>
+                    </Link>
+                    <Link
+                      to="/radio"
+                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Radio className="h-5 w-5" />
+                      <span className="font-medium">Radio</span>
+                    </Link>
+                    <Link
+                      to="/a-propos"
+                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      <Star className="h-5 w-5" />
+                      <span className="font-medium">À propos</span>
+                    </Link>
+                  </nav>
+
+                  {/* Auth buttons for guests */}
+                  <div className="pt-4 border-t border-border space-y-3">
+                    <Button 
+                      variant="outline" 
+                      size="lg" 
+                      asChild 
+                      className="w-full justify-center touch-target"
+                    >
+                      <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
+                        Connexion
+                      </Link>
+                    </Button>
+                    <Button 
+                      size="lg" 
+                      asChild 
+                      className="w-full touch-target"
+                    >
+                      <Link to="/auth?mode=signup" onClick={() => setIsMobileMenuOpen(false)}>
+                        Créer un compte
+                      </Link>
+                    </Button>
+                  </div>
+                </>
+              )}
 
               {/* Profile Actions */}
               <div className="pt-4 border-t border-border space-y-2">
