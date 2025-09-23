@@ -128,24 +128,27 @@ export const useVybbiTokens = () => {
     },
   });
 
-  // Spend tokens
+  // Spend tokens with marketplace effects processing
   const spendTokens = useMutation({
     mutationFn: async ({ 
       amount, 
       reason, 
       description,
       referenceType,
-      referenceId
+      referenceId,
+      optionId
     }: { 
       amount: number; 
       reason: string; 
       description?: string;
       referenceType?: string;
       referenceId?: string;
+      optionId?: string;
     }) => {
       if (!user?.id) throw new Error('User not authenticated');
       
-      const { data, error } = await supabase.rpc('spend_vybbi_tokens', {
+      // First spend the tokens
+      const { data: spendData, error: spendError } = await supabase.rpc('spend_vybbi_tokens', {
         spender_user_id: user.id,
         amount,
         reason,
@@ -154,17 +157,63 @@ export const useVybbiTokens = () => {
         reference_id: referenceId,
       });
 
-      if (error) throw error;
-      return data;
+      if (spendError) throw spendError;
+
+      // If this is a marketplace purchase, process the real effects
+      if (optionId && referenceType === 'spending_option') {
+        const { data: effectsData, error: effectsError } = await supabase.rpc('process_marketplace_purchase', {
+          purchase_user_id: user.id,
+          option_id: optionId,
+          tokens_spent: amount
+        });
+
+        if (effectsError) {
+          console.error('Error processing marketplace effects:', effectsError);
+          // Continue anyway - tokens were spent successfully
+        } else {
+          console.log('Marketplace effects applied:', effectsData);
+        }
+      }
+
+      return spendData;
     },
-    onSuccess: () => {
+    onSuccess: (data, variables) => {
       queryClient.invalidateQueries({ queryKey: ['vybbi-balance'] });
       queryClient.invalidateQueries({ queryKey: ['vybbi-transactions'] });
-      toast.success('Jetons VYBBI dépensés avec succès !');
+      
+      if (variables.optionId && variables.referenceType === 'spending_option') {
+        toast.success('Achat effectué ! Les effets ont été activés sur votre compte.');
+      } else {
+        toast.success('Jetons VYBBI dépensés avec succès !');
+      }
     },
     onError: (error) => {
       console.error('Error spending tokens:', error);
       toast.error('Solde VYBBI insuffisant ou erreur de transaction');
+    },
+  });
+
+  // Daily login token claim
+  const claimDailyTokens = useMutation({
+    mutationFn: async () => {
+      if (!user?.id) throw new Error('User not authenticated');
+      
+      const { data, error } = await supabase.rpc('award_daily_login_tokens', {
+        user_id_param: user.id
+      });
+
+      if (error) throw error;
+      return data;
+    },
+    onSuccess: (awarded) => {
+      if (awarded) {
+        queryClient.invalidateQueries({ queryKey: ['vybbi-balance'] });
+        queryClient.invalidateQueries({ queryKey: ['vybbi-transactions'] });
+        toast.success('🎉 +10 VYBBI pour votre connexion quotidienne !');
+      }
+    },
+    onError: (error) => {
+      console.error('Error claiming daily tokens:', error);
     },
   });
 
@@ -202,6 +251,7 @@ export const useVybbiTokens = () => {
     isLoading: balanceLoading || transactionsLoading || optionsLoading,
     awardTokens,
     spendTokens,
+    claimDailyTokens,
     initializeBalance,
   };
 };

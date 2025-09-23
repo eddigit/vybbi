@@ -168,6 +168,20 @@ export function useAuth() {
       });
       
       if (error) throw error;
+
+      // Award daily login tokens after successful sign-in
+      setTimeout(async () => {
+        try {
+          const { data: { user } } = await supabase.auth.getUser();
+          if (user) {
+            await supabase.rpc('award_daily_login_tokens', {
+              user_id_param: user.id
+            });
+          }
+        } catch (loginTokenError) {
+          console.log('Daily login tokens already awarded or error:', loginTokenError);
+        }
+      }, 1000);
     } catch (error: any) {
       toast({
         title: "Erreur de connexion",

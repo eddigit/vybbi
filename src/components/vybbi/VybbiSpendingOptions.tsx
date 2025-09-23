@@ -60,6 +60,7 @@ export const VybbiSpendingOptions: React.FC = () => {
       description: option.description,
       referenceType: 'spending_option',
       referenceId: option.id,
+      optionId: option.id, // Pass option ID for marketplace effects processing
     });
   };
 

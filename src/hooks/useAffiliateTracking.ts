@@ -88,27 +88,31 @@ export const useAffiliateTracking = () => {
     trackAffiliateVisit();
   }, []);
 
-  // Function to track conversions (to be called when user registers, subscribes, etc.)
+  // Function to track conversions with VYBBI token rewards
   const trackConversion = async (conversionType: 'registration' | 'subscription' | 'booking', value?: number) => {
     try {
       const sessionData = sessionStorage.getItem(AFFILIATE_SESSION_KEY);
       if (!sessionData) return null;
 
-      const { sessionId, linkId } = JSON.parse(sessionData);
-
       // Get current user ID if authenticated
       const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return null;
       
-      // Use the existing RPC function
-      const { data, error } = await supabase.rpc('track_affiliate_conversion', {
-        p_user_id: user?.id,
+      // Use the enhanced RPC function that awards VYBBI tokens
+      const { data, error } = await supabase.rpc('track_affiliate_conversion_with_tokens', {
+        p_user_id: user.id,
         p_conversion_type: conversionType,
-        p_conversion_value: value
+        p_conversion_value: value || 25.00
       });
 
       if (error) {
         console.error('Error tracking conversion:', error);
         return null;
+      }
+
+      // Clear affiliate session after successful conversion
+      if (data && (data as any).success) {
+        sessionStorage.removeItem(AFFILIATE_SESSION_KEY);
       }
 
       return data;
