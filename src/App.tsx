@@ -96,6 +96,7 @@ import SystemTest from './pages/SystemTest';
 import AdminProspecting from "./pages/AdminProspecting";
 import WebTV from "./pages/WebTV";
 import Radio from "./pages/Radio";
+import Token from "./pages/Token";
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
@@ -232,6 +233,7 @@ const App = () => (
                       <Route path="/conditions" element={<Conditions />} />
                       <Route path="/cookies" element={<CookiesPage />} />
                       <Route path="/contact" element={<Contact />} />
+                      <Route path="/token" element={<Token />} />
                       <Route path="/system-test" element={<SystemTest />} />
                       <Route path="/webtv" element={<WebTV />} />
                       <Route path="/radio" element={<Radio />} />
