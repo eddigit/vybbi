@@ -74,7 +74,11 @@ export function Header() {
     };
   }, [isMobileMenuOpen]);
 
-  const toggleMobileMenu = () => setIsMobileMenuOpen(!isMobileMenuOpen);
+  const toggleMobileMenu = () => {
+    console.log('Toggle mobile menu clicked, current state:', isMobileMenuOpen);
+    setIsMobileMenuOpen(!isMobileMenuOpen);
+    console.log('New mobile menu state will be:', !isMobileMenuOpen);
+  };
 
   // Get main navigation links based on user profile
   const getMainNavLinks = () => {
@@ -141,7 +145,7 @@ export function Header() {
             <Button
               variant="ghost"
               size="sm"
-              className="lg:hidden touch-target p-2 z-50 relative"
+              className="lg:hidden touch-target p-2 z-[80] relative"
               onClick={toggleMobileMenu}
               aria-label="Toggle menu"
               aria-expanded={isMobileMenuOpen}
