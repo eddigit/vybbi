@@ -21,6 +21,11 @@ export function ChatButton() {
   const isMobile = useIsMobile();
   const [hubspotAvailable, setHubspotAvailable] = useState(false);
   
+  // Don't show chat button on mobile
+  if (isMobile) {
+    return null;
+  }
+  
   // Don't show on auth pages, show everywhere else
   const isAuth = location.pathname.startsWith('/auth') || location.pathname === '/forgot-password' || location.pathname === '/reset-password';
   

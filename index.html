@@ -53,6 +53,16 @@
     <!-- Start of HubSpot Embed Code -->
     <script>
       (function() {
+        // Detect mobile devices
+        function isMobileDevice() {
+          return window.innerWidth <= 767 || /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        }
+        
+        // Don't load HubSpot on mobile devices
+        if (isMobileDevice()) {
+          console.log('[HubSpot] Mobile device detected → chat disabled');
+          return;
+        }
         // Cookie consent bridge for HubSpot (now optional)
         function initializeCookieTracking() {
           try {
@@ -243,18 +253,17 @@
         transform: translateX(0) !important;
       }
       
-      /* Mobile positioning - above tab bar and radio player */
+      /* Mobile - completely hide HubSpot chat */
       @media (max-width: 767px) {
         #hubspot-messages-iframe-container,
-        .hubspot-messages-iframe-container { 
-          bottom: 144px !important; /* Au-dessus de la tab bar mobile (64px) + radio player (80px) */
-          right: 16px !important;
-        }
-        
-        /* Adjust when radio player is active */
-        body.radio-player-active #hubspot-messages-iframe-container,
-        body.radio-player-active .hubspot-messages-iframe-container {
-          bottom: 160px !important;
+        .hubspot-messages-iframe-container,
+        .hs-widget-container,
+        .hs-chat-widget,
+        .hs-beacon-container {
+          display: none !important;
+          visibility: hidden !important;
+          opacity: 0 !important;
+          pointer-events: none !important;
         }
       }
       

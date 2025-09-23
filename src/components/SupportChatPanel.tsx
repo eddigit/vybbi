@@ -4,11 +4,20 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import ContactForm from '@/components/ContactForm';
 import { MessageCircle, AlertCircle } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 const SupportChatPanel = () => {
   const [hubSpotReady, setHubSpotReady] = useState(false);
   const [showContactForm, setShowContactForm] = useState(false);
   const { toast } = useToast();
+  const isMobile = useIsMobile();
+  
+  // On mobile, redirect directly to contact form
+  useEffect(() => {
+    if (isMobile) {
+      setShowContactForm(true);
+    }
+  }, [isMobile]);
 
   useEffect(() => {
     // Check if HubSpot is ready
