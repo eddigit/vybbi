@@ -3962,6 +3962,48 @@ export type Database = {
           },
         ]
       }
+      stripe_payment_sessions: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          id: string
+          pack_type: string
+          payment_intent_id: string | null
+          processed_at: string | null
+          session_id: string
+          status: string
+          tokens_amount: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          id?: string
+          pack_type: string
+          payment_intent_id?: string | null
+          processed_at?: string | null
+          session_id: string
+          status?: string
+          tokens_amount: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          id?: string
+          pack_type?: string
+          payment_intent_id?: string | null
+          processed_at?: string | null
+          session_id?: string
+          status?: string
+          tokens_amount?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       system_config: {
         Row: {
           config_key: string

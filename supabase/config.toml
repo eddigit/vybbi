@@ -41,3 +41,9 @@ verify_jwt = false
 
 [functions.prospect-webhooks]
 verify_jwt = false
+
+[functions.create-token-payment]
+verify_jwt = true
+
+[functions.verify-token-payment]
+verify_jwt = true

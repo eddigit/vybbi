@@ -1,16 +1,20 @@
 import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
+import { useTokenPurchase } from '@/hooks/useTokenPurchase';
 import { VybbiTokenBalance } from '@/components/vybbi/VybbiTokenBalance';
 import { VybbiTokenHistory } from '@/components/vybbi/VybbiTokenHistory';
 import { VybbiSpendingOptions } from '@/components/vybbi/VybbiSpendingOptions';
+import { VybbiTokenPurchase } from '@/components/vybbi/VybbiTokenPurchase';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, Coins, Info } from 'lucide-react';
+import { ArrowLeft, Coins, Info, ShoppingCart } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 
 export default function VybbiTokens() {
   const { user } = useAuth();
+  const { verifyingPayment } = useTokenPurchase();
 
   if (!user) {
     return (
@@ -88,6 +92,28 @@ export default function VybbiTokens() {
             <div className="lg:col-span-2 space-y-6">
               {/* Solde */}
               <VybbiTokenBalance variant="full" />
+              
+              {/* Purchase Section */}
+              <Card>
+                <CardHeader>
+                  <CardTitle className="flex items-center gap-2">
+                    <ShoppingCart className="h-5 w-5" />
+                    Acheter des jetons VYBBI
+                    {verifyingPayment && (
+                      <div className="flex items-center gap-2 text-primary ml-auto">
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
+                        <span className="text-sm">Vérification...</span>
+                      </div>
+                    )}
+                  </CardTitle>
+                  <CardDescription>
+                    Rechargez votre solde de jetons VYBBI pour profiter de toutes les fonctionnalités premium.
+                  </CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <VybbiTokenPurchase />
+                </CardContent>
+              </Card>
               
               {/* Marketplace */}
               <VybbiSpendingOptions />
