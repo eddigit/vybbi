@@ -2,7 +2,7 @@ import React from 'react';
 import { useAuth } from '@/hooks/useAuth';
 import { useTokenPurchase } from '@/hooks/useTokenPurchase';
 import { VybbiTokenBalance } from '@/components/vybbi/VybbiTokenBalance';
-import { VybbiTokenHistory } from '@/components/vybbi/VybbiTokenHistory';
+
 import { VybbiSpendingOptions } from '@/components/vybbi/VybbiSpendingOptions';
 import { VybbiTokenPurchase } from '@/components/vybbi/VybbiTokenPurchase';
 import { SEOHead } from '@/components/SEOHead';
@@ -87,43 +87,34 @@ export default function VybbiTokens() {
             </AlertDescription>
           </Alert>
 
-          <div className="grid gap-6 lg:grid-cols-3">
-            {/* Colonne principale */}
-            <div className="lg:col-span-2 space-y-6">
-              {/* Solde */}
-              <VybbiTokenBalance variant="full" />
-              
-              {/* Purchase Section */}
-              <Card>
-                <CardHeader>
-                  <CardTitle className="flex items-center gap-2">
-                    <ShoppingCart className="h-5 w-5" />
-                    Acheter des jetons VYBBI
-                    {verifyingPayment && (
-                      <div className="flex items-center gap-2 text-primary ml-auto">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
-                        <span className="text-sm">Vérification...</span>
-                      </div>
-                    )}
-                  </CardTitle>
-                  <CardDescription>
-                    Rechargez votre solde de jetons VYBBI pour profiter de toutes les fonctionnalités premium.
-                  </CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <VybbiTokenPurchase />
-                </CardContent>
-              </Card>
-              
-              {/* Marketplace */}
-              <VybbiSpendingOptions />
-            </div>
-
-            {/* Sidebar */}
-            <div className="space-y-6">
-              {/* Historique */}
-              <VybbiTokenHistory />
-            </div>
+          <div className="space-y-6 max-w-4xl mx-auto">
+            {/* Solde */}
+            <VybbiTokenBalance variant="full" />
+            
+            {/* Purchase Section */}
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ShoppingCart className="h-5 w-5" />
+                  Acheter des jetons VYBBI
+                  {verifyingPayment && (
+                    <div className="flex items-center gap-2 text-primary ml-auto">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary" />
+                      <span className="text-sm">Vérification...</span>
+                    </div>
+                  )}
+                </CardTitle>
+                <CardDescription>
+                  Rechargez votre solde de jetons VYBBI pour profiter de toutes les fonctionnalités premium.
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <VybbiTokenPurchase />
+              </CardContent>
+            </Card>
+            
+            {/* Marketplace */}
+            <VybbiSpendingOptions />
           </div>
 
           {/* Informations complémentaires */}
