@@ -4789,6 +4789,10 @@ export type Database = {
         Args: { action: string; record_id?: string; table_name: string }
         Returns: undefined
       }
+      award_daily_login_tokens: {
+        Args: { user_id_param: string }
+        Returns: boolean
+      }
       award_vybbi_tokens: {
         Args: {
           amount: number
@@ -5227,6 +5231,14 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      track_affiliate_conversion_with_tokens: {
+        Args: {
+          p_conversion_type: string
+          p_conversion_value?: number
+          p_user_id: string
+        }
+        Returns: Json
       }
       track_affiliate_visit: {
         Args: {
