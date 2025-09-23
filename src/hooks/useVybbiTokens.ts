@@ -1,4 +1,5 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useEffect } from 'react';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from './useAuth';
 import { toast } from 'sonner';
@@ -188,9 +189,11 @@ export const useVybbiTokens = () => {
   });
 
   // Auto-initialize balance on first load
-  if (user?.id && !balanceLoading && !balance) {
-    initializeBalance.mutate();
-  }
+  useEffect(() => {
+    if (user?.id && !balanceLoading && !balance && !initializeBalance.isPending) {
+      initializeBalance.mutate();
+    }
+  }, [user?.id, balanceLoading, balance, initializeBalance]);
 
   return {
     balance: balance || { balance: 0, total_earned: 0, total_spent: 0, level: 'bronze', multiplier: 1.05 },
