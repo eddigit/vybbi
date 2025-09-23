@@ -1,12 +1,16 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
-import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X } from 'lucide-react';
+import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { TickerBanner } from "@/components/TickerBanner";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
 import { MobileNavigation } from "@/components/MobileNavigation";
+
+// Import Token images
+import vybbiMemeSpace from '@/assets/vybbi-meme-space.png';
+import vybbiDjToken from '@/assets/vybbi-dj-token.png';
 
 // Define Blockchain icon component
 const Blockchain = ({
@@ -1013,6 +1017,144 @@ export default function Landing() {
                   </div>
                 </CardContent>
               </Card>)}
+          </div>
+        </div>
+      </section>
+
+      {/* VYBBI Token Meme Coin Section */}
+      <section className="py-16 px-2 sm:px-6 bg-gradient-to-br from-purple-900/20 via-background to-pink-900/20 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-purple-500/10 via-transparent to-pink-500/10"></div>
+        <div className="container mx-auto relative">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 bg-gradient-to-r from-purple-500/10 to-pink-500/10 backdrop-blur-sm rounded-full px-4 py-2 mb-4 border border-purple-500/20">
+              <Rocket className="w-4 h-4 text-purple-400 animate-bounce" />
+              <span className="text-sm font-medium text-purple-300">Nouveau</span>
+              <Coins className="w-4 h-4 text-pink-400" />
+            </div>
+            
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+              Le VYBBI Token 🚀
+            </h2>
+            
+            <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-2">
+              Découvrez le <strong className="text-purple-400">meme coin</strong> qui révolutionne l'économie de la nuit !
+            </p>
+            
+            <p className="text-base text-muted-foreground/80 max-w-2xl mx-auto">
+              Plus qu'une cryptomonnaie, le VYBBI est le carburant de votre succès dans l'écosystème musical.
+            </p>
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-8 md:gap-12 items-center mb-12">
+            {/* Left Image - Space Meme */}
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
+              <div className="relative bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-2xl p-6 backdrop-blur-sm border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+                <img 
+                  src={vybbiMemeSpace} 
+                  alt="VYBBI Token Space Meme" 
+                  className="w-full h-auto rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
+                />
+                <div className="absolute top-4 right-4">
+                  <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-purple-500/30">
+                    <span className="text-xs font-medium text-purple-300">🌌 To the Moon!</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Image - DJ Token */}
+            <div className="relative group">
+              <div className="absolute -inset-4 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
+              <div className="relative bg-gradient-to-bl from-pink-900/30 to-purple-900/30 rounded-2xl p-6 backdrop-blur-sm border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:scale-105">
+                <img 
+                  src={vybbiDjToken} 
+                  alt="VYBBI DJ Control Token" 
+                  className="w-full h-auto rounded-xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300"
+                />
+                <div className="absolute top-4 right-4">
+                  <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-pink-500/30">
+                    <span className="text-xs font-medium text-pink-300">🎧 Music Power</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Features Grid */}
+          <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+            <Card className="bg-gradient-to-br from-purple-900/20 to-transparent border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4">
+                  <Rocket className="w-6 h-6 text-white animate-bounce" />
+                </div>
+                <h3 className="font-bold text-foreground mb-2">Meme Power</h3>
+                <p className="text-sm text-muted-foreground">Le fun et la viralité au service de votre croissance</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-pink-900/20 to-transparent border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:scale-105">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
+                  <Music className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-foreground mb-2">Music First</h3>
+                <p className="text-sm text-muted-foreground">Conçu par et pour l'industrie musicale</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-purple-900/20 to-transparent border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center mx-auto mb-4">
+                  <Users className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-foreground mb-2">Community</h3>
+                <p className="text-sm text-muted-foreground">Une communauté passionnée qui fait la différence</p>
+              </CardContent>
+            </Card>
+            
+            <Card className="bg-gradient-to-br from-pink-900/20 to-transparent border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:scale-105">
+              <CardContent className="p-6 text-center">
+                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-pink-500 to-purple-500 flex items-center justify-center mx-auto mb-4">
+                  <TrendingUp className="w-6 h-6 text-white" />
+                </div>
+                <h3 className="font-bold text-foreground mb-2">Early Access</h3>
+                <p className="text-sm text-muted-foreground">Rejoignez les pionniers dès maintenant</p>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* CTA Section */}
+          <div className="text-center">
+            <div className="inline-flex flex-col sm:flex-row gap-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/20">
+              <Button 
+                size="lg" 
+                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-none shadow-lg hover:shadow-purple-500/25 text-lg px-8 py-6 animate-pulse hover:animate-none" 
+                asChild
+              >
+                <Link to="/token">
+                  <Coins className="mr-2 h-5 w-5" />
+                  Découvrir le VYBBI Token
+                  <Rocket className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
+              
+              <Button 
+                size="lg" 
+                variant="outline" 
+                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400/50 text-lg px-8 py-6" 
+                asChild
+              >
+                <Link to="/token#roadmap">
+                  <Star className="mr-2 h-4 w-4" />
+                  Voir la Roadmap
+                </Link>
+              </Button>
+            </div>
+            
+            <p className="text-xs text-muted-foreground/60 mt-4 max-w-lg mx-auto">
+              ⚠️ Les cryptomonnaies sont des investissements risqués. Ne jamais investir plus que ce que vous pouvez vous permettre de perdre.
+            </p>
           </div>
         </div>
       </section>
