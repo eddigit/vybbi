@@ -21,11 +21,6 @@ export function ChatButton() {
   const isMobile = useIsMobile();
   const [hubspotAvailable, setHubspotAvailable] = useState(false);
   
-  // Don't show chat button on mobile
-  if (isMobile) {
-    return null;
-  }
-  
   // Don't show on auth pages, show everywhere else
   const isAuth = location.pathname.startsWith('/auth') || location.pathname === '/forgot-password' || location.pathname === '/reset-password';
   
@@ -48,7 +43,8 @@ export function ChatButton() {
     return () => clearInterval(interval);
   }, []);
   
-  if (isAuth || hubspotAvailable) {
+  // Don't show chat button on mobile (after all hooks are called)
+  if (isMobile || isAuth || hubspotAvailable) {
     return null;
   }
 
@@ -90,9 +86,8 @@ export function ChatButton() {
       return false;
     };
     
-    // On mobile, always try to open immediately since we prevent auto-opening
-    // On desktop, the widget might already be open
-    if (isMobile || !tryOpenWidget()) {
+    // On desktop, try to open the widget
+    if (!tryOpenWidget()) {
       setTimeout(() => {
         if (!tryOpenWidget()) {
           setTimeout(() => {
