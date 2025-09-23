@@ -10,6 +10,13 @@ export default defineConfig(({ mode }) => ({
     host: "::",
     port: 8080,
   },
+  define: {
+    // Fix buffer issue for Solana web3.js
+    global: 'globalThis',
+  },
+  optimizeDeps: {
+    include: ['buffer'],
+  },
   build: {
     // Optimisations pour réduire la taille des bundles
     rollupOptions: {
@@ -21,6 +28,7 @@ export default defineConfig(({ mode }) => ({
           'query-vendor': ['@tanstack/react-query'],
           'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
           'chart-vendor': ['recharts'],
+          'solana-vendor': ['@solana/web3.js'],
         }
       }
     },
