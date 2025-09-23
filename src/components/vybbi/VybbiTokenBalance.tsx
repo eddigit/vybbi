@@ -121,19 +121,19 @@ export const VybbiTokenBalance: React.FC<VybbiTokenBalanceProps> = ({
 
         {/* Statistiques */}
         <div className="grid grid-cols-2 gap-4">
-          <div className="text-center p-3 rounded-lg bg-green-50 dark:bg-green-950/20">
-            <div className="text-lg font-semibold text-green-600 dark:text-green-400">
+          <div className="text-center p-3 rounded-lg bg-card/30 border border-green-500/20">
+            <div className="text-lg font-semibold text-green-400">
               +{balance.total_earned.toLocaleString()}
             </div>
-            <div className="text-xs text-green-600/70 dark:text-green-400/70">
+            <div className="text-xs text-green-400/70">
               Total gagné
             </div>
           </div>
-          <div className="text-center p-3 rounded-lg bg-blue-50 dark:bg-blue-950/20">
-            <div className="text-lg font-semibold text-blue-600 dark:text-blue-400">
+          <div className="text-center p-3 rounded-lg bg-card/30 border border-blue-500/20">
+            <div className="text-lg font-semibold text-blue-400">
               -{balance.total_spent.toLocaleString()}
             </div>
-            <div className="text-xs text-blue-600/70 dark:text-blue-400/70">
+            <div className="text-xs text-blue-400/70">
               Total dépensé
             </div>
           </div>

@@ -47,7 +47,7 @@ export const BlockchainQRCode: React.FC<BlockchainQRCodeProps> = ({
 
   return (
     <div className="flex flex-col items-center space-y-4 p-4 border rounded-lg bg-card">
-      <div className="bg-white p-4 rounded-lg">
+      <div className="bg-background p-4 rounded-lg border border-border/50">
         <QRCode
           id="blockchain-qr-code"
           value={verificationUrl}

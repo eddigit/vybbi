@@ -56,10 +56,10 @@ export const VybbiTokenHistory: React.FC = () => {
 
   const getTransactionBadge = (type: string) => {
     switch (type) {
-      case 'earned': return <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400">Gagné</Badge>;
-      case 'spent': return <Badge variant="secondary" className="bg-red-100 text-red-800 dark:bg-red-900/20 dark:text-red-400">Dépensé</Badge>;
-      case 'bonus': return <Badge variant="secondary" className="bg-primary/10 text-primary">Bonus</Badge>;
-      case 'penalty': return <Badge variant="secondary" className="bg-orange-100 text-orange-800 dark:bg-orange-900/20 dark:text-orange-400">Pénalité</Badge>;
+      case 'earned': return <Badge variant="secondary" className="bg-green-500/10 text-green-400 border-green-500/20">Gagné</Badge>;
+      case 'spent': return <Badge variant="secondary" className="bg-red-500/10 text-red-400 border-red-500/20">Dépensé</Badge>;
+      case 'bonus': return <Badge variant="secondary" className="bg-primary/10 text-primary border-primary/20">Bonus</Badge>;
+      case 'penalty': return <Badge variant="secondary" className="bg-orange-500/10 text-orange-400 border-orange-500/20">Pénalité</Badge>;
       default: return <Badge variant="outline">Autre</Badge>;
     }
   };
