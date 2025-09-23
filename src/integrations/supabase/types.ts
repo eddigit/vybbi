@@ -4984,6 +4984,47 @@ export type Database = {
         Args: { event_uuid: string }
         Returns: number
       }
+      get_full_profile_data: {
+        Args: { profile_id: string }
+        Returns: {
+          accepts_direct_contact: boolean
+          avatar_url: string
+          bio: string
+          city: string
+          created_at: string
+          display_name: string
+          email: string
+          experience: string
+          genres: string[]
+          header_position_y: number
+          header_url: string
+          id: string
+          instagram_url: string
+          is_public: boolean
+          languages: string[]
+          location: string
+          onboarding_completed: boolean
+          phone: string
+          preferred_contact_profile_id: string
+          profile_completion_percentage: number
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          secondary_profile_type: Database["public"]["Enums"]["profile_type"]
+          siret_number: string
+          siret_verified: boolean
+          siret_verified_at: string
+          slug: string
+          soundcloud_url: string
+          spotify_url: string
+          talents: string[]
+          tiktok_url: string
+          updated_at: string
+          user_id: string
+          venue_capacity: number
+          venue_category: string
+          website: string
+          youtube_url: string
+        }[]
+      }
       get_online_users: {
         Args: { limit_param?: number }
         Returns: {
