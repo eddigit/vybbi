@@ -22,7 +22,8 @@ import {
   Link as LinkIcon,
   Hash,
   Radio,
-  Lock
+  Lock,
+  Coins
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -38,6 +39,7 @@ const artistItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artists", url: "/artists", icon: Music },
   { title: "Web TV", url: "/webtv", icon: Radio },
+  { title: "Token VYBBI", url: "/token", icon: Coins },
   { title: "Recherche Avancée", url: "/recherche-avancee", icon: UserSearch },
   { title: "Agents", url: "/profiles?type=agent", icon: UserSearch },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
@@ -51,6 +53,7 @@ const getAgentItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
   { title: "Web TV", url: "/webtv", icon: Radio },
+  { title: "Token VYBBI", url: "/token", icon: Coins },
   { title: "Recherche IA", url: "/recherche-avancee", icon: UserSearch },
   { title: "Lieux", url: "/lieux", icon: Building2 },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
@@ -64,6 +67,7 @@ const getManagerItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Partenaires", url: "/partners", icon: Users },
   { title: "Web TV", url: "/webtv", icon: Radio },
+  { title: "Token VYBBI", url: "/token", icon: Coins },
   { title: "Annonces", url: "/annonces", icon: Megaphone },
   { title: "Campagnes", url: "/campaigns", icon: Target },
   { title: "Commissions", url: "/commissions", icon: Euro },
@@ -78,6 +82,7 @@ const getLieuItems = (profileId: string) => [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
   { title: "Artistes", url: "/artists", icon: Music },
   { title: "Web TV", url: "/webtv", icon: Radio },
+  { title: "Token VYBBI", url: "/token", icon: Coins },
   { title: "Recherche IA", url: "/recherche-avancee", icon: UserSearch },
   { title: "Agents", url: "/profiles?type=agent", icon: UserSearch },
   { title: "Lieux", url: "/lieux", icon: MapPin },
@@ -91,6 +96,7 @@ const getLieuItems = (profileId: string) => [
 
 const influenceurItems = [
   { title: "Dashboard", url: "/dashboard", icon: LayoutDashboard },
+  { title: "Token VYBBI", url: "/token", icon: Coins },
   { title: "Affiliation", url: "/affiliation", icon: LinkIcon },
   { title: "Messages", url: "/messages", icon: MessageSquare },
   { title: "Chat", url: "/chat", icon: MessageCircle },
@@ -122,6 +128,7 @@ export function TopNav() {
     { title: "Top Artistes", url: "/top-artistes" },
     { title: "Nos Artistes", url: "/artists" },
     { title: "Web TV", url: "/webtv" },
+    { title: "Token VYBBI", url: "/token" },
     { title: "Nos Partenaires", url: "/partners" },
     { title: "Nos Lieux", url: "/lieux" },
     { title: "À propos", url: "/a-propos" },
