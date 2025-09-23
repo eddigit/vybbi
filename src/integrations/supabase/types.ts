@@ -4823,6 +4823,10 @@ export type Database = {
         Args: { access_type: string; profile_id: string }
         Returns: undefined
       }
+      audit_profile_access_enhanced: {
+        Args: { access_type: string; profile_id: string }
+        Returns: undefined
+      }
       audit_rls_access: {
         Args: { operation: string; table_name: string }
         Returns: undefined
@@ -4990,6 +4994,41 @@ export type Database = {
           venue_views: number
           views_this_month: number
           views_this_week: number
+        }[]
+      }
+      get_public_profile_data: {
+        Args: { profile_identifier: string }
+        Returns: {
+          accepts_direct_contact: boolean
+          avatar_url: string
+          bio: string
+          city: string
+          created_at: string
+          display_name: string
+          experience: string
+          genres: string[]
+          header_position_y: number
+          header_url: string
+          id: string
+          instagram_url: string
+          is_public: boolean
+          languages: string[]
+          location: string
+          onboarding_completed: boolean
+          preferred_contact_profile_id: string
+          profile_completion_percentage: number
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          slug: string
+          soundcloud_url: string
+          spotify_url: string
+          talents: string[]
+          tiktok_url: string
+          updated_at: string
+          user_id: string
+          venue_capacity: number
+          venue_category: string
+          website: string
+          youtube_url: string
         }[]
       }
       get_radio_playlist: {
@@ -5225,6 +5264,10 @@ export type Database = {
         }[]
       }
       security_phase1_status: {
+        Args: Record<PropertyKey, never>
+        Returns: string
+      }
+      security_status_phase1: {
         Args: Record<PropertyKey, never>
         Returns: string
       }
