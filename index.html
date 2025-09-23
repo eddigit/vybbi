@@ -128,15 +128,8 @@
         window.hsConversationsOnReady = window.hsConversationsOnReady || [];
         window.hsConversationsOnReady.push(function () {
           try {
-            console.log('[HubSpot] Conversations ready');
-            // Don't auto-open on mobile to prevent UI conflicts
-            var isMobile = window.innerWidth < 768;
-            if (!isMobile) {
-              console.log('[HubSpot] Desktop detected → opening widget');
-              window.HubSpotConversations?.widget?.open();
-            } else {
-              console.log('[HubSpot] Mobile detected → widget ready but not auto-opening');
-            }
+            console.log('[HubSpot] Conversations ready - widget initialized but not auto-opening');
+            // Widget stays closed by default, only opens when user clicks the chat button
           } catch (e) { console.warn('[HubSpot] onReady error', e); }
         });
 
