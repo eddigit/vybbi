@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { LANGUAGES } from '@/lib/languages';
 
 export const useLanguageDetection = () => {
