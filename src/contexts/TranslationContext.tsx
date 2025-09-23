@@ -1,5 +1,5 @@
-import React, { createContext, useContext } from 'react';
-import { useLanguageDetection } from '@/hooks/useLanguageDetection';
+import React, { createContext, useContext, useEffect, useMemo, useRef, useState } from 'react';
+import { LANGUAGES } from '@/lib/languages';
 import { translationService } from '@/lib/translationService';
 
 interface TranslationContextValue {
@@ -26,14 +26,51 @@ interface TranslationProviderProps {
 }
 
 export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children }) => {
-  const { detectedLanguage, userLanguage, changeLanguage, isAutoDetected } = useLanguageDetection();
+  const [detectedLanguage, setDetectedLanguage] = useState<string>('fr');
+  const [userLanguage, setUserLanguage] = useState<string>('fr');
+  const [isAutoDetected, setIsAutoDetected] = useState<boolean>(true);
 
-  console.log('TranslationProvider - Detected:', detectedLanguage, 'User:', userLanguage, 'Auto:', isAutoDetected);
+  useEffect(() => {
+    try {
+      const savedLanguage = localStorage.getItem('vybbi-language');
+      if (savedLanguage && LANGUAGES.some(lang => lang.code === savedLanguage)) {
+        setUserLanguage(savedLanguage);
+        setDetectedLanguage(savedLanguage);
+        setIsAutoDetected(false);
+        return;
+      }
+
+      const browserLanguages = navigator.languages || [navigator.language];
+      let detected = 'fr';
+
+      for (const browserLang of browserLanguages) {
+        const langCode = browserLang.split('-')[0].toLowerCase();
+        const supportedLang = LANGUAGES.find(lang => lang.code === langCode);
+        if (supportedLang) {
+          detected = supportedLang.code;
+          break;
+        }
+      }
+
+      setDetectedLanguage(detected);
+      setUserLanguage(detected);
+      localStorage.setItem('vybbi-language', detected);
+      setIsAutoDetected(true);
+    } catch (e) {
+      console.warn('Language detection failed:', e);
+    }
+  }, []);
+
+  const changeLanguage = (languageCode: string) => {
+    if (LANGUAGES.some(lang => lang.code === languageCode)) {
+      setUserLanguage(languageCode);
+      localStorage.setItem('vybbi-language', languageCode);
+      setIsAutoDetected(false);
+    }
+  };
 
   const translate = async (text: string, sourceLanguage?: string): Promise<string> => {
-    console.log('TranslationProvider - Translating:', text.substring(0, 50), 'to:', userLanguage);
     const result = await translationService.translate(text, userLanguage, sourceLanguage);
-    console.log('TranslationProvider - Translation result:', result.substring(0, 50));
     return result;
   };
 
