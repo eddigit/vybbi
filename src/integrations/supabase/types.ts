@@ -4815,6 +4815,10 @@ export type Database = {
       }
     }
     Functions: {
+      agent_can_access_prospect: {
+        Args: { prospect_id: string }
+        Returns: boolean
+      }
       assign_prospect_to_agent: {
         Args: { prospect_id: string }
         Returns: string
@@ -4825,6 +4829,10 @@ export type Database = {
       }
       audit_profile_access_enhanced: {
         Args: { access_type: string; profile_id: string }
+        Returns: undefined
+      }
+      audit_prospect_access: {
+        Args: { operation: string; record_id?: string; table_name: string }
         Returns: undefined
       }
       audit_rls_access: {
