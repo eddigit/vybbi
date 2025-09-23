@@ -4859,6 +4859,10 @@ export type Database = {
         Args: { profile_row: Database["public"]["Tables"]["profiles"]["Row"] }
         Returns: number
       }
+      check_profile_security_status: {
+        Args: Record<PropertyKey, never>
+        Returns: Json
+      }
       check_security_integrity: {
         Args: Record<PropertyKey, never>
         Returns: Json
@@ -4893,6 +4897,10 @@ export type Database = {
           p_user_id: string
         }
         Returns: string
+      }
+      enhanced_audit_profile_access: {
+        Args: { access_type: string; profile_id: string }
+        Returns: undefined
       }
       ensure_user_profile: {
         Args: {
@@ -5052,6 +5060,41 @@ export type Database = {
         }[]
       }
       get_safe_profile_data: {
+        Args: { profile_identifier: string }
+        Returns: {
+          accepts_direct_contact: boolean
+          avatar_url: string
+          bio: string
+          city: string
+          created_at: string
+          display_name: string
+          experience: string
+          genres: string[]
+          header_position_y: number
+          header_url: string
+          id: string
+          instagram_url: string
+          is_public: boolean
+          languages: string[]
+          location: string
+          onboarding_completed: boolean
+          preferred_contact_profile_id: string
+          profile_completion_percentage: number
+          profile_type: Database["public"]["Enums"]["profile_type"]
+          slug: string
+          soundcloud_url: string
+          spotify_url: string
+          talents: string[]
+          tiktok_url: string
+          updated_at: string
+          user_id: string
+          venue_capacity: number
+          venue_category: string
+          website: string
+          youtube_url: string
+        }[]
+      }
+      get_secure_public_profile_data: {
         Args: { profile_identifier: string }
         Returns: {
           accepts_direct_contact: boolean
@@ -5262,6 +5305,10 @@ export type Database = {
           profile_type: Database["public"]["Enums"]["profile_type"]
           slug: string
         }[]
+      }
+      security_critical_fixes_status: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       security_phase1_status: {
         Args: Record<PropertyKey, never>
