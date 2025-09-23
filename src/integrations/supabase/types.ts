@@ -5108,6 +5108,10 @@ export type Database = {
           youtube_url: string
         }[]
       }
+      get_safe_profile_columns: {
+        Args: Record<PropertyKey, never>
+        Returns: string[]
+      }
       get_safe_profile_data: {
         Args: { profile_identifier: string }
         Returns: {
