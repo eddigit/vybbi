@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { MessageCircle } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 // Extend Window interface for HubSpot
 declare global {
@@ -17,6 +18,7 @@ declare global {
 
 export function ChatButton() {
   const location = useLocation();
+  const isMobile = useIsMobile();
   const [hubspotAvailable, setHubspotAvailable] = useState(false);
   
   // Don't show on auth pages, show everywhere else
@@ -83,8 +85,9 @@ export function ChatButton() {
       return false;
     };
     
-    // Try immediately, then with delays if needed
-    if (!tryOpenWidget()) {
+    // On mobile, always try to open immediately since we prevent auto-opening
+    // On desktop, the widget might already be open
+    if (isMobile || !tryOpenWidget()) {
       setTimeout(() => {
         if (!tryOpenWidget()) {
           setTimeout(() => {

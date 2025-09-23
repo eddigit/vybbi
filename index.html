@@ -128,8 +128,15 @@
         window.hsConversationsOnReady = window.hsConversationsOnReady || [];
         window.hsConversationsOnReady.push(function () {
           try {
-            console.log('[HubSpot] Conversations ready → opening widget');
-            window.HubSpotConversations?.widget?.open();
+            console.log('[HubSpot] Conversations ready');
+            // Don't auto-open on mobile to prevent UI conflicts
+            var isMobile = window.innerWidth < 768;
+            if (!isMobile) {
+              console.log('[HubSpot] Desktop detected → opening widget');
+              window.HubSpotConversations?.widget?.open();
+            } else {
+              console.log('[HubSpot] Mobile detected → widget ready but not auto-opening');
+            }
           } catch (e) { console.warn('[HubSpot] onReady error', e); }
         });
 
