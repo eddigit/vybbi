@@ -21,6 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
+import { createPortal } from "react-dom";
 
 export function Header() {
   const location = useLocation();
@@ -300,7 +301,7 @@ export function Header() {
       </div>
 
       {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && (
+      {isMobileMenuOpen && createPortal(
         <>
           {/* Backdrop */}
           <div 
@@ -470,8 +471,8 @@ export function Header() {
               </div>
             </div>
           </div>
-        </>
-      )}
+        </>,
+      document.body)}
     </header>
   );
 }
