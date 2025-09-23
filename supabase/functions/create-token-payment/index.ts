@@ -10,28 +10,28 @@ const corsHeaders = {
 // Token pack configuration
 const TOKEN_PACKS = {
   starter: {
-    priceId: "price_1SAROFDr83jHtyPkr282SN3S",
+    priceId: "price_1SAQ17Dr83jHtyPk5CD20eSy",
     tokens: 100,
-    name: "Pack Starter - 100 jetons",
-    price: 1000 // cents
+    name: "Pack de 100 jetons VYBBI",
+    price: 1000 // cents (10,00 €)
   },
   standard: {
-    priceId: "price_1SAROSDr83jHtyPkqCtUrNY1",
+    priceId: "price_1SAQ17Dr83jHtyPkiL842Z7D",
     tokens: 500,
-    name: "Pack Standard - 500 jetons",
-    price: 4500 // cents
+    name: "Pack de 500 jetons VYBBI",
+    price: 5000 // cents (50,00 €)
   },
   premium: {
-    priceId: "price_1SAROeDr83jHtyPkyu59i6zm",
+    priceId: "price_1SAQ17Dr83jHtyPk0Bqmktsy",
     tokens: 1000,
-    name: "Pack Premium - 1000 jetons",
-    price: 8000 // cents
+    name: "Pack de 1 000 jetons VYBBI",
+    price: 10000 // cents (100,00 €)
   },
   vip: {
-    priceId: "price_1SAROxDr83jHtyPkqKaqT2aC",
+    priceId: "price_1SAQ17Dr83jHtyPkmXN11VaU",
     tokens: 5000,
-    name: "Pack VIP - 5000 jetons",
-    price: 35000 // cents
+    name: "Pack de 5 000 jetons VYBBI",
+    price: 50000 // cents (500,00 €)
   }
 };
 

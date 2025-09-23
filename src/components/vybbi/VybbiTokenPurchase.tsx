@@ -23,7 +23,7 @@ interface TokenPack {
 const TOKEN_PACKS: TokenPack[] = [
   {
     id: 'starter',
-    name: 'Pack Starter',
+    name: 'Pack de 100 jetons',
     tokens: 100,
     price: 10,
     icon: <Zap className="h-6 w-6" />,
@@ -32,37 +32,31 @@ const TOKEN_PACKS: TokenPack[] = [
   },
   {
     id: 'standard',
-    name: 'Pack Standard',
+    name: 'Pack de 500 jetons',
     tokens: 500,
-    price: 45,
-    originalPrice: 50,
-    bonus: 10,
+    price: 50,
     icon: <Gift className="h-6 w-6" />,
     popular: true,
     description: 'Le meilleur rapport qualité-prix',
-    features: ['500 jetons VYBBI', '10% de bonus inclus', 'Accès prioritaire', 'Support email']
+    features: ['500 jetons VYBBI', 'Accès prioritaire', 'Support email', 'Statistiques avancées']
   },
   {
     id: 'premium',
-    name: 'Pack Premium',
+    name: 'Pack de 1 000 jetons',
     tokens: 1000,
-    price: 80,
-    originalPrice: 100,
-    bonus: 20,
+    price: 100,
     icon: <Star className="h-6 w-6" />,
     description: 'Pour les utilisateurs avancés',
-    features: ['1000 jetons VYBBI', '20% de bonus inclus', 'Fonctionnalités premium', 'Support prioritaire']
+    features: ['1000 jetons VYBBI', 'Fonctionnalités premium', 'Support prioritaire', 'Analytics détaillées']
   },
   {
     id: 'vip',
-    name: 'Pack VIP',
+    name: 'Pack de 5 000 jetons',
     tokens: 5000,
-    price: 350,
-    originalPrice: 500,
-    bonus: 30,
+    price: 500,
     icon: <Crown className="h-6 w-6" />,
     description: 'La solution complète pour les pros',
-    features: ['5000 jetons VYBBI', '30% de bonus inclus', 'Toutes les fonctionnalités', 'Support dédié 24/7']
+    features: ['5000 jetons VYBBI', 'Toutes les fonctionnalités', 'Support dédié 24/7', 'Intégrations avancées']
   }
 ];
 
