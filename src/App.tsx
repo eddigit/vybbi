@@ -234,6 +234,7 @@ const App = () => (
                       <Route path="/cookies" element={<CookiesPage />} />
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/token" element={<Token />} />
+                      <Route path="/vybbi-tokens" element={<VybbiTokens />} />
                       <Route path="/system-test" element={<SystemTest />} />
                       <Route path="/webtv" element={<WebTV />} />
                       <Route path="/radio" element={<Radio />} />

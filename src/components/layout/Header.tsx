@@ -1,6 +1,7 @@
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
+import { VybbiTokenBalance } from "@/components/vybbi/VybbiTokenBalance";
 import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Menu, X, Coins } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -83,7 +84,7 @@ export function Header() {
       { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
       { href: "/messages", label: "Messages", icon: MessageSquare },
       { href: "/top-artistes", label: "Top Artistes", icon: Trophy },
-      { href: "/token", label: "Token VYBBI", icon: Coins },
+      { href: "/vybbi-tokens", label: "Mes Jetons VYBBI", icon: Coins },
       { href: "/annonces", label: "Annonces", icon: Megaphone },
       { href: "/radio", label: "Radio", icon: Radio },
       { href: "/webtv", label: "Web TV", icon: Radio },
@@ -128,6 +129,13 @@ export function Header() {
 
 
         <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
+          {/* VYBBI Token Balance Widget */}
+          {user && (
+            <div className="hidden md:block">
+              <VybbiTokenBalance variant="widget" />
+            </div>
+          )}
+          
           {/* Mobile menu button - Only visible when user is logged in */}
           {profile && (
             <Button
@@ -218,9 +226,9 @@ export function Header() {
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
-                  <Link to="/token" className="flex items-center">
+                  <Link to="/vybbi-tokens" className="flex items-center">
                     <Coins className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
-                    <span className="text-sm"><AutoTranslate text="Token VYBBI" /></span>
+                    <span className="text-sm"><AutoTranslate text="Mes Jetons VYBBI" /></span>
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>

@@ -3989,6 +3989,132 @@ export type Database = {
         }
         Relationships: []
       }
+      token_earning_rules: {
+        Row: {
+          base_amount: number
+          conditions: Json | null
+          cooldown_hours: number | null
+          created_at: string
+          id: string
+          is_active: boolean
+          max_per_day: number | null
+          rule_name: string
+          rule_type: string
+          target_profile_types: string[] | null
+          updated_at: string
+        }
+        Insert: {
+          base_amount: number
+          conditions?: Json | null
+          cooldown_hours?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_per_day?: number | null
+          rule_name: string
+          rule_type: string
+          target_profile_types?: string[] | null
+          updated_at?: string
+        }
+        Update: {
+          base_amount?: number
+          conditions?: Json | null
+          cooldown_hours?: number | null
+          created_at?: string
+          id?: string
+          is_active?: boolean
+          max_per_day?: number | null
+          rule_name?: string
+          rule_type?: string
+          target_profile_types?: string[] | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      token_spending_options: {
+        Row: {
+          benefits: Json | null
+          created_at: string
+          description: string | null
+          duration_days: number | null
+          id: string
+          is_active: boolean
+          option_name: string
+          option_type: string
+          target_profile_types: string[] | null
+          updated_at: string
+          vybbi_cost: number
+        }
+        Insert: {
+          benefits?: Json | null
+          created_at?: string
+          description?: string | null
+          duration_days?: number | null
+          id?: string
+          is_active?: boolean
+          option_name: string
+          option_type: string
+          target_profile_types?: string[] | null
+          updated_at?: string
+          vybbi_cost: number
+        }
+        Update: {
+          benefits?: Json | null
+          created_at?: string
+          description?: string | null
+          duration_days?: number | null
+          id?: string
+          is_active?: boolean
+          option_name?: string
+          option_type?: string
+          target_profile_types?: string[] | null
+          updated_at?: string
+          vybbi_cost?: number
+        }
+        Relationships: []
+      }
+      token_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          metadata: Json | null
+          processed_at: string
+          reason: string
+          reference_id: string | null
+          reference_type: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          processed_at?: string
+          reason: string
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type: string
+          user_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          metadata?: Json | null
+          processed_at?: string
+          reason?: string
+          reference_id?: string | null
+          reference_type?: string | null
+          transaction_type?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       user_follows: {
         Row: {
           created_at: string
@@ -4125,6 +4251,42 @@ export type Database = {
           created_at?: string
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      user_token_balances: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          level: string
+          multiplier: number
+          total_earned: number
+          total_spent: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          level?: string
+          multiplier?: number
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          level?: string
+          multiplier?: number
+          total_earned?: number
+          total_spent?: number
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
@@ -4627,6 +4789,18 @@ export type Database = {
         Args: { action: string; record_id?: string; table_name: string }
         Returns: undefined
       }
+      award_vybbi_tokens: {
+        Args: {
+          amount: number
+          description?: string
+          metadata?: Json
+          reason: string
+          reference_id?: string
+          reference_type?: string
+          target_user_id: string
+        }
+        Returns: boolean
+      }
       calculate_monthly_recurring_commissions: {
         Args: Record<PropertyKey, never>
         Returns: undefined
@@ -5025,6 +5199,18 @@ export type Database = {
           p_user_email: string
         }
         Returns: undefined
+      }
+      spend_vybbi_tokens: {
+        Args: {
+          amount: number
+          description?: string
+          metadata?: Json
+          reason: string
+          reference_id?: string
+          reference_type?: string
+          spender_user_id: string
+        }
+        Returns: boolean
       }
       start_direct_conversation: {
         Args: { target_user_id: string }
