@@ -5125,6 +5125,14 @@ export type Database = {
         Args: { p_action: string; p_record_id?: string; p_table_name: string }
         Returns: undefined
       }
+      process_marketplace_purchase: {
+        Args: {
+          option_id: string
+          purchase_user_id: string
+          tokens_spent: number
+        }
+        Returns: Json
+      }
       resolve_profile: {
         Args: { identifier: string }
         Returns: {
