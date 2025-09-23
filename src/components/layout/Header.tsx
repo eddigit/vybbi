@@ -298,19 +298,17 @@ export function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <>
+          {console.log('🔍 Mobile menu should be visible now!')}
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 lg:hidden"
+            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9990] lg:hidden"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           
           {/* Menu panel */}
-          <div className={cn(
-            "fixed top-[3.5rem] sm:top-[4rem] left-0 right-0 bottom-0 z-50 lg:hidden",
-            "bg-background border-t border-border shadow-lg",
-            "transform transition-transform duration-300 ease-out",
-            "overflow-y-auto"
-          )}>
+          <div 
+            className="fixed top-14 left-0 right-0 bottom-0 z-[9999] lg:hidden bg-background border-t border-border shadow-lg overflow-y-auto"
+          >
             <div className="p-4 pb-safe-bottom space-y-6">
               {profile ? (
                 <>
