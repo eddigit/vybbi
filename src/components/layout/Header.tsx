@@ -75,9 +75,10 @@ export function Header() {
   }, [isMobileMenuOpen]);
 
   const toggleMobileMenu = () => {
-    console.log('Toggle mobile menu clicked, current state:', isMobileMenuOpen);
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-    console.log('New mobile menu state will be:', !isMobileMenuOpen);
+    console.log('🔥 BURGER CLICKED! Current state:', isMobileMenuOpen);
+    const newState = !isMobileMenuOpen;
+    setIsMobileMenuOpen(newState);
+    console.log('🔥 New state set to:', newState);
   };
 
   // Get main navigation links based on user profile
@@ -144,8 +145,11 @@ export function Header() {
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden touch-target p-2 z-[80] relative"
-            onClick={toggleMobileMenu}
+            className="lg:hidden touch-target p-2 z-[80] relative bg-red-500/20 border border-red-500"
+            onClick={(e) => {
+              console.log('🎯 BUTTON CLICKED EVENT:', e);
+              toggleMobileMenu();
+            }}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
@@ -298,18 +302,24 @@ export function Header() {
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && (
         <>
-          {console.log('🔍 Mobile menu should be visible now!')}
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/50 backdrop-blur-sm z-[9990] lg:hidden"
-            onClick={() => setIsMobileMenuOpen(false)}
+            className="fixed inset-0 bg-red-500/50 backdrop-blur-sm z-[9990] lg:hidden"
+            onClick={() => {
+              console.log('🚪 Backdrop clicked, closing menu');
+              setIsMobileMenuOpen(false);
+            }}
           />
           
           {/* Menu panel */}
           <div 
             className="fixed top-14 left-0 right-0 bottom-0 z-[9999] lg:hidden bg-background border-t border-border shadow-lg overflow-y-auto"
           >
-            <div className="p-4 pb-safe-bottom space-y-6">
+            <div className="p-4 pb-safe-bottom space-y-6 bg-green-500/20">
+              <div className="text-center py-4 bg-blue-500/20">
+                <h2 className="text-lg font-bold text-white">🎯 MENU TEST</h2>
+                <p className="text-sm text-muted-foreground">Si vous voyez ceci, le menu fonctionne!</p>
+              </div>
               {profile ? (
                 <>
                   {/* User Profile Section - Only when logged in */}
