@@ -97,6 +97,7 @@ import AdminProspecting from "./pages/AdminProspecting";
 import WebTV from "./pages/WebTV";
 import Radio from "./pages/Radio";
 import Token from "./pages/Token";
+import VybbiTokens from "./pages/VybbiTokens";
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
