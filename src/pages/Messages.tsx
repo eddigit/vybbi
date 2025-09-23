@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -9,7 +9,7 @@ import { useConversations } from '@/hooks/useConversations';
 import { useMessages } from '@/hooks/useMessages';
 import { useTypingPresence } from '@/hooks/useTypingPresence';
 import ConversationList from '@/components/messages/ConversationList';
-import ChatHeader from '@/components/messages/ChatHeader';
+import MessageHeader from '@/components/messages/MessageHeader';
 import MessageList from '@/components/messages/MessageList';
 import Composer from '@/components/messages/Composer';
 import RightInfoPanel from '@/components/messages/RightInfoPanel';
@@ -63,7 +63,7 @@ export default function Messages() {
     if (user) {
       handleContactParameter();
     }
-  }, [user, location.search]);
+  }, [user, handleContactParameter]);
 
   useEffect(() => {
     // On mobile, hide conversation list when a conversation is selected
@@ -72,7 +72,7 @@ export default function Messages() {
     }
   }, [selectedConversationId, isMobile]);
 
-  const handleContactParameter = async () => {
+  const handleContactParameter = useCallback(async () => {
     const searchParams = new URLSearchParams(location.search);
     const contactUserId = searchParams.get('contact');
     const conversationParam = searchParams.get('conversation');
@@ -139,7 +139,7 @@ export default function Messages() {
         navigate('/messages', { replace: true });
       }
     }
-  };
+  }, [location.search, navigate, user, toast, setSelectedConversationId]);
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
@@ -159,30 +159,31 @@ export default function Messages() {
 
     try {
       await sendMessage(content, attachments);
-    } catch (error: any) {
-      if (error.message?.includes('Cannot send more messages until recipient replies')) {
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      if (errorMessage.includes('Cannot send more messages until recipient replies')) {
         toast({
           title: "Message non envoyé",
           description: "Vous devez attendre une réponse avant d'envoyer un autre message.",
           variant: "destructive",
         });
-      } else if (error.message?.includes('blocked user')) {
+      } else if (errorMessage.includes('blocked user')) {
         toast({
           title: "Message non envoyé",
           description: "Vous ne pouvez pas envoyer de message à cet utilisateur.",
           variant: "destructive",
         });
-      } else if (error.message?.includes('exclusive manager')) {
+      } else if (errorMessage.includes('exclusive manager')) {
         toast({
           title: "Message non envoyé",
           description: "Cet artiste ne peut être contacté que par son manager exclusif.",
           variant: "destructive",
         });
       } else {
-        console.error('Send message error:', error.message);
+        console.error('Send message error:', errorMessage);
         toast({
           title: "Erreur",
-          description: `Impossible d'envoyer le message: ${error.message}`,
+          description: `Impossible d'envoyer le message: ${errorMessage}`,
           variant: "destructive",
         });
       }
@@ -279,7 +280,7 @@ export default function Messages() {
 
         {/* Center - Chat Window */}
         <div className={`flex-1 flex flex-col pb-28 ${showInfo ? 'border-r' : ''}`}>
-          <ChatHeader
+          <MessageHeader
             conversation={selectedConversation}
             typingUsers={typingUsers}
             onBack={handleBackToList}
@@ -337,7 +338,7 @@ export default function Messages() {
         />
       ) : (
         <div className="flex flex-col h-full pb-20">
-          <ChatHeader
+          <MessageHeader
             conversation={selectedConversation}
             typingUsers={typingUsers}
             onBack={handleBackToList}

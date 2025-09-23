@@ -26,7 +26,7 @@ import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
 import { RadioManagement } from "@/components/admin/RadioManagement";
 import { RadioPlaylistManager } from "@/components/admin/RadioPlaylistManager";
-import { VybbiChat } from "@/components/admin/VybbiChat";
+
 import { VybbiConfig } from "@/components/admin/VybbiConfig";
 import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
 import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
@@ -455,17 +455,12 @@ export default function AdminDashboard() {
               </Card>
             </div>
 
-            <Tabs defaultValue="chat" className="space-y-4">
+            <Tabs defaultValue="config" className="space-y-4">
               <TabsList>
-                <TabsTrigger value="chat">Chat Vybbi</TabsTrigger>
                 <TabsTrigger value="config">Configuration</TabsTrigger>
                 <TabsTrigger value="monitoring">Monitoring</TabsTrigger>
                 <TabsTrigger value="knowledge">Base de Connaissances</TabsTrigger>
               </TabsList>
-              
-              <TabsContent value="chat">
-                <VybbiChat />
-              </TabsContent>
               
               <TabsContent value="config">
                 <VybbiConfig />

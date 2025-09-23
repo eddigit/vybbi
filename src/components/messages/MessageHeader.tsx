@@ -5,7 +5,7 @@ import { Search, MoreVertical, Ban, Info, ArrowLeft } from 'lucide-react';
 import { ConversationWithDetails } from '@/hooks/useConversations';
 import { TypingUser } from '@/hooks/useTypingPresence';
 
-interface ChatHeaderProps {
+interface MessageHeaderProps {
   conversation: ConversationWithDetails | null;
   typingUsers: TypingUser[];
   onBack: () => void;
@@ -14,14 +14,14 @@ interface ChatHeaderProps {
   showBackButton?: boolean;
 }
 
-export default function ChatHeader({
+export default function MessageHeader({
   conversation,
   typingUsers,
   onBack,
   onOpenInfo,
   onBlockUser,
   showBackButton = false,
-}: ChatHeaderProps) {
+}: MessageHeaderProps) {
   if (!conversation) {
     return (
       <div className="h-16 border-b flex items-center justify-center bg-background">

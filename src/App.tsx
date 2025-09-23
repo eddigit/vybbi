@@ -17,7 +17,7 @@ import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { usePWAUpdate } from '@/hooks/usePWAUpdate';
 import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
-import { ChatButton } from '@/components/ChatButton';
+
 import { ConditionalHomePage } from '@/components/ConditionalHomePage';
 import SocialWall from "./pages/SocialWall";
 import Dashboard from "./pages/Dashboard";
@@ -30,7 +30,7 @@ import Auth from "./pages/Auth";
 import Profiles from "./pages/Profiles";
 import Messages from "./pages/Messages";
 import Communities from "./pages/Communities";
-import CommunityChat from "./pages/CommunityChat";
+
 import Artists from "./pages/Artists";
 import Lieux from "./pages/Lieux";
 import ArtistProfile from "./pages/ArtistProfile";
@@ -90,7 +90,7 @@ import CentreAide from './pages/CentreAide';
 import Confidentialite from './pages/Confidentialite';
 import Conditions from './pages/Conditions';
 import CookiesPage from './pages/Cookies';
-import Chat from "./pages/Chat";
+
 import Contact from './pages/Contact';
 import SystemTest from './pages/SystemTest';
 import AdminProspecting from "./pages/AdminProspecting";
@@ -181,7 +181,7 @@ const App = () => (
                       <Route path="/messages" element={<Messages />} />
                       <Route path="/notifications" element={<Notifications />} />
                       <Route path="/communities" element={<Communities />} />
-                      <Route path="/community/:communityId" element={<CommunityChat />} />
+
                       <Route path="/artists" element={<Artists />} />
                       <Route path="/artists/:id/edit" element={<ArtistProfileEdit />} />
                       <Route path="/agents/:id/edit" element={<AgentProfileEdit />} />
@@ -217,7 +217,7 @@ const App = () => (
                       <Route path="/admin/prospecting" element={<AdminProspecting />} />
                       <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
                       <Route path="/admin/mock-profiles" element={<AdminMockProfiles />} />
-                      <Route path="/chat" element={<Chat />} />
+
                       <Route path="/affiliation" element={<InfluenceurDashboard />} />
                       <Route path="/influenceurs/:slug" element={<ArtistProfileBySlug />} />
                       <Route path="/blog" element={<Blog />} />
@@ -243,7 +243,6 @@ const App = () => (
                     </Routes>
                     </Layout>
                     <RadioPlayer />
-                    <ChatButton />
                     <PWAInstallPrompt />
                     <OfflineIndicator />
                     <PWAUpdateHandler />

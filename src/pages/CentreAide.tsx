@@ -133,7 +133,7 @@ export default function CentreAide() {
     },
     {
       q: "Qui contacter pour un problème technique ?",
-      a: "Utilisez le chat support (bulle en bas à droite) ou envoyez un email à support@vybbi.com. Notre équipe répond en moins de 24h."
+      a: "Envoyez un email à support@vybbi.com. Notre équipe répond en moins de 24h."
     }
   ];
 

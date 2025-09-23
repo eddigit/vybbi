@@ -5,7 +5,7 @@ import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
 import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
-import { ChatButton } from "@/components/ChatButton";
+
 import { useAuth } from "@/hooks/useAuth";
 
 
