@@ -346,7 +346,7 @@ export function Header() {
           
           {/* Menu panel */}
           <div className="absolute inset-0 bg-card shadow-lg overflow-y-auto">
-            <div className="pt-[56px] sm:pt-[64px] p-4 pb-safe-bottom space-y-6">
+            <div className="p-4 pb-safe-bottom space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-foreground">Menu</h2>
                 <Button
