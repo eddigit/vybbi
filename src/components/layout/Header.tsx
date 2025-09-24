@@ -2,7 +2,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
 import { VybbiTokenBalance } from "@/components/vybbi/VybbiTokenBalance";
-import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Menu, X, Coins } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Menu, X, Coins, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -76,43 +76,77 @@ export function Header() {
   }, [isMobileMenuOpen]);
 
   const toggleMobileMenu = () => {
-    console.log('🔥 BURGER CLICKED! Current state:', isMobileMenuOpen);
-    const newState = !isMobileMenuOpen;
-    setIsMobileMenuOpen(newState);
-    console.log('🔥 New state set to:', newState);
+    setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  // Get main navigation links based on user profile
-  const getMainNavLinks = () => {
+  // Get visitor navigation links (for non-authenticated users)
+  const getVisitorNavLinks = () => [
+    { href: "/top-artistes", label: "Top Artistes", icon: Trophy },
+    { href: "/artists", label: "Nos Artistes", icon: Users },
+    { href: "/webtv", label: "Web TV", icon: Radio },
+    { href: "/token", label: "Token VYBBI", icon: Coins },
+    { href: "/partners", label: "Nos Partenaires", icon: Users },
+    { href: "/lieux", label: "Nos Lieux", icon: MapPin },
+    { href: "/a-propos", label: "À propos", icon: Star },
+    { href: "/blog", label: "Blog", icon: Search },
+  ];
+
+  // Get main navigation links based on user profile (for authenticated users)
+  const getAuthenticatedNavLinks = () => {
     if (!profile) return [];
     
     const baseLinks = [
-      { href: "/dashboard", label: "Tableau de bord", icon: LayoutDashboard },
+      { href: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
       { href: "/messages", label: "Messages", icon: MessageSquare },
-      { href: "/top-artistes", label: "Top Artistes", icon: Trophy },
       { href: "/vybbi-tokens", label: "Mes Jetons VYBBI", icon: Coins },
-      { href: "/annonces", label: "Annonces", icon: Megaphone },
-      { href: "/radio", label: "Radio", icon: Radio },
       { href: "/webtv", label: "Web TV", icon: Radio },
+      { href: "/annonces", label: "Annonces", icon: Megaphone },
     ];
 
-    // Add profile-specific links
-    if (profile.profile_type === 'agent' || profile.profile_type === 'manager' || profile.profile_type === 'lieu') {
-      baseLinks.push({ href: "/artists", label: "Artistes", icon: Search });
-    }
-    
-    if (profile.profile_type === 'agent' || profile.profile_type === 'manager') {
-      baseLinks.push(
-        { href: "/lieux", label: "Lieux", icon: MapPin },
-        { href: "/events", label: "Événements", icon: Star }
-      );
-    }
-
-    if (profile.profile_type === 'artist') {
-      baseLinks.push(
-        { href: "/profiles?type=agent", label: "Agents", icon: Users },
-        { href: "/profiles?type=manager", label: "Managers", icon: Users }
-      );
+    // Add profile-specific links based on TopNav structure
+    switch (profile.profile_type) {
+      case 'agent':
+        baseLinks.push(
+          { href: "/artists", label: "Artistes", icon: Users },
+          { href: "/lieux", label: "Lieux", icon: MapPin },
+          { href: "/recherche-avancee", label: "Recherche IA", icon: Search },
+          { href: "/communities", label: "Communautés", icon: Users }
+        );
+        break;
+      case 'manager':
+        baseLinks.push(
+          { href: "/partners", label: "Partenaires", icon: Users },
+          { href: "/campaigns", label: "Campagnes", icon: Target },
+          { href: "/commissions", label: "Commissions", icon: Coins },
+          { href: "/reports", label: "Rapports", icon: Star },
+          { href: "/communities", label: "Communautés", icon: Users }
+        );
+        break;
+      case 'lieu':
+        baseLinks.push(
+          { href: "/artists", label: "Artistes", icon: Users },
+          { href: "/lieux", label: "Lieux", icon: MapPin },
+          { href: "/events", label: "Événements", icon: Star },
+          { href: "/recherche-avancee", label: "Recherche IA", icon: Search },
+          { href: "/communities", label: "Communautés", icon: Users }
+        );
+        break;
+      case 'influenceur':
+        baseLinks.push(
+          { href: "/affiliation", label: "Affiliation", icon: Target },
+          { href: "/communities", label: "Communautés", icon: Users }
+        );
+        break;
+      case 'artist':
+      default:
+        baseLinks.push(
+          { href: "/artists", label: "Artists", icon: Users },
+          { href: "/recherche-avancee", label: "Recherche Avancée", icon: Search },
+          { href: "/profiles?type=agent", label: "Agents", icon: Users },
+          { href: "/lieux", label: "Lieux", icon: MapPin },
+          { href: "/communities", label: "Communautés", icon: Users }
+        );
+        break;
     }
 
     return baseLinks;
@@ -142,15 +176,12 @@ export function Header() {
             </div>
           )}
           
-          {/* Mobile menu button - Always visible for navigation */}
+          {/* Mobile menu button */}
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden touch-target p-2 z-[80] relative bg-red-500/20 border border-red-500"
-            onClick={(e) => {
-              console.log('🎯 BUTTON CLICKED EVENT:', e);
-              toggleMobileMenu();
-            }}
+            className="lg:hidden touch-target p-2 z-[80] relative"
+            onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
           >
@@ -339,7 +370,7 @@ export function Header() {
 
                   {/* Main Navigation */}
                   <nav className="space-y-2">
-                    {getMainNavLinks().map((link, index) => {
+                    {getAuthenticatedNavLinks().map((link, index) => {
                       const Icon = link.icon;
                       return (
                         <Link

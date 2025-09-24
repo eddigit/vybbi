@@ -6,7 +6,6 @@ import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
 import { TickerBanner } from "@/components/TickerBanner";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
-import { MobileNavigation } from "@/components/MobileNavigation";
 
 // Import Token images
 import vybbiMemeSpace from '@/assets/vybbi-meme-space.png';
@@ -154,15 +153,6 @@ export default function Landing() {
                   <Link to="/auth?tab=signup">Commencer</Link>
                 </Button>
               </div>
-              
-              {/* Mobile navigation */}
-              <MobileNavigation 
-                navigationLinks={navigationLinks}
-                authButtons={{
-                  signIn: "/auth?tab=signin",
-                  signUp: "/auth?tab=signup"
-                }}
-              />
             </div>
           </div>
         </div>
