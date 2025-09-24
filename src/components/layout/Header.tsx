@@ -157,7 +157,7 @@ export function Header() {
   return (
     <header className={cn(
       "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top",
-      isMobileMenuOpen ? "z-0 !backdrop-blur-none supports-[backdrop-filter]:!bg-background/95" : "z-50"
+      isMobileMenuOpen ? "z-0 !backdrop-blur-none supports-[backdrop-filter]:!bg-background/95 opacity-0 pointer-events-none" : "z-50"
     )}>
       <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
         {/* Mobile: Logo only, Desktop: Logo + Name */}
