@@ -183,7 +183,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="sm"
-            className="lg:hidden touch-target p-2 z-[80] relative"
+            className="md:hidden touch-target p-2 z-[80] relative"
             onClick={toggleMobileMenu}
             aria-label="Toggle menu"
             aria-expanded={isMobileMenuOpen}
@@ -336,7 +336,7 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && createPortal(
-        <div className="fixed inset-0 lg:hidden pointer-events-auto" style={{ zIndex: 2147483647 }} role="dialog" aria-modal="true">
+        <div className="fixed inset-0 md:hidden pointer-events-auto" style={{ zIndex: 2147483647 }} role="dialog" aria-modal="true">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"

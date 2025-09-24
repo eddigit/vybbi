@@ -64,10 +64,13 @@ export function Layout({ children }: LayoutProps) {
   if (isArtistProfilePage || isVenueProfilePage || isPartnerProfilePage) {
     return (
       <div className="min-h-screen bg-background relative overflow-x-hidden">
-        <Header />
+        <div className="hidden md:block">
+          <Header />
+        </div>
         <main className="flex-1 pb-10 relative overflow-x-hidden">
           {children}
         </main>
+        <MobileTabBar />
         <Footer />
         <CookieConsentBanner />
       </div>
@@ -77,7 +80,9 @@ export function Layout({ children }: LayoutProps) {
   // For all other pages (dashboard, agent pages, social wall when authenticated, etc.), use responsive navigation
   return (
     <div className="min-h-screen flex flex-col w-full bg-background relative overflow-x-hidden">
-      <Header />
+      <div className="hidden md:block">
+        <Header />
+      </div>
       {/* Desktop horizontal nav, hidden on mobile */}
       <div className="hidden md:block">
         <TopNav />
