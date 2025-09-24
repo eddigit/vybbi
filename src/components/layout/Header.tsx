@@ -336,21 +336,25 @@ export function Header() {
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-red-500/50 backdrop-blur-sm z-[9990] lg:hidden"
-            onClick={() => {
-              console.log('🚪 Backdrop clicked, closing menu');
-              setIsMobileMenuOpen(false);
-            }}
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] lg:hidden"
+            onClick={() => setIsMobileMenuOpen(false)}
           />
           
           {/* Menu panel */}
           <div 
-            className="fixed top-14 left-0 right-0 bottom-0 z-[9999] lg:hidden bg-background border-t border-border shadow-lg overflow-y-auto"
+            className="fixed top-[56px] sm:top-[64px] left-0 right-0 bottom-0 z-[101] lg:hidden bg-card border-t border-border shadow-lg overflow-y-auto"
           >
-            <div className="p-4 pb-safe-bottom space-y-6 bg-green-500/20">
-              <div className="text-center py-4 bg-blue-500/20">
-                <h2 className="text-lg font-bold text-white">🎯 MENU TEST</h2>
-                <p className="text-sm text-muted-foreground">Si vous voyez ceci, le menu fonctionne!</p>
+            <div className="p-4 pb-safe-bottom space-y-6">
+              <div className="flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-foreground">Menu</h2>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="h-8 w-8 p-0"
+                >
+                  <X className="h-4 w-4" />
+                </Button>
               </div>
               {profile ? (
                 <>
