@@ -179,18 +179,6 @@ export function Header() {
             </div>
           )}
           
-          {/* Mobile menu button */}
-          <Button
-            variant="ghost"
-            size="sm"
-            className="md:hidden touch-target p-2 z-[80] relative"
-            onClick={toggleMobileMenu}
-            aria-label="Toggle menu"
-            aria-expanded={isMobileMenuOpen}
-          >
-            {isMobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
-          </Button>
-          
           {showAdminControls && (
             <>
               {/* Search - Hidden on mobile, visible on tablet+ */}
