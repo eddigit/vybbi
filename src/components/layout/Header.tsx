@@ -336,7 +336,7 @@ export function Header() {
 
       {/* Mobile Menu Overlay */}
       {isMobileMenuOpen && createPortal(
-        <div className="fixed inset-0 z-[100000] isolate lg:hidden">
+        <div className="fixed inset-0 lg:hidden pointer-events-auto" style={{ zIndex: 2147483647 }} role="dialog" aria-modal="true">
           {/* Backdrop */}
           <div 
             className="absolute inset-0 bg-black/80 backdrop-blur-sm"
