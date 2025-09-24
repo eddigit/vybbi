@@ -59,19 +59,7 @@ export default function Messages() {
     ? conversations.find(c => c.id === selectedConversationId) 
     : null;
 
-  useEffect(() => {
-    if (user) {
-      handleContactParameter();
-    }
-  }, [user, handleContactParameter]);
-
-  useEffect(() => {
-    // On mobile, hide conversation list when a conversation is selected
-    if (isMobile && selectedConversationId) {
-      setShowConversationList(false);
-    }
-  }, [selectedConversationId, isMobile]);
-
+  // Handle contact parameter - moved before useEffect to fix TDZ issue
   const handleContactParameter = useCallback(async () => {
     const searchParams = new URLSearchParams(location.search);
     const contactUserId = searchParams.get('contact');
@@ -140,6 +128,19 @@ export default function Messages() {
       }
     }
   }, [location.search, navigate, user, toast, setSelectedConversationId]);
+
+  useEffect(() => {
+    if (user) {
+      handleContactParameter();
+    }
+  }, [user, handleContactParameter]);
+
+  useEffect(() => {
+    // On mobile, hide conversation list when a conversation is selected
+    if (isMobile && selectedConversationId) {
+      setShowConversationList(false);
+    }
+  }, [selectedConversationId, isMobile]);
 
   const handleSelectConversation = (conversationId: string) => {
     setSelectedConversationId(conversationId);
