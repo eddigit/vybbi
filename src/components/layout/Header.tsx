@@ -336,15 +336,15 @@ export function Header() {
         <>
           {/* Backdrop */}
           <div 
-            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] lg:hidden"
+            className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[9999] lg:hidden"
             onClick={() => setIsMobileMenuOpen(false)}
           />
           
           {/* Menu panel */}
           <div 
-            className="fixed top-[56px] sm:top-[64px] left-0 right-0 bottom-0 z-[101] lg:hidden bg-card border-t border-border shadow-lg overflow-y-auto"
+            className="fixed top-0 left-0 right-0 bottom-0 z-[10000] lg:hidden bg-card shadow-lg overflow-y-auto"
           >
-            <div className="p-4 pb-safe-bottom space-y-6">
+            <div className="pt-[56px] sm:pt-[64px] p-4 pb-safe-bottom space-y-6">
               <div className="flex items-center justify-between">
                 <h2 className="text-lg font-semibold text-foreground">Menu</h2>
                 <Button
