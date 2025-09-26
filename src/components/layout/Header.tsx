@@ -19,6 +19,7 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationCenter } from "@/components/NotificationCenter";
+import { MobileBurgerMenu } from "@/components/layout/MobileBurgerMenu";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
@@ -134,59 +135,64 @@ export function Header() {
   // Removed notification handling - now in NotificationCenter
 
   return (
-    <header className={cn(
-      "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-50"
-    )}>
-      <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
-        {/* Mobile: Logo only, Desktop: Logo + Name */}
-        <Link to={user ? "/feed" : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
-          <img 
-            src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
-            alt="Vybbi Logo" 
-            className="w-7 h-7 sm:w-8 sm:h-8"
-          />
-          <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
-        </Link>
+    <>
+      {/* Mobile Burger Menu - Fixed positioning above header */}
+      <MobileBurgerMenu />
+      
+      <header className={cn(
+        "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-50"
+      )}>
+        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
+          {/* Mobile: Logo only, Desktop: Logo + Name */}
+          <Link to={user ? "/feed" : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
+            <img 
+              src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
+              alt="Vybbi Logo" 
+              className="w-7 h-7 sm:w-8 sm:h-8"
+            />
+            <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
+          </Link>
 
 
-        <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
-          {/* VYBBI Token Balance Widget */}
-          {user && (
-            <div className="hidden md:block">
-              <VybbiTokenBalance variant="widget" />
-            </div>
-          )}
-          
-          {showAdminControls && (
-            <>
-              {/* Search - Hidden on mobile, visible on tablet+ */}
-              <form onSubmit={handleSearch} className="hidden lg:block relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                <Input
-                  placeholder={searchPlaceholder}
-                  className="pl-10 w-48 xl:w-64"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                />
-              </form>
+          <div className="flex items-center gap-1 sm:gap-4 min-w-0 justify-end">
+            {/* VYBBI Token Balance Widget */}
+            {user && (
+              <div className="hidden md:block">
+                <VybbiTokenBalance variant="widget" />
+              </div>
+            )}
+            
+            {showAdminControls && (
+              <>
+                {/* Search - Hidden on mobile, visible on tablet+ */}
+                <form onSubmit={handleSearch} className="hidden lg:block relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                  <Input
+                    placeholder={searchPlaceholder}
+                    className="pl-10 w-48 xl:w-64"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                  />
+                </form>
 
-              {/* Notifications */}
-              <NotificationCenter />
-            </>
-          )}
+                {/* Notifications */}
+                <NotificationCenter />
+              </>
+            )}
 
-          {profile && (
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <button className="rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 cursor-pointer">
-                  <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
-                    <AvatarImage src={profile.avatar_url || ''} />
-                    <AvatarFallback className="bg-gradient-primary text-white text-xs sm:text-sm">
-                      {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-3 w-3 sm:h-4 sm:w-4" />}
-                    </AvatarFallback>
-                  </Avatar>
-                </button>
-              </DropdownMenuTrigger>
+            {/* Desktop Profile Dropdown - Hidden on mobile */}
+            {profile && (
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <button className="hidden md:flex rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50 cursor-pointer">
+                    <Avatar className="h-7 w-7 sm:h-8 sm:w-8">
+                      <AvatarImage src={profile.avatar_url || ''} />
+                      <AvatarFallback className="bg-gradient-primary text-white text-xs sm:text-sm">
+                        {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-3 w-3 sm:h-4 sm:w-4" />}
+                      </AvatarFallback>
+                    </Avatar>
+                  </button>
+                </DropdownMenuTrigger>
               <DropdownMenuContent align="end" className="w-48 sm:w-56">
                 <DropdownMenuLabel className="text-sm"><AutoTranslate text="Mon compte" /></DropdownMenuLabel>
                 <DropdownMenuSeparator />
@@ -299,7 +305,7 @@ export function Header() {
           )}
         </div>
       </div>
-
-    </header>
+      </header>
+    </>
   );
 }
