@@ -21,6 +21,9 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
       const currentOffset = reset ? 0 : offset;
       const limit = 10;
 
+      // Add a small delay to prevent rapid successive calls
+      await new Promise(resolve => setTimeout(resolve, 100));
+
       // Call the database function to get the social feed
       const { data, error: fetchError } = await supabase.rpc('get_social_feed', {
         user_id_param: user.id,
@@ -61,6 +64,8 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
         setError('Erreur de configuration du système - contactez le support');
       } else if (errorMessage.includes('structure of query does not match')) {
         setError('Erreur de format des données - veuillez recharger la page');
+      } else if (errorMessage.includes('Failed to fetch')) {
+        setError('Problème de connexion - vérifiez votre réseau');
       } else {
         setError(errorMessage);
       }
@@ -80,16 +85,23 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
     fetchPosts(true);
   }, [fetchPosts]);
 
-  // Subscribe to real-time updates
+  // Subscribe to real-time updates with debouncing
   useEffect(() => {
     if (!user) return;
 
-    // Initial load
-    refreshFeed();
+    // Reset state when feed type or filter changes
+    setPosts([]);
+    setOffset(0);
+    setError(null);
 
-    // Subscribe to new posts
+    // Debounced initial load
+    const timeoutId = setTimeout(() => {
+      refreshFeed();
+    }, 200);
+
+    // Subscribe to new posts with debouncing
     const channel = supabase
-      .channel('social_posts_changes')
+      .channel(`social_posts_changes_${feedType}_${contentFilter}`)
       .on(
         'postgres_changes',
         {
@@ -98,8 +110,8 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
           table: 'social_posts'
         },
         () => {
-          // Refresh feed when new post is added
-          refreshFeed();
+          // Debounce refresh to prevent too many calls
+          setTimeout(() => refreshFeed(), 1000);
         }
       )
       .on(
@@ -110,16 +122,17 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
           table: 'post_interactions'
         },
         () => {
-          // Refresh to update interaction counts
-          refreshFeed();
+          // Debounce refresh to prevent too many calls
+          setTimeout(() => refreshFeed(), 1500);
         }
       )
       .subscribe();
 
     return () => {
+      clearTimeout(timeoutId);
       supabase.removeChannel(channel);
     };
-  }, [user, refreshFeed, feedType, contentFilter]);
+  }, [user, feedType, contentFilter]);
 
   return {
     posts,

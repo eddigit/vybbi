@@ -9,21 +9,8 @@ import { useSocialFeed } from "@/hooks/useSocialFeed";
 export function NewsFeed() {
   const [activeTab, setActiveTab] = useState<'all' | 'prestations' | 'events' | 'annonces' | 'messages'>('all');
   
-  // Use different feed instances for each tab
-  const allFeed = useSocialFeed('all', 'all');
-  const prestationsFeed = useSocialFeed('all', 'prestations');
-  const eventsFeed = useSocialFeed('all', 'events');
-  const annoncesFeed = useSocialFeed('all', 'annonces');
-  const messagesFeed = useSocialFeed('all', 'messages');
-  
-  // Select the appropriate feed based on active tab
-  const selectedFeed = activeTab === 'all' ? allFeed : 
-                      activeTab === 'prestations' ? prestationsFeed :
-                      activeTab === 'events' ? eventsFeed :
-                      activeTab === 'annonces' ? annoncesFeed :
-                      messagesFeed;
-
-  const { posts, loading, error, hasMore, loadMore, refreshFeed } = selectedFeed;
+  // Only load the active tab's feed to improve performance
+  const { posts, loading, error, hasMore, loadMore, refreshFeed } = useSocialFeed('all', activeTab === 'all' ? 'all' : activeTab);
 
   return (
     <div className="flex-1 overflow-hidden">
