@@ -252,7 +252,7 @@ export function BookingDashboard() {
                     
                     <div className="flex items-center gap-2 text-sm">
                       <Building className="h-4 w-4" />
-                      <span className="font-medium">Lieu:</span>
+                      <span className="font-medium">Organisateur:</span>
                       {booking.venue_profile?.display_name || 'Non spécifié'}
                     </div>
                     
@@ -270,7 +270,7 @@ export function BookingDashboard() {
                     {booking.event?.location && (
                       <div className="flex items-center gap-2 text-sm">
                         <MapPin className="h-4 w-4" />
-                        <span className="font-medium">Lieu:</span>
+                        <span className="font-medium">Organisateur:</span>
                         {booking.event.location}
                       </div>
                     )}

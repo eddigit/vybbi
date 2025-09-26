@@ -92,7 +92,7 @@ export default function VenueDashboard() {
       <div className="space-y-6">
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-bold">Tableau de bord établissement</h1>
+          <h1 className="text-3xl font-bold">Tableau de bord organisateur</h1>
           <p className="text-muted-foreground">Bienvenue {profile?.display_name}</p>
         </div>
         <Button asChild>
@@ -147,11 +147,11 @@ export default function VenueDashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle>Mon établissement</CardTitle>
+            <CardTitle>Mon organisation</CardTitle>
           </CardHeader>
           <CardContent>
             <p className="text-muted-foreground mb-4">
-              Mettez à jour les informations de votre lieu
+              Mettez à jour les informations de votre organisation
             </p>
             <Button className="w-full" variant="outline" asChild>
               <Link to={`/lieux/${profile?.id}/edit`}>

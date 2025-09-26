@@ -82,7 +82,7 @@ export function ProfileVisitors({ profileId }: ProfileVisitorsProps) {
     switch (type) {
       case 'agent': return 'Agent';
       case 'manager': return 'Manager';
-      case 'lieu': return 'Lieu';
+      case 'lieu': return 'Organisateur';
       case 'artist': return 'Artiste';
       default: return type;
     }
@@ -190,7 +190,7 @@ export function ProfileVisitors({ profileId }: ProfileVisitorsProps) {
             </div>
             <div className="text-center p-4 border rounded-lg">
               <p className="text-2xl font-bold text-purple-600">{stats?.venue_views || 0}</p>
-              <p className="text-sm text-muted-foreground">Lieux</p>
+              <p className="text-sm text-muted-foreground">Organisateurs</p>
             </div>
           </div>
         </CardContent>

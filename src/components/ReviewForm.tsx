@@ -99,7 +99,7 @@ export default function ReviewForm({ artistId, onReviewSubmitted, existingReview
       if (error.message?.includes('duplicate key value')) {
         errorMessage = "Vous avez déjà laissé un avis pour cet artiste.";
       } else if (error.message?.includes('row-level security')) {
-        errorMessage = "Seuls les lieux, agents et managers peuvent laisser un avis.";
+        errorMessage = "Seuls les organisateurs, agents et managers peuvent laisser un avis.";
       }
       
       toast({

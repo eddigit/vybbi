@@ -86,7 +86,7 @@ export function ProfileViewStatsCard({ profileId, className }: ProfileViewStatsC
               <span>{stats?.manager_views || 0}</span>
             </div>
             <div className="flex justify-between items-center text-xs">
-              <span className="text-purple-600">Lieux</span>
+              <span className="text-purple-600">Organisateurs</span>
               <span>{stats?.venue_views || 0}</span>
             </div>
           </div>

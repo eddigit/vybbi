@@ -138,7 +138,7 @@ export function ProfileAnalytics({ profileId, className = '' }: ProfileAnalytics
               {stats.venue_views > 0 && (
                 <div className="text-center">
                   <div className="font-medium">{stats.venue_views}</div>
-                  <div className="text-muted-foreground">Lieux</div>
+                  <div className="text-muted-foreground">Organisateurs</div>
                 </div>
               )}
             </div>

@@ -97,7 +97,7 @@ export const PressKitGenerator = ({ profileData, mediaAssets, reviews, events }:
         subject: `Press Kit professionnel de ${profileData.display_name} - Généré par Vybbi`,
         author: 'Vybbi Platform',
         keywords: `${profileData.display_name}, press kit, artist, music, vybbi, ${profileData.genres?.join(', ') || ''}`,
-        creator: 'Vybbi - Platform for Artists & Venues'
+        creator: 'Vybbi - Platform for Artists & Organisateurs'
       });
 
       // Calculer les dimensions pour ajuster parfaitement à A4

@@ -27,7 +27,7 @@ interface SEOHeadProps {
 
 export function SEOHead({ 
   title = "Vybbi - Plateforme pour les artistes et professionnels du spectacle",
-  description = "Découvrez et connectez-vous avec les meilleurs artistes, agents, managers et lieux de spectacle sur Vybbi.",
+  description = "Découvrez et connectez-vous avec les meilleurs artistes, agents, managers et organisateurs de spectacle sur Vybbi.",
   keywords = "artistes, spectacle, musique, événements, booking, agents, managers",
   image = "/logo.png",
   url = window.location.href,

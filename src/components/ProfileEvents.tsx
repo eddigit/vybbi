@@ -42,7 +42,7 @@ export function ProfileEvents({ profileId, profileType, className = "" }: Profil
     setLoading(true);
     try {
       if (profileType === 'lieu') {
-        // For venues, get all their events
+        // For organisateurs, get all their events
         const { data: eventsData, error } = await supabase
           .from('events')
           .select(`
@@ -65,7 +65,7 @@ export function ProfileEvents({ profileId, profileType, className = "" }: Profil
 
         if (error) throw error;
 
-        // Get venue profile info
+        // Get organisateur profile info
         const { data: venueProfile } = await supabase
           .from('profiles')
           .select('id, display_name, avatar_url, slug')
@@ -136,15 +136,15 @@ export function ProfileEvents({ profileId, profileType, className = "" }: Profil
             .order('event_date', { ascending: false });
 
           if (bookingEventsData) {
-            // Get venue profiles for booking events
+            // Get organisateur profiles for booking events
             const venueIds = [...new Set(bookingEventsData.map(e => e.venue_profile_id))];
             const { data: venueProfiles } = await supabase
               .from('profiles')
               .select('id, display_name, avatar_url, slug')
               .in('id', venueIds);
 
-            const venueMap = venueProfiles?.reduce((acc, venue) => {
-              acc[venue.id] = venue;
+            const venueMap = venueProfiles?.reduce((acc, organisateur) => {
+              acc[organisateur.id] = organisateur;
               return acc;
             }, {} as Record<string, any>) || {};
 

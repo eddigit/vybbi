@@ -103,7 +103,7 @@ export function VenueCalendar({ venueProfileId, showBookingButton = false }: Ven
       
       toast({
         title: "Demande envoyée",
-        description: "Votre demande de réservation a été transmise au lieu"
+        description: "Votre demande de réservation a été transmise à l'organisateur"
       });
 
       // Close dialog

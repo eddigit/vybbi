@@ -135,7 +135,7 @@ export const TestimonialsSection = ({ profileId, isOwner = false }: Testimonials
 
   const getTypeLabel = (type: string) => {
     switch (type) {
-      case 'venue': return 'Lieu/Festival';
+      case 'venue': return 'Organisateur/Festival';
       case 'collaboration': return 'Collaboration';
       case 'media': return 'Média';
       case 'professional': return 'Professionnel';
@@ -267,7 +267,7 @@ export const TestimonialsSection = ({ profileId, isOwner = false }: Testimonials
                           </SelectTrigger>
                           <SelectContent>
                             <SelectItem value="professional">Professionnel</SelectItem>
-                            <SelectItem value="venue">Lieu/Festival</SelectItem>
+                            <SelectItem value="venue">Organisateur/Festival</SelectItem>
                             <SelectItem value="collaboration">Collaboration</SelectItem>
                             <SelectItem value="media">Média</SelectItem>
                           </SelectContent>

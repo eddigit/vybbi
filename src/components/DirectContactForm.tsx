@@ -112,7 +112,7 @@ ${formData.contactPhone ? `📱 Téléphone: ${formData.contactPhone}` : ''}
 
 🎪 Type d'événement: ${formData.eventType}
 ${formData.eventDate ? `📅 Date souhaitée: ${format(formData.eventDate, 'dd/MM/yyyy')}` : ''}
-${formData.location ? `📍 Lieu: ${formData.location}` : ''}
+${formData.location ? `📍 Organisateur: ${formData.location}` : ''}
 ${formData.duration ? `⏱️ Durée: ${formData.duration}` : ''}
 ${formData.budget ? `💰 Budget: ${formData.budget}` : ''}
 
@@ -142,7 +142,7 @@ Cette demande a été générée via le profil Vybbi de ${artistName}.
 
       if (messageError) throw messageError;
 
-      // Envoyer notification de booking à la venue si c'est un profil lieu
+      // Envoyer notification de booking à l'organisateur si c'est un profil lieu
       const { data: targetProfile } = await supabase
         .from('profiles')
         .select('profile_type, email, display_name')
@@ -152,7 +152,7 @@ Cette demande a été générée via le profil Vybbi de ${artistName}.
       if (targetProfile?.profile_type === 'lieu' && targetProfile.email) {
         notifyBookingProposed({
           venueEmail: targetProfile.email,
-          venueName: targetProfile.display_name || 'Lieu',
+          venueName: targetProfile.display_name || 'Organisateur',
           eventTitle: formData.eventType,
           eventDate: formData.eventDate ? format(formData.eventDate, 'dd/MM/yyyy') : 'À définir',
           artistName: formData.contactName,
@@ -304,7 +304,7 @@ Cette demande a été générée via le profil Vybbi de ${artistName}.
               </div>
 
               <div>
-                <Label htmlFor="location">Lieu de l'événement</Label>
+                <Label htmlFor="location">Organisateur de l'événement</Label>
                 <Input
                   id="location"
                   value={formData.location}

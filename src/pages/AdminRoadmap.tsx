@@ -684,7 +684,7 @@ export default function AdminRoadmap() {
 
                   <div className="border rounded-lg p-4">
                     <h3 className="font-semibold mb-2">🏢 Lieux & Événements</h3>
-                    <p className="text-sm text-muted-foreground">Venues recherchant talents adaptés via filtres et recommandations intelligentes.</p>
+                    <p className="text-sm text-muted-foreground">Organisateurs recherchant talents adaptés via filtres et recommandations intelligentes.</p>
                   </div>
 
                   <div className="border rounded-lg p-4">

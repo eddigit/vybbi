@@ -441,7 +441,7 @@ export default function Landing() {
           <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png" alt="Wolf DJ at Festival Venue" className="w-full h-full object-cover" />
+                  <img src="/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png" alt="Wolf DJ at Festival Organisateur" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">

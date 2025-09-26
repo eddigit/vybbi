@@ -208,7 +208,7 @@ function AdminProspectingLegacy() {
 
     const typeLabels = {
       'artist': 'Artiste',
-      'venue': 'Lieu',
+      'venue': 'Organisateur',
       'agent': 'Agent',
       'manager': 'Manager',
       'academie': 'Académie',
@@ -339,7 +339,7 @@ function AdminProspectingLegacy() {
               <SelectContent>
                 <SelectItem value="all">Tous les types</SelectItem>
                 <SelectItem value="artist">Artiste</SelectItem>
-                <SelectItem value="venue">Lieu</SelectItem>
+                <SelectItem value="venue">Organisateur</SelectItem>
                 <SelectItem value="agent">Agent</SelectItem>
                 <SelectItem value="manager">Manager</SelectItem>
                 <SelectItem value="academie">Académie</SelectItem>

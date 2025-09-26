@@ -109,7 +109,7 @@ export default function EventsManager() {
       return;
     }
 
-    // If user is a venue, also get their own events (regardless of status)
+    // If user is an organisateur, also get their own events (regardless of status)
     let allEvents = publishedData || [];
     if (profile?.profile_type === 'lieu') {
       const { data: myEventsData, error: myEventsError } = await supabase
@@ -130,7 +130,7 @@ export default function EventsManager() {
       }
     }
 
-    // Get venue profiles for all events
+    // Get organisateur profiles for all events
     if (allEvents.length > 0) {
       const venueProfileIds = [...new Set(allEvents.map(e => e.venue_profile_id))];
       const { data: profilesData, error: profilesError } = await supabase
@@ -745,7 +745,7 @@ export default function EventsManager() {
         )}
       </Tabs>
 
-      {/* Bookings - Only show for venues */}
+      {/* Bookings - Only show for organisateurs */}
       {profile?.profile_type === 'lieu' && (
         <div>
           <h2 className="text-2xl font-semibold mb-4">Demandes de booking</h2>

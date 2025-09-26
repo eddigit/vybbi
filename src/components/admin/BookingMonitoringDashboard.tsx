@@ -296,7 +296,7 @@ export function BookingMonitoringDashboard() {
                           
                           <div className="min-w-0 flex-1">
                             <p className="font-medium truncate">
-                              {booking.artist_profile?.display_name || 'Artiste'} → {booking.venue_profile?.display_name || 'Lieu'}
+                              {booking.artist_profile?.display_name || 'Artiste'} → {booking.venue_profile?.display_name || 'Organisateur'}
                             </p>
                             <div className="flex items-center gap-4 text-sm text-muted-foreground">
                               <span className="flex items-center gap-1">
@@ -370,7 +370,7 @@ export function BookingMonitoringDashboard() {
                         <CardHeader className="pb-3">
                           <CardTitle className="text-sm flex items-center gap-2">
                             <Building2 className="h-4 w-4" />
-                            Lieu
+                            Organisateur
                           </CardTitle>
                         </CardHeader>
                         <CardContent>

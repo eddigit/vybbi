@@ -58,7 +58,7 @@ const TEMPLATE_TYPES = [
 const TEMPLATE_CATEGORIES = [
   { value: 'notifications', label: 'Notifications', color: 'bg-blue-500' },
   { value: 'artistes', label: 'Artistes', color: 'bg-purple-500' },
-  { value: 'lieux', label: 'Lieux', color: 'bg-green-500' },
+  { value: 'lieux', label: 'Organisateurs', color: 'bg-green-500' },
   { value: 'agents', label: 'Agents', color: 'bg-orange-500' }
 ];
 
@@ -532,7 +532,7 @@ export const EmailTemplateManager: React.FC = () => {
   <h1 style="color: #333; text-align: center;">Bienvenue {{userName}} !</h1>
   
   <p style="color: #666; font-size: 16px; line-height: 1.6;">
-    Nous sommes ravis de vous accueillir sur Vybbi, la plateforme qui connecte les artistes, les lieux et les professionnels de la musique.
+    Nous sommes ravis de vous accueillir sur Vybbi, la plateforme qui connecte les artistes, les organisateurs et les professionnels de la musique.
   </p>
   
   <p style="color: #666; font-size: 16px; line-height: 1.6;">

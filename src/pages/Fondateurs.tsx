@@ -21,7 +21,7 @@ export default function Fondateurs() {
     "Support VIP avec ligne directe dédiée"
   ];
 
-  const venueBenefits = [
+  const organisateurBenefits = [
     "6 mois gratuits puis 50% de réduction à vie",
     "Accès prioritaire aux nouveaux talents",
     "Fonctionnalités premium incluses (analytics, CRM)",
@@ -192,7 +192,7 @@ export default function Fondateurs() {
               </CardContent>
             </Card>
 
-            {/* Venues */}
+            {/* Organisateurs */}
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardHeader>
                 <div className="flex items-center gap-3 mb-4">
@@ -204,7 +204,7 @@ export default function Fondateurs() {
               </CardHeader>
               <CardContent>
                 <ul className="space-y-3">
-                  {venueBenefits.map((benefit, index) => (
+                  {organisateurBenefits.map((benefit, index) => (
                     <li key={index} className="flex items-start gap-2">
                       <CheckCircle className="w-5 h-5 text-success flex-shrink-0 mt-0.5" />
                       <span className="text-sm text-muted-foreground">{benefit}</span>

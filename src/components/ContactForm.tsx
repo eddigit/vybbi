@@ -151,7 +151,7 @@ ${message.trim()}
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="artist">Artiste</SelectItem>
-                  <SelectItem value="venue">Lieu / Événement</SelectItem>
+                  <SelectItem value="venue">Organisateur / Événement</SelectItem>
                   <SelectItem value="agent">Agent / Manager</SelectItem>
                   <SelectItem value="influencer">Influenceur</SelectItem>
                   <SelectItem value="partner">Partenaire</SelectItem>

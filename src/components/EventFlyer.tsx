@@ -191,7 +191,7 @@ export function EventFlyer({
           </div>
         </div>
 
-        {/* Venue and Artist Info */}
+        {/* Organisateur and Artist Info */}
         <div className="space-y-3 mb-6">
           {event.venue_profile && (
             <div className="flex items-center gap-3">

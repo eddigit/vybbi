@@ -32,7 +32,7 @@ const welcomeContent = {
     icon: Music,
     title: "Bienvenue sur Vybbi !",
     subtitle: "Vous êtes maintenant connecté à un réseau mondial de professionnels de la musique.",
-    description: "Vybbi vous offre l'accès aux meilleures opportunités artistiques et vous connecte avec des agents, managers et lieux prestigieux.",
+    description: "Vybbi vous offre l'accès aux meilleures opportunités artistiques et vous connecte avec des agents, managers et organisateurs prestigieux.",
     gradient: "from-purple-600 to-pink-600",
     steps: [
       {
@@ -135,7 +135,7 @@ const welcomeContent = {
   },
   lieu: {
     icon: MapPin,
-    title: "Bienvenue Lieu !",
+    title: "Bienvenue Organisateur !",
     subtitle: "Votre établissement peut maintenant attirer les meilleurs talents.",
     description: "Vybbi vous connecte avec des artistes de qualité et vous aide à organiser des événements mémorables.",
     gradient: "from-orange-600 to-red-600",
@@ -143,7 +143,7 @@ const welcomeContent = {
       {
         icon: Edit,
         title: "Configurez votre espace",
-        description: "Présentez votre lieu et ses caractéristiques",
+        description: "Présentez votre organisation et ses caractéristiques",
         action: "/venue/profile/edit",
         actionText: "Éditer mon profil"
       },

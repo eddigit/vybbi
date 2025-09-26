@@ -232,7 +232,7 @@ export function EnhancedProfileAnalytics({ profileId, className }: EnhancedProfi
                 <Progress value={(stats.manager_views / stats.total_views) * 100} className="h-1.5" />
                 
                 <div className="flex justify-between text-sm">
-                  <span className="text-muted-foreground">Lieux</span>
+                  <span className="text-muted-foreground">Organisateurs</span>
                   <span className="text-foreground">{stats.venue_views}</span>
                 </div>
                 <Progress value={(stats.venue_views / stats.total_views) * 100} className="h-1.5" />

@@ -17,7 +17,7 @@ export default function NosArtistes() {
   const { trialDays, isPromotionalActive, isLoading: trialLoading } = useTrialConfig();
   const [artists, setArtists] = useState<Profile[]>([]);
   const [agents, setAgents] = useState<Profile[]>([]);
-  const [venues, setVenues] = useState<Profile[]>([]);
+  const [organisateurs, setOrganisateurs] = useState<Profile[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export default function NosArtistes() {
         .order('created_at', { ascending: false })
         .limit(2);
 
-      // Fetch 3 venues
+      // Fetch 3 organisateurs
       const { data: venuesData } = await supabase
         .from('profiles')
         .select('*')
@@ -60,7 +60,7 @@ export default function NosArtistes() {
 
       setArtists(artistsData || []);
       setAgents(agentsData || []);
-      setVenues(venuesData || []);
+      setOrganisateurs(venuesData || []);
     } catch (error) {
       console.error('Error fetching profiles:', error);
     } finally {
@@ -256,10 +256,10 @@ export default function NosArtistes() {
         description="Des professionnels expérimentés pour accompagner et développer les carrières artistiques."
       />
 
-      {/* Venues Section */}
+      {/* Organisateurs Section */}
       <ProfileSection
         title="Lieux & Événements"
-        profiles={venues}
+        profiles={organisateurs}
         description="Des lieux d'exception pour accueillir vos événements et concerts mémorables."
       />
 

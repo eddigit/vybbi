@@ -250,12 +250,12 @@ export default function ArtistEventManager({ artistProfileId, isOwner }: ArtistE
                 </div>
 
                 <div>
-                  <Label htmlFor="location">Lieu</Label>
+                  <Label htmlFor="location">Organisateur</Label>
                   <Input
                     id="location"
                     value={formData.location}
                     onChange={(e) => setFormData(prev => ({ ...prev, location: e.target.value }))}
-                    placeholder="Nom du lieu, adresse..."
+                    placeholder="Nom de l'organisateur, adresse..."
                   />
                 </div>
 

@@ -37,7 +37,7 @@ export function WelcomeGuide({ profileType, onComplete, onNavigate }: WelcomeGui
         {
           icon: MessageSquare,
           title: "Recevez des propositions",
-          description: "Les agents et lieux peuvent vous contacter directement",
+          description: "Les agents et organisateurs peuvent vous contacter directement",
           action: "Mes messages",
           path: "/messages"
         }

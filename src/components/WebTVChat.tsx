@@ -223,7 +223,7 @@ export function WebTVChat({ eventId, eventTitle, isLive }: WebTVChatProps) {
       case 'artist': return 'Artiste';
       case 'agent': return 'Agent';
       case 'manager': return 'Manager';
-      case 'lieu': return 'Lieu';
+      case 'lieu': return 'Organisateur';
       default: return 'Viewer';
     }
   };

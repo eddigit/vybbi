@@ -107,7 +107,7 @@ export function VenueAgenda({ venueProfileId, showBookingButton = false }: Venue
       if (venueProfile?.email && selectedEvent) {
         notifyBookingProposed({
           venueEmail: venueProfile.email,
-          venueName: venueProfile.display_name || 'Lieu',
+          venueName: venueProfile.display_name || 'Organisateur',
           eventTitle: selectedEvent.title,
           eventDate: new Date(selectedEvent.event_date).toLocaleDateString('fr-FR'),
           artistName: profile?.display_name || 'Artiste',
