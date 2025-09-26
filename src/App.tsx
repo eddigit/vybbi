@@ -11,6 +11,8 @@ import { Layout } from "@/components/layout/Layout";
 import { ScrollToTop } from "@/components/ScrollToTop";
 import { RadioPlayer } from "@/components/RadioPlayer";
 import { PerformanceOptimizer, ConnectionOptimizer } from './components/PerformanceOptimizer';
+import { useAuth } from "@/hooks/useAuth";
+import { useIsMobile } from "@/hooks/use-mobile";
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
@@ -137,6 +139,21 @@ const AuthHashRedirect = () => {
   return null;
 };
 
+// Conditional Radio Player - Hide on mobile for logged-in users (except on /radio page)
+const ConditionalRadioPlayer = () => {
+  const { user } = useAuth();
+  const isMobile = useIsMobile();
+  const location = useLocation();
+  
+  // Show RadioPlayer when:
+  // - Not on mobile, OR
+  // - User is not logged in, OR  
+  // - User is on the /radio page
+  const shouldShowPlayer = !isMobile || !user || location.pathname === '/radio';
+  
+  return shouldShowPlayer ? <RadioPlayer /> : null;
+};
+
 // App component - optimized architecture with performance enhancements
 const App = () => (
   <ErrorBoundary>
@@ -242,7 +259,7 @@ const App = () => (
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                     </Layout>
-                    <RadioPlayer />
+                    <ConditionalRadioPlayer />
                     <PWAInstallPrompt />
                     <OfflineIndicator />
                     <PWAUpdateHandler />
