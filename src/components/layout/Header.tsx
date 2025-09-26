@@ -2,7 +2,7 @@ import { LanguageSelector } from "@/components/LanguageSelector";
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
 import { VybbiTokenBalance } from "@/components/vybbi/VybbiTokenBalance";
-import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Menu, X, Coins, Target } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Coins, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -21,7 +21,7 @@ import { useToast } from "@/hooks/use-toast";
 import { NotificationCenter } from "@/components/NotificationCenter";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
-import { createPortal } from "react-dom";
+
 
 export function Header() {
   const location = useLocation();
@@ -30,7 +30,7 @@ export function Header() {
   const { toast } = useToast();
   // Removed useNotifications - now handled by NotificationCenter
   const [searchQuery, setSearchQuery] = useState("");
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   const { translatedText: searchPlaceholder } = useTranslate("Recherche...");
   
 
@@ -55,29 +55,8 @@ export function Header() {
     // La redirection est déjà gérée dans useAuth.ts
   };
 
-  // Close mobile menu on route change
-  useEffect(() => {
-    const handleRouteChange = () => setIsMobileMenuOpen(false);
-    window.addEventListener('popstate', handleRouteChange);
-    return () => window.removeEventListener('popstate', handleRouteChange);
-  }, []);
 
-  // Prevent body scroll when mobile menu is open
-  useEffect(() => {
-    if (isMobileMenuOpen) {
-      document.body.style.overflow = 'hidden';
-    } else {
-      document.body.style.overflow = '';
-    }
-    
-    return () => {
-      document.body.style.overflow = '';
-    };
-  }, [isMobileMenuOpen]);
 
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
 
   // Get visitor navigation links (for non-authenticated users)
   const getVisitorNavLinks = () => [
@@ -156,8 +135,7 @@ export function Header() {
 
   return (
     <header className={cn(
-      "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top",
-      isMobileMenuOpen ? "z-0 !backdrop-blur-none supports-[backdrop-filter]:!bg-background/95 opacity-0 pointer-events-none" : "z-50"
+      "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-50"
     )}>
       <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
         {/* Mobile: Logo only, Desktop: Logo + Name */}
@@ -322,182 +300,6 @@ export function Header() {
         </div>
       </div>
 
-      {/* Mobile Menu Overlay */}
-      {isMobileMenuOpen && createPortal(
-        <div className="fixed inset-0 md:hidden pointer-events-auto" style={{ zIndex: 2147483647 }} role="dialog" aria-modal="true">
-          {/* Backdrop */}
-          <div 
-            className="absolute inset-0 bg-black/80 backdrop-blur-sm"
-            onClick={() => setIsMobileMenuOpen(false)}
-            aria-hidden="true"
-          />
-          
-          {/* Menu panel */}
-          <div className="absolute inset-0 bg-card shadow-lg overflow-y-auto">
-            <div className="p-4 pb-safe-bottom space-y-6">
-              <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-foreground">Menu</h2>
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                  className="h-8 w-8 p-0"
-                >
-                  <X className="h-4 w-4" />
-                </Button>
-              </div>
-              {profile ? (
-                <>
-                  {/* User Profile Section - Only when logged in */}
-                  <div className="flex items-center gap-3 p-3 bg-muted/30 rounded-lg">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={profile.avatar_url || ''} />
-                      <AvatarFallback className="bg-gradient-primary text-white">
-                        {profile.display_name ? profile.display_name.charAt(0).toUpperCase() : <User className="h-4 w-4" />}
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium text-sm truncate">{profile.display_name}</p>
-                      <p className="text-xs text-muted-foreground capitalize">{profile.profile_type}</p>
-                    </div>
-                  </div>
-
-                  {/* Main Navigation */}
-                  <nav className="space-y-2">
-                    {getAuthenticatedNavLinks().map((link, index) => {
-                      const Icon = link.icon;
-                      return (
-                        <Link
-                          key={index}
-                          to={link.href}
-                          className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                          onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                          <Icon className="h-5 w-5" />
-                          <span className="font-medium">{link.label}</span>
-                        </Link>
-                      );
-                    })}
-                  </nav>
-                </>
-              ) : (
-                <>
-                  {/* Guest Menu - Navigation for non-logged users */}
-                  <div className="text-center py-4">
-                    <img 
-                      src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
-                      alt="Vybbi Logo" 
-                      className="w-12 h-12 mx-auto mb-2"
-                    />
-                    <h2 className="text-lg font-bold text-white">Vybbi</h2>
-                    <p className="text-sm text-muted-foreground">Connectez votre talent au monde</p>
-                  </div>
-                  
-                  <nav className="space-y-2">
-                    <Link
-                      to="/artists"
-                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Users className="h-5 w-5" />
-                      <span className="font-medium">Artistes</span>
-                    </Link>
-                    <Link
-                      to="/lieux"
-                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <MapPin className="h-5 w-5" />
-                      <span className="font-medium">Lieux</span>
-                    </Link>
-                    <Link
-                      to="/radio"
-                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Radio className="h-5 w-5" />
-                      <span className="font-medium">Radio</span>
-                    </Link>
-                    <Link
-                      to="/a-propos"
-                      className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                      onClick={() => setIsMobileMenuOpen(false)}
-                    >
-                      <Star className="h-5 w-5" />
-                      <span className="font-medium">À propos</span>
-                    </Link>
-                  </nav>
-
-                  {/* Auth buttons for guests */}
-                  <div className="pt-4 border-t border-border space-y-3">
-                    <Button 
-                      variant="outline" 
-                      size="lg" 
-                      asChild 
-                      className="w-full justify-center touch-target"
-                    >
-                      <Link to="/auth" onClick={() => setIsMobileMenuOpen(false)}>
-                        Connexion
-                      </Link>
-                    </Button>
-                    <Button 
-                      size="lg" 
-                      asChild 
-                      className="w-full touch-target"
-                    >
-                      <Link to="/auth?mode=signup" onClick={() => setIsMobileMenuOpen(false)}>
-                        Créer un compte
-                      </Link>
-                    </Button>
-                  </div>
-                </>
-              )}
-
-              {/* Profile Actions */}
-              <div className="pt-4 border-t border-border space-y-2">
-                <Link
-                  to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
-                       profile.profile_type === 'agent' ? `/partners/${profile.id}` :
-                       profile.profile_type === 'manager' ? `/partners/${profile.id}` :
-                       profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`}
-                  className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <User className="h-5 w-5" />
-                  <span className="font-medium">Mon profil</span>
-                </Link>
-                
-                <Link
-                  to={profile.profile_type === 'artist' ? `/artists/${profile.id}/edit` : 
-                       profile.profile_type === 'agent' ? `/agents/${profile.id}/edit` :
-                       profile.profile_type === 'manager' ? `/managers/${profile.id}/edit` :
-                       profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}/edit`}
-                  className="flex items-center gap-3 text-foreground hover:text-primary hover:bg-muted/50 transition-colors touch-target py-3 px-3 rounded-md"
-                  onClick={() => setIsMobileMenuOpen(false)}
-                >
-                  <Pencil className="h-5 w-5" />
-                  <span className="font-medium">Modifier profil</span>
-                </Link>
-              </div>
-
-              {/* Logout */}
-              <div className="pt-4 border-t border-border">
-                <Button
-                  variant="outline"
-                  onClick={() => {
-                    setIsMobileMenuOpen(false);
-                    handleLogout();
-                  }}
-                  className="w-full justify-start gap-3 text-destructive border-destructive/20 hover:bg-destructive/10"
-                >
-                  <LogOut className="h-5 w-5" />
-                  <span className="font-medium">Déconnexion</span>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>,
-      document.body)}
     </header>
   );
 }
