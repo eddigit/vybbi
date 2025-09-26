@@ -58,7 +58,7 @@ export default function Partners() {
       "Agent DJ": "bg-primary/20 text-primary border-primary/30",
       "Booker": "bg-success/20 text-success border-success/30", 
       "Promoteur": "bg-warning/20 text-warning border-warning/30",
-      "Venue": "bg-destructive/20 text-destructive border-destructive/30"
+      "Organisateur": "bg-destructive/20 text-destructive border-destructive/30"
     };
     return <Badge className={colors[type as keyof typeof colors] || "bg-muted"}>{type}</Badge>;
   };

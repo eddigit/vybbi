@@ -144,7 +144,7 @@ const welcomeContent = {
         icon: Edit,
         title: "Configurez votre espace",
         description: "Présentez votre organisation et ses caractéristiques",
-        action: "/venue/profile/edit",
+        action: "/lieux/profile/edit",
         actionText: "Éditer mon profil"
       },
       {
@@ -163,7 +163,7 @@ const welcomeContent = {
       }
     ],
     quickActions: [
-      { label: "Mon profil", path: "/venue/profile/edit", icon: Edit },
+      { label: "Mon profil", path: "/lieux/profile/edit", icon: Edit },
       { label: "Créer événement", path: "/events/create", icon: Calendar },
       { label: "Artistes", path: "/artists", icon: Users }
     ]

@@ -5,7 +5,7 @@ const data = [
   { name: 'Agents DJ', value: 35, color: 'hsl(263, 70%, 60%)' },
   { name: 'Bookers', value: 28, color: 'hsl(142, 76%, 36%)' },
   { name: 'Promoteurs', value: 22, color: 'hsl(38, 92%, 50%)' },
-  { name: 'Venues', value: 15, color: 'hsl(0, 84%, 60%)' },
+  { name: 'Organisateurs', value: 15, color: 'hsl(0, 84%, 60%)' },
 ];
 
 export function CommissionDistribution() {

@@ -24,7 +24,7 @@ const MOCK_NAMES = {
   ],
   lieu: [
     'The Underground', 'Skyline Club', 'Crystal Palace', 'The Warehouse', 'Neon Dreams',
-    'Blue Moon Venue', 'Electric Garden', 'The Loft', 'Midnight Club', 'Aurora Hall'
+    'Blue Moon Organisateur', 'Electric Garden', 'The Loft', 'Midnight Club', 'Aurora Hall'
   ],
   agent: [
     'Patricia Anderson', 'Michael Brown', 'Sarah Davis', 'Robert Wilson', 'Jennifer Miller',

@@ -39,7 +39,7 @@ const statusOptions = [
 
 const typeOptions = [
   { value: 'artist', label: 'Artiste', icon: '🎤' },
-  { value: 'venue', label: 'Lieu', icon: '🏢' },
+  { value: 'venue', label: 'Organisateur', icon: '🏢' },
   { value: 'sponsors', label: 'Sponsor', icon: '💰' },
   { value: 'media', label: 'Média', icon: '📺' },
   { value: 'agence', label: 'Agence', icon: '🏪' },

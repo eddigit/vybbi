@@ -127,7 +127,7 @@ export function ServiceRequestDialog({ children, onSubmit, isSubmitting }: Servi
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="performance">Performance artistique</SelectItem>
-                <SelectItem value="venue">Lieu/Venue</SelectItem>
+                <SelectItem value="venue">Organisateur/Lieu</SelectItem>
                 <SelectItem value="agent">Agent/Manager</SelectItem>
                 <SelectItem value="other">Autre</SelectItem>
               </SelectContent>

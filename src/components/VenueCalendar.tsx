@@ -89,7 +89,7 @@ export function VenueCalendar({ venueProfileId, showBookingButton = false }: Ven
         if (venueProfile?.email) {
           notifyBookingProposed({
             venueEmail: venueProfile.email,
-            venueName: venueProfile.display_name || 'Venue',
+            venueName: venueProfile.display_name || 'Organisateur',
             eventTitle: selectedEvent.title,
             eventDate: format(new Date(selectedEvent.event_date), 'dd/MM/yyyy'),
             artistName: profile.display_name || 'Artiste',

@@ -230,7 +230,7 @@ export default function WorkflowManager() {
   const getProspectTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
       'artist': 'Artistes',
-      'venue': 'Lieux/Clubs',
+      'venue': 'Organisateurs/Clubs',
       'agent': 'Agents',
       'manager': 'Managers',
       'sponsors': 'Sponsors/Partenaires',
@@ -307,7 +307,7 @@ export default function WorkflowManager() {
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="artist">Artistes</SelectItem>
-                        <SelectItem value="venue">Lieux/Clubs</SelectItem>
+                        <SelectItem value="venue">Organisateurs/Clubs</SelectItem>
                         <SelectItem value="agent">Agents</SelectItem>
                         <SelectItem value="manager">Managers</SelectItem>
                         <SelectItem value="sponsors">Sponsors/Partenaires</SelectItem>

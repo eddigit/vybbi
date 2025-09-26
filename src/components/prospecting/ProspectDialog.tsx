@@ -442,7 +442,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="artist">Artiste</SelectItem>
-                        <SelectItem value="venue">Lieu/Club</SelectItem>
+                        <SelectItem value="venue">Organisateur/Club</SelectItem>
                         <SelectItem value="agent">Agent</SelectItem>
                         <SelectItem value="manager">Manager</SelectItem>
                         <SelectItem value="academie">École/Académie</SelectItem>

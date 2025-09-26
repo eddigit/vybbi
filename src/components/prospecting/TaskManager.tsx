@@ -248,7 +248,7 @@ export default function TaskManager() {
   const getProspectTypeLabel = (type: string) => {
     const labels: Record<string, string> = {
       'artist': 'Artiste',
-      'venue': 'Lieu',
+      'venue': 'Organisateur',
       'agent': 'Agent',
       'manager': 'Manager',
       'sponsors': 'Sponsor',

@@ -155,7 +155,7 @@ export default function PourLieuxEvenements() {
         </div>
       </section>
 
-      {/* Venue Types */}
+      {/* Types d'Organisateurs */}
       <section className="py-16 px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">

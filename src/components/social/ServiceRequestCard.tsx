@@ -57,7 +57,7 @@ export function ServiceRequestCard({
         case 'performance':
           return 'Performance artistique';
         case 'venue':
-          return 'Lieu/Venue';
+          return 'Organisateur/Lieu';
         case 'agent':
           return 'Agent/Manager';
         case 'other':

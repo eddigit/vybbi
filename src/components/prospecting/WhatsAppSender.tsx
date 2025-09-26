@@ -56,7 +56,7 @@ export default function WhatsAppSender({ isOpen, onClose, selectedProspect, onMe
     },
     {
       id: '2', 
-      name: 'Premier Contact - Venue/Club',
+      name: 'Premier Contact - Organisateur/Club',
       category: 'first_contact',
       content: `Bonjour {{contact_name}} ! 🎶\n\nJe découvre {{company_name}} et j'aimerais vous parler de Vybbi, une plateforme qui facilite la mise en relation entre lieux et artistes.\n\nNous avons des artistes exceptionnels qui cherchent des scènes comme la vôtre.\n\nÇa vous intéresse d'en savoir plus ? 🎤`,
       variables: ['contact_name', 'company_name']

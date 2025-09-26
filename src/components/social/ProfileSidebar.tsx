@@ -27,7 +27,7 @@ export function ProfileSidebar() {
   const getProfileTypeLabel = (profileType: string) => {
     switch (profileType) {
       case 'artist': return 'Artiste';
-      case 'venue': return 'Lieu';
+      case 'venue': return 'Organisateur';
       case 'agent': return 'Agent';
       case 'partner': return 'Partenaire';
       default: return 'Utilisateur';
