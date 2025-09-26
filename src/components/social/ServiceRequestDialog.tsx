@@ -8,6 +8,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Calendar } from "@/components/ui/calendar";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Checkbox } from "@/components/ui/checkbox";
 import { CalendarIcon, Handshake } from "lucide-react";
 import { format } from "date-fns";
 import { fr } from "date-fns/locale";
@@ -30,6 +31,30 @@ export function ServiceRequestDialog({ children, onSubmit, isSubmitting }: Servi
   });
   const [eventDate, setEventDate] = useState<Date>();
   const [deadline, setDeadline] = useState<Date>();
+
+  const profileTypeOptions = [
+    { value: 'dj', label: 'DJ' },
+    { value: 'chanteur', label: 'Chanteur/Chanteuse' },
+    { value: 'groupe', label: 'Groupe musical' },
+    { value: 'musicien', label: 'Musicien' },
+    { value: 'danseur', label: 'Danseur/Danseuse' },
+    { value: 'performer', label: 'Performer club' },
+    { value: 'magicien', label: 'Magicien' },
+    { value: 'comedien', label: 'Comédien' },
+    { value: 'animateur', label: 'Animateur' },
+    { value: 'autre', label: 'Autre' }
+  ];
+
+  const handleProfileTypeChange = (profileType: string, isChecked: boolean) => {
+    setFormData(prev => {
+      const currentTypes = prev.profile_types || [];
+      if (isChecked) {
+        return { ...prev, profile_types: [...currentTypes, profileType] };
+      } else {
+        return { ...prev, profile_types: currentTypes.filter(type => type !== profileType) };
+      }
+    });
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -94,7 +119,7 @@ export function ServiceRequestDialog({ children, onSubmit, isSubmitting }: Servi
             <Select
               value={formData.service_category}
               onValueChange={(value: 'performance' | 'venue' | 'agent' | 'other') =>
-                setFormData(prev => ({ ...prev, service_category: value }))
+                setFormData(prev => ({ ...prev, service_category: value, profile_types: undefined }))
               }
             >
               <SelectTrigger>
@@ -108,6 +133,34 @@ export function ServiceRequestDialog({ children, onSubmit, isSubmitting }: Servi
               </SelectContent>
             </Select>
           </div>
+
+          {/* Types de profils - Affiché uniquement pour "Performance artistique" */}
+          {formData.service_category === 'performance' && (
+            <div className="space-y-3">
+              <Label className="text-base font-semibold">Type de profil recherché</Label>
+              <div className="grid grid-cols-2 gap-3 max-h-[200px] overflow-y-auto p-3 border rounded-md">
+                {profileTypeOptions.map((option) => (
+                  <div key={option.value} className="flex items-center space-x-2">
+                    <Checkbox
+                      id={option.value}
+                      checked={formData.profile_types?.includes(option.value) || false}
+                      onCheckedChange={(checked) => handleProfileTypeChange(option.value, checked as boolean)}
+                    />
+                    <Label htmlFor={option.value} className="text-sm font-normal cursor-pointer">
+                      {option.label}
+                    </Label>
+                  </div>
+                ))}
+              </div>
+              {formData.profile_types && formData.profile_types.length > 0 && (
+                <div className="text-sm text-muted-foreground">
+                  Sélectionnés: {formData.profile_types.map(type => 
+                    profileTypeOptions.find(opt => opt.value === type)?.label
+                  ).join(', ')}
+                </div>
+              )}
+            </div>
+          )}
 
           {/* Localisation */}
           <div className="space-y-3">

@@ -52,18 +52,42 @@ export function ServiceRequestCard({
   };
 
   const getCategoryLabel = () => {
-    switch (serviceRequest.service_category) {
-      case 'performance':
-        return 'Performance artistique';
-      case 'venue':
-        return 'Lieu/Venue';
-      case 'agent':
-        return 'Agent/Manager';
-      case 'other':
-        return 'Autre';
-      default:
-        return serviceRequest.service_category;
+    const baseLabel = (() => {
+      switch (serviceRequest.service_category) {
+        case 'performance':
+          return 'Performance artistique';
+        case 'venue':
+          return 'Lieu/Venue';
+        case 'agent':
+          return 'Agent/Manager';
+        case 'other':
+          return 'Autre';
+        default:
+          return serviceRequest.service_category;
+      }
+    })();
+
+    // Ajouter les types de profils si spécifiés
+    if (serviceRequest.profile_types && serviceRequest.profile_types.length > 0) {
+      const profileTypeLabels = serviceRequest.profile_types.map(type => {
+        switch (type) {
+          case 'dj': return 'DJ';
+          case 'chanteur': return 'Chanteur';
+          case 'groupe': return 'Groupe';
+          case 'musicien': return 'Musicien';
+          case 'danseur': return 'Danseur';
+          case 'performer': return 'Performer';
+          case 'magicien': return 'Magicien';
+          case 'comedien': return 'Comédien';
+          case 'animateur': return 'Animateur';
+          default: return type;
+        }
+      });
+      
+      return `${baseLabel} • ${profileTypeLabels.join(', ')}`;
     }
+
+    return baseLabel;
   };
 
   const formatBudget = () => {

@@ -72,6 +72,7 @@ export interface ServiceRequest {
   id: string;
   request_type: 'offer' | 'demand';
   service_category: 'performance' | 'venue' | 'agent' | 'other';
+  profile_types?: string[];
   location: string;
   budget_min?: number;
   budget_max?: number;
@@ -100,6 +101,7 @@ export interface ServiceApplication {
 export interface CreateServiceRequestData {
   request_type: 'offer' | 'demand';
   service_category: 'performance' | 'venue' | 'agent' | 'other';
+  profile_types?: string[];
   location: string;
   budget_min?: number;
   budget_max?: number;

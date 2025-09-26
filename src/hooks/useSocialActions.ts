@@ -150,19 +150,28 @@ export function useSocialActions() {
 
     setLoading(true);
     try {
-      // First create the service request
+      // Créer l'annonce dans la table annonces 
       const { data: serviceRequest, error: serviceError } = await supabase
-        .from('service_requests')
-        .insert({
-          ...serviceData,
-          created_by: user.id
-        })
+        .from('annonces')
+        .insert([{
+          title: `${serviceData.request_type === 'offer' ? 'OFFRE' : 'DEMANDE'} - ${serviceData.service_category}`,
+          description: serviceData.description,
+          requirements: serviceData.requirements,
+          location: serviceData.location,
+          budget_min: serviceData.budget_min,
+          budget_max: serviceData.budget_max,
+          event_date: serviceData.event_date,
+          deadline: serviceData.deadline,
+          profile_types: serviceData.profile_types,
+          status: 'published',
+          user_id: user.id
+        }])
         .select()
         .single();
 
       if (serviceError) throw serviceError;
 
-      // Then create a social post that references this service request
+      // Créer aussi un post social lié
       const { data: post, error: postError } = await supabase
         .from('social_posts')
         .insert({

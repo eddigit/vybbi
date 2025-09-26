@@ -628,6 +628,7 @@ export type Database = {
           image_position_y: number | null
           image_url: string | null
           location: string | null
+          profile_types: string[] | null
           requirements: string | null
           status: Database["public"]["Enums"]["annonce_status"]
           title: string
@@ -647,6 +648,7 @@ export type Database = {
           image_position_y?: number | null
           image_url?: string | null
           location?: string | null
+          profile_types?: string[] | null
           requirements?: string | null
           status?: Database["public"]["Enums"]["annonce_status"]
           title: string
@@ -666,6 +668,7 @@ export type Database = {
           image_position_y?: number | null
           image_url?: string | null
           location?: string | null
+          profile_types?: string[] | null
           requirements?: string | null
           status?: Database["public"]["Enums"]["annonce_status"]
           title?: string
