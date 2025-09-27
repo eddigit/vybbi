@@ -20,7 +20,8 @@ import {
   Bot,
   Target,
   Clock,
-  BookOpen
+  BookOpen,
+  Search
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { Link } from "react-router-dom";
@@ -32,6 +33,7 @@ import { VybbiMonitoring } from "@/components/admin/VybbiMonitoring";
 import { VybbiKnowledge } from "@/components/admin/VybbiKnowledge";
 import CommunitySeeder from "@/components/admin/CommunitySeeder";
 import AdminProspecting from "./AdminProspecting";
+import AdminSEO from "./AdminSEO";
 import { EmailSystemConfig } from "@/components/admin/EmailSystemConfig";
 import { AdminCacheTools } from "@/components/admin/AdminCacheTools";
 
@@ -108,6 +110,17 @@ export default function AdminDashboard() {
       color: "text-blue-600"
     },
     {
+      title: "SEO & Référencement",
+      description: "Sitemap, robots.txt et outils SEO",
+      href: "#seo",
+      icon: Search,
+      color: "text-green-600",
+      onClick: () => {
+        const seoTab = document.querySelector('[value="seo"]') as HTMLElement;
+        seoTab?.click();
+      }
+    },
+    {
       title: "Influenceurs", 
       description: "Gestion des partenaires d'affiliation",
       href: "/admin/influenceurs",
@@ -161,13 +174,14 @@ export default function AdminDashboard() {
       </div>
 
       <Tabs defaultValue="overview" className="w-full">
-        <TabsList className="grid w-full grid-cols-7">
+        <TabsList className="grid w-full grid-cols-8">
           <TabsTrigger value="overview">Vue d'ensemble</TabsTrigger>
           <TabsTrigger value="users">Utilisateurs</TabsTrigger>
           <TabsTrigger value="content">Contenus</TabsTrigger>
           <TabsTrigger value="prospecting">Prospection</TabsTrigger>
           <TabsTrigger value="radio">Radio</TabsTrigger>
           <TabsTrigger value="ai">Intelligence Artificielle</TabsTrigger>
+          <TabsTrigger value="seo">SEO</TabsTrigger>
           <TabsTrigger value="system">Système</TabsTrigger>
         </TabsList>
 
@@ -241,8 +255,17 @@ export default function AdminDashboard() {
                   <CardDescription>{action.description}</CardDescription>
                 </CardHeader>
                 <CardContent>
-                  <Button asChild variant="outline" className="w-full">
-                    <Link to={action.href}>Accéder</Link>
+                  <Button 
+                    asChild={!action.onClick}
+                    variant="outline" 
+                    className="w-full"
+                    onClick={action.onClick}
+                  >
+                    {action.onClick ? (
+                      action.title
+                    ) : (
+                      <Link to={action.href}>Accéder</Link>
+                    )}
                   </Button>
                 </CardContent>
               </Card>
@@ -489,6 +512,10 @@ export default function AdminDashboard() {
           </TabsContent>
             </Tabs>
           </div>
+        </TabsContent>
+
+        <TabsContent value="seo">
+          <AdminSEO />
         </TabsContent>
 
         <TabsContent value="system" className="space-y-6">
