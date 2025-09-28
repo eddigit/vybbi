@@ -95,7 +95,7 @@ export function RadioPlayer() {
 
   return (
     <div 
-      className="fixed left-0 right-0 z-[60] animate-slide-up bottom-0 md:bottom-0"
+      className="fixed left-0 right-0 z-[60] animate-slide-up bottom-16 md:bottom-0"
       aria-label="Lecteur Radio Vybbi"
     >
       {/* Hidden YouTube Player for audio-only playback */}

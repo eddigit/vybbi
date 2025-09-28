@@ -142,17 +142,15 @@ const AuthHashRedirect = () => {
 
 // Conditional Radio Player - Hide on mobile by default, show via toggle or on /radio page
 const ConditionalRadioPlayer = () => {
-  const { user } = useAuth();
   const isMobile = useIsMobile();
   const location = useLocation();
   const { isRadioVisible } = useRadioPlayerVisibility();
   
   // Show RadioPlayer when:
-  // - Not on mobile, OR
-  // - User is not logged in, OR  
-  // - User is on the /radio page, OR
+  // - Not on mobile (always visible on desktop), OR
+  // - On the /radio page, OR
   // - On mobile and radio is toggled visible
-  const shouldShowPlayer = !isMobile || !user || location.pathname === '/radio' || (isMobile && isRadioVisible);
+  const shouldShowPlayer = !isMobile || location.pathname === '/radio' || (isMobile && isRadioVisible);
   
   return shouldShowPlayer ? <RadioPlayer /> : null;
 };
