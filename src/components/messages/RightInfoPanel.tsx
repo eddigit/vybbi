@@ -31,8 +31,51 @@ export default function RightInfoPanel({
   const [muteNotifications, setMuteNotifications] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
 
+  // Show default "Page Messages" style panel when no conversation is selected
   if (!conversation) {
-    return null;
+    return (
+      <div className="w-full h-full border-l bg-background flex flex-col">
+        {/* Header */}
+        <div className="p-4 border-b">
+          <h3 className="font-medium text-center">Messageries de l'espace</h3>
+        </div>
+
+        {/* Content for no conversation selected */}
+        <div className="flex-1 p-4">
+          <div className="text-center py-8">
+            <Globe className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
+            <h4 className="font-medium mb-2">Gérez vos conversations</h4>
+            <p className="text-sm text-muted-foreground mb-4">
+              Restez connecté avec votre réseau professionnel. Sélectionnez une conversation pour voir les détails du contact.
+            </p>
+          </div>
+          
+          <Separator className="my-6" />
+          
+          {/* Quick Actions */}
+          <div className="space-y-3">
+            <h5 className="text-sm font-medium text-muted-foreground">Actions rapides</h5>
+            <Button variant="ghost" className="w-full justify-start text-sm">
+              <Mail className="mr-2 h-4 w-4" />
+              Nouveau message
+            </Button>
+            <Button variant="ghost" className="w-full justify-start text-sm">
+              <Archive className="mr-2 h-4 w-4" />
+              Messages archivés
+            </Button>
+          </div>
+        </div>
+
+        {/* Footer */}
+        <div className="p-4 border-t mt-auto">
+          <div className="text-xs text-muted-foreground">
+            <p className="mb-2">
+              Messagerie sécurisée et chiffrée pour vos échanges professionnels.
+            </p>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   const displayName = conversation.peer_display_name || 'Utilisateur inconnu';

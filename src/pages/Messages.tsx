@@ -266,7 +266,7 @@ export default function Messages() {
     return (
       <div className="h-screen flex bg-background">
         {/* Left Sidebar - Conversations (320px like LinkedIn) */}
-        <div className="w-80 flex-shrink-0 border-r border-border">
+        <div className="w-80 flex-shrink-0 border-r border-border bg-background">
           <ConversationList
             conversations={conversations}
             selectedConversationId={selectedConversationId}
@@ -280,7 +280,7 @@ export default function Messages() {
         </div>
 
         {/* Center - Chat Window */}
-        <div className="flex-1 flex flex-col min-w-0">
+        <div className="flex-1 flex flex-col min-w-0 border-r border-border">
           {selectedConversation ? (
             <>
               <MessageHeader
@@ -327,21 +327,19 @@ export default function Messages() {
           )}
         </div>
 
-        {/* Right Sidebar - Info Panel (always visible when conversation selected) */}
-        {selectedConversation && (
-          <div className="w-80 flex-shrink-0">
-            <RightInfoPanel
-              conversation={selectedConversation}
-              isOpen={true}
-              onClose={() => setShowInfo(false)}
-              onBlockUser={handleBlockUser}
-              onPinConversation={() => selectedConversationId && pinConversation && pinConversation(selectedConversationId)}
-              onUnpinConversation={() => selectedConversationId && unpinConversation && unpinConversation(selectedConversationId)}
-              onArchiveConversation={() => selectedConversationId && archiveConversation && archiveConversation(selectedConversationId)}
-              onUnarchiveConversation={() => selectedConversationId && unarchiveConversation && unarchiveConversation(selectedConversationId)}
-            />
-          </div>
-        )}
+        {/* Right Sidebar - Info Panel (ALWAYS visible like LinkedIn) */}
+        <div className="w-75 flex-shrink-0 bg-background">
+          <RightInfoPanel
+            conversation={selectedConversation}
+            isOpen={true}
+            onClose={() => setShowInfo(false)}
+            onBlockUser={handleBlockUser}
+            onPinConversation={() => selectedConversationId && pinConversation && pinConversation(selectedConversationId)}
+            onUnpinConversation={() => selectedConversationId && unpinConversation && unpinConversation(selectedConversationId)}
+            onArchiveConversation={() => selectedConversationId && archiveConversation && archiveConversation(selectedConversationId)}
+            onUnarchiveConversation={() => selectedConversationId && unarchiveConversation && unarchiveConversation(selectedConversationId)}
+          />
+        </div>
       </div>
     );
   }
