@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { Button } from '@/components/ui/button';
 import { AutoTranslate } from '@/components/AutoTranslate';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
@@ -11,7 +12,13 @@ import { cn } from '@/lib/utils';
 export function MobileBurgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
   const { user, profile, signOut, hasRole } = useAuth();
+  const isMobile = useIsMobile();
   const navigate = useNavigate();
+
+  // Don't render on desktop
+  if (!isMobile) {
+    return null;
+  }
 
   const handleLogout = async () => {
     await signOut();
@@ -137,10 +144,23 @@ export function MobileBurgerMenu() {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-[9999] md:hidden p-2 h-auto bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90 transition-all duration-200 shadow-lg flex"
+        className="fixed top-4 right-4 z-[9999] p-3 h-auto bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 shadow-xl rounded-lg flex items-center justify-center"
         aria-label="Ouvrir le menu"
+        style={{
+          position: 'fixed',
+          top: '1rem',
+          right: '1rem',
+          zIndex: 9999,
+          display: 'flex',
+          minWidth: '44px',
+          minHeight: '44px',
+          backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          border: '1px solid rgba(0, 0, 0, 0.1)',
+          borderRadius: '8px',
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+        }}
       >
-        <Menu className="h-5 w-5" />
+        <Menu className="h-5 w-5 text-gray-700 dark:text-gray-300" />
       </Button>
 
       {/* Backdrop & Menu - Rendered via Portal with highest z-index */}
