@@ -31,7 +31,7 @@ export default function RightInfoPanel({
   const [muteNotifications, setMuteNotifications] = useState(false);
   const [showBlockDialog, setShowBlockDialog] = useState(false);
 
-  if (!isOpen || !conversation) {
+  if (!conversation) {
     return null;
   }
 
@@ -51,11 +51,8 @@ export default function RightInfoPanel({
   return (
     <div className="w-80 border-l bg-background flex flex-col h-full">
       {/* Header */}
-      <div className="p-4 border-b flex items-center justify-between">
-        <h3 className="font-medium">Informations du contact</h3>
-        <Button variant="ghost" size="sm" onClick={onClose} className="p-2">
-          <X className="h-4 w-4" />
-        </Button>
+      <div className="p-4 border-b">
+        <h3 className="font-medium text-center">Informations du contact</h3>
       </div>
 
       {/* Contact Info */}
