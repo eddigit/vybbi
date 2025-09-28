@@ -41,6 +41,8 @@ export function Layout({ children }: LayoutProps) {
     return (
       <>
         <MobileBurgerMenu />
+        {/* Mobile header - Always visible on mobile */}
+        <MobileHeader />
         <div className="pb-10">
           {children}
         </div>
@@ -55,6 +57,8 @@ export function Layout({ children }: LayoutProps) {
     return (
       <>
         <MobileBurgerMenu />
+        {/* Mobile header - Always visible on mobile */}
+        <MobileHeader />
         <div className="pb-10">
           {children}
         </div>
@@ -89,8 +93,8 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col w-full bg-background relative overflow-x-hidden">
       <MobileBurgerMenu />
-      {/* Mobile header - Always visible on mobile for authenticated users */}
-      {user && <MobileHeader />}
+      {/* Mobile header - Always visible on mobile */}
+      <MobileHeader />
       {/* Desktop header - Hidden on mobile */}
       <div className="hidden md:block">
         <Header />
