@@ -1,6 +1,7 @@
 import { LanguageSelector } from "@/components/LanguageSelector";
 import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
+import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
 import { VybbiTokenBalance } from "@/components/vybbi/VybbiTokenBalance";
 import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Coins, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -141,7 +142,7 @@ export function Header() {
           {/* Mobile: Logo only, Desktop: Logo + Name */}
           <Link to={user ? (hasRole('admin') ? "/dashboard" : "/") : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
             <img 
-              src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
+              src={vybbiLogo} 
               alt="Vybbi Logo" 
               className="w-7 h-7 sm:w-8 sm:h-8"
             />
