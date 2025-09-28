@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover, minimal-ui" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover, minimal-ui, interactive-widget=resizes-content" />
     
     <!-- Favicon et icônes -->
     <link rel="icon" type="image/png" href="/vybbi-logo-pwa.png">
@@ -54,6 +54,66 @@
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- JavaScript anti-zoom enforcement -->
+    <script>
+      (function() {
+        'use strict';
+        
+        // Prevent pinch zoom
+        let lastTouchEnd = 0;
+        document.addEventListener('touchend', function (event) {
+          var now = (new Date()).getTime();
+          if (now - lastTouchEnd <= 300) {
+            event.preventDefault();
+          }
+          lastTouchEnd = now;
+        }, false);
+        
+        // Prevent zoom on double tap
+        document.addEventListener('touchstart', function (event) {
+          if (event.touches.length > 1) {
+            event.preventDefault();
+          }
+        }, { passive: false });
+        
+        // Prevent pinch gesture
+        document.addEventListener('touchmove', function (event) {
+          if (event.touches.length > 1) {
+            event.preventDefault();
+          }
+        }, { passive: false });
+        
+        // Prevent zoom via wheel with ctrl
+        document.addEventListener('wheel', function(event) {
+          if (event.ctrlKey) {
+            event.preventDefault();
+          }
+        }, { passive: false });
+        
+        // Prevent zoom via keyboard
+        document.addEventListener('keydown', function(event) {
+          if ((event.ctrlKey || event.metaKey) && (event.key === '=' || event.key === '-' || event.key === '+')) {
+            event.preventDefault();
+          }
+        });
+        
+        // Force viewport scale reset
+        function resetViewport() {
+          var viewport = document.querySelector('meta[name="viewport"]');
+          if (viewport) {
+            viewport.content = 'width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover, minimal-ui, interactive-widget=resizes-content';
+          }
+        }
+        
+        // Reset viewport on resize
+        window.addEventListener('resize', resetViewport);
+        window.addEventListener('orientationchange', function() {
+          setTimeout(resetViewport, 100);
+        });
+        
+      })();
+    </script>
     
     <!-- Start of HubSpot Embed Code -->
     <script>
