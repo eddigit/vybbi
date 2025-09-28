@@ -101,62 +101,66 @@ export default function Composer({
   console.log('Composer - Rendering UI');
 
   return (
-    <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky bottom-20 md:bottom-20 z-[80]">
+    <div className="border-t bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky bottom-0 z-[90]">
       <div className="p-4">
-        <div className="flex items-end gap-2">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="p-2 flex-shrink-0"
-            disabled={true}
-            title="Pièces jointes (bientôt disponible)"
-          >
-            <Paperclip className="h-4 w-4" />
-          </Button>
-
-          <div className="flex-1 min-w-0">
+        <div className="flex gap-3 items-end max-w-4xl mx-auto">
+          <div className="flex-1 relative">
             <Textarea
               ref={textareaRef}
               value={message}
               onChange={handleChange}
               onKeyDown={handleKeyDown}
               placeholder={placeholder}
+              className="min-h-[48px] max-h-32 resize-none rounded-2xl border-muted bg-muted/30 focus-visible:ring-primary/50 pr-16"
               disabled={disabled || sending}
-              className="min-h-[40px] max-h-[120px] resize-none"
-              rows={1}
             />
+            
+            {/* Inline action buttons */}
+            <div className="absolute right-2 bottom-2 flex gap-1">
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                disabled={true}
+                className="h-8 w-8 p-0 rounded-full hover:bg-muted"
+                title="Pièces jointes (bientôt disponible)"
+              >
+                <Paperclip className="h-4 w-4" />
+              </Button>
+              <Button 
+                variant="ghost" 
+                size="sm" 
+                disabled={true}
+                className="h-8 w-8 p-0 rounded-full hover:bg-muted"
+                title="Émojis (bientôt disponible)"
+              >
+                <Smile className="h-4 w-4" />
+              </Button>
+            </div>
           </div>
-
+          
           <Button 
-            variant="ghost" 
-            size="sm" 
-            className="p-2 flex-shrink-0"
-            disabled={true}
-            title="Émojis (bientôt disponible)"
-          >
-            <Smile className="h-4 w-4" />
-          </Button>
-
-          <Button
-            onClick={handleSend}
-            disabled={!message.trim() || sending || disabled}
+            onClick={handleSend} 
+            disabled={!message.trim() || disabled || sending}
             size="sm"
-            className="flex-shrink-0"
+            className="h-12 px-6 rounded-2xl shadow-sm"
           >
-            <Send className="h-4 w-4" />
+            {sending ? (
+              <div className="flex items-center gap-2">
+                <div className="h-3 w-3 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent"></div>
+                Envoi
+              </div>
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
           </Button>
         </div>
-
+        
         {disabled && (
-          <p className="text-xs text-muted-foreground mt-2 px-2">
-            Vous ne pouvez pas envoyer de message pour le moment.
-          </p>
-        )}
-
-        {sending && (
-          <p className="text-xs text-muted-foreground mt-2 px-2">
-            Envoi en cours...
-          </p>
+          <div className="mt-3 p-3 bg-muted/50 rounded-lg max-w-4xl mx-auto">
+            <p className="text-sm text-muted-foreground text-center">
+              Impossible d'envoyer des messages dans cette conversation
+            </p>
+          </div>
         )}
       </div>
     </div>

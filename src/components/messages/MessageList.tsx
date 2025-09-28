@@ -53,71 +53,65 @@ export default function MessageList({ messages, loading }: MessageListProps) {
     }
   };
 
-  if (loading) {
-    console.log('MessageList - Loading messages...');
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <p className="text-muted-foreground">Chargement des messages...</p>
-      </div>
-    );
-  }
-
-  if (!messages || messages.length === 0) {
-    console.log('MessageList - No messages to display');
-    return (
-      <div className="flex-1 flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-muted-foreground mb-2">Aucun message pour l'instant</p>
-          <p className="text-sm text-muted-foreground">
-            Commencez une conversation en envoyant un message
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  console.log('MessageList - Rendering messages:', messages.length);
-
   return (
-    <div className="flex-1 flex flex-col">
+    <div className="flex flex-col h-full bg-background/50">
       <ScrollArea className="flex-1" ref={scrollAreaRef}>
-        <div className="p-4 space-y-4 pb-48">
-          {Object.entries(groupedMessages).map(([date, dayMessages]) => (
-            <div key={date}>
-              {/* Date separator */}
-              <div className="flex items-center justify-center my-4">
-                <div className="bg-muted px-3 py-1 rounded-full">
-                  <span className="text-xs text-muted-foreground font-medium">
-                    {formatDate(date)}
-                  </span>
+        {loading ? (
+          <div className="flex items-center justify-center h-full">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+          </div>
+        ) : !messages || messages.length === 0 ? (
+          <div className="flex items-center justify-center h-full text-center">
+            <div className="space-y-2">
+              <div className="text-4xl">💬</div>
+              <p className="text-muted-foreground">
+                Aucun message dans cette conversation
+              </p>
+              <p className="text-sm text-muted-foreground/80">
+                Commencez la discussion !
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="p-4 pb-24">
+            {Object.entries(groupedMessages).map(([date, dateMessages]) => (
+              <div key={date} className="mb-8">
+                {/* Date separator - More elegant */}
+                <div className="relative flex items-center justify-center my-8">
+                  <div className="absolute inset-0 flex items-center">
+                    <div className="w-full border-t border-muted-foreground/20"></div>
+                  </div>
+                  <div className="relative bg-background px-4 py-2">
+                    <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
+                      {formatDate(date)}
+                    </span>
+                  </div>
+                </div>
+                
+                {/* Messages for this date */}
+                <div className="space-y-1">
+                  {dateMessages.map((message, index) => {
+                    const prevMessage = index > 0 ? dateMessages[index - 1] : null;
+                    const isOwnMessage = message.sender_id === user?.id;
+                    const showAvatar = !prevMessage || prevMessage.sender_id !== message.sender_id;
+                    const showSender = showAvatar && !isOwnMessage;
+                    
+                    return (
+                      <MessageBubble
+                        key={message.id}
+                        message={message}
+                        isOwnMessage={isOwnMessage}
+                        showAvatar={showAvatar}
+                        showSender={showSender}
+                      />
+                    );
+                  })}
                 </div>
               </div>
-
-              {/* Messages for this day */}
-              <div className="space-y-2">
-                {dayMessages.map((message, index) => {
-                  const isOwnMessage = message.sender_id === user?.id;
-                  const previousMessage = index > 0 ? dayMessages[index - 1] : null;
-                  const isConsecutive = 
-                    previousMessage &&
-                    previousMessage.sender_id === message.sender_id &&
-                    new Date(message.created_at).getTime() - new Date(previousMessage.created_at).getTime() < 5 * 60 * 1000; // 5 minutes
-
-                  return (
-                    <MessageBubble
-                      key={message.id}
-                      message={message}
-                      isOwnMessage={isOwnMessage}
-                      showAvatar={!isConsecutive}
-                      showSender={!isOwnMessage && !isConsecutive}
-                    />
-                  );
-                })}
-              </div>
-            </div>
-          ))}
-          <div ref={bottomRef} />
-        </div>
+            ))}
+            <div ref={bottomRef} />
+          </div>
+        )}
       </ScrollArea>
     </div>
   );

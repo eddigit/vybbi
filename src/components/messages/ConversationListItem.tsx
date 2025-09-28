@@ -35,58 +35,73 @@ export default function ConversationListItem({
   const unreadCount = conversation.unread_count;
   const hasUnread = unreadCount > 0;
 
+  const formatLastMessageTime = (dateString: string) => {
+    const date = new Date(dateString);
+    const now = new Date();
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 60) return `${Math.max(1, diffInMinutes)}min`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`;
+    return `${Math.floor(diffInMinutes / 1440)}j`;
+  };
+
   return (
     <div
       className={`
-        flex items-center gap-3 p-3 rounded-lg cursor-pointer hover:bg-muted/50 transition-colors
-        ${isSelected ? 'bg-muted' : ''}
-        ${hasUnread ? 'bg-accent/10' : ''}
+        group flex items-center gap-3 p-3 rounded-xl cursor-pointer transition-all duration-200
+        hover:bg-muted/60 active:scale-[0.99]
+        ${isSelected ? 'bg-muted border-l-2 border-primary' : ''}
+        ${hasUnread ? 'bg-accent/5' : ''}
       `}
       onClick={onSelect}
     >
       {/* Avatar */}
-      <Avatar className="h-12 w-12 flex-shrink-0">
-        <AvatarImage src={conversation.peer_avatar_url || ''} alt={displayName} />
-        <AvatarFallback>
-          {displayName.split(' ').map(n => n[0]).join('').toUpperCase()}
-        </AvatarFallback>
-      </Avatar>
+      <div className="relative flex-shrink-0">
+        <Avatar className="h-14 w-14 ring-2 ring-background">
+          <AvatarImage src={conversation.peer_avatar_url || ''} alt={displayName} />
+          <AvatarFallback className="text-sm font-semibold">
+            {displayName.split(' ').map(n => n[0]).join('').toUpperCase()}
+          </AvatarFallback>
+        </Avatar>
+        {isPinned && (
+          <div className="absolute -top-1 -right-1 h-4 w-4 bg-primary rounded-full flex items-center justify-center">
+            <Pin className="h-2.5 w-2.5 text-primary-foreground" fill="currentColor" />
+          </div>
+        )}
+      </div>
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
-        <div className="flex items-center justify-between mb-1">
-          <div className="flex items-center gap-2">
-            {isPinned && <Pin className="h-3 w-3 text-muted-foreground" />}
-            <h3 className={`text-sm truncate ${hasUnread ? 'font-semibold' : 'font-medium'}`}>
-              {displayName}
-            </h3>
-          </div>
-          <div className="flex items-center gap-2">
+      <div className="flex-1 min-w-0 space-y-1">
+        <div className="flex items-center justify-between">
+          <h3 className={`text-base truncate ${hasUnread ? 'font-bold' : 'font-medium'}`}>
+            {displayName}
+          </h3>
+          <div className="flex items-center gap-2 flex-shrink-0">
             {hasUnread && (
-              <Badge variant="default" className="h-5 w-5 p-0 text-xs rounded-full flex items-center justify-center">
+              <Badge variant="default" className="h-5 min-w-[20px] px-1.5 text-xs rounded-full">
                 {unreadCount > 99 ? '99+' : unreadCount}
               </Badge>
             )}
             {conversation.last_message_at && (
-              <span className="text-xs text-muted-foreground whitespace-nowrap">
-                {formatTime(conversation.last_message_at)}
+              <span className="text-xs text-muted-foreground">
+                {formatLastMessageTime(conversation.last_message_at)}
               </span>
             )}
           </div>
         </div>
         
-        <p className={`text-sm truncate ${hasUnread ? 'text-foreground' : 'text-muted-foreground'}`}>
+        <p className={`text-sm truncate leading-relaxed ${hasUnread ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>
           {lastMessage}
         </p>
       </div>
 
-      {/* Actions */}
+      {/* Actions - Only show on hover/focus */}
       <DropdownMenu open={showMenu} onOpenChange={setShowMenu}>
         <DropdownMenuTrigger asChild>
           <Button 
             variant="ghost" 
             size="sm" 
-            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity"
+            className="h-8 w-8 p-0 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
             onClick={(e) => {
               e.stopPropagation();
               setShowMenu(!showMenu);
@@ -95,7 +110,7 @@ export default function ConversationListItem({
             <MoreVertical className="h-4 w-4" />
           </Button>
         </DropdownMenuTrigger>
-        <DropdownMenuContent align="end">
+        <DropdownMenuContent align="end" className="w-40">
           <DropdownMenuItem
             onClick={(e) => {
               e.stopPropagation();
