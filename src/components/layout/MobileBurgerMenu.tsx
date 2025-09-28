@@ -146,7 +146,7 @@ export function MobileBurgerMenu() {
       {/* Backdrop & Menu - Rendered via Portal with highest z-index */}
       {isOpen && createPortal(
         <div 
-          className="fixed inset-0 z-[1000] md:hidden overscroll-none"
+          className="fixed inset-0 z-[2147483647] md:hidden overscroll-none"
           role="dialog"
           aria-modal="true"
           onWheel={(e) => e.preventDefault()}
@@ -154,14 +154,14 @@ export function MobileBurgerMenu() {
         >
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
             onClick={closeMenu}
           />
           
-          {/* Menu Panel */}
+          {/* Slide-in Menu Panel */}
           <div
             className={cn(
-              "absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background border-l border-border pointer-events-auto",
+              "absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background border-l border-border",
               "transform transition-transform duration-300 ease-out",
               isOpen ? "translate-x-0" : "translate-x-full"
             )}
