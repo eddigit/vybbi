@@ -161,9 +161,9 @@ export default function Landing() {
       {/* Hero Section */}
       <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{ paddingTop: `calc(6rem + env(safe-area-inset-top))` }}>
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-2 sm:px-4">
-          <div className="hidden md:grid md:grid-cols-[180px_minmax(0,1fr)_180px] gap-6 items-start">
-            {/* Left Ad Slot */}
-            <div className="md:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
+        <div className="hidden md:grid md:grid-cols-[180px_minmax(0,1fr)_180px] gap-6 items-start">
+            {/* Left Ad Slot - Desktop only */}
+            <div className="hidden md:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
               <AdSlot slotId="ACCUEIL-GAUCHE" width={180} height={800} hideIfEmpty={true} fit="contain" />
             </div>
             
@@ -220,8 +220,8 @@ export default function Landing() {
           </div>
         </div>
         
-        {/* Right Ad Slot */}
-        <div className="md:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
+        {/* Right Ad Slot - Desktop only */}
+        <div className="hidden md:block sticky top-20 -mt-12 2xl:-mt-16 mb-24">
           <AdSlot slotId="ACCUEIL-DROITE" width={180} height={800} hideIfEmpty={true} fit="contain" />
         </div>
       </div>
@@ -233,10 +233,6 @@ export default function Landing() {
               <TickerBanner />
             </div>
             
-            {/* Mobile/Tablet Horizontal Ad Banner */}
-            <div className="mb-6 px-4">
-              <AdSlot slotId="ACCUEIL-MOBILE" width={728} height={90} hideIfEmpty={true} fit="contain" className="w-full max-w-2xl mx-auto" />
-            </div>
             
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
               <span className="bg-gradient-primary bg-clip-text text-transparent">
