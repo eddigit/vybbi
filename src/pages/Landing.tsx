@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
+import vybbiLogoMobile from "@/assets/vybbi-logo-mobile.png";
 import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
@@ -116,7 +117,7 @@ export default function Landing() {
         <div className="container mx-auto px-2 sm:px-6 py-4">
           <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
-                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-12 h-12" />
+                <img src={vybbiLogoMobile} alt="Vybbi Logo" className="w-12 h-12" />
                 <span className="font-bold text-xl text-foreground">Vybbi</span>
               </div>
             

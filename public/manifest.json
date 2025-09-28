@@ -13,19 +13,19 @@
   "id": "vybbi-app",
   "icons": [
     {
-      "src": "/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png",
+      "src": "/vybbi-logo-pwa.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png",
+      "src": "/vybbi-logo-pwa.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png",
+      "src": "/vybbi-logo-pwa.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "maskable"
@@ -47,7 +47,7 @@
       "url": "/dashboard",
       "icons": [
         {
-          "src": "/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png",
+          "src": "/vybbi-logo-pwa.png",
           "sizes": "96x96",
           "type": "image/png"
         }
@@ -60,7 +60,7 @@
       "url": "/messages",
       "icons": [
         {
-          "src": "/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png",
+          "src": "/vybbi-logo-pwa.png",
           "sizes": "96x96",
           "type": "image/png"
         }
