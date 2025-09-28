@@ -4,6 +4,7 @@ import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
 import { MobileBurgerMenu } from "./MobileBurgerMenu";
+import { MobileHeader } from "./MobileHeader";
 import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 
@@ -68,6 +69,9 @@ export function Layout({ children }: LayoutProps) {
     return (
       <div className="min-h-screen bg-background relative overflow-x-hidden">
         <MobileBurgerMenu />
+        {/* Mobile header - Always visible on mobile */}
+        <MobileHeader />
+        {/* Desktop header - Hidden on mobile */}
         <div className="hidden md:block">
           <Header />
         </div>
@@ -85,6 +89,9 @@ export function Layout({ children }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col w-full bg-background relative overflow-x-hidden">
       <MobileBurgerMenu />
+      {/* Mobile header - Always visible on mobile for authenticated users */}
+      {user && <MobileHeader />}
+      {/* Desktop header - Hidden on mobile */}
       <div className="hidden md:block">
         <Header />
       </div>
