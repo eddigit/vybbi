@@ -24,35 +24,34 @@ export function useAdminSettings() {
   useEffect(() => {
     const fetchAdminSettings = async () => {
       try {
-        // Fetch admin emails
-        const { data: adminEmailsData } = await supabase
-          .from('admin_settings')
-          .select('setting_value')
-          .eq('setting_key', 'admin_emails')
-          .single();
+        // Check if user is authenticated first
+        const { data: { session } } = await supabase.auth.getSession();
+        
+        if (!session?.user) {
+          console.log('No authenticated user, using default admin settings');
+          setLoading(false);
+          return;
+        }
 
-        // Fetch security settings  
-        const { data: securityData } = await supabase
-          .from('admin_settings')
-          .select('setting_value')
-          .eq('setting_key', 'security_settings')
-          .single();
+        // Use the secure function to get admin emails
+        const { data: adminEmailsData, error: emailsError } = await supabase
+          .rpc('get_admin_emails');
 
-        if (adminEmailsData?.setting_value) {
+        if (emailsError) {
+          console.warn('Could not fetch admin emails, using defaults:', emailsError);
+        } else if (adminEmailsData && adminEmailsData.length > 0) {
           setSettings(prev => ({
             ...prev,
-            admin_emails: adminEmailsData.setting_value as string[],
+            admin_emails: adminEmailsData,
           }));
         }
 
-        if (securityData?.setting_value) {
-          setSettings(prev => ({
-            ...prev,
-            security_settings: securityData.setting_value as any,
-          }));
-        }
+        // For security settings, we'll use default values since they don't need to be dynamic
+        // and accessing them requires admin permissions
+        console.log('Using default security settings for non-admin users');
+        
       } catch (error) {
-        console.error('Error fetching admin settings:', error);
+        console.warn('Error fetching admin settings, using defaults:', error);
         // Keep default values on error
       } finally {
         setLoading(false);
