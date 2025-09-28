@@ -1,5 +1,36 @@
 /* Mobile-specific optimizations for better touch experience */
 
+/* Strict zoom and scroll prevention */
+* {
+  max-width: 100vw;
+  box-sizing: border-box;
+}
+
+/* Prevent any zooming or horizontal scrolling */
+html, body {
+  touch-action: pan-y !important;
+  overflow-x: hidden !important;
+  overscroll-behavior-x: none !important;
+  -webkit-text-size-adjust: 100% !important;
+  -ms-text-size-adjust: 100% !important;
+  text-size-adjust: 100% !important;
+}
+
+/* Lock viewport on mobile devices */
+@media (max-width: 768px) {
+  html, body {
+    width: 100vw !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    position: relative !important;
+  }
+  
+  /* Prevent any element from causing horizontal overflow */
+  * {
+    max-width: 100% !important;
+  }
+}
+
 /* Hide scrollbars on horizontal scroll containers */
 .scrollbar-hide {
   -ms-overflow-style: none;  /* Internet Explorer 10+ */
