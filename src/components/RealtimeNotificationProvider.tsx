@@ -201,12 +201,6 @@ export function RealtimeNotificationProvider({ children }: Props) {
   return (
     <RealtimeNotificationContext.Provider value={{ isConnected }}>
       {children}
-      {/* Indicateur de statut de connexion (optionnel, pour le debug) */}
-      {process.env.NODE_ENV === 'development' && (
-        <div className="fixed bottom-4 right-4 z-50 bg-background border rounded p-2 text-xs">
-          🔔 Notifications: {isConnected ? '✅ Connected' : '❌ Disconnected'}
-        </div>
-      )}
     </RealtimeNotificationContext.Provider>
   );
 }
