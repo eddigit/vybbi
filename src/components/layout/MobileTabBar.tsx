@@ -62,9 +62,9 @@ export function MobileTabBar() {
   return (
     <div
       className={cn(
-        "fixed left-0 right-0 bottom-0 z-50 bg-background border-t border-border md:hidden",
-        "pb-safe-bottom"
+        "fixed left-0 right-0 z-50 bg-background border-t border-border md:hidden"
       )}
+      style={{ bottom: 0 }}
     >
       <div className="grid grid-cols-5 h-16">
         {tabs.map((tab) => {
