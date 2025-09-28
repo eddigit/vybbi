@@ -27,7 +27,7 @@ export function MobileHeader() {
 
         {/* VYBBI Token Balance Widget - Only for authenticated users */}
         {user && (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center h-14 pr-12">
             <VybbiTokenBalance variant="widget" />
           </div>
         )}

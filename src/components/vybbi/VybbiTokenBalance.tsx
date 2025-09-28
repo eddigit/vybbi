@@ -47,12 +47,12 @@ export const VybbiTokenBalance: React.FC<VybbiTokenBalanceProps> = ({
   if (variant === 'widget') {
     return (
       <Link to="/vybbi-tokens" className={`block ${className}`}>
-        <div className="flex items-center justify-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-gradient-to-r from-primary/10 to-primary-glow/10 hover:from-primary/20 hover:to-primary-glow/20 transition-all">
-          <Coins className="h-3.5 w-3.5 text-primary flex-shrink-0" />
-          <span className="font-semibold text-xs whitespace-nowrap">
+        <div className="inline-flex items-center h-8 gap-1.5 px-2.5 rounded-md bg-gradient-to-r from-primary/10 to-primary-glow/10 hover:from-primary/20 hover:to-primary-glow/20 transition-all">
+          <Coins className="h-4 w-4 text-primary flex-shrink-0" />
+          <span className="font-semibold text-xs leading-none whitespace-nowrap">
             {balance.balance.toLocaleString()}
           </span>
-          <Badge variant="secondary" className={`text-xs ${getLevelColor(balance.level)} text-white flex-shrink-0 px-1.5 py-0.5`}>
+          <Badge className={`inline-flex items-center text-[10px] leading-none px-1.5 py-0 ${getLevelColor(balance.level)} text-white flex-shrink-0`}>
             {balance.level.toUpperCase()}
           </Badge>
         </div>
