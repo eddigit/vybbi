@@ -13,12 +13,14 @@ VITE_SUPABASE_URL=votre_supabase_url
 
 ### 2. Configuration de build
 - **Framework preset**: Vite
-- **Build command**: `npm run build`
+- **Build command**: `npm run build` ou `./build.sh`
 - **Build output directory**: `dist`
 - **Root directory**: `/` (racine du projet)
+- **Install command**: `npm install --legacy-peer-deps`
 
 ### 3. Compatibilité Node.js
-- **Node.js version**: 18.x ou supérieure
+- **Node.js version**: 22.x (spécifié dans .node-version)
+- **Package manager**: npm (forcé via wrangler.toml)
 
 ## Étapes de déploiement
 

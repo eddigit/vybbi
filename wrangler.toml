@@ -8,12 +8,21 @@ name = "vybbi"
 [env.preview]
 name = "vybbi-preview"
 
-# Configuration pour les Pages Functions si nécessaire
-# [build]
-# command = "npm run build"
-# publish = "dist"
+# Configuration pour forcer l'utilisation de npm au lieu de bun
+[build]
+command = "npm run build"
+publish = "dist"
 
-# Variables d'environnement (à configurer dans l'interface Cloudflare)
+# Variables d'environnement pour Cloudflare Pages
+[env.production.vars]
+NODE_VERSION = "22"
+NPM_FLAGS = "--legacy-peer-deps"
+
+[env.preview.vars]
+NODE_VERSION = "22"
+NPM_FLAGS = "--legacy-peer-deps"
+
+# Variables d'environnement Supabase (à configurer dans l'interface Cloudflare)
 # VITE_SUPABASE_PROJECT_ID
 # VITE_SUPABASE_PUBLISHABLE_KEY  
 # VITE_SUPABASE_URL
