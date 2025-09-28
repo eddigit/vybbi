@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -433,9 +433,16 @@ export function RadioManagement() {
                         size="sm"
                         className="absolute inset-0 m-auto h-8 w-8 rounded-full opacity-0 hover:opacity-100 transition-opacity"
                         onClick={() => {
-                          // Create audio element and play
-                          const audio = new Audio(track.file_url);
-                          audio.play().catch(console.error);
+                          try {
+                            // Create audio element and play
+                            const audio = new Audio(track.file_url);
+                            audio.play().catch((error) => {
+                              // Gérer silencieusement les erreurs d'autoplay
+                              console.log('Lecture audio bloquée par le navigateur:', error.message);
+                            });
+                          } catch (error) {
+                            console.error('Erreur lors de la création de l\'élément audio:', error);
+                          }
                         }}
                       >
                         <Play className="h-4 w-4" />

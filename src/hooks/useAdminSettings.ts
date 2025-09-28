@@ -24,34 +24,31 @@ export function useAdminSettings() {
   useEffect(() => {
     const fetchAdminSettings = async () => {
       try {
-        // Check if user is authenticated first
-        const { data: { session } } = await supabase.auth.getSession();
+        // Always use default values to avoid 406 errors
+        // Only try to fetch if we really need dynamic values
+        console.log('Using default admin settings to avoid permission issues');
         
-        if (!session?.user) {
-          console.log('No authenticated user, using default admin settings');
-          setLoading(false);
-          return;
+        // Optionally try to get admin emails via secure function, but don't fail if it doesn't work
+        try {
+          const { data: adminEmailsData, error: emailsError } = await supabase
+            .rpc('get_admin_emails');
+
+          if (!emailsError && adminEmailsData && adminEmailsData.length > 0) {
+            setSettings(prev => ({
+              ...prev,
+              admin_emails: adminEmailsData,
+            }));
+          }
+        } catch (emailError) {
+          // Silently fail and use defaults
+          console.log('Using default admin emails');
         }
 
-        // Use the secure function to get admin emails
-        const { data: adminEmailsData, error: emailsError } = await supabase
-          .rpc('get_admin_emails');
-
-        if (emailsError) {
-          console.warn('Could not fetch admin emails, using defaults:', emailsError);
-        } else if (adminEmailsData && adminEmailsData.length > 0) {
-          setSettings(prev => ({
-            ...prev,
-            admin_emails: adminEmailsData,
-          }));
-        }
-
-        // For security settings, we'll use default values since they don't need to be dynamic
-        // and accessing them requires admin permissions
-        console.log('Using default security settings for non-admin users');
+        // Always use default security settings to avoid permission issues
+        console.log('Using default security settings');
         
       } catch (error) {
-        console.warn('Error fetching admin settings, using defaults:', error);
+        console.log('Using default admin settings due to error:', error);
         // Keep default values on error
       } finally {
         setLoading(false);

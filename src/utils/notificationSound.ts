@@ -1,10 +1,16 @@
 // Contexte audio global
 let audioContext: AudioContext | null = null;
 let isAudioInitialized = false;
+let userHasInteracted = false;
+
+// Marquer qu'une interaction utilisateur a eu lieu
+const markUserInteraction = (): void => {
+  userHasInteracted = true;
+};
 
 // Initialiser le contexte audio après interaction utilisateur
 export const initializeAudio = async (): Promise<void> => {
-  if (isAudioInitialized) return;
+  if (isAudioInitialized || !userHasInteracted) return;
   
   try {
     audioContext = new (window.AudioContext || (window as any).webkitAudioContext)();
@@ -15,7 +21,7 @@ export const initializeAudio = async (): Promise<void> => {
     }
     
     isAudioInitialized = true;
-    console.log('Contexte audio initialisé');
+    console.log('Contexte audio initialisé après interaction utilisateur');
   } catch (error) {
     console.error('Erreur lors de l\'initialisation audio:', error);
   }
@@ -24,6 +30,12 @@ export const initializeAudio = async (): Promise<void> => {
 // Créer et jouer un son de notification musical
 export const playNotificationSound = async (): Promise<void> => {
   try {
+    // Vérifier si l'utilisateur a interagi avec la page
+    if (!userHasInteracted) {
+      console.log('Son de notification ignoré - aucune interaction utilisateur détectée');
+      return;
+    }
+
     // Initialiser l'audio si ce n'est pas déjà fait
     if (!audioContext || !isAudioInitialized) {
       await initializeAudio();
@@ -67,5 +79,18 @@ export const playNotificationSound = async (): Promise<void> => {
 };
 
 // Initialiser l'audio lors du premier clic sur la page
-document.addEventListener('click', initializeAudio, { once: true });
-document.addEventListener('keydown', initializeAudio, { once: true });
+document.addEventListener('click', () => {
+  markUserInteraction();
+  initializeAudio();
+}, { once: true });
+
+document.addEventListener('keydown', () => {
+  markUserInteraction();
+  initializeAudio();
+}, { once: true });
+
+// Également marquer l'interaction sur les événements tactiles pour mobile
+document.addEventListener('touchstart', () => {
+  markUserInteraction();
+  initializeAudio();
+}, { once: true });

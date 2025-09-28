@@ -11,9 +11,15 @@ import { cn } from '@/lib/utils';
 
 export function MobileBurgerMenu() {
   const [isOpen, setIsOpen] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { user, profile, signOut, hasRole } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
+
+  // Track client-side hydration
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const handleLogout = async () => {
     await signOut();
@@ -55,8 +61,8 @@ export function MobileBurgerMenu() {
     };
   }, [isOpen]);
 
-  // Don't render on desktop
-  if (!isMobile) {
+  // Don't render on desktop, but show during SSR/hydration for mobile-first approach
+  if (isClient && !isMobile) {
     return null;
   }
 
@@ -144,23 +150,39 @@ export function MobileBurgerMenu() {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-[9999] p-3 h-auto bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 shadow-xl rounded-lg flex items-center justify-center"
+        className="fixed top-4 right-4 z-[9999] p-3 h-auto bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 shadow-xl rounded-lg flex items-center justify-center md:hidden"
         aria-label="Ouvrir le menu"
         style={{
-          position: 'fixed',
-          top: '1rem',
-          right: '1rem',
-          zIndex: 9999,
-          display: 'flex',
+          position: 'fixed !important',
+          top: '1rem !important',
+          right: '1rem !important',
+          zIndex: '9999 !important',
+          display: 'flex !important',
+          alignItems: 'center',
+          justifyContent: 'center',
           minWidth: '44px',
           minHeight: '44px',
+          width: '44px',
+          height: '44px',
+          padding: '8px',
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           border: '1px solid rgba(0, 0, 0, 0.1)',
           borderRadius: '8px',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)'
+          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
+          cursor: 'pointer',
+          backdropFilter: 'blur(8px)',
+          WebkitBackdropFilter: 'blur(8px)'
         }}
       >
-        <Menu className="h-5 w-5 text-gray-700 dark:text-gray-300" />
+        <Menu 
+          className="h-5 w-5 text-gray-700 dark:text-gray-300" 
+          style={{ 
+            width: '20px', 
+            height: '20px', 
+            color: '#374151',
+            flexShrink: 0
+          }} 
+        />
       </Button>
 
       {/* Backdrop & Menu - Rendered via Portal with highest z-index */}

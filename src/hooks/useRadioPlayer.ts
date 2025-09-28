@@ -280,8 +280,9 @@ export function useRadioPlayer() {
 
     // Autoplay if was playing
     if (isPlaying) {
-      audio.play().catch(() => {
+      audio.play().catch((error) => {
         // Autoplay might be blocked until user interaction
+        console.log('Lecture automatique bloquée par le navigateur:', error.message);
       });
     }
 
@@ -299,7 +300,9 @@ export function useRadioPlayer() {
     const audio = audioRef.current;
     if (!audio) return;
     if (isPlaying) {
-      audio.play().catch(() => {});
+      audio.play().catch((error) => {
+        console.log('Lecture bloquée par le navigateur:', error.message);
+      });
     } else {
       audio.pause();
     }
@@ -314,7 +317,11 @@ export function useRadioPlayer() {
 
   const play = useCallback(() => {
     setIsPlaying(true);
-    if (audioRef.current) audioRef.current.play().catch(() => {});
+    if (audioRef.current) {
+      audioRef.current.play().catch((error) => {
+        console.log('Lecture bloquée par le navigateur:', error.message);
+      });
+    }
   }, []);
 
   const pause = useCallback(() => {
