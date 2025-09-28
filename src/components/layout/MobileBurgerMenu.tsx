@@ -132,12 +132,12 @@ export function MobileBurgerMenu() {
 
   return (
     <>
-      {/* Burger Button - Fixed positioning with high z-index */}
+      {/* Burger Button - Fixed positioning with high z-index, only visible on mobile */}
       <Button
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed top-4 right-4 z-60 md:hidden p-2 h-auto"
+        className="fixed top-4 right-4 z-[9999] md:hidden p-2 h-auto bg-background/80 backdrop-blur-sm border border-border/50 hover:bg-background/90 transition-all duration-200 shadow-lg flex"
         aria-label="Ouvrir le menu"
       >
         <Menu className="h-5 w-5" />
@@ -146,7 +146,7 @@ export function MobileBurgerMenu() {
       {/* Backdrop & Menu - Rendered via Portal with highest z-index */}
       {isOpen && createPortal(
         <div 
-          className="fixed inset-0 z-[2147483647] md:hidden overscroll-none"
+          className="fixed inset-0 z-[99999] md:hidden overscroll-none"
           role="dialog"
           aria-modal="true"
           onWheel={(e) => e.preventDefault()}
@@ -154,14 +154,20 @@ export function MobileBurgerMenu() {
         >
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/60 backdrop-blur-sm"
             onClick={closeMenu}
+            style={{ 
+              touchAction: 'none',
+              WebkitTouchCallout: 'none',
+              WebkitUserSelect: 'none',
+              userSelect: 'none'
+            }}
           />
           
           {/* Slide-in Menu Panel */}
           <div
             className={cn(
-              "absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background border-l border-border",
+              "absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background/95 backdrop-blur-md border-l border-border shadow-2xl",
               "transform transition-transform duration-300 ease-out",
               isOpen ? "translate-x-0" : "translate-x-full"
             )}
