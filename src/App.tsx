@@ -13,6 +13,7 @@ import { RadioPlayer } from "@/components/RadioPlayer";
 import { PerformanceOptimizer, ConnectionOptimizer } from './components/PerformanceOptimizer';
 import { useAuth } from "@/hooks/useAuth";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { useRadioPlayerVisibility } from "@/hooks/useRadioPlayerVisibility";
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PWAInstallPrompt } from '@/components/PWAInstallPrompt';
 import { OfflineIndicator } from '@/components/OfflineIndicator';
@@ -139,17 +140,19 @@ const AuthHashRedirect = () => {
   return null;
 };
 
-// Conditional Radio Player - Hide on mobile for logged-in users (except on /radio page)
+// Conditional Radio Player - Hide on mobile by default, show via toggle or on /radio page
 const ConditionalRadioPlayer = () => {
   const { user } = useAuth();
   const isMobile = useIsMobile();
   const location = useLocation();
+  const { isRadioVisible } = useRadioPlayerVisibility();
   
   // Show RadioPlayer when:
   // - Not on mobile, OR
   // - User is not logged in, OR  
-  // - User is on the /radio page
-  const shouldShowPlayer = !isMobile || !user || location.pathname === '/radio';
+  // - User is on the /radio page, OR
+  // - On mobile and radio is toggled visible
+  const shouldShowPlayer = !isMobile || !user || location.pathname === '/radio' || (isMobile && isRadioVisible);
   
   return shouldShowPlayer ? <RadioPlayer /> : null;
 };
