@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon } from 'lucide-react';
+import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon, Home } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -68,6 +68,7 @@ export function MobileBurgerMenu() {
 
   // Public navigation items for non-authenticated users
   const publicItems = [
+    { title: "Accueil", url: "/", icon: Home },
     { title: "Top Artistes", url: "/top-artistes", icon: Trophy },
     { title: "Nos Artistes", url: "/artists", icon: Users },
     { title: "Web TV", url: "/webtv", icon: Radio },
@@ -83,6 +84,7 @@ export function MobileBurgerMenu() {
     if (!profile) return [];
     
     const baseItems = [
+      { title: "Accueil", url: "/feed", icon: Home },
       { title: "Recherche Avancée", url: "/recherche-avancee", icon: Search },
       { title: "Communautés", url: "/communities", icon: Hash },
       { title: "Annonces", url: "/annonces", icon: Megaphone },

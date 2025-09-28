@@ -139,7 +139,7 @@ export function Header() {
     )}>
       <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
           {/* Mobile: Logo only, Desktop: Logo + Name */}
-          <Link to={user ? "/feed" : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
+          <Link to={user ? (hasRole('admin') ? "/dashboard" : "/") : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
             <img 
               src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
               alt="Vybbi Logo" 
