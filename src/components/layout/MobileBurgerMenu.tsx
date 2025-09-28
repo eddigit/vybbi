@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
@@ -19,6 +20,38 @@ export function MobileBurgerMenu() {
   };
 
   const closeMenu = () => setIsOpen(false);
+
+  // Enhanced scroll locking for both html and body
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const html = document.documentElement;
+    const body = document.body;
+    
+    // Store original values
+    const originalHtmlOverflow = html.style.overflow;
+    const originalBodyOverflow = body.style.overflow;
+    
+    // Lock scroll
+    html.style.overflow = 'hidden';
+    body.style.overflow = 'hidden';
+    
+    // Handle Escape key
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        setIsOpen(false);
+      }
+    };
+    
+    document.addEventListener('keydown', handleEscape);
+    
+    // Cleanup function
+    return () => {
+      html.style.overflow = originalHtmlOverflow;
+      body.style.overflow = originalBodyOverflow;
+      document.removeEventListener('keydown', handleEscape);
+    };
+  }, [isOpen]);
 
   // Public navigation items for non-authenticated users
   const publicItems = [
@@ -97,13 +130,6 @@ export function MobileBurgerMenu() {
 
   const supplementaryItems = getSupplementaryItems();
 
-  // Prevent body scroll when menu is open
-  if (isOpen) {
-    document.body.style.overflow = 'hidden';
-  } else {
-    document.body.style.overflow = 'unset';
-  }
-
   return (
     <>
       {/* Burger Button - Fixed positioning with high z-index */}
@@ -117,19 +143,25 @@ export function MobileBurgerMenu() {
         <Menu className="h-5 w-5" />
       </Button>
 
-      {/* Backdrop & Menu - Highest z-index to appear above everything */}
-      {isOpen && (
-        <div className="fixed inset-0 z-[100] md:hidden">
+      {/* Backdrop & Menu - Rendered via Portal with highest z-index */}
+      {isOpen && createPortal(
+        <div 
+          className="fixed inset-0 z-[1000] md:hidden overscroll-none"
+          role="dialog"
+          aria-modal="true"
+          onWheel={(e) => e.preventDefault()}
+          onTouchMove={(e) => e.preventDefault()}
+        >
           {/* Backdrop */}
           <div 
-            className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+            className="absolute inset-0 bg-black/50 backdrop-blur-sm pointer-events-auto"
             onClick={closeMenu}
           />
           
           {/* Menu Panel */}
           <div
             className={cn(
-              "absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background border-l border-border",
+              "absolute right-0 top-0 h-full w-80 max-w-[85vw] bg-background border-l border-border pointer-events-auto",
               "transform transition-transform duration-300 ease-out",
               isOpen ? "translate-x-0" : "translate-x-full"
             )}
@@ -276,7 +308,8 @@ export function MobileBurgerMenu() {
               )}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </>
   );
