@@ -37,6 +37,7 @@ export default function Messages() {
     conversations = [],
     loading: conversationsLoading = false,
     error: conversationsError = null,
+    refetch: refetchConversations,
     archiveConversation,
     unarchiveConversation,
     pinConversation,
@@ -147,6 +148,8 @@ export default function Messages() {
     if (isMobile) {
       setShowConversationList(false);
     }
+    // Trigger a refetch of conversations to update unread counts
+    setTimeout(() => refetchConversations(), 100);
   };
 
   const handleBackToList = () => {

@@ -182,6 +182,7 @@ export function useConversations() {
       .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_archives' }, debouncedFetch)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'conversation_pins' }, debouncedFetch)
       .on('postgres_changes', { event: '*', schema: 'public', table: 'messages' }, debouncedFetch)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'message_receipts' }, debouncedFetch)
       .subscribe();
 
     return () => {

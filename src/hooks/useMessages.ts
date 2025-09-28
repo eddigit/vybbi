@@ -161,7 +161,7 @@ export function useMessages(conversationId: string | null) {
     }
   };
 
-  const markAsRead = async () => {
+  const markAsRead = async (onSuccess?: () => void) => {
     if (!conversationId || !user) return;
 
     const { error } = await supabase
@@ -174,6 +174,9 @@ export function useMessages(conversationId: string | null) {
 
     if (error) {
       console.error('Error marking messages as read:', error);
+    } else {
+      // Trigger callback if provided to refresh conversations
+      onSuccess?.();
     }
   };
 
@@ -184,7 +187,10 @@ export function useMessages(conversationId: string | null) {
     }
 
     fetchMessages();
-    markAsRead();
+    markAsRead(() => {
+      // Trigger conversations refetch to update unread counts immediately
+      console.log('💬 [useMessages] Messages marked as read, triggering conversation refresh');
+    });
 
     // Subscribe to real-time messages avec optimisations
     const channel = supabase
