@@ -154,6 +154,21 @@ All colors MUST be HSL.
     }
   }
 
+  /* ScrollArea exceptions - Allow scrolling in scroll containers */
+  [data-radix-scroll-area-root],
+  [data-radix-scroll-area-viewport] {
+    touch-action: pan-y !important;
+    overflow-y: auto !important;
+    user-select: auto !important;
+    -webkit-user-select: auto !important;
+  }
+
+  /* Ensure scroll areas can scroll on all devices */
+  .scroll-area-viewport {
+    touch-action: pan-y !important;
+    overflow-y: auto !important;
+  }
+
   /* Desktop - allow normal interactions */
   @media (hover: hover) and (pointer: fine) {
     body {
