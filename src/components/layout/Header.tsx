@@ -19,7 +19,6 @@ import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { NotificationCenter } from "@/components/NotificationCenter";
-import { MobileBurgerMenu } from "@/components/layout/MobileBurgerMenu";
 import { useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
@@ -135,14 +134,10 @@ export function Header() {
   // Removed notification handling - now in NotificationCenter
 
   return (
-    <>
-      {/* Mobile Burger Menu - Fixed positioning above header */}
-      <MobileBurgerMenu />
-      
-      <header className={cn(
-        "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-50"
-      )}>
-        <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
+    <header className={cn(
+      "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-50"
+    )}>
+      <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
           {/* Mobile: Logo only, Desktop: Logo + Name */}
           <Link to={user ? "/feed" : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
             <img 
@@ -305,7 +300,6 @@ export function Header() {
           )}
         </div>
       </div>
-      </header>
-    </>
+    </header>
   );
 }

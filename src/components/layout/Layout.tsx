@@ -3,6 +3,7 @@ import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { TopNav } from "./TopNav";
 import { MobileTabBar } from "./MobileTabBar";
+import { MobileBurgerMenu } from "./MobileBurgerMenu";
 import { useAffiliateTracking } from "@/hooks/useAffiliateTracking";
 import { CookieConsentBanner } from "@/components/CookieConsentBanner";
 
@@ -38,6 +39,7 @@ export function Layout({ children }: LayoutProps) {
   if (isHomePage && !user) {
     return (
       <>
+        <MobileBurgerMenu />
         <div className="pb-10">
           {children}
         </div>
@@ -51,6 +53,7 @@ export function Layout({ children }: LayoutProps) {
   if (isAuthPage) {
     return (
       <>
+        <MobileBurgerMenu />
         <div className="pb-10">
           {children}
         </div>
@@ -64,6 +67,7 @@ export function Layout({ children }: LayoutProps) {
   if (isArtistProfilePage || isVenueProfilePage || isPartnerProfilePage) {
     return (
       <div className="min-h-screen bg-background relative overflow-x-hidden">
+        <MobileBurgerMenu />
         <div className="hidden md:block">
           <Header />
         </div>
@@ -80,6 +84,7 @@ export function Layout({ children }: LayoutProps) {
   // For all other pages (dashboard, agent pages, social wall when authenticated, etc.), use responsive navigation
   return (
     <div className="min-h-screen flex flex-col w-full bg-background relative overflow-x-hidden">
+      <MobileBurgerMenu />
       <div className="hidden md:block">
         <Header />
       </div>
