@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
 import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
@@ -14,11 +14,6 @@ export function MobileBurgerMenu() {
   const { user, profile, signOut, hasRole } = useAuth();
   const isMobile = useIsMobile();
   const navigate = useNavigate();
-
-  // Don't render on desktop
-  if (!isMobile) {
-    return null;
-  }
 
   const handleLogout = async () => {
     await signOut();
@@ -59,6 +54,11 @@ export function MobileBurgerMenu() {
       document.removeEventListener('keydown', handleEscape);
     };
   }, [isOpen]);
+
+  // Don't render on desktop
+  if (!isMobile) {
+    return null;
+  }
 
   // Public navigation items for non-authenticated users
   const publicItems = [
