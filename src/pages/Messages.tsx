@@ -264,81 +264,83 @@ export default function Messages() {
   // Desktop layout (lg and above) - LinkedIn style 3 columns
   if (!isMobile) {
     return (
-      <div className="h-screen flex bg-background">
-        {/* Left Sidebar - Conversations (320px like LinkedIn) */}
-        <div className="w-80 flex-shrink-0 border-r border-border bg-background">
-          <ConversationList
-            conversations={conversations}
-            selectedConversationId={selectedConversationId}
-            onSelectConversation={handleSelectConversation}
-            onArchiveConversation={archiveConversation || (() => {})}
-            onUnarchiveConversation={unarchiveConversation || (() => {})}
-            onPinConversation={pinConversation || (() => {})}
-            onUnpinConversation={unpinConversation || (() => {})}
-            onDeleteConversation={deleteConversation || (() => {})}
-          />
-        </div>
+      <div className="container mx-auto p-3 sm:p-6">
+        <div className="min-h-[calc(100vh-200px)] flex bg-background border rounded-lg overflow-hidden">
+          {/* Left Sidebar - Conversations (320px like LinkedIn) */}
+          <div className="w-80 flex-shrink-0 border-r border-border bg-background">
+            <ConversationList
+              conversations={conversations}
+              selectedConversationId={selectedConversationId}
+              onSelectConversation={handleSelectConversation}
+              onArchiveConversation={archiveConversation || (() => {})}
+              onUnarchiveConversation={unarchiveConversation || (() => {})}
+              onPinConversation={pinConversation || (() => {})}
+              onUnpinConversation={unpinConversation || (() => {})}
+              onDeleteConversation={deleteConversation || (() => {})}
+            />
+          </div>
 
-        {/* Center - Chat Window */}
-        <div className="flex-1 flex flex-col min-w-0 border-r border-border">
-          {selectedConversation ? (
-            <>
-              <MessageHeader
-                conversation={selectedConversation}
-                typingUsers={typingUsers}
-                onBack={handleBackToList}
-                onOpenInfo={() => setShowInfo(!showInfo)}
-                onBlockUser={handleBlockUser}
-              />
-              
-              <div className="flex-1 overflow-hidden">
-                <MessageList messages={messages} loading={messagesLoading} />
-              </div>
-              
-              <div className="border-t border-border bg-background p-4">
-                <Composer
-                  conversationId={selectedConversationId}
-                  onSendMessage={handleSendMessage}
-                  disabled={!canSendMessage}
-                  placeholder={
-                    selectedConversation?.is_blocked
-                      ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
-                      : "Tapez votre message..."
-                  }
+          {/* Center - Chat Window */}
+          <div className="flex-1 flex flex-col min-w-0 border-r border-border">
+            {selectedConversation ? (
+              <>
+                <MessageHeader
+                  conversation={selectedConversation}
+                  typingUsers={typingUsers}
+                  onBack={handleBackToList}
+                  onOpenInfo={() => setShowInfo(!showInfo)}
+                  onBlockUser={handleBlockUser}
                 />
-              </div>
-            </>
-          ) : (
-            <div className="flex-1 flex items-center justify-center bg-muted/30">
-              <div className="text-center space-y-4">
-                <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
-                  <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
-                  </svg>
+                
+                <div className="flex-1 overflow-hidden">
+                  <MessageList messages={messages} loading={messagesLoading} />
                 </div>
-                <div>
-                  <h3 className="text-lg font-semibold text-foreground">Sélectionnez une conversation</h3>
-                  <p className="text-sm text-muted-foreground mt-1">
-                    Choisissez une conversation dans la liste pour commencer à échanger
-                  </p>
+                
+                <div className="border-t border-border bg-background p-4">
+                  <Composer
+                    conversationId={selectedConversationId}
+                    onSendMessage={handleSendMessage}
+                    disabled={!canSendMessage}
+                    placeholder={
+                      selectedConversation?.is_blocked
+                        ? "Vous ne pouvez pas envoyer de message à cet utilisateur"
+                        : "Tapez votre message..."
+                    }
+                  />
+                </div>
+              </>
+            ) : (
+              <div className="flex-1 flex items-center justify-center bg-muted/30">
+                <div className="text-center space-y-4">
+                  <div className="w-16 h-16 mx-auto bg-muted rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-muted-foreground" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-foreground">Sélectionnez une conversation</h3>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Choisissez une conversation dans la liste pour commencer à échanger
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          )}
-        </div>
+            )}
+          </div>
 
-        {/* Right Sidebar - Info Panel (ALWAYS visible like LinkedIn) */}
-        <div className="w-75 flex-shrink-0 bg-background">
-          <RightInfoPanel
-            conversation={selectedConversation}
-            isOpen={true}
-            onClose={() => setShowInfo(false)}
-            onBlockUser={handleBlockUser}
-            onPinConversation={() => selectedConversationId && pinConversation && pinConversation(selectedConversationId)}
-            onUnpinConversation={() => selectedConversationId && unpinConversation && unpinConversation(selectedConversationId)}
-            onArchiveConversation={() => selectedConversationId && archiveConversation && archiveConversation(selectedConversationId)}
-            onUnarchiveConversation={() => selectedConversationId && unarchiveConversation && unarchiveConversation(selectedConversationId)}
-          />
+          {/* Right Sidebar - Info Panel (ALWAYS visible like LinkedIn) */}
+          <div className="w-75 flex-shrink-0 bg-background">
+            <RightInfoPanel
+              conversation={selectedConversation}
+              isOpen={true}
+              onClose={() => setShowInfo(false)}
+              onBlockUser={handleBlockUser}
+              onPinConversation={() => selectedConversationId && pinConversation && pinConversation(selectedConversationId)}
+              onUnpinConversation={() => selectedConversationId && unpinConversation && unpinConversation(selectedConversationId)}
+              onArchiveConversation={() => selectedConversationId && archiveConversation && archiveConversation(selectedConversationId)}
+              onUnarchiveConversation={() => selectedConversationId && unarchiveConversation && unarchiveConversation(selectedConversationId)}
+            />
+          </div>
         </div>
       </div>
     );
