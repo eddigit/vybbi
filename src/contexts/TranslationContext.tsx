@@ -25,23 +25,28 @@ interface TranslationProviderProps {
   children: React.ReactNode;
 }
 
-export const TranslationProvider: React.FC<TranslationProviderProps> = ({ children }) => {
+// Fixed TranslationProvider without phantom hooks
+export function TranslationProvider({ children }: TranslationProviderProps) {
   const [detectedLanguage, setDetectedLanguage] = useState<string>('fr');
   const [userLanguage, setUserLanguage] = useState<string>('fr');
   const [isAutoDetected, setIsAutoDetected] = useState<boolean>(true);
 
+  // Language detection effect
   useEffect(() => {
     try {
+      // Check for saved language preference
       const savedLanguage = localStorage.getItem('vybbi-language');
       if (savedLanguage && LANGUAGES.some(lang => lang.code === savedLanguage)) {
         setUserLanguage(savedLanguage);
         setDetectedLanguage(savedLanguage);
         setIsAutoDetected(false);
+        console.log('TranslationProvider - Saved language loaded:', savedLanguage);
         return;
       }
 
+      // Detect browser language
       const browserLanguages = navigator.languages || [navigator.language];
-      let detected = 'fr';
+      let detected = 'fr'; // Default fallback
 
       for (const browserLang of browserLanguages) {
         const langCode = browserLang.split('-')[0].toLowerCase();
@@ -56,8 +61,12 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ childr
       setUserLanguage(detected);
       localStorage.setItem('vybbi-language', detected);
       setIsAutoDetected(true);
-    } catch (e) {
-      console.warn('Language detection failed:', e);
+      console.log(`TranslationProvider - Detected: ${detected} User: ${detected} Auto: true`);
+    } catch (error) {
+      console.warn('Language detection failed, using default (fr):', error);
+      setDetectedLanguage('fr');
+      setUserLanguage('fr');
+      setIsAutoDetected(true);
     }
   }, []);
 
@@ -66,16 +75,27 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ childr
       setUserLanguage(languageCode);
       localStorage.setItem('vybbi-language', languageCode);
       setIsAutoDetected(false);
+      console.log('TranslationProvider - Language changed to:', languageCode);
     }
   };
 
   const translate = async (text: string, sourceLanguage?: string): Promise<string> => {
-    const result = await translationService.translate(text, userLanguage, sourceLanguage);
-    return result;
+    try {
+      const result = await translationService.translate(text, userLanguage, sourceLanguage);
+      return result;
+    } catch (error) {
+      console.warn('Translation failed:', error);
+      return text; // Return original text as fallback
+    }
   };
 
   const translateBatch = async (texts: string[], sourceLanguage?: string): Promise<string[]> => {
-    return translationService.translateBatch(texts, userLanguage, sourceLanguage);
+    try {
+      return await translationService.translateBatch(texts, userLanguage, sourceLanguage);
+    } catch (error) {
+      console.warn('Batch translation failed:', error);
+      return texts; // Return original texts as fallback
+    }
   };
 
   const contextValue: TranslationContextValue = {
@@ -92,4 +112,4 @@ export const TranslationProvider: React.FC<TranslationProviderProps> = ({ childr
       {children}
     </TranslationContext.Provider>
   );
-};
+}
