@@ -17,12 +17,15 @@ export const useRadioPlayerVisibility = () => {
   const subscribe = useCallback(() => {
     const listener = () => forceUpdate({});
     listeners.add(listener);
-    return () => listeners.delete(listener);
+    return () => {
+      listeners.delete(listener);
+    };
   }, []);
 
   // Utiliser l'effet pour s'abonner
   React.useEffect(() => {
-    return subscribe();
+    const unsubscribe = subscribe();
+    return unsubscribe;
   }, [subscribe]);
 
   const toggleRadioVisibility = useCallback(() => {

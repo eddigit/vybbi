@@ -155,7 +155,7 @@ export function MobileBurgerMenu() {
         className="fixed top-4 right-4 z-[9999] p-3 h-auto bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 shadow-xl rounded-lg flex items-center justify-center md:hidden"
         aria-label="Ouvrir le menu"
         style={{
-          position: 'fixed !important',
+          position: 'fixed',
           top: '1rem !important',
           right: '1rem !important',
           zIndex: '9999 !important',

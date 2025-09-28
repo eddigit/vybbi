@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils";
 export function Header() {
   const location = useLocation();
   const navigate = useNavigate();
-  const { user, profile, signOut } = useAuth();
+  const { user, profile, signOut, hasRole } = useAuth();
   const { toast } = useToast();
   // Removed useNotifications - now handled by NotificationCenter
   const [searchQuery, setSearchQuery] = useState("");
