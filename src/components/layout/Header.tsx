@@ -171,8 +171,10 @@ export function Header() {
                   />
                 </form>
 
-                {/* Notifications */}
-                <NotificationCenter />
+                {/* Notifications - Hidden on mobile */}
+                <div className="hidden md:block">
+                  <NotificationCenter />
+                </div>
               </>
             )}
 

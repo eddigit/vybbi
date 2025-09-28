@@ -11,29 +11,42 @@ import {
   User,
   Megaphone,
   Hash,
-  Radio
+  Radio,
+  Bell,
+  Search
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { cn } from "@/lib/utils";
 import { getProfileUrl } from '@/hooks/useProfileResolver';
 import { useRadioPlayerVisibility } from "@/hooks/useRadioPlayerVisibility";
+import { MobileNotificationBadge } from "@/components/MobileNotificationBadge";
+
+interface TabItem {
+  name: string;
+  href: string;
+  icon: any;
+  isRadioToggle?: boolean;
+  isNotificationBadge?: boolean;
+}
 
 export function MobileTabBar() {
   const location = useLocation();
   const { profile } = useAuth();
   const { isRadioVisible, toggleRadioVisibility } = useRadioPlayerVisibility();
   // Public tabs (visible only for non-authenticated users)
-  const publicTabs = !profile ? [
+  const publicTabs: TabItem[] = !profile ? [
     { name: "Annonces", href: "/annonces", icon: Megaphone },
     { name: "Artistes", href: "/nos-artistes", icon: Users },
+    { name: "Recherche", href: "/artists", icon: Search },
     { name: "Radio", href: "/radio", icon: Radio, isRadioToggle: true },
   ] : [];
 
-  const getMainTabs = () => {
+  const getMainTabs = (): TabItem[] => {
     switch (profile?.profile_type) {
       case 'artist':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Notifications", href: "/notifications", icon: Bell, isNotificationBadge: true },
           { name: "Radio", href: "/radio", icon: Radio, isRadioToggle: true },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Profil", href: getProfileUrl(profile), icon: User },
@@ -41,6 +54,8 @@ export function MobileTabBar() {
       case 'agent':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Notifications", href: "/notifications", icon: Bell, isNotificationBadge: true },
+          { name: "Recherche", href: "/artists", icon: Search },
           { name: "Radio", href: "/radio", icon: Radio, isRadioToggle: true },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Profil", href: `/profiles`, icon: User },
@@ -48,6 +63,8 @@ export function MobileTabBar() {
       case 'manager':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Notifications", href: "/notifications", icon: Bell, isNotificationBadge: true },
+          { name: "Recherche", href: "/artists", icon: Search },
           { name: "Radio", href: "/radio", icon: Radio, isRadioToggle: true },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Profil", href: `/profiles`, icon: User },
@@ -55,6 +72,8 @@ export function MobileTabBar() {
       case 'lieu':
         return [
           { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+          { name: "Notifications", href: "/notifications", icon: Bell, isNotificationBadge: true },
+          { name: "Recherche", href: "/artists", icon: Search },
           { name: "Radio", href: "/radio", icon: Radio, isRadioToggle: true },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Profil", href: `/lieux/${profile.id}`, icon: User },
@@ -63,6 +82,8 @@ export function MobileTabBar() {
         // Inclut les admins et autres types
         return [
           { name: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+          { name: "Notifications", href: "/notifications", icon: Bell, isNotificationBadge: true },
+          { name: "Recherche", href: "/artists", icon: Search },
           { name: "Radio", href: "/radio", icon: Radio, isRadioToggle: true },
           { name: "Messages", href: "/messages", icon: MessageSquare },
           { name: "Profil", href: `/profiles`, icon: User },
@@ -90,10 +111,34 @@ export function MobileTabBar() {
         "pb-safe-bottom"
       )}
     >
-      <div className="flex items-center justify-around px-1 py-2 h-16">
+      <div className="flex items-center justify-around px-1 py-2 h-16 overflow-x-auto">
         {tabs.map((tab) => {
           const Icon = tab.icon;
           const active = isActive(tab.href, tab.isRadioToggle);
+          
+          // Si c'est un badge de notification, on rend un lien avec le badge
+          if (tab.isNotificationBadge) {
+            return (
+              <Link
+                key={tab.name}
+                to={tab.href}
+                className={cn(
+                  "flex flex-col items-center justify-center flex-1 min-h-[56px] max-w-[70px] px-1 py-2 rounded-lg transition-all duration-200 touch-target select-none",
+                  active
+                    ? "text-primary bg-primary/10 scale-105"
+                    : "text-muted-foreground hover:text-foreground hover:bg-muted/50 active:scale-95"
+                )}
+                style={{ touchAction: 'manipulation' }}
+              >
+                <div className="mb-1">
+                  <MobileNotificationBadge isActive={active} />
+                </div>
+                <span className="text-[10px] font-medium leading-tight text-center line-clamp-1 select-none">
+                  {tab.name}
+                </span>
+              </Link>
+            );
+          }
           
           // Si c'est un bouton toggle radio, on rend un bouton au lieu d'un lien
           if (tab.isRadioToggle) {
@@ -102,7 +147,7 @@ export function MobileTabBar() {
                 key={tab.name}
                 onClick={toggleRadioVisibility}
                 className={cn(
-                  "flex flex-col items-center justify-center flex-1 min-h-[56px] max-w-[80px] px-1 py-2 rounded-lg transition-all duration-200 touch-target select-none",
+                "flex flex-col items-center justify-center flex-1 min-h-[56px] max-w-[70px] px-1 py-2 rounded-lg transition-all duration-200 touch-target select-none",
                   active
                     ? "text-primary bg-primary/10 scale-105"
                     : "text-muted-foreground hover:text-foreground hover:bg-muted/50 active:scale-95"
@@ -123,7 +168,7 @@ export function MobileTabBar() {
               key={tab.name}
               to={tab.href}
               className={cn(
-                "flex flex-col items-center justify-center flex-1 min-h-[56px] max-w-[80px] px-1 py-2 rounded-lg transition-all duration-200 touch-target select-none",
+                "flex flex-col items-center justify-center flex-1 min-h-[56px] max-w-[70px] px-1 py-2 rounded-lg transition-all duration-200 touch-target select-none",
                 active
                   ? "text-primary bg-primary/10 scale-105"
                   : "text-muted-foreground hover:text-foreground hover:bg-muted/50 active:scale-95"
