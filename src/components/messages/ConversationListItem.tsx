@@ -72,22 +72,22 @@ export default function ConversationListItem({
 
       {/* Content */}
       <div className="flex-1 min-w-0 space-y-1">
-        <div className="flex items-center justify-between">
-          <h3 className={`text-base truncate ${hasUnread ? 'font-bold' : 'font-medium'}`}>
-            {displayName}
-          </h3>
-          <div className="flex items-center gap-2 flex-shrink-0">
-            {hasUnread && (
-              <Badge variant="default" className="h-5 min-w-[20px] px-1.5 text-xs rounded-full">
-                {unreadCount > 99 ? '99+' : unreadCount}
-              </Badge>
-            )}
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 min-w-0">
+            <h3 className={`text-base truncate ${hasUnread ? 'font-bold' : 'font-medium'}`}>
+              {displayName}
+            </h3>
             {conversation.last_message_at && (
               <span className="text-xs text-muted-foreground">
                 {formatLastMessageTime(conversation.last_message_at)}
               </span>
             )}
           </div>
+          {hasUnread && (
+            <Badge variant="default" className="h-5 min-w-[20px] px-1.5 text-xs rounded-full flex-shrink-0">
+              {unreadCount > 99 ? '99+' : unreadCount}
+            </Badge>
+          )}
         </div>
         
         <p className={`text-sm truncate leading-relaxed ${hasUnread ? 'text-foreground font-medium' : 'text-muted-foreground'}`}>

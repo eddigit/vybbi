@@ -267,7 +267,7 @@ export default function Messages() {
       <div className="container mx-auto p-3 sm:p-6">
         <div className="min-h-[calc(100vh-200px)] flex bg-background border rounded-lg overflow-hidden">
           {/* Left Sidebar - Conversations (320px like LinkedIn) */}
-          <div className="w-80 flex-shrink-0 border-r border-border bg-background">
+          <div className="w-96 flex-shrink-0 border-r border-border bg-background">
             <ConversationList
               conversations={conversations}
               selectedConversationId={selectedConversationId}
