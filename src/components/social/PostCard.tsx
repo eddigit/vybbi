@@ -5,11 +5,13 @@ import { Badge } from "@/components/ui/badge";
 import { Textarea } from "@/components/ui/textarea";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ServiceRequestCard } from "./ServiceRequestCard";
+import { CommentItem } from "./CommentItem";
 import { Heart, MessageCircle, Share2, MoreHorizontal } from "lucide-react";
 import { formatDistanceToNow } from "date-fns";
 import { fr } from "date-fns/locale";
 import { SocialPost, ServiceRequest } from "@/types/social";
 import { useSocialActions } from "@/hooks/useSocialActions";
+import { usePostComments } from "@/hooks/usePostComments";
 import { FollowButton } from "@/components/social/FollowButton";
 import { useAuth } from "@/hooks/useAuth";
 import { Link } from "react-router-dom";
@@ -22,6 +24,7 @@ interface PostCardProps {
 export function PostCard({ post }: PostCardProps) {
   const { user } = useAuth();
   const { toggleLike, addComment } = useSocialActions();
+  const { comments, loading: commentsLoading, refreshComments } = usePostComments(post.id);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
   const [isLiking, setIsLiking] = useState(false);
@@ -71,6 +74,8 @@ export function PostCard({ post }: PostCardProps) {
       await addComment(post.id, newComment.trim());
       setNewComment("");
       setShowComments(true);
+      // Refresh comments to show the new one
+      refreshComments();
     } catch (error) {
       console.error("Error adding comment:", error);
     } finally {
@@ -318,12 +323,22 @@ export function PostCard({ post }: PostCardProps) {
               </form>
             )}
 
-            {/* Comments Display - This would be implemented with a separate component */}
-            {post.comments_count > 0 && (
-              <div className="text-center text-sm text-muted-foreground">
-                {post.comments_count} commentaire{post.comments_count > 1 ? "s" : ""}
-              </div>
-            )}
+            {/* Comments Display */}
+            <div className="space-y-3">
+              {commentsLoading ? (
+                <div className="text-center text-sm text-muted-foreground py-4">
+                  Chargement des commentaires...
+                </div>
+              ) : comments.length > 0 ? (
+                comments.map((comment) => (
+                  <CommentItem key={comment.id} comment={comment} />
+                ))
+              ) : (
+                <div className="text-center text-sm text-muted-foreground py-4">
+                  Aucun commentaire pour le moment
+                </div>
+              )}
+            </div>
           </div>
         )}
       </CardContent>
