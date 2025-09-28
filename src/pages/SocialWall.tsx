@@ -60,9 +60,9 @@ export default function SocialWall() {
   }
 
   return (
-    <div className="container mx-auto p-6">
-      {/* LinkedIn-like 3-column layout */}
-      <div className="flex w-full gap-6">
+    <div className="container mx-auto p-3 sm:p-6 pb-20 md:pb-6">
+      {/* Mobile-first responsive layout */}
+      <div className="flex w-full gap-3 sm:gap-6">
         
         {/* Left Sidebar - Profile & Navigation */}
         <div className="hidden lg:block w-64 flex-shrink-0">
@@ -77,7 +77,7 @@ export default function SocialWall() {
         </div>
 
         {/* Right Sidebar - Online Users & News */}
-        <div className="hidden md:block w-64 flex-shrink-0">
+        <div className="hidden xl:block w-64 flex-shrink-0">
           <div className="sticky top-0 space-y-6">
             <RightSidebar />
           </div>

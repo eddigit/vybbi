@@ -142,35 +142,38 @@ export function PostCard({ post }: PostCardProps) {
   }
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-md hover:shadow-lg transition-all duration-300 group">
-      <CardHeader className="pb-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-3 flex-1">
-            <Link to={`/profiles/${post.author_profile_id}`}>
-              <Avatar className="w-12 h-12 ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
+    <Card className="mobile-card bg-card/95 backdrop-blur-sm border-border/30 shadow-sm hover:shadow-md transition-all duration-300 group">
+      <CardHeader className="pb-3 p-3 sm:p-4 sm:pb-4">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex items-start space-x-3 flex-1 min-w-0">
+            <Link to={`/profiles/${post.author_profile_id}`} className="flex-shrink-0">
+              <Avatar className="w-10 h-10 sm:w-12 sm:h-12 ring-2 ring-primary/20 hover:ring-primary/40 transition-all">
                 <AvatarImage src={post.author_avatar_url || undefined} />
-                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold text-sm">
                   {post.author_display_name?.charAt(0) || "U"}
                 </AvatarFallback>
               </Avatar>
             </Link>
             
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-3 mb-1">
+              {/* Mobile-optimized header layout */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 mb-1">
                 <Link 
                   to={`/profiles/${post.author_profile_id}`}
-                  className="font-semibold text-foreground hover:text-primary transition-colors truncate"
+                  className="font-semibold text-foreground hover:text-primary transition-colors truncate text-sm sm:text-base"
                 >
                   {post.author_display_name}
                 </Link>
-                <Badge className={`${getProfileTypeColor(post.author_profile_type)} text-xs px-2 py-1 rounded-full font-medium`}>
-                  {getProfileTypeLabel(post.author_profile_type)}
-                </Badge>
-                {getPostTypeIcon(post.post_type) && (
-                  <span className="text-lg flex-shrink-0">{getPostTypeIcon(post.post_type)}</span>
-                )}
+                <div className="flex items-center gap-2">
+                  <Badge className={`${getProfileTypeColor(post.author_profile_type)} text-xs px-2 py-0.5 rounded-full font-medium flex-shrink-0`}>
+                    {getProfileTypeLabel(post.author_profile_type)}
+                  </Badge>
+                  {getPostTypeIcon(post.post_type) && (
+                    <span className="text-sm flex-shrink-0">{getPostTypeIcon(post.post_type)}</span>
+                  )}
+                </div>
               </div>
-              <p className="text-sm text-muted-foreground">
+              <p className="text-xs sm:text-sm text-muted-foreground">
                 {formatDistanceToNow(new Date(post.created_at), { 
                   addSuffix: true, 
                   locale: fr 
@@ -178,27 +181,27 @@ export function PostCard({ post }: PostCardProps) {
               </p>
             </div>
             
-            {/* Follow Button - only show if not own post */}
+            {/* Follow Button - Mobile optimized */}
             {user && post.user_id !== user.id && (
               <FollowButton
                 targetUserId={post.user_id}
                 targetProfileId={post.author_profile_id}
                 targetDisplayName={post.author_display_name}
-                className="flex-shrink-0"
+                className="flex-shrink-0 hidden sm:flex"
               />
             )}
           </div>
 
-          <Button variant="ghost" size="xs" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0">
-            <MoreHorizontal className="w-3 h-3" />
+          <Button variant="ghost" size="sm" className="opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0 w-8 h-8 p-0">
+            <MoreHorizontal className="w-4 h-4" />
           </Button>
         </div>
       </CardHeader>
 
-      <CardContent className="pt-0">
+      <CardContent className="pt-0 p-3 sm:p-4">
         {/* Post Content */}
-        <div className="mb-4">
-          <p className="text-base leading-relaxed whitespace-pre-wrap">
+        <div className="mb-3 sm:mb-4">
+          <p className="text-sm sm:text-base leading-relaxed whitespace-pre-wrap">
             {post.content}
           </p>
         </div>
@@ -242,40 +245,43 @@ export function PostCard({ post }: PostCardProps) {
           </div>
         </div>
 
-        {/* Action Buttons */}
-        <div className="flex items-center justify-around border-t border-border/50 pt-3">
+        {/* Action Buttons - Mobile optimized */}
+        <div className="flex items-center justify-around border-t border-border/30 pt-2 sm:pt-3 gap-1">
           <Button
             variant="ghost"
             size="sm"
             onClick={handleLike}
             disabled={isLiking}
-            className={`flex-1 rounded-full h-8 transition-all text-xs ${
+            className={`flex-1 rounded-full h-8 sm:h-9 transition-all text-xs sm:text-sm touch-manipulation ${
               post.user_has_liked 
                 ? "text-red-500 hover:text-red-600 bg-red-500/10 hover:bg-red-500/20" 
                 : "hover:bg-muted/50"
             }`}
           >
-            <Heart className={`w-3 h-3 mr-1 transition-all ${post.user_has_liked ? "fill-current scale-110" : ""}`} />
-            J'aime
+            <Heart className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 transition-all ${post.user_has_liked ? "fill-current scale-110" : ""}`} />
+            <span className="hidden sm:inline">J'aime</span>
+            <span className="sm:hidden">❤️</span>
           </Button>
 
           <Button
             variant="ghost"
             size="sm"
             onClick={() => setShowComments(!showComments)}
-            className="flex-1 rounded-full h-8 hover:bg-muted/50 transition-all text-xs"
+            className="flex-1 rounded-full h-8 sm:h-9 hover:bg-muted/50 transition-all text-xs sm:text-sm touch-manipulation"
           >
-            <MessageCircle className="w-3 h-3 mr-1" />
-            Commenter
+            <MessageCircle className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <span className="hidden sm:inline">Commenter</span>
+            <span className="sm:hidden">💬</span>
           </Button>
 
           <Button
             variant="ghost"
             size="sm"
-            className="flex-1 rounded-full h-8 hover:bg-muted/50 transition-all text-xs"
+            className="flex-1 rounded-full h-8 sm:h-9 hover:bg-muted/50 transition-all text-xs sm:text-sm touch-manipulation"
           >
-            <Share2 className="w-3 h-3 mr-1" />
-            Partager
+            <Share2 className="w-3 h-3 sm:w-4 sm:h-4 mr-1" />
+            <span className="hidden sm:inline">Partager</span>
+            <span className="sm:hidden">📤</span>
           </Button>
         </div>
 

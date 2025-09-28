@@ -1,0 +1,64 @@
+/* Mobile-specific optimizations for better touch experience */
+
+/* Hide scrollbars on horizontal scroll containers */
+.scrollbar-hide {
+  -ms-overflow-style: none;  /* Internet Explorer 10+ */
+  scrollbar-width: none;  /* Firefox */
+}
+.scrollbar-hide::-webkit-scrollbar { 
+  display: none;  /* Safari and Chrome */
+}
+
+/* Mobile card optimizations */
+.mobile-card {
+  /* Better touch targets */
+  min-height: 44px;
+  
+  /* Improved tap area */
+  touch-action: manipulation;
+  
+  /* Smoother animations on mobile */
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Touch-friendly interactive elements */
+.touch-manipulation {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Safe area handling for mobile devices */
+.pt-safe-top {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.pb-safe-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pl-safe-left {
+  padding-left: env(safe-area-inset-left, 0px);
+}
+
+.pr-safe-right {
+  padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Mobile-specific hover states (disable on touch devices) */
+@media (hover: none) {
+  .hover-lift:hover {
+    transform: none;
+  }
+}
+
+/* Improved mobile spacing */
+@media (max-width: 768px) {
+  .mobile-padding {
+    padding: 0.75rem;
+  }
+  
+  .mobile-gap {
+    gap: 0.75rem;
+  }
+}

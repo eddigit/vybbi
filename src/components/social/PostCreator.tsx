@@ -82,116 +82,129 @@ export function PostCreator() {
   if (!user || !profile) return null;
 
   return (
-    <Card className="bg-gradient-to-br from-card to-card/80 border-border/50 shadow-lg">
-      <CardContent className="p-4">
+    <Card className="mobile-card bg-card/95 backdrop-blur-sm border-border/30 shadow-sm">
+      <CardContent className="p-3 sm:p-4">
         <form onSubmit={handleSubmit}>
-          <div className="flex items-start space-x-3">
-            <Avatar className="w-10 h-10 ring-2 ring-primary/20">
-              <AvatarImage src={profile.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary/10 text-primary font-semibold">
-                {profile.display_name?.charAt(0) || user.email?.charAt(0) || "U"}
-              </AvatarFallback>
-            </Avatar>
-            
-            <div className="flex-1 space-y-3">
+          {/* Mobile-first compact design */}
+          <div className="space-y-3">
+            {/* Top row: Avatar + Textarea */}
+            <div className="flex items-start space-x-3">
+              <Avatar className="w-10 h-10 ring-2 ring-primary/20 flex-shrink-0">
+                <AvatarImage src={profile.avatar_url || undefined} />
+                <AvatarFallback className="bg-primary/10 text-primary font-semibold">
+                  {profile.display_name?.charAt(0) || user.email?.charAt(0) || "U"}
+                </AvatarFallback>
+              </Avatar>
+              
               <Textarea
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
                 placeholder={getPlaceholder()}
-                className="min-h-[80px] resize-none border-0 p-3 bg-muted/30 rounded-xl focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground/60 transition-all"
+                className="flex-1 min-h-[60px] sm:min-h-[80px] resize-none border-0 p-3 bg-muted/20 rounded-xl focus:ring-2 focus:ring-primary/20 text-sm placeholder:text-muted-foreground/60 transition-all"
                 maxLength={1000}
               />
-              
-              {/* Post Type Selector */}
-              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <div className="flex flex-wrap gap-1">
-                  <Button
-                    type="button"
-                    variant={postType === "text" ? "default" : "secondary"}
-                    size="xs"
-                    onClick={() => setPostType("text")}
-                    className="rounded-full transition-all hover:scale-105"
-                  >
-                    ✏️ Texte
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={postType === "image" ? "default" : "secondary"}
-                    size="xs"
-                    onClick={() => {
-                      setPostType("image");
-                      handleFileSelect();
-                    }}
-                    className="rounded-full transition-all hover:scale-105"
-                  >
-                    <ImageIcon className="w-3 h-3 mr-1" />
-                    Photo
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={postType === "video" ? "default" : "secondary"}
-                    size="xs"
-                    onClick={() => {
-                      setPostType("video");
-                      handleFileSelect();
-                    }}
-                    className="rounded-full transition-all hover:scale-105"
-                  >
-                    <Video className="w-3 h-3 mr-1" />
-                    Vidéo
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={postType === "music" ? "default" : "secondary"}
-                    size="xs"
-                    onClick={() => setPostType("music")}
-                    className="rounded-full transition-all hover:scale-105"
-                  >
-                    <Music className="w-3 h-3 mr-1" />
-                    Musique
-                  </Button>
-                  <Button
-                    type="button"
-                    variant={postType === "event" ? "default" : "secondary"}
-                    size="xs"
-                    onClick={() => setPostType("event")}
-                    className="rounded-full transition-all hover:scale-105"
-                  >
-                    <Calendar className="w-3 h-3 mr-1" />
-                    Événement
-                  </Button>
-                  <ServiceRequestDialog 
-                    onSubmit={handleServiceRequest}
-                    isSubmitting={isSubmitting}
-                  >
-                    <Button
-                      type="button"
-                      variant="secondary"
-                      size="xs"
-                      className="rounded-full transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200"
-                    >
-                      <Handshake className="w-3 h-3 mr-1" />
-                      Prestation
-                    </Button>
-                  </ServiceRequestDialog>
-                </div>
+            </div>
 
+            {/* Bottom row: Action buttons - Mobile optimized horizontal scroll */}
+            <div className="flex items-center justify-between gap-3">
+              {/* Post type buttons - Horizontal scroll on mobile */}
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide min-w-0 flex-1">
                 <Button
-                  type="submit"
-                  disabled={!content.trim() || isSubmitting}
+                  type="button"
+                  variant={postType === "text" ? "default" : "secondary"}
                   size="sm"
-                  className="rounded-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold"
+                  onClick={() => setPostType("text")}
+                  className="rounded-full transition-all hover:scale-105 text-xs px-3 flex-shrink-0"
                 >
-                  {isSubmitting ? (
-                    <>
-                      <Loader2 className="w-3 h-3 animate-spin mr-2" />
-                      Publication...
-                    </>
-                  ) : (
-                    "Publier"
-                  )}
+                  📝
+                  <span className="ml-1 hidden sm:inline">Texte</span>
                 </Button>
+                
+                <Button
+                  type="button"
+                  variant={postType === "image" ? "default" : "secondary"}
+                  size="sm"
+                  onClick={() => {
+                    setPostType("image");
+                    handleFileSelect();
+                  }}
+                  className="rounded-full transition-all hover:scale-105 text-xs px-3 flex-shrink-0"
+                >
+                  <ImageIcon className="w-3 h-3" />
+                  <span className="ml-1 hidden sm:inline">Photo</span>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={postType === "video" ? "default" : "secondary"}
+                  size="sm"
+                  onClick={() => {
+                    setPostType("video");
+                    handleFileSelect();
+                  }}
+                  className="rounded-full transition-all hover:scale-105 text-xs px-3 flex-shrink-0"
+                >
+                  <Video className="w-3 h-3" />
+                  <span className="ml-1 hidden sm:inline">Vidéo</span>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={postType === "music" ? "default" : "secondary"}
+                  size="sm"
+                  onClick={() => setPostType("music")}
+                  className="rounded-full transition-all hover:scale-105 text-xs px-3 flex-shrink-0"
+                >
+                  <Music className="w-3 h-3" />
+                  <span className="ml-1 hidden sm:inline">Musique</span>
+                </Button>
+                
+                <Button
+                  type="button"
+                  variant={postType === "event" ? "default" : "secondary"}
+                  size="sm"
+                  onClick={() => setPostType("event")}
+                  className="rounded-full transition-all hover:scale-105 text-xs px-3 flex-shrink-0"
+                >
+                  <Calendar className="w-3 h-3" />
+                  <span className="ml-1 hidden sm:inline">Événement</span>
+                </Button>
+                
+                <ServiceRequestDialog 
+                  onSubmit={handleServiceRequest}
+                  isSubmitting={isSubmitting}
+                >
+                  <Button
+                    type="button"
+                    variant="secondary"
+                    size="sm"
+                    className="rounded-full transition-all hover:scale-105 bg-orange-500/10 hover:bg-orange-500/20 text-orange-700 border-orange-200 text-xs px-3 flex-shrink-0"
+                  >
+                    <Handshake className="w-3 h-3" />
+                    <span className="ml-1 hidden sm:inline">Prestation</span>
+                  </Button>
+                </ServiceRequestDialog>
               </div>
+
+              {/* Publish button - Always visible */}
+              <Button
+                type="submit"
+                disabled={!content.trim() || isSubmitting}
+                size="sm"
+                className="rounded-full bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 transition-all hover:scale-105 font-semibold text-xs px-4 flex-shrink-0"
+              >
+                {isSubmitting ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span className="ml-2 hidden sm:inline">Publication...</span>
+                  </>
+                ) : (
+                  <>
+                    <span className="hidden sm:inline">Publier</span>
+                    <span className="sm:hidden">📤</span>
+                  </>
+                )}
+              </Button>
             </div>
           </div>
         </form>
