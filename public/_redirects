@@ -1,5 +1,9 @@
 # Redirections pour SPA (Single Page Application)
-# Toutes les routes non-fichiers sont redirigées vers index.html
+# Exception pour les fichiers statiques importants
+/sitemap.xml    /sitemap.xml    200
+/robots.txt     /robots.txt     200
+
+# Toutes les autres routes non-fichiers sont redirigées vers index.html
 /*    /index.html   200
 
 # Redirections spécifiques pour les anciennes URLs si nécessaire

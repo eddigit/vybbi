@@ -38,6 +38,11 @@
   Cache-Control: public, max-age=31536000, immutable
   Content-Type: image/jpeg
 
-/*.svg
-  Cache-Control: public, max-age=31536000, immutable
-  Content-Type: image/svg+xml
+# Headers pour les fichiers SEO
+/sitemap.xml
+  Cache-Control: public, max-age=86400
+  Content-Type: application/xml
+
+/robots.txt
+  Cache-Control: public, max-age=86400
+  Content-Type: text/plain
