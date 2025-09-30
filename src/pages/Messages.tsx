@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase } from '@/integrations/supabase/client';
@@ -25,6 +25,9 @@ export default function Messages() {
   const [selectedConversationId, setSelectedConversationId] = useState<string | null>(null);
   const [showInfo, setShowInfo] = useState(false);
   const [showConversationList, setShowConversationList] = useState(true);
+  
+  // Ref to track if we've auto-selected a conversation
+  const hasAutoSelectedRef = useRef(false);
   
   // Load conversations and messages
   const conversationsResult = useConversations();
@@ -142,6 +145,36 @@ export default function Messages() {
       setShowConversationList(false);
     }
   }, [selectedConversationId, isMobile]);
+
+  // Auto-select the most recent conversation on mount
+  useEffect(() => {
+    const searchParams = new URLSearchParams(location.search);
+    const hasUrlParams = searchParams.has('contact') || searchParams.has('conversation') || searchParams.has('partner');
+    
+    // Auto-select only if:
+    // - We haven't already auto-selected
+    // - No conversation is currently selected
+    // - There are conversations available
+    // - No URL parameters are present
+    // - Not loading
+    if (
+      !hasAutoSelectedRef.current &&
+      !selectedConversationId &&
+      conversations.length > 0 &&
+      !hasUrlParams &&
+      !conversationsLoading
+    ) {
+      console.log('🎯 [Messages] Auto-selecting most recent conversation:', conversations[0].id);
+      setSelectedConversationId(conversations[0].id);
+      hasAutoSelectedRef.current = true;
+      
+      // On desktop, keep the chat visible
+      // On mobile, keep the conversation list visible until user clicks
+      if (isMobile) {
+        setShowConversationList(true);
+      }
+    }
+  }, [conversations, selectedConversationId, conversationsLoading, location.search, isMobile]);
 
   const handleSelectConversation = (conversationId: string) => {
     console.log('🔔 [Messages] Selecting conversation:', conversationId);
