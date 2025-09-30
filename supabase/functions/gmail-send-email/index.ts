@@ -20,11 +20,11 @@ const corsHeaders = {
 // Enhanced logging function
 function logWithTimestamp(level: string, message: string, data?: any) {
   const timestamp = new Date().toISOString();
-  console.log(`[${timestamp}] [GMAIL] [${level}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
+  console.log(`[${timestamp}] [EMAIL] [${level}] ${message}`, data ? JSON.stringify(data, null, 2) : '');
 }
 
 serve(async (req) => {
-  logWithTimestamp('INFO', '=== GMAIL SEND EMAIL FUNCTION CALLED ===');
+  logWithTimestamp('INFO', '=== EMAIL SEND FUNCTION CALLED ===');
   
   // Handle CORS preflight requests
   if (req.method === 'OPTIONS') {
@@ -33,19 +33,12 @@ serve(async (req) => {
   }
 
   try {
-    // Get Gmail credentials from environment variables
-    const gmailUser = Deno.env.get('GMAIL_USER');
-    const gmailAppPassword = Deno.env.get('GMAIL_APP_PASSWORD');
-
-    logWithTimestamp('INFO', 'Environment check', { 
-      hasGmailUser: !!gmailUser, 
-      hasGmailAppPassword: !!gmailAppPassword 
-    });
-
-    if (!gmailUser || !gmailAppPassword) {
-      logWithTimestamp('ERROR', 'Gmail credentials not found in environment variables');
+    const resendApiKey = Deno.env.get('RESEND_API_KEY');
+    
+    if (!resendApiKey) {
+      logWithTimestamp('ERROR', 'RESEND_API_KEY not configured');
       return new Response(
-        JSON.stringify({ error: 'Gmail credentials not configured' }),
+        JSON.stringify({ error: 'Email service not configured' }),
         { 
           status: 500,
           headers: { 'Content-Type': 'application/json', ...corsHeaders }
@@ -84,19 +77,6 @@ serve(async (req) => {
       );
     }
 
-    logWithTimestamp('INFO', 'Preparing to send email via Gmail SMTP');
-
-    // Configure nodemailer transporter for Gmail
-    const transporter = {
-      host: 'smtp.gmail.com',
-      port: 587,
-      secure: false,
-      auth: {
-        user: gmailUser,
-        pass: gmailAppPassword,
-      },
-    };
-
     // Process template data for simple replacements
     let processedHtml = emailData.html;
     let processedText = emailData.text;
@@ -117,41 +97,67 @@ serve(async (req) => {
       });
     }
 
-    // Prepare email options
-    const mailOptions = {
-      from: emailData.from || `"Vybbi" <${gmailUser}>`,
-      to: emailData.to,
-      cc: emailData.cc,
-      bcc: emailData.bcc,
-      replyTo: emailData.replyTo,
+    logWithTimestamp('INFO', 'Preparing to send email via Resend API');
+
+    // Prepare email payload
+    const payload: any = {
+      from: emailData.from || "Vybbi <onboarding@resend.dev>",
+      to: Array.isArray(emailData.to) ? emailData.to : [emailData.to],
       subject: emailData.subject,
-      html: processedHtml,
-      text: processedText,
     };
 
-    logWithTimestamp('INFO', 'Mail options prepared', { from: mailOptions.from, to: mailOptions.to });
+    if (emailData.cc) {
+      payload.cc = Array.isArray(emailData.cc) ? emailData.cc : [emailData.cc];
+    }
+    if (emailData.bcc) {
+      payload.bcc = Array.isArray(emailData.bcc) ? emailData.bcc : [emailData.bcc];
+    }
+    if (emailData.replyTo) {
+      payload.reply_to = emailData.replyTo;
+    }
+    if (processedHtml) {
+      payload.html = processedHtml;
+    }
+    if (processedText) {
+      payload.text = processedText;
+    }
 
-    // Send email using dynamic import of nodemailer
-    logWithTimestamp('INFO', 'Importing nodemailer and creating transporter...');
-    const { default: nodemailer } = await import('npm:nodemailer@6.9.7');
-    const transporterInstance = nodemailer.createTransport(transporter);
+    // Send email using Resend API
+    const response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${resendApiKey}`,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(payload),
+    });
+
+    const responseData = await response.json();
+
+    if (!response.ok) {
+      logWithTimestamp('ERROR', 'Failed to send email via Resend', responseData);
+      return new Response(
+        JSON.stringify({ 
+          error: 'Failed to send email',
+          message: responseData.message || 'Unknown error'
+        }),
+        { 
+          status: response.status,
+          headers: { 'Content-Type': 'application/json', ...corsHeaders }
+        }
+      );
+    }
     
-    logWithTimestamp('INFO', 'Sending email via SMTP...');
-    const info = await transporterInstance.sendMail(mailOptions);
-    
-    logWithTimestamp('SUCCESS', '✅ EMAIL SENT SUCCESSFULLY VIA GMAIL', {
-      messageId: info.messageId,
+    logWithTimestamp('SUCCESS', '✅ EMAIL SENT SUCCESSFULLY', {
       to: emailData.to,
-      accepted: info.accepted,
-      rejected: info.rejected
+      id: responseData.id
     });
 
     return new Response(
       JSON.stringify({ 
         success: true,
-        messageId: info.messageId,
         to: emailData.to,
-        accepted: info.accepted
+        emailId: responseData.id
       }),
       { 
         status: 200,
@@ -160,7 +166,7 @@ serve(async (req) => {
     );
 
   } catch (error: any) {
-    logWithTimestamp('ERROR', '❌ CRITICAL ERROR in Gmail send', { 
+    logWithTimestamp('ERROR', '❌ CRITICAL ERROR in email send', { 
       error: error.message, 
       stack: error.stack,
       name: error.name 
