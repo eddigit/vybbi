@@ -112,7 +112,7 @@ serve(async (req) => {
     return new Response(
       JSON.stringify({ 
         error: 'Failed to fetch Spotify metadata',
-        details: error.message 
+        details: error instanceof Error ? error.message : 'Unknown error'
       }),
       { 
         status: 500,

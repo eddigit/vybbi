@@ -19,7 +19,7 @@ const corsHeaders = {
 const getEmailTemplate = (type: string, data: any): { subject: string, html: string } => {
   const baseUrl = Deno.env.get('SITE_URL') || 'https://vybbi.app';
   
-  const templates = {
+  const templates: Record<string, { subject: string, html: string }> = {
     new_message: {
       subject: `Nouveau message de ${data.senderName || 'un utilisateur'}`,
       html: `
@@ -355,7 +355,7 @@ const handler = async (req: Request): Promise<Response> => {
     // Get user email and preferences
     const { data: user, error: userError } = await supabase.auth.admin.getUserById(user_id);
     
-    if (userError || !user?.email) {
+    if (userError || !user?.user?.email) {
       console.log('User not found or no email, skipping email notification');
       return new Response(JSON.stringify({ success: true, notification, email_sent: false }), {
         status: 200,
@@ -385,7 +385,7 @@ const handler = async (req: Request): Promise<Response> => {
     const emailTemplate = getEmailTemplate(type, data);
     
     try {
-      await sendEmailViaGmail(user.email, emailTemplate.subject, emailTemplate.html);
+      await sendEmailViaGmail(user.user.email!, emailTemplate.subject, emailTemplate.html);
       
       // Mark notification as email sent
       await supabase
@@ -393,7 +393,7 @@ const handler = async (req: Request): Promise<Response> => {
         .update({ email_sent: true, email_sent_at: new Date().toISOString() })
         .eq('id', notification.id);
 
-      console.log('Email sent successfully to:', user.email);
+      console.log('Email sent successfully to:', user.user.email);
     } catch (emailError) {
       console.error('Failed to send email:', emailError);
       // Don't fail the whole request if email fails

@@ -128,7 +128,7 @@ serve(async (req) => {
         await supabase.rpc('complete_task_processing', {
           task_id: task.task_id,
           new_status: 'failed',
-          error_message: taskError.message
+          error_message: taskError instanceof Error ? taskError.message : 'Unknown error'
         });
       }
     }
@@ -147,7 +147,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('❌ Erreur globale:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       success: false 
     }), {
       status: 500,
@@ -185,7 +185,7 @@ async function shouldSkipTask(supabase: any, task: WorkflowTask): Promise<boolea
         .eq('prospect_id', task.prospect_id)
         .neq('interaction_type', 'note');
         
-      return allInteractions && allInteractions.some(i => 
+      return allInteractions && allInteractions.some((i: any) => 
         i.outcome?.includes('response') || i.outcome?.includes('interested')
       );
       
@@ -240,7 +240,7 @@ async function processEmailTask(supabase: any, task: WorkflowTask): Promise<bool
     await supabase.rpc('complete_task_processing', {
       task_id: task.task_id,
       new_status: 'failed',
-      error_message: error.message
+      error_message: error instanceof Error ? error.message : 'Unknown error'
     });
     return false;
   }
@@ -283,7 +283,7 @@ async function processWhatsAppTask(supabase: any, task: WorkflowTask): Promise<b
     await supabase.rpc('complete_task_processing', {
       task_id: task.task_id,
       new_status: 'failed',
-      error_message: error.message
+      error_message: error instanceof Error ? error.message : 'Unknown error'
     });
     return false;
   }
@@ -314,7 +314,7 @@ async function processCallTask(supabase: any, task: WorkflowTask): Promise<boole
     await supabase.rpc('complete_task_processing', {
       task_id: task.task_id,
       new_status: 'failed',
-      error_message: error.message
+      error_message: error instanceof Error ? error.message : 'Unknown error'
     });
     return false;
   }
@@ -345,7 +345,7 @@ async function processReminderTask(supabase: any, task: WorkflowTask): Promise<b
     await supabase.rpc('complete_task_processing', {
       task_id: task.task_id,
       new_status: 'failed',
-      error_message: error.message
+      error_message: error instanceof Error ? error.message : 'Unknown error'
     });
     return false;
   }

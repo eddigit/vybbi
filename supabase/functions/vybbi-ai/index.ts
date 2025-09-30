@@ -285,7 +285,7 @@ Adapte tes réponses à ce contexte spécifique.`;
   } catch (error) {
     console.error('Erreur Vybbi:', error);
     return new Response(JSON.stringify({ 
-      error: error.message,
+      error: error instanceof Error ? error.message : 'Unknown error',
       reply: "Désolé, j'ai rencontré un problème technique. Peux-tu reformuler ta demande ?"
     }), {
       status: 500,

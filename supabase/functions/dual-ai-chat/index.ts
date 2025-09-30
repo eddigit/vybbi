@@ -12,8 +12,8 @@ interface ChatRequest {
 }
 
 interface ChatResponse {
-  message: string;
-  provider: 'google' | 'huggingface';
+  message?: string;
+  provider: 'google' | 'huggingface' | 'none';
   success: boolean;
   error?: string;
 }
@@ -140,7 +140,7 @@ serve(async (req) => {
       console.log('Google AI successful');
       
     } catch (googleError) {
-      console.log('Google AI failed, trying Hugging Face:', googleError.message);
+      console.log('Google AI failed, trying Hugging Face:', googleError instanceof Error ? googleError.message : 'Unknown error');
       
       try {
         // Fallback to Hugging Face
@@ -149,7 +149,10 @@ serve(async (req) => {
         console.log('Hugging Face successful');
         
       } catch (hfError) {
-        console.error('Both APIs failed:', { googleError: googleError.message, hfError: hfError.message });
+        console.error('Both APIs failed:', { 
+          googleError: googleError instanceof Error ? googleError.message : 'Unknown error', 
+          hfError: hfError instanceof Error ? hfError.message : 'Unknown error' 
+        });
         
         return new Response(
           JSON.stringify({ 

@@ -104,7 +104,7 @@ serve(async (req) => {
           event_type: event.event_type,
           payload: enrichedEvent,
           response_status: 0,
-          response_body: error.message,
+          response_body: error instanceof Error ? error.message : 'Unknown error',
           delivered_at: new Date().toISOString(),
           success: false
         });
@@ -113,7 +113,7 @@ serve(async (req) => {
           webhook_id: webhook.id, 
           url: webhook.url,
           success: false, 
-          error: error.message 
+          error: error instanceof Error ? error.message : 'Unknown error'
         };
       }
     });
@@ -136,7 +136,7 @@ serve(async (req) => {
   } catch (error) {
     console.error('Error in prospect-webhooks:', error);
     return new Response(
-      JSON.stringify({ success: false, error: error.message }),
+      JSON.stringify({ success: false, error: error instanceof Error ? error.message : 'Unknown error' }),
       { 
         status: 500, 
         headers: { ...corsHeaders, 'Content-Type': 'application/json' } 
