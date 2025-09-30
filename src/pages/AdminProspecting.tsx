@@ -17,6 +17,7 @@ import WorkflowManager from '@/components/prospecting/WorkflowManager';
 import TaskManager from '@/components/prospecting/TaskManager';
 import HotProspectsDetector from '@/components/prospecting/HotProspectsDetector';
 import ProspectPipeline from '@/components/prospecting/ProspectPipeline';
+import VenueProspectingDialog from '@/components/prospecting/VenueProspectingDialog';
 import { 
   Users, 
   TrendingUp, 
@@ -31,7 +32,8 @@ import {
   Target,
   MessageCircle,
   Download,
-  Upload
+  Upload,
+  Building2
 } from 'lucide-react';
 
 interface ProspectingStats {
@@ -69,8 +71,24 @@ interface VybbiAgent {
 }
 
 export default function AdminProspecting() {
-  // Redirect to the new Pipeline interface
-  return <ProspectPipeline />;
+  const [venueDialogOpen, setVenueDialogOpen] = useState(false);
+
+  return (
+    <>
+      <div className="mb-4">
+        <Button onClick={() => setVenueDialogOpen(true)} variant="outline">
+          <Building2 className="mr-2 h-4 w-4" />
+          Créer Fiche Lieu (Prospection)
+        </Button>
+      </div>
+      <ProspectPipeline />
+      <VenueProspectingDialog 
+        open={venueDialogOpen}
+        onOpenChange={setVenueDialogOpen}
+        onSuccess={() => {}}
+      />
+    </>
+  );
 }
 
 function AdminProspectingLegacy() {

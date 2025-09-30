@@ -2646,6 +2646,7 @@ export type Database = {
           bio: string | null
           city: string | null
           created_at: string
+          created_by_admin: string | null
           display_name: string
           email: string | null
           experience: string | null
@@ -2655,6 +2656,7 @@ export type Database = {
           id: string
           instagram_url: string | null
           is_public: boolean
+          is_temporary: boolean | null
           languages: string[] | null
           location: string | null
           onboarding_completed: boolean | null
@@ -2672,6 +2674,7 @@ export type Database = {
           soundcloud_url: string | null
           spotify_url: string | null
           talents: string[] | null
+          temp_profile_notes: string | null
           tiktok_url: string | null
           updated_at: string
           user_id: string
@@ -2686,6 +2689,7 @@ export type Database = {
           bio?: string | null
           city?: string | null
           created_at?: string
+          created_by_admin?: string | null
           display_name: string
           email?: string | null
           experience?: string | null
@@ -2695,6 +2699,7 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           is_public?: boolean
+          is_temporary?: boolean | null
           languages?: string[] | null
           location?: string | null
           onboarding_completed?: boolean | null
@@ -2712,6 +2717,7 @@ export type Database = {
           soundcloud_url?: string | null
           spotify_url?: string | null
           talents?: string[] | null
+          temp_profile_notes?: string | null
           tiktok_url?: string | null
           updated_at?: string
           user_id: string
@@ -2726,6 +2732,7 @@ export type Database = {
           bio?: string | null
           city?: string | null
           created_at?: string
+          created_by_admin?: string | null
           display_name?: string
           email?: string | null
           experience?: string | null
@@ -2735,6 +2742,7 @@ export type Database = {
           id?: string
           instagram_url?: string | null
           is_public?: boolean
+          is_temporary?: boolean | null
           languages?: string[] | null
           location?: string | null
           onboarding_completed?: boolean | null
@@ -2752,6 +2760,7 @@ export type Database = {
           soundcloud_url?: string | null
           spotify_url?: string | null
           talents?: string[] | null
+          temp_profile_notes?: string | null
           tiktok_url?: string | null
           updated_at?: string
           user_id?: string
@@ -4153,6 +4162,80 @@ export type Database = {
         }
         Relationships: []
       }
+      temporary_credentials: {
+        Row: {
+          claim_token: string
+          claimed_at: string | null
+          claimed_by_user_id: string | null
+          created_at: string | null
+          created_by: string | null
+          expires_at: string
+          id: string
+          is_claimed: boolean | null
+          metadata: Json | null
+          profile_id: string
+          temp_password_hash: string
+          temp_username: string
+        }
+        Insert: {
+          claim_token: string
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          expires_at: string
+          id?: string
+          is_claimed?: boolean | null
+          metadata?: Json | null
+          profile_id: string
+          temp_password_hash: string
+          temp_username: string
+        }
+        Update: {
+          claim_token?: string
+          claimed_at?: string | null
+          claimed_by_user_id?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          expires_at?: string
+          id?: string
+          is_claimed?: boolean | null
+          metadata?: Json | null
+          profile_id?: string
+          temp_password_hash?: string
+          temp_username?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "temporary_credentials_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "temporary_credentials_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "temporary_credentials_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "temporary_credentials_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       token_earning_rules: {
         Row: {
           base_amount: number
@@ -5167,6 +5250,10 @@ export type Database = {
         Returns: Json
       }
       cleanup_expired_task_locks: {
+        Args: Record<PropertyKey, never>
+        Returns: number
+      }
+      cleanup_expired_temp_credentials: {
         Args: Record<PropertyKey, never>
         Returns: number
       }

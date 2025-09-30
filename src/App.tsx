@@ -101,6 +101,7 @@ import WebTV from "./pages/WebTV";
 import Radio from "./pages/Radio";
 import Token from "./pages/Token";
 import VybbiTokens from "./pages/VybbiTokens";
+import ClaimVenueProfile from "./pages/ClaimVenueProfile";
 
 // Configure React Query with optimizations
 const queryClient = new QueryClient({
@@ -257,6 +258,7 @@ const App = () => (
                       <Route path="/system-test" element={<SystemTest />} />
                       <Route path="/webtv" element={<WebTV />} />
                       <Route path="/radio" element={<Radio />} />
+                      <Route path="/claim-venue" element={<ClaimVenueProfile />} />
                       <Route path="*" element={<NotFound />} />
                     </Routes>
                     </Layout>
