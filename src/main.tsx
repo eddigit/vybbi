@@ -28,14 +28,21 @@ if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
   };
   window.addEventListener('error', (e: ErrorEvent) => {
     const msg = String(e?.message || '').toLowerCase();
-    if (msg.includes('failed to fetch dynamically imported module') || (msg.includes('chunk') && msg.includes('loading'))) {
+    // Handle chunk loading errors and React hook errors (indicates stale cache)
+    if (msg.includes('failed to fetch dynamically imported module') || 
+        (msg.includes('chunk') && msg.includes('loading')) ||
+        msg.includes('cannot read properties of null') ||
+        msg.includes('invalid hook call')) {
       selfHeal();
     }
   });
 
   window.addEventListener('unhandledrejection', (e: PromiseRejectionEvent) => {
     const reason = String((e?.reason && (e.reason.message || e.reason)) || '').toLowerCase();
-    if (reason.includes('failed to fetch dynamically imported module') || (reason.includes('chunk') && reason.includes('loading'))) {
+    if (reason.includes('failed to fetch dynamically imported module') || 
+        (reason.includes('chunk') && reason.includes('loading')) ||
+        reason.includes('cannot read properties of null') ||
+        reason.includes('invalid hook call')) {
       selfHeal();
     }
   });
