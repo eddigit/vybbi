@@ -144,12 +144,16 @@ export default function Messages() {
   }, [selectedConversationId, isMobile]);
 
   const handleSelectConversation = (conversationId: string) => {
+    console.log('🔔 [Messages] Selecting conversation:', conversationId);
     setSelectedConversationId(conversationId);
     if (isMobile) {
       setShowConversationList(false);
     }
-    // Trigger a refetch of conversations to update unread counts
-    setTimeout(() => refetchConversations(), 100);
+    // Trigger a refetch of conversations to update unread counts after a short delay
+    setTimeout(() => {
+      console.log('🔄 [Messages] Refetching conversations to update badges');
+      refetchConversations();
+    }, 500);
   };
 
   const handleBackToList = () => {

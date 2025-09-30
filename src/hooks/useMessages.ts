@@ -164,17 +164,23 @@ export function useMessages(conversationId: string | null) {
   const markAsRead = async (onSuccess?: () => void) => {
     if (!conversationId || !user) return;
 
+    console.log('📬 [markAsRead] Marking conversation as read:', conversationId);
+
     const { error } = await supabase
       .from('message_receipts')
       .upsert({
         conversation_id: conversationId,
         user_id: user.id,
         last_read_at: new Date().toISOString()
+      }, {
+        onConflict: 'conversation_id,user_id',
+        ignoreDuplicates: false
       });
 
     if (error) {
-      console.error('Error marking messages as read:', error);
+      console.error('❌ [markAsRead] Error marking messages as read:', error);
     } else {
+      console.log('✅ [markAsRead] Successfully marked as read, triggering callback');
       // Trigger callback if provided to refresh conversations
       onSuccess?.();
     }
@@ -187,10 +193,9 @@ export function useMessages(conversationId: string | null) {
     }
 
     fetchMessages();
-    markAsRead(() => {
-      // Trigger conversations refetch to update unread counts immediately
-      console.log('💬 [useMessages] Messages marked as read, triggering conversation refresh');
-    });
+    
+    // Mark as read immediately when opening conversation
+    markAsRead();
 
     // Subscribe to real-time messages avec optimisations
     const channel = supabase
