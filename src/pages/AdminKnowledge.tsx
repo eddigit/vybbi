@@ -288,6 +288,31 @@ export default function AdminKnowledge() {
           ]
         },
         {
+          title: "Prospection Physique (Lieux)",
+          items: [
+            {
+              question: "Comment créer un profil de lieu temporaire ?",
+              answer: "Admin > Prospection > 'Créer Profil Lieu'. Remplir nom, adresse, description, et infos du propriétaire. Un profil temporaire est créé automatiquement avec un email d'invitation envoyé au propriétaire."
+            },
+            {
+              question: "Qu'est-ce qu'un profil temporaire ?",
+              answer: "Profil créé par un agent pour un lieu non encore inscrit. Visible publiquement mais marqué 'is_temporary'. Le propriétaire peut le réclamer ou demander sa suppression via email."
+            },
+            {
+              question: "Comment fonctionne le claim de profil ?",
+              answer: "Le propriétaire reçoit un email avec un lien unique /claim-venue?token=XXX. Il peut choisir de 'Réclamer' (créer un compte et prendre contrôle) ou 'Supprimer' (effacer le profil si non souhaité)."
+            },
+            {
+              question: "Que se passe-t-il après un claim réussi ?",
+              answer: "Le profil passe de temporaire à permanent, le propriétaire obtient un compte avec accès complet, et l'agent commercial est notifié de la conversion pour calculer sa commission."
+            },
+            {
+              question: "Comment suivre les profils créés ?",
+              answer: "Admin > Prospection > Onglet 'Lieux Créés'. Liste tous les profils temporaires avec statut (en attente, réclamé, supprimé) et date de création."
+            }
+          ]
+        },
+        {
           title: "Gestion des Leads",
           items: [
             {
