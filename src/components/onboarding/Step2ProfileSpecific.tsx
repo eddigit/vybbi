@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -7,14 +7,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { OnboardingData } from '@/hooks/useOnboarding';
 import { LANGUAGES } from '@/lib/languages';
 import { TALENTS, TALENT_CATEGORIES } from '@/lib/talents';
+import { GenreAutocomplete } from '@/components/GenreAutocomplete';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 
 interface Step2ProfileSpecificProps {
   data: OnboardingData;
   updateData: (updates: Partial<OnboardingData>) => void;
   profileType: string;
+  avatarPreview?: string | null;
 }
 
-export function Step2ProfileSpecific({ data, updateData, profileType }: Step2ProfileSpecificProps) {
+export function Step2ProfileSpecific({ data, updateData, profileType, avatarPreview }: Step2ProfileSpecificProps) {
+  const [showAllTalents, setShowAllTalents] = useState(false);
+  
   const handleGenresChange = (genresString: string) => {
     const genres = genresString
       .split(',')
@@ -37,6 +42,11 @@ export function Step2ProfileSpecific({ data, updateData, profileType }: Step2Pro
     updateData({ talents: newTalents });
   };
 
+  // Top 5 talents les plus populaires
+  const TOP_5_TALENTS = ['singer', 'musician', 'dj', 'guitarist', 'producer'];
+  const topTalents = TALENTS.filter(t => TOP_5_TALENTS.includes(t.id));
+  const otherTalents = TALENTS.filter(t => !TOP_5_TALENTS.includes(t.id));
+
   if (profileType === 'artist') {
     return (
       <div className="space-y-6">
@@ -51,16 +61,12 @@ export function Step2ProfileSpecific({ data, updateData, profileType }: Step2Pro
           <Label htmlFor="genres">
             Genres musicaux <span className="text-destructive">*</span>
           </Label>
-          <Input
-            id="genres"
-            value={data.genres.join(', ')}
-            onChange={(e) => handleGenresChange(e.target.value)}
-            placeholder="Rock, Jazz, Pop..."
-            required
+          <GenreAutocomplete
+            value={data.genres}
+            onChange={(genres) => updateData({ genres })}
+            placeholder="Rechercher vos genres musicaux..."
+            maxGenres={5}
           />
-          <p className="text-xs text-muted-foreground mt-1">
-            Séparez les genres par des virgules
-          </p>
         </div>
 
         <div>
@@ -74,36 +80,86 @@ export function Step2ProfileSpecific({ data, updateData, profileType }: Step2Pro
           />
         </div>
 
-        {/* Talents */}
+        {/* Talents - Top 5 d'abord */}
         <div>
           <Label className="text-base font-semibold">Talents artistiques</Label>
           <p className="text-sm text-muted-foreground mb-4">
-            Sélectionnez tous vos talents (sélection multiple possible)
+            Sélectionnez vos talents principaux
           </p>
           
-          {TALENT_CATEGORIES.map((category) => (
-            <div key={category.id} className="mb-6">
-              <h4 className="font-medium flex items-center gap-2 mb-3 text-sm">
-                <span>{category.icon}</span>
-                {category.label}
-              </h4>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
-                {TALENTS.filter(talent => talent.category === category.id).map((talent) => (
-                  <Button
-                    key={talent.id}
-                    type="button"
-                    variant={data.talents.includes(talent.id) ? "default" : "outline"}
-                    size="sm"
-                    className="justify-start text-xs h-auto py-2"
-                    onClick={() => toggleTalent(talent.id)}
-                  >
-                    <span className="mr-1">{talent.icon}</span>
-                    {talent.label}
-                  </Button>
-                ))}
-              </div>
+          {/* Top 5 talents populaires */}
+          <div className="mb-4">
+            <h4 className="font-medium text-sm mb-3 text-primary">⭐ Les plus populaires</h4>
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+              {topTalents.map((talent) => (
+                <Button
+                  key={talent.id}
+                  type="button"
+                  variant={data.talents.includes(talent.id) ? "default" : "outline"}
+                  size="sm"
+                  className="justify-start text-xs h-auto py-2"
+                  onClick={() => toggleTalent(talent.id)}
+                >
+                  <span className="mr-1">{talent.icon}</span>
+                  {talent.label}
+                </Button>
+              ))}
             </div>
-          ))}
+          </div>
+
+          {/* Bouton pour afficher tous les talents */}
+          <Button
+            type="button"
+            variant="ghost"
+            size="sm"
+            onClick={() => setShowAllTalents(!showAllTalents)}
+            className="w-full mb-3"
+          >
+            {showAllTalents ? (
+              <>
+                <ChevronUp className="h-4 w-4 mr-2" />
+                Masquer les autres talents
+              </>
+            ) : (
+              <>
+                <ChevronDown className="h-4 w-4 mr-2" />
+                Voir tous les talents ({otherTalents.length})
+              </>
+            )}
+          </Button>
+
+          {/* Tous les autres talents */}
+          {showAllTalents && TALENT_CATEGORIES.map((category) => {
+            const categoryTalents = TALENTS.filter(
+              t => t.category === category.id && !TOP_5_TALENTS.includes(t.id)
+            );
+            
+            if (categoryTalents.length === 0) return null;
+            
+            return (
+              <div key={category.id} className="mb-6">
+                <h4 className="font-medium flex items-center gap-2 mb-3 text-sm">
+                  <span>{category.icon}</span>
+                  {category.label}
+                </h4>
+                <div className="grid grid-cols-2 md:grid-cols-3 gap-2">
+                  {categoryTalents.map((talent) => (
+                    <Button
+                      key={talent.id}
+                      type="button"
+                      variant={data.talents.includes(talent.id) ? "default" : "outline"}
+                      size="sm"
+                      className="justify-start text-xs h-auto py-2"
+                      onClick={() => toggleTalent(talent.id)}
+                    >
+                      <span className="mr-1">{talent.icon}</span>
+                      {talent.label}
+                    </Button>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
 
         {/* Languages */}

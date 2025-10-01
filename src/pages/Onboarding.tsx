@@ -10,6 +10,7 @@ import { Step1BasicInfo } from '@/components/onboarding/Step1BasicInfo';
 import { Step2ProfileSpecific } from '@/components/onboarding/Step2ProfileSpecific';
 import { Step3Contact } from '@/components/onboarding/Step3Contact';
 import { Step4Final } from '@/components/onboarding/Step4Final';
+import { ProfilePreview } from '@/components/ProfilePreview';
 
 import { LoadingPage } from '@/components/LoadingStates';
 
@@ -132,11 +133,33 @@ export default function Onboarding() {
         );
       case 2:
         return (
-          <Step2ProfileSpecific
-            data={onboarding.data}
-            updateData={onboarding.updateData}
-            profileType={profile?.profile_type || 'artist'}
-          />
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div>
+              <Step2ProfileSpecific
+                data={onboarding.data}
+                updateData={onboarding.updateData}
+                profileType={profile?.profile_type || 'artist'}
+                avatarPreview={avatarPreview}
+              />
+            </div>
+            {/* Preview en temps réel pour les artistes */}
+            {profile?.profile_type === 'artist' && (
+              <div className="hidden lg:block">
+                <div className="sticky top-6">
+                  <h4 className="text-sm font-semibold mb-3 text-muted-foreground">Aperçu du profil</h4>
+                  <ProfilePreview
+                    displayName={onboarding.data.display_name}
+                    bio={onboarding.data.bio}
+                    location={onboarding.data.location}
+                    genres={onboarding.data.genres}
+                    talents={onboarding.data.talents}
+                    languages={onboarding.data.languages}
+                    avatarPreview={avatarPreview}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
         );
       case 3:
         return (
