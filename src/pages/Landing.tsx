@@ -151,7 +151,7 @@ export default function Landing() {
                   <Link to="/auth?tab=signin">Connexion</Link>
                 </Button>
                 <Button size="sm" asChild>
-                  <Link to="/auth?tab=signup">Commencer</Link>
+                  <Link to="/get-started">Commencer</Link>
                 </Button>
               </div>
             </div>
@@ -190,7 +190,7 @@ export default function Landing() {
 
             <div className="mb-6 sm:mb-8">
               <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-3 sm:px-4 py-2 hover:bg-primary/20 text-xs sm:text-sm" asChild>
-                <Link to="/auth?tab=signup">
+                <Link to="/get-started">
                   🚀 Accès anticipé • Places limitées • Statut de fondateur
                 </Link>
               </Button>
@@ -198,7 +198,7 @@ export default function Landing() {
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
               <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
-                <Link to="/auth?tab=signup">
+                <Link to="/get-started">
                   Créer ma carte de visite pro
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
@@ -251,7 +251,7 @@ export default function Landing() {
 
             <div className="mb-8">
               <Button variant="secondary" className="bg-primary/10 text-primary border-primary/20 px-4 py-1 hover:bg-primary/20" asChild>
-                <Link to="/auth">
+                <Link to="/get-started">
                   🚀 Accès anticipé • Places limitées • Statut de fondateur
                 </Link>
               </Button>
@@ -259,7 +259,7 @@ export default function Landing() {
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
               <Button size="lg" className="text-lg px-8 py-6" asChild>
-                <Link to="/auth">
+                <Link to="/get-started">
                   Rejoindre les pionniers
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>

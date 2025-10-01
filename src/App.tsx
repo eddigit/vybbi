@@ -79,6 +79,8 @@ import InscriptionConfirmation from './pages/InscriptionConfirmation';
 import Onboarding from './pages/Onboarding';
 import RechercheAvancee from './pages/RechercheAvancee';
 import InfluenceurDashboard from './pages/InfluenceurDashboard';
+import GetStarted from './pages/GetStarted';
+import AccountSetup from './pages/AccountSetup';
 import AdminInfluenceurs from './pages/AdminInfluenceurs';
 import AdminKnowledge from './pages/AdminKnowledge';
 import AdminEmailDiagnostics from './pages/AdminEmailDiagnostics';
@@ -190,6 +192,8 @@ const App = () => (
                       <Route path="/campaigns" element={<Campaigns />} />
                       <Route path="/commissions" element={<Commissions />} />
                       <Route path="/reports" element={<Reports />} />
+                      <Route path="/get-started" element={<GetStarted />} />
+                      <Route path="/account-setup" element={<AccountSetup />} />
                       <Route path="/auth" element={<Auth />} />
                       <Route path="/auth/callback" element={<AuthCallback />} />
                       <Route path="/forgot-password" element={<ForgotPassword />} />
