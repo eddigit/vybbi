@@ -5284,6 +5284,10 @@ export type Database = {
         }
         Returns: string
       }
+      diagnose_user_messaging: {
+        Args: { user_id_param: string }
+        Returns: Json
+      }
       enhanced_audit_profile_access: {
         Args: { access_type: string; profile_id: string }
         Returns: undefined
