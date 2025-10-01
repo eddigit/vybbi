@@ -9,7 +9,8 @@ export const VYBBI_SOCIAL_LINKS = {
   youtube: "https://www.youtube.com/@Vibby-l3q4d",
   twitter: "https://x.com/vybbiapp",
   bandcamp: "https://vybbi.bandcamp.com/",
-  mixcloud: "https://www.mixcloud.com/Vybbi/"
+  mixcloud: "https://www.mixcloud.com/Vybbi/",
+  reddit: "https://www.reddit.com/r/Vybbi/"
 } as const;
 
 export type SocialPlatform = keyof typeof VYBBI_SOCIAL_LINKS;
