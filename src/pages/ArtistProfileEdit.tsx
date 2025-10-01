@@ -50,8 +50,11 @@ export default function ArtistProfileEdit() {
     header_position_y: 50,
     talents: [] as string[],
     accepts_direct_contact: true,
-    preferred_contact_profile_id: ''
+    preferred_contact_profile_id: '',
+    slug: ''
   });
+  const [slugAvailable, setSlugAvailable] = useState<boolean | null>(null);
+  const [checkingSlug, setCheckingSlug] = useState(false);
 
   useEffect(() => {
     if (user) {
@@ -111,7 +114,8 @@ export default function ArtistProfileEdit() {
           header_position_y: (data as any).header_position_y || 50,
           talents: (data as any).talents || [],
           accepts_direct_contact: (data as any).accepts_direct_contact ?? true,
-          preferred_contact_profile_id: (data as any).preferred_contact_profile_id || ''
+          preferred_contact_profile_id: (data as any).preferred_contact_profile_id || '',
+          slug: (data as any).slug || ''
         });
         setLoading(false);
         return;
@@ -135,7 +139,8 @@ export default function ArtistProfileEdit() {
         header_position_y: (data as any).header_position_y || 50,
         talents: (data as any).talents || [],
         accepts_direct_contact: (data as any).accepts_direct_contact ?? true,
-        preferred_contact_profile_id: (data as any).preferred_contact_profile_id || ''
+        preferred_contact_profile_id: (data as any).preferred_contact_profile_id || '',
+        slug: (data as any).slug || ''
       });
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -199,6 +204,35 @@ export default function ArtistProfileEdit() {
 
   const handleInputChange = (field: keyof typeof formData, value: string | string[] | number | boolean) => {
     setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // When slug changes, check availability
+    if (field === 'slug' && typeof value === 'string') {
+      checkSlugAvailability(value);
+    }
+  };
+
+  const checkSlugAvailability = async (slug: string) => {
+    if (!slug || slug === profile?.slug) {
+      setSlugAvailable(null);
+      return;
+    }
+
+    setCheckingSlug(true);
+    try {
+      const { data, error } = await supabase
+        .rpc('check_slug_availability', { 
+          desired_slug: slug,
+          profile_id_to_exclude: id 
+        });
+
+      if (error) throw error;
+      setSlugAvailable(data);
+    } catch (error) {
+      console.error('Error checking slug:', error);
+      setSlugAvailable(null);
+    } finally {
+      setCheckingSlug(false);
+    }
   };
 
   const handleAvatarUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -358,26 +392,41 @@ export default function ArtistProfileEdit() {
         .map(g => g.trim())
         .filter(g => g.length > 0);
       
+      const updateData: any = {
+        display_name: formData.display_name,
+        bio: formData.bio,
+        location: formData.location,
+        website: formData.website,
+        genres: genresArray.length > 0 ? genresArray : null,
+        languages: formData.languages.length > 0 ? formData.languages : null,
+        experience: formData.experience,
+        spotify_url: formData.spotify_url || null,
+        soundcloud_url: formData.soundcloud_url || null,
+        youtube_url: formData.youtube_url || null,
+        instagram_url: formData.instagram_url || null,
+        tiktok_url: formData.tiktok_url || null,
+        header_position_y: formData.header_position_y,
+        talents: formData.talents.length > 0 ? formData.talents : null,
+        accepts_direct_contact: formData.accepts_direct_contact,
+        preferred_contact_profile_id: formData.preferred_contact_profile_id || null
+      };
+
+      // Only update slug if it changed and is available
+      if (formData.slug && formData.slug !== profile?.slug) {
+        if (slugAvailable === false) {
+          toast({ 
+            title: "URL non disponible", 
+            description: "Cette URL est déjà utilisée par un autre profil",
+            variant: "destructive" 
+          });
+          return;
+        }
+        updateData.slug = formData.slug;
+      }
+
       const { error } = await supabase
         .from('profiles')
-        .update({
-          display_name: formData.display_name,
-          bio: formData.bio,
-          location: formData.location,
-          website: formData.website,
-          genres: genresArray.length > 0 ? genresArray : null,
-          languages: formData.languages.length > 0 ? formData.languages : null,
-          experience: formData.experience,
-          spotify_url: formData.spotify_url || null,
-          soundcloud_url: formData.soundcloud_url || null,
-          youtube_url: formData.youtube_url || null,
-          instagram_url: formData.instagram_url || null,
-          tiktok_url: formData.tiktok_url || null,
-          header_position_y: formData.header_position_y,
-          talents: formData.talents.length > 0 ? formData.talents : null,
-          accepts_direct_contact: formData.accepts_direct_contact,
-          preferred_contact_profile_id: formData.preferred_contact_profile_id || null
-        })
+        .update(updateData)
         .eq('id', id);
 
       if (error) throw error;
@@ -463,6 +512,39 @@ export default function ArtistProfileEdit() {
                 onChange={(e) => handleInputChange('location', e.target.value)}
               />
             </div>
+          </div>
+
+          {/* URL personnalisée */}
+          <div className="space-y-2">
+            <Label htmlFor="slug">URL personnalisée</Label>
+            <div className="flex gap-2 items-start">
+              <div className="flex-1">
+                <div className="flex items-center gap-2">
+                  <span className="text-sm text-muted-foreground whitespace-nowrap">vybbi.app/artistes/</span>
+                  <Input
+                    id="slug"
+                    value={formData.slug}
+                    onChange={(e) => handleInputChange('slug', e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, '-'))}
+                    placeholder={profile?.slug || 'mon-nom'}
+                    className="flex-1"
+                  />
+                </div>
+                {formData.slug && formData.slug !== profile?.slug && (
+                  <p className={`text-xs mt-1.5 ${
+                    checkingSlug ? 'text-muted-foreground' :
+                    slugAvailable === true ? 'text-green-600' :
+                    slugAvailable === false ? 'text-destructive' : ''
+                  }`}>
+                    {checkingSlug ? 'Vérification...' :
+                     slugAvailable === true ? '✓ Cette URL est disponible' :
+                     slugAvailable === false ? '✗ Cette URL est déjà prise' : ''}
+                  </p>
+                )}
+              </div>
+            </div>
+            <p className="text-xs text-muted-foreground">
+              URL courte et mémorable pour votre profil public. Max 20 caractères, lettres et chiffres uniquement.
+            </p>
           </div>
 
           <div>

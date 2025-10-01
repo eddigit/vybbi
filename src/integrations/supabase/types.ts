@@ -5249,6 +5249,10 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: Json
       }
+      check_slug_availability: {
+        Args: { desired_slug: string; profile_id_to_exclude?: string }
+        Returns: boolean
+      }
       cleanup_expired_task_locks: {
         Args: Record<PropertyKey, never>
         Returns: number

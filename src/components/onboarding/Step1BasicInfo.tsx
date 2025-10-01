@@ -67,15 +67,33 @@ export function Step1BasicInfo({ data, updateData, avatarPreview, setAvatarPrevi
       <div className="grid gap-4">
         <div>
           <Label htmlFor="display_name">
-            Nom d'affichage <span className="text-destructive">*</span>
+            Nom d'artiste <span className="text-destructive">*</span>
           </Label>
           <Input
             id="display_name"
             value={data.display_name}
             onChange={(e) => updateData({ display_name: e.target.value })}
-            placeholder="Votre nom ou nom d'artiste"
+            placeholder="DJ Aaron, MC Solaar..."
             required
           />
+          <p className="text-xs text-muted-foreground mt-1.5">
+            Ce nom sera utilisé pour votre URL publique. Choisissez un nom court et mémorable.
+          </p>
+          {data.display_name && (
+            <div className="mt-2 p-2 bg-muted/50 rounded-md">
+              <p className="text-xs font-medium text-muted-foreground">Aperçu de votre URL :</p>
+              <p className="text-sm font-mono text-primary mt-0.5">
+                vybbi.app/artistes/{data.display_name.toLowerCase()
+                  .replace(/^(dj|mc|mr|mrs|ms|dr)\s+/gi, '')
+                  .split(/\s+/)[0]
+                  .normalize('NFD')
+                  .replace(/[\u0300-\u036f]/g, '')
+                  .replace(/[^a-z0-9]/g, '-')
+                  .substring(0, 20)
+                  .replace(/-+$/, '')}
+              </p>
+            </div>
+          )}
         </div>
 
         <div>
