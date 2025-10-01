@@ -16,11 +16,22 @@ export function useAuth() {
   const { toast } = useToast();
   const navigate = useNavigate();
   const { getAdminEmail, getSecuritySettings } = useAdminSettings();
-  // Local rate-limit to avoid 429 from Supabase (60s between attempts)
+  // Smart rate-limit with exponential backoff
+  const [signUpAttempts, setSignUpAttempts] = useState<number>(() => {
+    const saved = sessionStorage.getItem('signUpAttempts');
+    return saved ? parseInt(saved) : 0;
+  });
+  
   const [lastSignUpAttempt, setLastSignUpAttempt] = useState<number | null>(() => {
     const saved = sessionStorage.getItem('lastSignUpAttempt');
     return saved ? parseInt(saved) : null;
   });
+
+  const getWaitTime = (attempts: number): number => {
+    // Exponential backoff: 5s, 15s, 30s, 60s
+    const waitTimes = [5000, 15000, 30000, 60000];
+    return waitTimes[Math.min(attempts, waitTimes.length - 1)];
+  };
 
   const fetchProfile = async (userId: string) => {
     try {
@@ -101,13 +112,19 @@ export function useAuth() {
   const signUp = async (email: string, password: string, displayName: string, profileType: string, roleDetail?: string) => {
     try {
       const now = Date.now();
-      if (lastSignUpAttempt && now - lastSignUpAttempt < 60000) {
-        const remaining = Math.ceil((60000 - (now - lastSignUpAttempt)) / 1000);
+      const waitTime = getWaitTime(signUpAttempts);
+      
+      if (lastSignUpAttempt && now - lastSignUpAttempt < waitTime) {
+        const remaining = Math.ceil((waitTime - (now - lastSignUpAttempt)) / 1000);
         const message = `Veuillez attendre ${remaining} secondes avant de réessayer`;
         toast({ title: 'Trop de tentatives', description: message, variant: 'destructive' });
         throw new Error(message);
       }
+      
+      const newAttempts = signUpAttempts + 1;
+      setSignUpAttempts(newAttempts);
       setLastSignUpAttempt(now);
+      sessionStorage.setItem('signUpAttempts', String(newAttempts));
       sessionStorage.setItem('lastSignUpAttempt', String(now));
 
       const redirectUrl = `${window.location.origin}/auth/callback`;
@@ -126,6 +143,10 @@ export function useAuth() {
       });
 
       if (error) throw error;
+      
+      // Reset attempts on success
+      setSignUpAttempts(0);
+      sessionStorage.removeItem('signUpAttempts');
       
       // L'email de bienvenue sera envoyé après validation via auth-email-sender
       // Notifier l'administrateur (immédiat)

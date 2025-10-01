@@ -9,7 +9,7 @@ import { Label } from '@/components/ui/label';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { PasswordInput } from '@/components/ui/password-input';
-import { Loader2, Music, Users, MapPin, Briefcase, Star, GraduationCap, Coins, Camera, Building2 } from 'lucide-react';
+import { Loader2, Music, Users, MapPin, Briefcase, Star, GraduationCap, Coins, Camera, Building2, CheckCircle2, XCircle } from 'lucide-react';
 import { TALENTS } from '@/lib/talents';
 import { SiretField } from '@/components/SiretField';
 import { HelpTooltip, HELP_MESSAGES } from '@/components/HelpTooltips';
@@ -31,6 +31,20 @@ export default function Auth() {
   const [profileType, setProfileType] = useState('');
   const [roleDetail, setRoleDetail] = useState('');
   const [rememberMe, setRememberMe] = useState(false);
+  const [passwordStrength, setPasswordStrength] = useState<{
+    isValid: boolean;
+    hasLength: boolean;
+    hasUpper: boolean;
+    hasLower: boolean;
+    hasNumber: boolean;
+  }>({
+    isValid: false,
+    hasLength: false,
+    hasUpper: false,
+    hasLower: false,
+    hasNumber: false,
+  });
+  const [emailValid, setEmailValid] = useState<boolean | null>(null);
 
   // Load remembered email and remember me preference
   useEffect(() => {
@@ -84,6 +98,21 @@ export default function Auth() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const validatePassword = (pwd: string) => {
+    const hasLength = pwd.length >= 8;
+    const hasUpper = /[A-Z]/.test(pwd);
+    const hasLower = /[a-z]/.test(pwd);
+    const hasNumber = /[0-9]/.test(pwd);
+    const isValid = hasLength && hasUpper && hasLower && hasNumber;
+    
+    setPasswordStrength({ isValid, hasLength, hasUpper, hasLower, hasNumber });
+  };
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    setEmailValid(email ? emailRegex.test(email) : null);
   };
 
   const getProfileIcon = (type: string) => {
@@ -435,15 +464,31 @@ export default function Auth() {
                   )}
                   <div className="space-y-2">
                     <Label htmlFor="signup-email">Email</Label>
-                    <Input
-                      id="signup-email"
-                      type="email"
-                      placeholder="votre@email.com"
-                      value={email}
-                      onChange={(e) => setEmail(e.target.value)}
-                      required
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
-                    />
+                    <div className="relative">
+                      <Input
+                        id="signup-email"
+                        type="text"
+                        placeholder="votre@email.com"
+                        value={email}
+                        onChange={(e) => {
+                          setEmail(e.target.value);
+                          validateEmail(e.target.value);
+                        }}
+                        required
+                        className={`transition-all duration-200 focus:ring-2 focus:ring-primary/20 pr-10 ${
+                          emailValid === false ? "border-destructive" : emailValid === true ? "border-green-500" : ""
+                        }`}
+                      />
+                      {emailValid !== null && (
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none">
+                          {emailValid ? (
+                            <CheckCircle2 className="h-4 w-4 text-green-500" />
+                          ) : (
+                            <XCircle className="h-4 w-4 text-destructive" />
+                          )}
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="signup-password">Mot de passe</Label>
@@ -451,14 +496,36 @@ export default function Auth() {
                       id="signup-password"
                       placeholder="••••••••"
                       value={password}
-                      onChange={(e) => setPassword(e.target.value)}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                        validatePassword(e.target.value);
+                      }}
                       required
-                      minLength={6}
-                      className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
+                      minLength={8}
+                      className={`transition-all duration-200 focus:ring-2 focus:ring-primary/20 ${
+                        password && !passwordStrength.isValid ? "border-destructive" : password && passwordStrength.isValid ? "border-green-500" : ""
+                      }`}
                     />
-                    <p className="text-xs text-muted-foreground">
-                      Minimum 6 caractères
-                    </p>
+                    {password && (
+                      <div className="space-y-1 text-xs">
+                        <div className={`flex items-center gap-1.5 ${passwordStrength.hasLength ? "text-green-600" : "text-muted-foreground"}`}>
+                          {passwordStrength.hasLength ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                          <span>Au moins 8 caractères</span>
+                        </div>
+                        <div className={`flex items-center gap-1.5 ${passwordStrength.hasUpper ? "text-green-600" : "text-muted-foreground"}`}>
+                          {passwordStrength.hasUpper ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                          <span>Une majuscule</span>
+                        </div>
+                        <div className={`flex items-center gap-1.5 ${passwordStrength.hasLower ? "text-green-600" : "text-muted-foreground"}`}>
+                          {passwordStrength.hasLower ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                          <span>Une minuscule</span>
+                        </div>
+                        <div className={`flex items-center gap-1.5 ${passwordStrength.hasNumber ? "text-green-600" : "text-muted-foreground"}`}>
+                          {passwordStrength.hasNumber ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
+                          <span>Un chiffre</span>
+                        </div>
+                      </div>
+                    )}
                   </div>
                   <Button 
                     type="submit" 
