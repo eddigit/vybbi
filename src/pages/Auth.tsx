@@ -14,6 +14,7 @@ import { TALENTS } from '@/lib/talents';
 import { SiretField } from '@/components/SiretField';
 import { HelpTooltip, HELP_MESSAGES } from '@/components/HelpTooltips';
 import { LoadingOverlay } from '@/components/LoadingStates';
+import vybbiLogo from '@/assets/vybbi-wolf-logo.png';
 
 export default function Auth() {
   const { user, loading, signUp, signIn, hasRole } = useAuth();
@@ -136,7 +137,7 @@ export default function Auth() {
         <div className="text-center">
           <div className="flex justify-center mb-3 sm:mb-4">
             <Link to="/" className="hover:opacity-80 transition-opacity cursor-pointer">
-              <img src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" alt="Vybbi Logo" className="w-12 h-12 sm:w-16 sm:h-16" />
+              <img src={vybbiLogo} alt="Vybbi Logo" className="w-12 h-12 sm:w-16 sm:h-16" />
             </Link>
           </div>
           <h1 className="text-3xl sm:text-4xl font-bold text-white mb-2 sm:mb-3">
