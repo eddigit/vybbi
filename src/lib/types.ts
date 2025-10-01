@@ -27,6 +27,7 @@ export interface Profile {
   youtube_url?: string;
   email?: string;
   phone?: string;
+  slug?: string;
   is_public: boolean;
   accepts_direct_contact?: boolean;
   preferred_contact_profile_id?: string;

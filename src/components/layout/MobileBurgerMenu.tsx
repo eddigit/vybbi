@@ -335,10 +335,10 @@ export function MobileBurgerMenu() {
               {user && (
                 <div className="p-4 border-t border-border space-y-2">
                   <Link
-                    to={profile?.profile_type === 'artist' ? `/artists/${profile.id}` : 
-                         profile?.profile_type === 'agent' ? `/partners/${profile.id}` :
-                         profile?.profile_type === 'manager' ? `/partners/${profile.id}` :
-                         profile?.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile?.id}`}
+                    to={profile?.profile_type === 'artist' ? `/artistes/${profile.slug || profile.id}` : 
+                         profile?.profile_type === 'agent' ? `/partners/${profile.slug || profile.id}` :
+                         profile?.profile_type === 'manager' ? `/partners/${profile.slug || profile.id}` :
+                         profile?.profile_type === 'lieu' ? `/lieux/${profile.slug || profile.id}` : `/profiles/${profile?.id}`}
                     onClick={closeMenu}
                     className="flex items-center gap-3 px-3 py-3 rounded-md text-sm font-medium hover:bg-muted/50 transition-colors w-full"
                   >

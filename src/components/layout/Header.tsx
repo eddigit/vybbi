@@ -195,10 +195,10 @@ export function Header() {
                 <DropdownMenuLabel className="text-sm"><AutoTranslate text="Mon compte" /></DropdownMenuLabel>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem asChild>
-                  <Link to={profile.profile_type === 'artist' ? `/artists/${profile.id}` : 
-                           profile.profile_type === 'agent' ? `/partners/${profile.id}` :
-                           profile.profile_type === 'manager' ? `/partners/${profile.id}` :
-                           profile.profile_type === 'lieu' ? `/lieux/${profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
+                  <Link to={profile.profile_type === 'artist' ? `/artistes/${profile.slug || profile.id}` : 
+                           profile.profile_type === 'agent' ? `/partners/${profile.slug || profile.id}` :
+                           profile.profile_type === 'manager' ? `/partners/${profile.slug || profile.id}` :
+                           profile.profile_type === 'lieu' ? `/lieux/${profile.slug || profile.id}` : `/profiles/${profile.id}`} className="flex items-center">
                     <User className="mr-2 h-3 w-3 sm:h-4 sm:w-4" />
                     <span className="text-sm"><AutoTranslate text="Mon profil" /></span>
                   </Link>
