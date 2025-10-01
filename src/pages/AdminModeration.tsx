@@ -145,11 +145,12 @@ const AdminModeration = () => {
     
     try {
       // Fetch all base data in parallel
+      // Note: Admins can see all profile data including PII due to RLS policies
       const [messagesResult, eventsResult, annoncesResult, profilesResult] = await Promise.allSettled([
         supabase.from('messages').select('*').order('created_at', { ascending: false }).limit(50),
         supabase.from('events').select('*').order('created_at', { ascending: false }).limit(50),
         supabase.from('annonces').select('*').order('created_at', { ascending: false }).limit(50),
-        supabase.from('profiles').select('*').order('created_at', { ascending: false }).limit(200)
+        supabase.from('profiles').select('id, display_name, avatar_url, profile_type, email, phone, is_public, created_at, user_id').order('created_at', { ascending: false }).limit(200)
       ]);
 
       // Process messages

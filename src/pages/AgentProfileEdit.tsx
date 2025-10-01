@@ -56,10 +56,11 @@ export function AgentProfileEdit() {
   }, [user, profile, id, navigate, loading]);
   const fetchProfile = async () => {
     try {
-      const {
-        data,
-        error
-      } = await supabase.from("profiles").select("*").eq("id", id).maybeSingle();
+      // Use RPC function to get full profile data (includes PII for owner)
+      const { data, error } = await supabase
+        .rpc('get_full_profile_data', { profile_id: id })
+        .maybeSingle();
+      
       if (error) throw error;
       if (data) setProfileData(data);
     } catch (error) {
@@ -81,24 +82,24 @@ export function AgentProfileEdit() {
         const confirmedIds = data.filter(aa => aa.representation_status === 'accepted').map(aa => aa.artist_profile_id);
         const pendingIds = data.filter(aa => aa.representation_status === 'pending').map(aa => aa.artist_profile_id);
 
-        // Fetch confirmed artists
+        // Fetch confirmed artists (non-sensitive data only)
         if (confirmedIds.length > 0) {
           const {
             data: confirmedProfiles,
             error: confirmedError
-          } = await supabase.from("profiles").select("*").in("id", confirmedIds);
+          } = await supabase.from("profiles").select("id, user_id, display_name, avatar_url, bio, profile_type, genres, location, slug, is_public, created_at, updated_at").in("id", confirmedIds);
           if (confirmedError) throw confirmedError;
           setConfirmedArtists(confirmedProfiles || []);
         } else {
           setConfirmedArtists([]);
         }
 
-        // Fetch pending artists
+        // Fetch pending artists (non-sensitive data only)
         if (pendingIds.length > 0) {
           const {
             data: pendingProfiles,
             error: pendingError
-          } = await supabase.from("profiles").select("*").in("id", pendingIds);
+          } = await supabase.from("profiles").select("id, user_id, display_name, avatar_url, bio, profile_type, genres, location, slug, is_public, created_at, updated_at").in("id", pendingIds);
           if (pendingError) throw pendingError;
           setPendingArtists(pendingProfiles || []);
         } else {
@@ -119,7 +120,7 @@ export function AgentProfileEdit() {
       const {
         data,
         error
-      } = await supabase.from("profiles").select("*").eq("profile_type", "artist").eq("is_public", true).not("id", "in", `(${existingIds.length > 0 ? existingIds.join(",") : "null"})`);
+      } = await supabase.from("profiles").select("id, user_id, display_name, avatar_url, bio, profile_type, genres, location, slug, is_public, created_at, updated_at").eq("profile_type", "artist").eq("is_public", true).not("id", "in", `(${existingIds.length > 0 ? existingIds.join(",") : "null"})`);
       if (error) throw error;
       if (data) setAvailableArtists(data);
     } catch (error) {
