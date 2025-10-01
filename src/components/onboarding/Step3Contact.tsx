@@ -29,10 +29,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
           </Label>
           <Input
             id="email"
-            type="email"
+            type="text"
             value={data.email}
             onChange={(e) => updateData({ email: e.target.value })}
-            placeholder="votre@email.com"
+            placeholder="votre@email.com (tous formats acceptés)"
             required={profileType !== 'artist'}
           />
         </div>
@@ -44,10 +44,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
           </Label>
           <Input
             id="phone"
-            type="tel"
+            type="text"
             value={data.phone}
             onChange={(e) => updateData({ phone: e.target.value })}
-            placeholder="+33 6 12 34 56 78"
+            placeholder="06 12 34 56 78 ou +33 6 12 34 56 78 (tous formats acceptés)"
           />
         </div>
 
@@ -58,10 +58,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
           </Label>
           <Input
             id="website"
-            type="url"
+            type="text"
             value={data.website}
             onChange={(e) => updateData({ website: e.target.value })}
-            placeholder="https://votre-site.com"
+            placeholder="votre-site.com (avec ou sans https://)"
           />
         </div>
       </div>
@@ -77,9 +77,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
           </Label>
           <Input
             id="instagram_url"
+            type="text"
             value={data.instagram_url}
             onChange={(e) => updateData({ instagram_url: e.target.value })}
-            placeholder="https://instagram.com/votre-compte"
+            placeholder="@votre-compte ou lien complet"
           />
         </div>
 
@@ -92,9 +93,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
               </Label>
               <Input
                 id="spotify_url"
+                type="text"
                 value={data.spotify_url}
                 onChange={(e) => updateData({ spotify_url: e.target.value })}
-                placeholder="https://open.spotify.com/artist/..."
+                placeholder="@votre-artiste ou lien complet"
               />
             </div>
 
@@ -105,9 +107,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
               </Label>
               <Input
                 id="soundcloud_url"
+                type="text"
                 value={data.soundcloud_url}
                 onChange={(e) => updateData({ soundcloud_url: e.target.value })}
-                placeholder="https://soundcloud.com/votre-compte"
+                placeholder="@votre-compte ou lien complet"
               />
             </div>
 
@@ -118,9 +121,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
               </Label>
               <Input
                 id="youtube_url"
+                type="text"
                 value={data.youtube_url}
                 onChange={(e) => updateData({ youtube_url: e.target.value })}
-                placeholder="https://youtube.com/@votre-chaine"
+                placeholder="@votre-chaine ou lien complet"
               />
             </div>
 
@@ -131,9 +135,10 @@ export function Step3Contact({ data, updateData, profileType }: Step3ContactProp
               </Label>
               <Input
                 id="tiktok_url"
+                type="text"
                 value={data.tiktok_url}
                 onChange={(e) => updateData({ tiktok_url: e.target.value })}
-                placeholder="https://tiktok.com/@votre-compte"
+                placeholder="@votre-compte ou lien complet"
               />
             </div>
           </>
