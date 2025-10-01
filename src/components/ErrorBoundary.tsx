@@ -25,6 +25,30 @@ export class ErrorBoundary extends React.Component<ErrorBoundaryProps, ErrorBoun
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error('ErrorBoundary caught an error:', error, errorInfo);
+    
+    // Auto-reload for stale cache/React errors
+    const errorMsg = error.message.toLowerCase();
+    const isStaleError = 
+      errorMsg.includes('cannot read properties of null') ||
+      errorMsg.includes('invalid hook call') ||
+      errorMsg.includes('hooks can only be called') ||
+      errorMsg.includes('rendered more hooks than during the previous render');
+    
+    if (isStaleError) {
+      console.log('Stale React cache detected, triggering reload...');
+      // Clear caches and reload
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations()
+          .then(regs => Promise.all(regs.map(r => r.unregister())))
+          .catch(() => {});
+      }
+      if ('caches' in window) {
+        caches.keys()
+          .then(keys => Promise.all(keys.map(k => caches.delete(k))))
+          .catch(() => {});
+      }
+      setTimeout(() => window.location.reload(), 100);
+    }
   }
 
   handleRetry = () => {
