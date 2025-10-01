@@ -101,17 +101,27 @@ export default function Onboarding() {
     if (!user || !profile) return;
 
     try {
-      await onboarding.completeOnboarding(user.id);
+      console.log('[ONBOARDING PAGE] Starting completion...');
+      
+      // Complete onboarding and get updated profile
+      const updatedProfile = await onboarding.completeOnboarding(user.id);
+      
+      console.log('[ONBOARDING PAGE] Onboarding completed, updated profile:', updatedProfile);
       
       toast({
         title: "Profil complété !",
         description: "Bienvenue dans la communauté Vybbi !",
       });
 
-      // Navigate to dashboard for all profile types for consistency
+      // Force a small delay to ensure the auth state is updated
+      await new Promise(resolve => setTimeout(resolve, 500));
+      
+      console.log('[ONBOARDING PAGE] Redirecting to home...');
+      
+      // Navigate to home - useAuth will handle redirection based on profile
       navigate('/', { replace: true });
     } catch (error) {
-      console.error('Error completing onboarding:', error);
+      console.error('[ONBOARDING PAGE] Error completing onboarding:', error);
       toast({
         title: "Erreur",
         description: "Impossible de finaliser votre profil. Veuillez réessayer.",

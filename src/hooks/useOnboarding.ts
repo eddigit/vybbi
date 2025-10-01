@@ -99,11 +99,15 @@ export function useOnboarding(profileId: string, profileType: string) {
   const completeOnboarding = async (userId: string) => {
     setLoading(true);
     try {
+      console.log('[ONBOARDING] Starting completion process for profile:', profileId);
+      
       let avatarUrl: string | null = null;
       
       // Upload avatar if provided
       if (data.avatar_file) {
+        console.log('[ONBOARDING] Uploading avatar...');
         avatarUrl = await uploadAvatar(data.avatar_file, userId);
+        console.log('[ONBOARDING] Avatar uploaded:', avatarUrl);
       }
 
       // Prepare profile data
@@ -139,16 +143,34 @@ export function useOnboarding(profileId: string, profileType: string) {
         profileData.venue_capacity = data.venue_capacity > 0 ? data.venue_capacity : null;
       }
 
-      const { error } = await supabase
+      console.log('[ONBOARDING] Updating profile with data:', {
+        ...profileData,
+        onboarding_completed: true
+      });
+
+      const { data: updatedProfile, error } = await supabase
         .from('profiles')
         .update(profileData)
-        .eq('id', profileId);
+        .eq('id', profileId)
+        .select()
+        .single();
 
-      if (error) throw error;
+      if (error) {
+        console.error('[ONBOARDING] Error updating profile:', error);
+        throw error;
+      }
 
-      return true;
+      console.log('[ONBOARDING] Profile updated successfully:', updatedProfile);
+      
+      // Verify the update was successful
+      if (!updatedProfile?.onboarding_completed) {
+        console.error('[ONBOARDING] WARNING: onboarding_completed not set to true!');
+        throw new Error('Failed to mark onboarding as completed');
+      }
+
+      return updatedProfile;
     } catch (error) {
-      console.error('Error completing onboarding:', error);
+      console.error('[ONBOARDING] Error completing onboarding:', error);
       throw error;
     } finally {
       setLoading(false);
