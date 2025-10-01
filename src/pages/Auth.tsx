@@ -229,16 +229,38 @@ export default function Auth() {
               <TabsContent value="signup" className="space-y-4">
                 <form onSubmit={handleSignUp} className="space-y-4">
                   <div className="space-y-2">
-                    <Label htmlFor="signup-name">Nom d'affichage</Label>
+                    <Label htmlFor="signup-name">
+                      {profileType === 'artist' ? 'Nom d\'artiste' : 'Nom d\'affichage'}
+                    </Label>
                     <Input
                       id="signup-name"
                       type="text"
-                      placeholder="Votre nom artistique"
+                      placeholder={profileType === 'artist' ? 'DJ Aaron, MC Solaar...' : 'Votre nom'}
                       value={displayName}
                       onChange={(e) => setDisplayName(e.target.value)}
                       required
                       className="transition-all duration-200 focus:ring-2 focus:ring-primary/20"
                     />
+                    {profileType === 'artist' && displayName && (
+                      <div className="mt-2 p-2 bg-muted/50 rounded-md">
+                        <p className="text-xs font-medium text-muted-foreground">Aperçu de votre URL :</p>
+                        <p className="text-xs font-mono text-primary mt-0.5 break-all">
+                          vybbi.app/artistes/{displayName.toLowerCase()
+                            .replace(/^(dj|mc|mr|mrs|ms|dr)\s+/gi, '')
+                            .split(/\s+/)[0]
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/[^a-z0-9]/g, '-')
+                            .substring(0, 20)
+                            .replace(/-+$/, '')}
+                        </p>
+                      </div>
+                    )}
+                    {profileType === 'artist' && (
+                      <p className="text-xs text-muted-foreground mt-1">
+                        Choisissez un nom court et mémorable pour votre URL publique
+                      </p>
+                    )}
                   </div>
                   <div className="space-y-2">
                     <Label htmlFor="profile-type">Type de profil</Label>
