@@ -96,7 +96,7 @@ export default function VenueDashboard() {
           <p className="text-muted-foreground">Bienvenue {profile?.display_name}</p>
         </div>
         <Button asChild>
-          <Link to={`/lieux/${profile?.id}`}>
+          <Link to={`/lieux/${profile?.slug || profile?.id}`}>
             Voir mon profil public
           </Link>
         </Button>

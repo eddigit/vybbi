@@ -125,7 +125,7 @@ export default function PartnerDashboard() {
           <p className="text-muted-foreground">Bienvenue {profile?.display_name}</p>
         </div>
         <Button asChild>
-          <Link to={`/partners/${profile?.id}`}>
+          <Link to={`/partners/${profile?.slug || profile?.id}`}>
             Voir mon profil public
           </Link>
         </Button>

@@ -135,7 +135,7 @@ export default function ArtistDashboard() {
           </div>
           {profile && (
             <Button asChild>
-              <Link to={`/artistes/${profile.id}`}>
+              <Link to={`/artistes/${profile.slug || profile.id}`}>
                 <Eye className="h-4 w-4 mr-2" />
                 Voir mon profil public
               </Link>

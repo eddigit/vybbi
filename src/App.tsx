@@ -20,6 +20,7 @@ import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { usePWAUpdate } from '@/hooks/usePWAUpdate';
 import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
+import LegacyProfileRedirect from './pages/LegacyProfileRedirect';
 
 import { ConditionalHomePage } from '@/components/ConditionalHomePage';
 import SocialWall from "./pages/SocialWall";
@@ -180,12 +181,12 @@ const App = () => (
                       <Route path="/lieux/:slug" element={<VenueProfileBySlug />} />
                       <Route path="/partners/:slug" element={<PartnerProfileBySlug />} />
                       
-        // Améliorer les routes pour rediriger automatiquement les anciennes URLs vers les slugs
-        <Route path="/artists/:id" element={<Navigate to="/artistes" replace />} />
-        <Route path="/lieux/:id" element={<Navigate to="/lieux" replace />} />
-        <Route path="/partners/:id" element={<Navigate to="/partners" replace />} />
-        <Route path="/agents/:id" element={<Navigate to="/partners" replace />} />
-        <Route path="/managers/:id" element={<Navigate to="/partners" replace />} />
+                      {/* Legacy ID routes → redirect to slug */}
+                      <Route path="/artists/:id" element={<LegacyProfileRedirect />} />
+                      <Route path="/lieux/:id" element={<LegacyProfileRedirect />} />
+                      <Route path="/partners/:id" element={<LegacyProfileRedirect />} />
+                      <Route path="/agents/:id" element={<LegacyProfileRedirect />} />
+                      <Route path="/managers/:id" element={<LegacyProfileRedirect />} />
                       
                       <Route path="/dashboard" element={<Dashboard />} />
                       <Route path="/partners" element={<Partners />} />

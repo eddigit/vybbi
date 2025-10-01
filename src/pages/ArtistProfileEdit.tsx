@@ -383,7 +383,7 @@ export default function ArtistProfileEdit() {
       if (error) throw error;
       
       toast({ title: "Profil sauvegardé" });
-      navigate(`/artists/${id}`);
+      navigate(`/artistes/${profile?.slug || id}`);
     } catch (error) {
       console.error('Error saving profile:', error);
       toast({ title: "Erreur", description: "Impossible de sauvegarder", variant: "destructive" });
@@ -762,7 +762,7 @@ export default function ArtistProfileEdit() {
             <Button onClick={handleSave} disabled={saving} className="flex-1">
               {saving ? 'Sauvegarde...' : 'Sauvegarder'}
             </Button>
-            <Button variant="outline" onClick={() => navigate(`/artists/${id}`)}>
+            <Button variant="outline" onClick={() => navigate(`/artistes/${profile?.slug || id}`)}>
               Annuler
             </Button>
           </div>

@@ -97,7 +97,7 @@ export default function VenueProfileEdit() {
         description: "Vos informations ont été sauvegardées avec succès.",
       });
 
-      navigate(`/lieux/${profile.id}`);
+      navigate(`/lieux/${profile.slug || profile.id}`);
     } catch (error) {
       console.error('Error updating profile:', error);
       toast({
