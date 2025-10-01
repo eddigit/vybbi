@@ -101,7 +101,7 @@ serve(async (req) => {
 
     // Prepare email payload
     const payload: any = {
-      from: emailData.from || "Vybbi <onboarding@resend.dev>",
+      from: emailData.from || "Vybbi <no-reply@vybbi.app>",
       to: Array.isArray(emailData.to) ? emailData.to : [emailData.to],
       subject: emailData.subject,
     };
