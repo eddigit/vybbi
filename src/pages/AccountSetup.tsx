@@ -108,8 +108,11 @@ export default function AccountSetup() {
       localStorage.removeItem('signup_email');
       localStorage.removeItem('signup_profile_type');
 
-      // Success - auth hook will redirect to onboarding
-      toast.success('Compte créé avec succès !');
+      // Redirect to a confirmation page or auth callback
+      toast.success('Compte créé avec succès ! Vérifiez votre email pour confirmer votre compte.');
+      
+      // Redirect to auth page with a confirmation message
+      navigate('/auth?confirmed=true');
       
     } catch (error: any) {
       console.error('Signup error:', error);
