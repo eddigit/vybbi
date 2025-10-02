@@ -7,6 +7,7 @@ import { useAuth } from '@/hooks/useAuth';
 import { ArrowLeft, CheckCircle, X, Loader2 } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 import vybbiLogoMobile from "@/assets/vybbi-logo-mobile.png";
+import gillesK from "@/assets/gilles-k.png";
 import { toast } from 'sonner';
 
 type ProfileType = 'artist' | 'agent' | 'lieu';
@@ -14,18 +15,18 @@ type ProfileType = 'artist' | 'agent' | 'lieu';
 const CEO_MESSAGES = {
   artist: {
     message: "Bienvenue dans la famille Vybbi ! En tant qu'artiste, vous rejoignez une communauté mondiale qui valorise votre talent. Nous avons créé cette plateforme pour vous donner la visibilité que vous méritez.",
-    author: "L'équipe Vybbi",
-    role: "Fondateurs"
+    author: "Gilles K.",
+    role: "Fondateur"
   },
   agent: {
     message: "Félicitations ! Vous rejoignez les professionnels qui façonnent l'industrie. Vybbi vous donne les outils pour gérer efficacement vos artistes et développer votre réseau.",
-    author: "L'équipe Vybbi",
-    role: "Fondateurs"
+    author: "Gilles K.",
+    role: "Fondateur"
   },
   lieu: {
     message: "Merci de nous rejoindre ! Les établissements comme le vôtre sont au cœur de la scène musicale. Vybbi simplifie votre recherche de talents et la gestion de vos événements.",
-    author: "L'équipe Vybbi",
-    role: "Fondateurs"
+    author: "Gilles K.",
+    role: "Fondateur"
   }
 };
 
@@ -361,8 +362,8 @@ export default function AccountSetup() {
                 <Card className="bg-gradient-card border-border w-full">
                   <CardContent className="p-8">
                     <div className="space-y-6">
-                      <div className="w-16 h-16 rounded-full bg-primary/20 flex items-center justify-center mx-auto">
-                        <span className="text-2xl">👋</span>
+                      <div className="w-20 h-20 rounded-full overflow-hidden mx-auto ring-2 ring-primary/20">
+                        <img src={gillesK} alt="Gilles K." className="w-full h-full object-cover" />
                       </div>
                       
                       <p className="text-lg text-card-foreground italic leading-relaxed">
