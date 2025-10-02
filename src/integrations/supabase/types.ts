@@ -5097,9 +5097,11 @@ export type Database = {
           header_url: string | null
           id: string | null
           instagram_url: string | null
+          is_public: boolean | null
           languages: string[] | null
           location: string | null
           onboarding_completed: boolean | null
+          preferred_contact_profile_id: string | null
           profile_completion_percentage: number | null
           profile_type: Database["public"]["Enums"]["profile_type"] | null
           slug: string | null
@@ -5108,6 +5110,7 @@ export type Database = {
           talents: string[] | null
           tiktok_url: string | null
           updated_at: string | null
+          user_id: string | null
           venue_capacity: number | null
           venue_category: string | null
           website: string | null
@@ -5126,9 +5129,11 @@ export type Database = {
           header_url?: string | null
           id?: string | null
           instagram_url?: string | null
+          is_public?: boolean | null
           languages?: string[] | null
           location?: string | null
           onboarding_completed?: boolean | null
+          preferred_contact_profile_id?: string | null
           profile_completion_percentage?: number | null
           profile_type?: Database["public"]["Enums"]["profile_type"] | null
           slug?: string | null
@@ -5137,6 +5142,7 @@ export type Database = {
           talents?: string[] | null
           tiktok_url?: string | null
           updated_at?: string | null
+          user_id?: string | null
           venue_capacity?: number | null
           venue_category?: string | null
           website?: string | null
@@ -5155,9 +5161,11 @@ export type Database = {
           header_url?: string | null
           id?: string | null
           instagram_url?: string | null
+          is_public?: boolean | null
           languages?: string[] | null
           location?: string | null
           onboarding_completed?: boolean | null
+          preferred_contact_profile_id?: string | null
           profile_completion_percentage?: number | null
           profile_type?: Database["public"]["Enums"]["profile_type"] | null
           slug?: string | null
@@ -5166,12 +5174,42 @@ export type Database = {
           talents?: string[] | null
           tiktok_url?: string | null
           updated_at?: string | null
+          user_id?: string | null
           venue_capacity?: number | null
           venue_category?: string | null
           website?: string | null
           youtube_url?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "fk_preferred_contact_profile"
+            columns: ["preferred_contact_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_preferred_contact_profile"
+            columns: ["preferred_contact_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_preferred_contact_profile"
+            columns: ["preferred_contact_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "fk_preferred_contact_profile"
+            columns: ["preferred_contact_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       security_summary: {
         Row: {
