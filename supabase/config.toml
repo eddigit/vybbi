@@ -56,3 +56,6 @@ verify_jwt = false
 
 [functions.claim-venue-profile]
 verify_jwt = false
+
+[functions.send-representation-invitation]
+verify_jwt = true

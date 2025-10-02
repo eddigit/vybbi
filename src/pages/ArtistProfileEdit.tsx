@@ -18,6 +18,7 @@ import { HeaderImageEditor } from '@/components/HeaderImageEditor';
 import { TALENTS, TALENT_CATEGORIES, getTalentById } from '@/lib/talents';
 import { MusicDiscography } from '@/components/MusicDiscography';
 import { MusicReleaseWidget } from '@/components/MusicReleaseWidget';
+import { ArtistRepresentationManager } from '@/components/ArtistRepresentationManager';
 
 export default function ArtistProfileEdit() {
   const { id } = useParams<{ id: string }>();
@@ -787,6 +788,9 @@ export default function ArtistProfileEdit() {
               />
             </div>
           </div>
+
+          {/* Representation Manager */}
+          <ArtistRepresentationManager />
 
           {/* Media Gallery */}
           <div>

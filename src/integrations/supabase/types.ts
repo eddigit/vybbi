@@ -3712,6 +3712,77 @@ export type Database = {
           },
         ]
       }
+      representation_invitations: {
+        Row: {
+          accepted_at: string | null
+          accepted_by_user_id: string | null
+          artist_profile_id: string
+          created_at: string
+          expires_at: string
+          id: string
+          invitation_type: string
+          invited_email: string
+          invited_name: string
+          status: string
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          accepted_by_user_id?: string | null
+          artist_profile_id: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invitation_type: string
+          invited_email: string
+          invited_name: string
+          status?: string
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          accepted_by_user_id?: string | null
+          artist_profile_id?: string
+          created_at?: string
+          expires_at?: string
+          id?: string
+          invitation_type?: string
+          invited_email?: string
+          invited_name?: string
+          status?: string
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "representation_invitations_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "representation_invitations_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "representation_invitations_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "representation_invitations_artist_profile_id_fkey"
+            columns: ["artist_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           comment: string | null
@@ -5293,6 +5364,10 @@ export type Database = {
       check_slug_availability: {
         Args: { desired_slug: string; profile_id_to_exclude?: string }
         Returns: boolean
+      }
+      cleanup_expired_invitations: {
+        Args: Record<PropertyKey, never>
+        Returns: number
       }
       cleanup_expired_task_locks: {
         Args: Record<PropertyKey, never>
