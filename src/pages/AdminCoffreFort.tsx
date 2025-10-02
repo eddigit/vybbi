@@ -112,12 +112,18 @@ export default function AdminCoffreFort() {
         const { error } = await supabase
           .from('admin_secrets')
           .update({
-            ...formData,
+            name: formData.name,
+            category: formData.category,
+            value: formData.value,
+            description: formData.description,
             updated_at: new Date().toISOString()
           })
           .eq('id', editingSecret.id);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Update error:', error);
+          throw error;
+        }
         toast.success('Secret mis à jour avec succès');
       } else {
         // Get the highest order_number to add new secret at the end
@@ -128,12 +134,18 @@ export default function AdminCoffreFort() {
         const { error } = await supabase
           .from('admin_secrets')
           .insert([{
-            ...formData,
+            name: formData.name,
+            category: formData.category,
+            value: formData.value,
+            description: formData.description,
             created_by: user?.id,
             order_number: maxOrder + 1
           }]);
 
-        if (error) throw error;
+        if (error) {
+          console.error('Insert error:', error);
+          throw error;
+        }
         toast.success('Secret ajouté avec succès');
       }
 
@@ -141,9 +153,9 @@ export default function AdminCoffreFort() {
       setEditingSecret(null);
       setFormData({ name: '', category: 'general', value: '', description: '' });
       fetchSecrets();
-    } catch (error) {
+    } catch (error: any) {
       console.error('Error saving secret:', error);
-      toast.error('Erreur lors de la sauvegarde');
+      toast.error(error?.message || 'Erreur lors de la sauvegarde');
     }
   };
 
