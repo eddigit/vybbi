@@ -33,7 +33,6 @@ function getEmailTemplate(type: string, data: any): string {
   const { token, token_hash, redirect_to, site_url, email_action_type, verifyUrl: overrideVerifyUrl } = data;
 
   // Build a correct public verification URL using Supabase verify endpoint
-  // Use token for signup/recovery/invite/magic_link, token_hash for email_change
   const envSupabaseUrl = (Deno.env.get('SUPABASE_URL') || '').replace(/\/$/, '');
   const supabaseBase = envSupabaseUrl.replace(/\/rest\/v1$/, '');
   const siteBase = (site_url || supabaseBase).replace(/\/auth\/v1$/, '').replace(/\/$/, '');
@@ -42,12 +41,10 @@ function getEmailTemplate(type: string, data: any): string {
   let verifyUrl = overrideVerifyUrl;
 
   if (!verifyUrl) {
-    // Prefer token_hash when available (GoTrue v2); fallback to token
     const useHash = !!token_hash;
     const paramName = useHash ? 'token_hash' : 'token';
     const paramValue = useHash ? token_hash : token;
     
-    // Use callback URL for proper client-side handling
     const callbackUrl = `${siteBase}/auth/callback`;
     verifyUrl = `${supabaseBase}/auth/v1/verify?${paramName}=${paramValue}&type=${email_action_type}&redirect_to=${encodeURIComponent(callbackUrl)}`;
   }
@@ -57,28 +54,189 @@ function getEmailTemplate(type: string, data: any): string {
     <html>
     <head>
       <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Vybbi - Action requise</title>
       <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background-color: #f5f5f5; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; }
-        .header { text-align: center; margin-bottom: 30px; }
-        .logo { font-size: 24px; font-weight: bold; color: #6366f1; }
-        .content { line-height: 1.6; color: #333; }
-        .button { display: inline-block; background: #6366f1; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
-        .footer { margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; color: #666; font-size: 12px; }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+          background: linear-gradient(135deg, #1a1a2e 0%, #0f0f1e 100%);
+          padding: 40px 20px;
+          line-height: 1.6;
+        }
+        .email-wrapper { max-width: 600px; margin: 0 auto; }
+        .container { 
+          background: #ffffff;
+          border-radius: 16px;
+          overflow: hidden;
+          box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+        .header {
+          background: linear-gradient(135deg, #9b87f5 0%, #7E69AB 50%, #6E59A5 100%);
+          padding: 40px 30px;
+          text-align: center;
+        }
+        .logo-container {
+          background: rgba(255, 255, 255, 0.95);
+          display: inline-block;
+          padding: 16px 24px;
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+        .logo { 
+          font-size: 32px;
+          font-weight: 800;
+          background: linear-gradient(135deg, #9b87f5 0%, #7E69AB 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          letter-spacing: -0.5px;
+        }
+        .content { 
+          padding: 40px 30px;
+          color: #1a1a2e;
+        }
+        .content h2 {
+          font-size: 28px;
+          font-weight: 700;
+          color: #1a1a2e;
+          margin-bottom: 20px;
+          line-height: 1.3;
+        }
+        .content p {
+          font-size: 16px;
+          color: #4a5568;
+          margin-bottom: 16px;
+        }
+        .highlight {
+          background: linear-gradient(135deg, #9b87f5 0%, #7E69AB 100%);
+          -webkit-background-clip: text;
+          -webkit-text-fill-color: transparent;
+          background-clip: text;
+          font-weight: 600;
+        }
+        .cta-container {
+          text-align: center;
+          margin: 32px 0;
+        }
+        .button {
+          display: inline-block;
+          background: linear-gradient(135deg, #9b87f5 0%, #7E69AB 100%);
+          color: #ffffff !important;
+          font-size: 16px;
+          font-weight: 600;
+          padding: 16px 40px;
+          text-decoration: none;
+          border-radius: 12px;
+          box-shadow: 0 8px 24px rgba(155, 135, 245, 0.4);
+          transition: all 0.3s ease;
+        }
+        .button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 12px 32px rgba(155, 135, 245, 0.5);
+        }
+        .fallback-link {
+          margin-top: 24px;
+          padding: 16px;
+          background: #f7fafc;
+          border-radius: 8px;
+          border-left: 4px solid #9b87f5;
+        }
+        .fallback-link p {
+          font-size: 14px;
+          color: #4a5568;
+          margin-bottom: 8px;
+        }
+        .fallback-link a {
+          color: #7E69AB;
+          word-break: break-all;
+          font-size: 13px;
+        }
+        .benefits {
+          background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+          padding: 24px;
+          border-radius: 12px;
+          margin: 24px 0;
+        }
+        .benefit-item {
+          display: flex;
+          align-items: flex-start;
+          margin-bottom: 12px;
+        }
+        .benefit-icon {
+          color: #9b87f5;
+          font-size: 20px;
+          margin-right: 12px;
+          flex-shrink: 0;
+        }
+        .signature {
+          margin-top: 32px;
+          padding-top: 24px;
+          border-top: 2px solid #e2e8f0;
+        }
+        .signature-name {
+          font-weight: 600;
+          color: #1a1a2e;
+        }
+        .signature-title {
+          color: #7E69AB;
+          font-size: 14px;
+          font-style: italic;
+        }
+        .footer {
+          background: #1a1a2e;
+          padding: 30px;
+          text-align: center;
+        }
+        .footer p {
+          color: #a0aec0;
+          font-size: 14px;
+          margin-bottom: 8px;
+        }
+        .footer a {
+          color: #9b87f5;
+          text-decoration: none;
+        }
+        .social-links {
+          margin-top: 20px;
+        }
+        .social-links a {
+          display: inline-block;
+          margin: 0 8px;
+          color: #9b87f5;
+          font-size: 20px;
+          text-decoration: none;
+        }
+        @media only screen and (max-width: 600px) {
+          body { padding: 20px 10px; }
+          .header { padding: 30px 20px; }
+          .content { padding: 30px 20px; }
+          .content h2 { font-size: 24px; }
+          .button { padding: 14px 32px; font-size: 15px; }
+        }
       </style>
     </head>
     <body>
-      <div class="container">
-        <div class="header">
-          <div class="logo">🎵 Vybbi</div>
-        </div>
-        <div class="content">
-          {{CONTENT}}
-        </div>
-        <div class="footer">
-          <p>Si vous n'avez pas demandé cette action, ignorez cet email.</p>
-          <p>© 2024 Vybbi - Plateforme de talents musicaux</p>
+      <div class="email-wrapper">
+        <div class="container">
+          <div class="header">
+            <div class="logo-container">
+              <div class="logo">🎵 VYBBI</div>
+            </div>
+          </div>
+          <div class="content">
+            {{CONTENT}}
+          </div>
+          <div class="footer">
+            <p>Si vous n'avez pas demandé cette action, vous pouvez ignorer cet email en toute sécurité.</p>
+            <p>Des questions ? Contactez-nous à <a href="mailto:contact@vybbi.app">contact@vybbi.app</a></p>
+            <div class="social-links">
+              <a href="https://vybbi.app" title="Vybbi">🌐</a>
+              <a href="#" title="Instagram">📷</a>
+              <a href="#" title="Twitter">🐦</a>
+            </div>
+            <p style="margin-top: 20px; font-size: 12px;">© 2025 Vybbi - La plateforme qui connecte les talents musicaux</p>
+          </div>
         </div>
       </div>
     </body>
@@ -90,38 +248,153 @@ function getEmailTemplate(type: string, data: any): string {
   switch (type) {
     case 'signup':
       content = `
-        <h2>Bienvenue sur Vybbi !</h2>
-        <p>Merci de vous être inscrit sur notre plateforme. Pour activer votre compte, cliquez sur le lien ci-dessous :</p>
-        <p><a href="${verifyUrl}" class="button">Confirmer mon compte</a></p>
-        <p>Ou copiez ce lien dans votre navigateur :<br><small>${verifyUrl}</small></p>
+        <h2>🎉 Bienvenue dans la famille Vybbi !</h2>
+        <p>Bonjour et merci de rejoindre <span class="highlight">Vybbi</span>, la plateforme qui révolutionne le monde de la musique !</p>
+        
+        <p>Vous êtes à <strong>un clic</strong> de découvrir un écosystème unique où artistes, lieux, agents et managers se connectent et collaborent.</p>
+        
+        <div class="cta-container">
+          <a href="${verifyUrl}" class="button">✨ Confirmer mon compte</a>
+        </div>
+        
+        <div class="benefits">
+          <div class="benefit-item">
+            <span class="benefit-icon">🎤</span>
+            <span><strong>Créez votre profil artistique</strong> et partagez votre univers musical</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🤝</span>
+            <span><strong>Connectez-vous</strong> avec des professionnels de l'industrie</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">📊</span>
+            <span><strong>Accédez à des outils</strong> de gestion et d'analyse performants</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🎵</span>
+            <span><strong>Diffusez votre musique</strong> sur notre radio communautaire</span>
+          </div>
+        </div>
+        
+        <div class="fallback-link">
+          <p><strong>Le bouton ne fonctionne pas ?</strong></p>
+          <p>Copiez et collez ce lien dans votre navigateur :</p>
+          <a href="${verifyUrl}">${verifyUrl}</a>
+        </div>
+        
+        <div class="signature">
+          <p>À très bientôt sur Vybbi ! 🚀</p>
+          <p class="signature-name">Gilles K.</p>
+          <p class="signature-title">Fondateur & CEO de Vybbi</p>
+        </div>
       `;
       break;
     case 'recovery':
       content = `
-        <h2>Réinitialisation de mot de passe</h2>
-        <p>Vous avez demandé à réinitialiser votre mot de passe. Cliquez sur le lien ci-dessous :</p>
-        <p><a href="${verifyUrl}" class="button">Réinitialiser mon mot de passe</a></p>
+        <h2>🔐 Réinitialisation de mot de passe</h2>
+        <p>Vous avez demandé à réinitialiser votre mot de passe Vybbi.</p>
+        
+        <p>Pas de panique ! Cliquez simplement sur le bouton ci-dessous pour créer un nouveau mot de passe sécurisé.</p>
+        
+        <div class="cta-container">
+          <a href="${verifyUrl}" class="button">🔑 Réinitialiser mon mot de passe</a>
+        </div>
+        
+        <div class="fallback-link">
+          <p><strong>Le bouton ne fonctionne pas ?</strong></p>
+          <p>Copiez et collez ce lien dans votre navigateur :</p>
+          <a href="${verifyUrl}">${verifyUrl}</a>
+        </div>
+        
+        <p style="margin-top: 24px; padding: 16px; background: #fff3cd; border-left: 4px solid #ffc107; border-radius: 8px;">
+          <strong>⚠️ Important :</strong> Ce lien expire dans 1 heure pour votre sécurité.
+        </p>
+        
+        <div class="signature">
+          <p>L'équipe Vybbi 🎵</p>
+        </div>
       `;
       break;
     case 'email_change':
       content = `
-        <h2>Confirmation de changement d'email</h2>
-        <p>Vous avez demandé à changer votre adresse email. Cliquez sur le lien ci-dessous pour confirmer :</p>
-        <p><a href="${verifyUrl}" class="button">Confirmer le changement</a></p>
+        <h2>📧 Confirmation de changement d'email</h2>
+        <p>Vous avez demandé à changer votre adresse email sur Vybbi.</p>
+        
+        <p>Pour confirmer ce changement et sécuriser votre compte, cliquez sur le bouton ci-dessous :</p>
+        
+        <div class="cta-container">
+          <a href="${verifyUrl}" class="button">✅ Confirmer le changement</a>
+        </div>
+        
+        <div class="fallback-link">
+          <p><strong>Le bouton ne fonctionne pas ?</strong></p>
+          <p>Copiez et collez ce lien dans votre navigateur :</p>
+          <a href="${verifyUrl}">${verifyUrl}</a>
+        </div>
+        
+        <p style="margin-top: 24px; padding: 16px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 8px;">
+          <strong>ℹ️ Note :</strong> Si vous n'avez pas demandé ce changement, contactez-nous immédiatement.
+        </p>
+        
+        <div class="signature">
+          <p>L'équipe Vybbi 🎵</p>
+        </div>
       `;
       break;
     case 'invite':
       content = `
-        <h2>Invitation à rejoindre Vybbi</h2>
-        <p>Vous avez été invité à rejoindre notre plateforme. Cliquez sur le lien ci-dessous :</p>
-        <p><a href="${verifyUrl}" class="button">Accepter l'invitation</a></p>
+        <h2>🎊 Vous êtes invité(e) à rejoindre Vybbi !</h2>
+        <p>Bonne nouvelle ! Vous avez été invité(e) à rejoindre <span class="highlight">Vybbi</span>, la plateforme qui connecte les talents musicaux.</p>
+        
+        <div class="benefits">
+          <div class="benefit-item">
+            <span class="benefit-icon">🌟</span>
+            <span><strong>Réseau exclusif</strong> de professionnels de la musique</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🚀</span>
+            <span><strong>Opportunités</strong> de collaborations et de bookings</span>
+          </div>
+          <div class="benefit-item">
+            <span class="benefit-icon">🎯</span>
+            <span><strong>Outils professionnels</strong> pour gérer votre carrière</span>
+          </div>
+        </div>
+        
+        <div class="cta-container">
+          <a href="${verifyUrl}" class="button">🎉 Accepter l'invitation</a>
+        </div>
+        
+        <div class="fallback-link">
+          <p><strong>Le bouton ne fonctionne pas ?</strong></p>
+          <p>Copiez et collez ce lien dans votre navigateur :</p>
+          <a href="${verifyUrl}">${verifyUrl}</a>
+        </div>
+        
+        <div class="signature">
+          <p>Au plaisir de vous compter parmi nous ! 🎵</p>
+          <p class="signature-name">L'équipe Vybbi</p>
+        </div>
       `;
       break;
     default:
       content = `
-        <h2>Action requise</h2>
-        <p>Cliquez sur le lien ci-dessous pour continuer :</p>
-        <p><a href="${verifyUrl}" class="button">Continuer</a></p>
+        <h2>Action requise sur votre compte Vybbi</h2>
+        <p>Une action est nécessaire pour finaliser votre demande.</p>
+        
+        <div class="cta-container">
+          <a href="${verifyUrl}" class="button">Continuer</a>
+        </div>
+        
+        <div class="fallback-link">
+          <p><strong>Le bouton ne fonctionne pas ?</strong></p>
+          <p>Copiez et collez ce lien dans votre navigateur :</p>
+          <a href="${verifyUrl}">${verifyUrl}</a>
+        </div>
+        
+        <div class="signature">
+          <p>L'équipe Vybbi 🎵</p>
+        </div>
       `;
   }
   
