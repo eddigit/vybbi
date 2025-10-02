@@ -15,9 +15,10 @@ import { SiretField } from '@/components/SiretField';
 import { HelpTooltip, HELP_MESSAGES } from '@/components/HelpTooltips';
 import { LoadingOverlay } from '@/components/LoadingStates';
 import vybbiLogo from '@/assets/vybbi-wolf-logo.png';
+import { EmailConfirmationDialog } from '@/components/EmailConfirmationDialog';
 
 export default function Auth() {
-  const { user, loading, signUp, signIn, hasRole } = useAuth();
+  const { user, loading, signUp, signIn, hasRole, showEmailConfirmation, confirmationEmail, setShowEmailConfirmation } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   
   const navigate = useNavigate();
@@ -132,8 +133,15 @@ export default function Auth() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center p-3 sm:p-4">
-      <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
+    <>
+      <EmailConfirmationDialog
+        isOpen={showEmailConfirmation}
+        onClose={() => setShowEmailConfirmation(false)}
+        email={confirmationEmail}
+      />
+      
+      <div className="min-h-screen bg-gradient-to-br from-background via-background/95 to-primary/5 flex items-center justify-center p-3 sm:p-4">
+        <div className="w-full max-w-sm sm:max-w-md space-y-6 sm:space-y-8">
         <div className="text-center">
           <div className="flex justify-center mb-3 sm:mb-4">
             <Link to="/" className="hover:opacity-80 transition-opacity cursor-pointer">
@@ -577,5 +585,6 @@ export default function Auth() {
         </div>
       </div>
     </div>
+    </>
   );
 }

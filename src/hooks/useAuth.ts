@@ -13,6 +13,8 @@ export function useAuth() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [roles, setRoles] = useState<AppRole[]>([]);
   const [loading, setLoading] = useState(true);
+  const [showEmailConfirmation, setShowEmailConfirmation] = useState(false);
+  const [confirmationEmail, setConfirmationEmail] = useState('');
   const { toast } = useToast();
   const navigate = useNavigate();
   const { getAdminEmail, getSecuritySettings } = useAdminSettings();
@@ -160,10 +162,9 @@ export function useAuth() {
         }
       }, 2000);
       
-      toast({
-        title: 'Compte créé avec succès !',
-        description: 'Vérifiez votre email pour confirmer votre compte.',
-      });
+      // Show email confirmation dialog instead of toast
+      setConfirmationEmail(email);
+      setShowEmailConfirmation(true);
     } catch (error: any) {
       toast({
         title: "Erreur lors de l'inscription",
@@ -267,5 +268,8 @@ export function useAuth() {
     signOut,
     hasRole,
     refreshProfile,
+    showEmailConfirmation,
+    confirmationEmail,
+    setShowEmailConfirmation,
   };
 }
