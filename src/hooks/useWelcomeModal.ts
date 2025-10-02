@@ -48,6 +48,7 @@ export function useWelcomeModal() {
     isWelcomeModalOpen,
     closeWelcomeModal,
     handleNavigate,
-    profile
+    profile,
+    profileId: profile?.id || ''
   };
 }

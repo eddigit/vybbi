@@ -298,6 +298,7 @@ export default function ArtistDashboard() {
           onClose={closeWelcomeModal}
           profileType={profile.profile_type}
           displayName={profile.display_name}
+          profileId={profile.id}
           onNavigate={handleNavigate}
         />
       )}

@@ -36,6 +36,7 @@ export default function InfluenceurDashboard() {
           onClose={closeWelcomeModal}
           profileType={profile.profile_type}
           displayName={profile.display_name}
+          profileId={profile.id}
           onNavigate={handleNavigate}
         />
       )}

@@ -24,6 +24,7 @@ interface WelcomeModalProps {
   onClose: () => void;
   profileType: ProfileType;
   displayName: string;
+  profileId: string;
   onNavigate: (path: string) => void;
 }
 
@@ -39,7 +40,7 @@ const welcomeContent = {
         icon: Edit,
         title: "Complétez votre profil",
         description: "Ajoutez vos genres, expériences et médias pour attirer les recruteurs",
-        action: "/artist/profile/edit",
+        action: "/artists/:id/edit",
         actionText: "Éditer mon profil"
       },
       {
@@ -58,7 +59,7 @@ const welcomeContent = {
       }
     ],
     quickActions: [
-      { label: "Mon profil", path: "/artist/profile/edit", icon: Edit },
+      { label: "Mon profil", path: "/artists/:id/edit", icon: Edit },
       { label: "Annonces", path: "/annonces", icon: Search },
       { label: "Messages", path: "/messages", icon: MessageSquare }
     ]
@@ -74,7 +75,7 @@ const welcomeContent = {
         icon: Edit,
         title: "Configurez votre profil",
         description: "Présentez votre agence et votre expertise au marché",
-        action: "/agent/profile/edit",
+        action: "/agents/:id/edit",
         actionText: "Éditer mon profil"
       },
       {
@@ -93,8 +94,8 @@ const welcomeContent = {
       }
     ],
     quickActions: [
-      { label: "Mon profil", path: "/agent/profile/edit", icon: Edit },
-      { label: "Créer annonce", path: "/annonces/create", icon: Calendar },
+      { label: "Mon profil", path: "/agents/:id/edit", icon: Edit },
+      { label: "Créer annonce", path: "/annonces/manager", icon: Calendar },
       { label: "Artistes", path: "/artists", icon: Users }
     ]
   },
@@ -109,28 +110,28 @@ const welcomeContent = {
         icon: Edit,
         title: "Configurez votre profil",
         description: "Mettez en avant votre expérience et vos succès",
-        action: "/manager/profile/edit",
+        action: "/managers/:id/edit",
         actionText: "Éditer mon profil"
       },
       {
         icon: Users,
         title: "Gérez vos artistes",
         description: "Ajoutez et promouvez les artistes que vous représentez",
-        action: "/my-artists",
+        action: "/managers/:id/artists",
         actionText: "Mes artistes"
       },
       {
         icon: Calendar,
         title: "Créez des opportunités",
         description: "Publiez des annonces pour développer leur carrière",
-        action: "/annonces/create",
+        action: "/annonces/manager",
         actionText: "Créer une annonce"
       }
     ],
     quickActions: [
-      { label: "Mon profil", path: "/manager/profile/edit", icon: Edit },
-      { label: "Mes artistes", path: "/my-artists", icon: Users },
-      { label: "Créer annonce", path: "/annonces/create", icon: Calendar }
+      { label: "Mon profil", path: "/managers/:id/edit", icon: Edit },
+      { label: "Mes artistes", path: "/managers/:id/artists", icon: Users },
+      { label: "Créer annonce", path: "/annonces/manager", icon: Calendar }
     ]
   },
   lieu: {
@@ -144,14 +145,14 @@ const welcomeContent = {
         icon: Edit,
         title: "Configurez votre espace",
         description: "Présentez votre organisation et ses caractéristiques",
-        action: "/lieux/profile/edit",
+        action: "/lieux/:id/edit",
         actionText: "Éditer mon profil"
       },
       {
         icon: Calendar,
         title: "Créez vos événements",
         description: "Programmez et publiez vos événements",
-        action: "/events/create",
+        action: "/events",
         actionText: "Créer un événement"
       },
       {
@@ -163,8 +164,8 @@ const welcomeContent = {
       }
     ],
     quickActions: [
-      { label: "Mon profil", path: "/lieux/profile/edit", icon: Edit },
-      { label: "Créer événement", path: "/events/create", icon: Calendar },
+      { label: "Mon profil", path: "/lieux/:id/edit", icon: Edit },
+      { label: "Créer événement", path: "/events", icon: Calendar },
       { label: "Artistes", path: "/artists", icon: Users }
     ]
   },
@@ -179,7 +180,7 @@ const welcomeContent = {
         icon: Edit,
         title: "Configurez votre profil",
         description: "Présentez votre audience et vos contenus",
-        action: "/influencer/profile/edit",
+        action: "/affiliation",
         actionText: "Éditer mon profil"
       },
       {
@@ -198,19 +199,21 @@ const welcomeContent = {
       }
     ],
     quickActions: [
-      { label: "Mon profil", path: "/influencer/profile/edit", icon: Edit },
+      { label: "Mon profil", path: "/affiliation", icon: Edit },
       { label: "Tableau de bord", path: "/dashboard", icon: Settings },
       { label: "Commissions", path: "/commissions", icon: CheckCircle }
     ]
   }
 };
 
-export function WelcomeModal({ isOpen, onClose, profileType, displayName, onNavigate }: WelcomeModalProps) {
+export function WelcomeModal({ isOpen, onClose, profileType, displayName, profileId, onNavigate }: WelcomeModalProps) {
   const content = welcomeContent[profileType];
   const IconComponent = content.icon;
 
   const handleNavigateAndClose = (path: string) => {
-    onNavigate(path);
+    // Replace :id placeholder with actual profile ID
+    const finalPath = path.replace(':id', profileId);
+    onNavigate(finalPath);
     onClose();
   };
 

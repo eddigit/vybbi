@@ -183,6 +183,7 @@ export default function VenueDashboard() {
           onClose={closeWelcomeModal}
           profileType={profile.profile_type}
           displayName={profile.display_name}
+          profileId={profile.id}
           onNavigate={handleNavigate}
         />
         )}
