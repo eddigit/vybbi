@@ -11,8 +11,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, Key, Shield, Eye, EyeOff, Copy, Search, Filter } from "lucide-react";
+import { Plus, Edit, Trash2, Key, Shield, Eye, EyeOff, Copy, Search, Filter, GripVertical } from "lucide-react";
 import { toast } from "sonner";
+import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 
 interface AdminSecret {
   id: string;
@@ -23,9 +24,13 @@ interface AdminSecret {
   created_at: string;
   updated_at: string;
   last_accessed_at: string | null;
+  order_number: number;
 }
 
 const categories = [
+  'database',
+  'finance',
+  'mail_account',
   'api_keys',
   'passwords', 
   'wallets',
@@ -36,6 +41,9 @@ const categories = [
 ];
 
 const categoryLabels = {
+  database: 'BDD',
+  finance: 'Finance',
+  mail_account: 'Mail Account',
   api_keys: 'Clés API',
   passwords: 'Mots de passe',
   wallets: 'Wallets Crypto',
@@ -46,6 +54,9 @@ const categoryLabels = {
 };
 
 const categoryColors = {
+  database: 'bg-indigo-500',
+  finance: 'bg-emerald-500',
+  mail_account: 'bg-amber-500',
   api_keys: 'bg-blue-500',
   passwords: 'bg-red-500',
   wallets: 'bg-purple-500',
@@ -81,7 +92,7 @@ export default function AdminCoffreFort() {
       const { data, error } = await supabase
         .from('admin_secrets')
         .select('*')
-        .order('name', { ascending: true });
+        .order('order_number', { ascending: true });
 
       if (error) throw error;
       setSecrets(data || []);
@@ -109,11 +120,17 @@ export default function AdminCoffreFort() {
         if (error) throw error;
         toast.success('Secret mis à jour avec succès');
       } else {
+        // Get the highest order_number to add new secret at the end
+        const maxOrder = secrets.length > 0 
+          ? Math.max(...secrets.map(s => s.order_number || 0)) 
+          : 0;
+
         const { error } = await supabase
           .from('admin_secrets')
           .insert([{
             ...formData,
-            created_by: user?.id
+            created_by: user?.id,
+            order_number: maxOrder + 1
           }]);
 
         if (error) throw error;
@@ -195,6 +212,49 @@ export default function AdminCoffreFort() {
     const matchesCategory = categoryFilter === 'all' || secret.category === categoryFilter;
     return matchesSearch && matchesCategory;
   });
+
+  const handleDragEnd = async (result: DropResult) => {
+    if (!result.destination) return;
+
+    const items = Array.from(filteredSecrets);
+    const [reorderedItem] = items.splice(result.source.index, 1);
+    items.splice(result.destination.index, 0, reorderedItem);
+
+    // Update local state immediately for better UX
+    const reorderedSecrets = items.map((item, index) => ({
+      ...item,
+      order_number: index
+    }));
+
+    // Update all secrets with new order in the filtered list
+    const allSecrets = secrets.map(secret => {
+      const reordered = reorderedSecrets.find(s => s.id === secret.id);
+      return reordered || secret;
+    });
+    
+    setSecrets(allSecrets);
+
+    // Update database
+    try {
+      const updates = reorderedSecrets.map((secret, index) => ({
+        id: secret.id,
+        order_number: index
+      }));
+
+      for (const update of updates) {
+        await supabase
+          .from('admin_secrets')
+          .update({ order_number: update.order_number })
+          .eq('id', update.id);
+      }
+
+      toast.success('Ordre mis à jour');
+    } catch (error) {
+      console.error('Error updating order:', error);
+      toast.error('Erreur lors de la mise à jour de l\'ordre');
+      fetchSecrets(); // Reload on error
+    }
+  };
 
   // Access control
   if (!user || !hasRole('admin')) {
@@ -394,96 +454,115 @@ export default function AdminCoffreFort() {
         </CardContent>
       </Card>
 
-      {/* Secrets Table */}
+      {/* Secrets Table with Drag & Drop */}
       <Card>
         <CardHeader>
           <CardTitle>Secrets ({filteredSecrets.length})</CardTitle>
           <CardDescription>
-            Liste des secrets stockés de manière sécurisée
+            Liste des secrets stockés de manière sécurisée. Glissez-déposez pour réorganiser.
           </CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nom</TableHead>
-                <TableHead>Catégorie</TableHead>
-                <TableHead>Valeur</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Dernier accès</TableHead>
-                <TableHead>Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredSecrets.map((secret) => (
-                <TableRow key={secret.id}>
-                  <TableCell className="font-medium">{secret.name}</TableCell>
-                  <TableCell>
-                    <Badge className={`${categoryColors[secret.category as keyof typeof categoryColors]} text-white`}>
-                      {categoryLabels[secret.category as keyof typeof categoryLabels]}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <code className="text-sm bg-muted px-2 py-1 rounded max-w-[200px] truncate">
-                        {showValues[secret.id] ? secret.value : '••••••••••••'}
-                      </code>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          toggleShowValue(secret.id);
-                          if (!showValues[secret.id]) {
-                            updateLastAccessed(secret.id);
-                          }
-                        }}
-                      >
-                        {showValues[secret.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => {
-                          copyToClipboard(secret.value);
-                          updateLastAccessed(secret.id);
-                        }}
-                      >
-                        <Copy className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                  <TableCell className="max-w-[200px] truncate">
-                    {secret.description || '-'}
-                  </TableCell>
-                  <TableCell className="text-sm text-muted-foreground">
-                    {secret.last_accessed_at 
-                      ? new Date(secret.last_accessed_at).toLocaleDateString('fr-FR')
-                      : 'Jamais'
-                    }
-                  </TableCell>
-                  <TableCell>
-                    <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleEdit(secret)}
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleDelete(secret.id)}
-                        className="text-destructive hover:text-destructive"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+          <DragDropContext onDragEnd={handleDragEnd}>
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="w-[50px]"></TableHead>
+                  <TableHead>Nom</TableHead>
+                  <TableHead>Catégorie</TableHead>
+                  <TableHead>Valeur</TableHead>
+                  <TableHead>Description</TableHead>
+                  <TableHead>Dernier accès</TableHead>
+                  <TableHead>Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <Droppable droppableId="secrets">
+                {(provided) => (
+                  <TableBody {...provided.droppableProps} ref={provided.innerRef}>
+                    {filteredSecrets.map((secret, index) => (
+                      <Draggable key={secret.id} draggableId={secret.id} index={index}>
+                        {(provided, snapshot) => (
+                          <TableRow
+                            ref={provided.innerRef}
+                            {...provided.draggableProps}
+                            className={snapshot.isDragging ? "bg-muted" : ""}
+                          >
+                            <TableCell {...provided.dragHandleProps}>
+                              <GripVertical className="h-4 w-4 text-muted-foreground cursor-grab active:cursor-grabbing" />
+                            </TableCell>
+                            <TableCell className="font-medium">{secret.name}</TableCell>
+                            <TableCell>
+                              <Badge className={`${categoryColors[secret.category as keyof typeof categoryColors]} text-white`}>
+                                {categoryLabels[secret.category as keyof typeof categoryLabels]}
+                              </Badge>
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <code className="text-sm bg-muted px-2 py-1 rounded max-w-[200px] truncate">
+                                  {showValues[secret.id] ? secret.value : '••••••••••••'}
+                                </code>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    toggleShowValue(secret.id);
+                                    if (!showValues[secret.id]) {
+                                      updateLastAccessed(secret.id);
+                                    }
+                                  }}
+                                >
+                                  {showValues[secret.id] ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => {
+                                    copyToClipboard(secret.value);
+                                    updateLastAccessed(secret.id);
+                                  }}
+                                >
+                                  <Copy className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                            <TableCell className="max-w-[200px] truncate">
+                              {secret.description || '-'}
+                            </TableCell>
+                            <TableCell className="text-sm text-muted-foreground">
+                              {secret.last_accessed_at 
+                                ? new Date(secret.last_accessed_at).toLocaleDateString('fr-FR')
+                                : 'Jamais'
+                              }
+                            </TableCell>
+                            <TableCell>
+                              <div className="flex items-center gap-2">
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleEdit(secret)}
+                                >
+                                  <Edit className="h-4 w-4" />
+                                </Button>
+                                <Button
+                                  variant="ghost"
+                                  size="sm"
+                                  onClick={() => handleDelete(secret.id)}
+                                  className="text-destructive hover:text-destructive"
+                                >
+                                  <Trash2 className="h-4 w-4" />
+                                </Button>
+                              </div>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </Draggable>
+                    ))}
+                    {provided.placeholder}
+                  </TableBody>
+                )}
+              </Droppable>
+            </Table>
+          </DragDropContext>
           
           {filteredSecrets.length === 0 && (
             <div className="text-center py-8">

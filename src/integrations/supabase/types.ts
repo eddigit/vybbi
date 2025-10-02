@@ -349,6 +349,7 @@ export type Database = {
           last_accessed_at: string | null
           last_accessed_by: string | null
           name: string
+          order_number: number | null
           updated_at: string
           value: string
         }
@@ -361,6 +362,7 @@ export type Database = {
           last_accessed_at?: string | null
           last_accessed_by?: string | null
           name: string
+          order_number?: number | null
           updated_at?: string
           value: string
         }
@@ -373,6 +375,7 @@ export type Database = {
           last_accessed_at?: string | null
           last_accessed_by?: string | null
           name?: string
+          order_number?: number | null
           updated_at?: string
           value?: string
         }
