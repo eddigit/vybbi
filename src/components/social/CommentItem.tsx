@@ -41,7 +41,7 @@ export function CommentItem({ comment }: CommentItemProps) {
   };
 
   return (
-    <div className="flex space-x-3 p-3 rounded-lg bg-muted/30">
+    <div className="flex space-x-3 p-3 rounded-lg bg-card/50 border border-border/30">
       <Link to={`/profiles/${comment.profile_id}`} className="flex-shrink-0">
         <Avatar className="w-8 h-8 ring-1 ring-border">
           <AvatarImage src={comment.author_avatar_url || undefined} />
@@ -52,10 +52,10 @@ export function CommentItem({ comment }: CommentItemProps) {
       </Link>
       
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-2 mb-1">
+        <div className="flex flex-wrap items-center gap-2 mb-1.5">
           <Link 
             to={`/profiles/${comment.profile_id}`}
-            className="font-medium text-sm hover:text-primary transition-colors"
+            className="font-medium text-sm text-foreground hover:text-primary transition-colors"
           >
             {comment.author_display_name}
           </Link>
@@ -70,7 +70,7 @@ export function CommentItem({ comment }: CommentItemProps) {
           </span>
         </div>
         
-        <p className="text-sm leading-relaxed whitespace-pre-wrap">
+        <p className="text-sm text-foreground leading-relaxed break-words">
           {comment.comment_text}
         </p>
       </div>
