@@ -39,16 +39,16 @@ export function Layout({ children }: LayoutProps) {
   // For home page: show landing layout only if user is NOT authenticated
   if (isHomePage && !user) {
     return (
-      <>
+      <div className="min-h-screen bg-background relative overflow-x-hidden">
         <MobileBurgerMenu />
         {/* Mobile header - Always visible on mobile */}
         <MobileHeader />
-        <div className="pb-10">
+        <main className="flex-1 relative overflow-x-hidden overflow-y-auto pb-10">
           {children}
-        </div>
+        </main>
         <Footer />
         <CookieConsentBanner />
-      </>
+      </div>
     );
   }
 

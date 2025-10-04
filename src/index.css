@@ -95,13 +95,13 @@ All colors MUST be HSL.
   /* Mobile-only touch restrictions */
   @media (hover: none) and (pointer: coarse) {
     html {
-      /* Completely disable touch interactions that can cause zoom */
-      touch-action: none !important;
-      overscroll-behavior: none !important;
+      /* Allow vertical scroll while preventing zoom */
+      touch-action: pan-y !important;
+      overscroll-behavior-y: contain;
+      overscroll-behavior-x: none;
       
       /* iOS specific zoom prevention */
       -webkit-touch-callout: none !important;
-      -webkit-user-select: none !important;
     }
   }
 
@@ -134,20 +134,16 @@ All colors MUST be HSL.
   /* Mobile-only body restrictions */
   @media (hover: none) and (pointer: coarse) {
     body {
-      /* Prevent navigation gestures and overscroll */
-      touch-action: none !important;
-      overscroll-behavior: none !important;
+      /* Allow vertical scroll while preventing horizontal */
+      touch-action: pan-y !important;
+      overscroll-behavior-y: contain;
       overscroll-behavior-x: none !important;
       
       /* iOS Safari specific fixes */
       -webkit-touch-callout: none !important;
-      -webkit-user-select: none !important;
       -webkit-tap-highlight-color: transparent !important;
       
-      /* Prevent text selection on UI elements */
-      user-select: none;
-      
-      /* Strict zoom and scroll prevention */
+      /* Strict zoom prevention */
       -webkit-text-size-adjust: 100%;
       -ms-text-size-adjust: 100%;
       text-size-adjust: 100%;
