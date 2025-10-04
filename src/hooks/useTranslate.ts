@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useTranslation } from '@/contexts/TranslationContext';
+import { useTranslation } from '@/contexts/I18nProvider';
 
 export const useTranslate = (text: string, sourceLanguage: string = 'fr') => {
   const { translate, currentLanguage } = useTranslation();

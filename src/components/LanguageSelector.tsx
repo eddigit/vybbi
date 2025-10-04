@@ -1,6 +1,6 @@
 import React from 'react';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { useTranslation } from '@/contexts/TranslationContext';
+import { useTranslation } from '@/contexts/I18nProvider';
 import { LANGUAGES, getLanguageByCode } from '@/lib/languages';
 import { Globe } from 'lucide-react';
 

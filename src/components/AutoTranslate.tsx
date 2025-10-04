@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation } from '@/contexts/TranslationContext';
+import { useTranslation } from '@/contexts/I18nProvider';
 
 interface AutoTranslateProps {
   text: string;
