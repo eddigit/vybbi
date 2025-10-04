@@ -9,15 +9,19 @@
 /* Mobile-only zoom prevention */
 @media (hover: none) and (pointer: coarse) {
   html, body {
-    touch-action: none !important;
+    touch-action: pan-y !important;
     overflow-x: hidden !important;
     overscroll-behavior: none !important;
     -webkit-text-size-adjust: 100% !important;
     -ms-text-size-adjust: 100% !important;
     text-size-adjust: 100% !important;
     -webkit-touch-callout: none !important;
-    -webkit-user-select: none !important;
-    user-select: none !important;
+  }
+
+  /* Allow scrolling in main content areas */
+  main {
+    touch-action: pan-y !important;
+    overflow-y: auto !important;
   }
 
   /* ScrollArea exceptions - Allow scrolling in message areas */
