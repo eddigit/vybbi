@@ -56,15 +56,32 @@ export function useSocialFeed(feedType: 'all' | 'following' | 'discover' = 'all'
 
       setHasMore(newPosts.length === limit);
     } catch (err) {
-      console.error('Error fetching social feed:', err);
-      const errorMessage = err instanceof Error ? err.message : 'Une erreur est survenue';
-      if (errorMessage.includes('permission denied') || errorMessage.includes('not authenticated')) {
+      // Surface clearer Supabase RPC errors to the UI and console
+      console.error('Error fetching social feed (RPC get_social_feed):', err);
+
+      let errorMessage = 'Une erreur est survenue';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+      } else if (typeof err === 'object' && err !== null && 'message' in err) {
+        errorMessage = String((err as any).message);
+      }
+
+      // Additional context for debugging in console (kept out of UI)
+      if (typeof err === 'object' && err !== null) {
+        const details = (err as any).details || (err as any).hint;
+        if (details) console.warn('[get_social_feed] details:', details);
+      }
+
+      if (errorMessage.toLowerCase().includes('permission denied') || errorMessage.toLowerCase().includes('not authenticated')) {
         setError('Vous devez être connecté pour voir le feed');
-      } else if (errorMessage.includes('function') && errorMessage.includes('does not exist')) {
-        setError('Erreur de configuration du système - contactez le support');
-      } else if (errorMessage.includes('structure of query does not match')) {
+      } else if (
+        (errorMessage.toLowerCase().includes('function') && errorMessage.toLowerCase().includes('does not exist')) ||
+        errorMessage.toLowerCase().includes('not found')
+      ) {
+        setError('Erreur de configuration du système (fonction manquante). Veuillez contacter le support.');
+      } else if (errorMessage.toLowerCase().includes('structure of query does not match')) {
         setError('Erreur de format des données - veuillez recharger la page');
-      } else if (errorMessage.includes('Failed to fetch')) {
+      } else if (errorMessage.toLowerCase().includes('failed to fetch') || errorMessage.toLowerCase().includes('network')) {
         setError('Problème de connexion - vérifiez votre réseau');
       } else {
         setError(errorMessage);
