@@ -1,5 +1,6 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { MessageWithSender } from '@/hooks/useMessages';
+import { formatTimeOfDay, getUserTimeZone } from '@/utils/dateTime';
 
 interface MessageBubbleProps {
   message: MessageWithSender;
@@ -16,12 +17,7 @@ export default function MessageBubble({
 }: MessageBubbleProps) {
   console.log('MessageBubble rendering:', message.id);
   
-  const formatTime = (dateString: string) => {
-    return new Date(dateString).toLocaleTimeString('fr-FR', {
-      hour: '2-digit',
-      minute: '2-digit'
-    });
-  };
+  const timeZone = getUserTimeZone();
 
   return (
     <div className={`flex gap-2 mb-2 ${isOwnMessage ? 'justify-end' : 'justify-start'}`}>
@@ -77,7 +73,7 @@ export default function MessageBubble({
           
           {/* Message time */}
           <span className={`text-xs mt-1 block opacity-70 ${isOwnMessage ? 'text-right' : 'text-left'}`}>
-            {formatTime(message.created_at)}
+            {formatTimeOfDay(message.created_at, timeZone)}
           </span>
         </div>
       </div>

@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { getUserTimeZone, getDateKeyInTZ, getTimeStringInTZ } from "@/utils/dateTime";
 
 interface AdSlotProps {
   slotId: string;
@@ -64,18 +65,17 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
           .eq('is_active', true);
 
         const eligible: AdCreative[] = [];
-        const now = new Date();
-        const currentTime = now.toTimeString().slice(0, 8);
+        const timeZone = getUserTimeZone();
+        const todayKey = getDateKeyInTZ(new Date(), timeZone);
+        const nowTime = getTimeStringInTZ(new Date(), timeZone);
 
         for (const campaign of campaigns || []) {
-          // Date range check (inclusive)
-          const startDate = new Date(`${campaign.start_date}T00:00:00`);
-          const endDateInclusive = new Date(`${campaign.end_date}T23:59:59.999`);
-          if (now < startDate || now > endDateInclusive) continue;
+          // Date range check using timezone-aware comparison
+          if (todayKey < campaign.start_date || todayKey > campaign.end_date) continue;
 
           // Daily window check
           if (campaign.daily_window_start && campaign.daily_window_end) {
-            if (currentTime < campaign.daily_window_start || currentTime > campaign.daily_window_end) continue;
+            if (nowTime < campaign.daily_window_start || nowTime > campaign.daily_window_end) continue;
           }
 
           if (!campaign.ad_assets?.length) continue;
@@ -165,22 +165,21 @@ export function AdSlot({ slotId, width, height, hideIfEmpty = true, className = 
 
       // Filter eligible campaigns
       const eligibleCreatives: AdCreative[] = [];
-      const now = new Date();
-      const currentTime = now.toTimeString().slice(0, 8);
+      const timeZone = getUserTimeZone();
+      const todayKey = getDateKeyInTZ(new Date(), timeZone);
+      const nowTime = getTimeStringInTZ(new Date(), timeZone);
       
       for (const slot of campaignSlots) {
         const campaign = slot.ad_campaigns;
         
         if (!campaign.is_active) continue;
         
-        // Date range check (inclusive)
-        const startDate = new Date(`${campaign.start_date}T00:00:00`);
-        const endDateInclusive = new Date(`${campaign.end_date}T23:59:59.999`);
-        if (now < startDate || now > endDateInclusive) continue;
+        // Date range check using timezone-aware comparison
+        if (todayKey < campaign.start_date || todayKey > campaign.end_date) continue;
 
         // Daily window check
         if (campaign.daily_window_start && campaign.daily_window_end) {
-          if (currentTime < campaign.daily_window_start || currentTime > campaign.daily_window_end) {
+          if (nowTime < campaign.daily_window_start || nowTime > campaign.daily_window_end) {
             continue;
           }
         }

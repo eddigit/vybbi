@@ -152,24 +152,24 @@ export function MobileBurgerMenu() {
         variant="ghost"
         size="sm"
         onClick={() => setIsOpen(true)}
-        className="fixed top-3 right-3 z-[9999] p-2 h-auto bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm border border-gray-200 dark:border-gray-700 hover:bg-white dark:hover:bg-gray-800 transition-all duration-200 shadow-xl rounded-lg flex items-center justify-center md:hidden"
+        className="fixed z-[9999] md:hidden"
         aria-label="Ouvrir le menu"
         style={{
           position: 'fixed',
-          top: 'calc(env(safe-area-inset-top, 0px) + 0.875rem) !important',
-          right: '0.75rem !important',
-          zIndex: '9999 !important',
-          display: 'flex !important',
+          top: 'max(calc(env(safe-area-inset-top, 16px) + 1rem), 2rem)',
+          right: '0.75rem',
+          zIndex: 9999,
+          display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minWidth: '32px',
-          minHeight: '32px',
-          width: '32px',
-          height: '32px',
-          padding: '6px',
+          minWidth: 32,
+          minHeight: 32,
+          width: 32,
+          height: 32,
+          padding: 6,
           backgroundColor: 'rgba(255, 255, 255, 0.95)',
           border: '1px solid rgba(0, 0, 0, 0.1)',
-          borderRadius: '6px',
+          borderRadius: 6,
           boxShadow: '0 4px 12px rgba(0, 0, 0, 0.15)',
           cursor: 'pointer',
           backdropFilter: 'blur(8px)',
@@ -179,8 +179,8 @@ export function MobileBurgerMenu() {
         <Menu 
           className="h-4 w-4 text-gray-700 dark:text-gray-300" 
           style={{ 
-            width: '18px', 
-            height: '18px', 
+            width: 18, 
+            height: 18, 
             color: '#374151',
             flexShrink: 0
           }} 

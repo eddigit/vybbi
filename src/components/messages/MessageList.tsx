@@ -3,6 +3,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import { MessageWithSender } from '@/hooks/useMessages';
 import MessageBubble from './MessageBubble';
 import { useAuth } from '@/hooks/useAuth';
+import { getUserTimeZone, getDateKeyInTZ, formatDateLabel } from '@/utils/dateTime';
 
 interface MessageListProps {
   messages: MessageWithSender[];
@@ -15,6 +16,7 @@ export default function MessageList({ messages, loading }: MessageListProps) {
   const { user } = useAuth();
   const scrollAreaRef = useRef<HTMLDivElement>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const timeZone = getUserTimeZone();
 
   // Auto-scroll to bottom when new messages arrive
   useEffect(() => {
@@ -23,35 +25,15 @@ export default function MessageList({ messages, loading }: MessageListProps) {
     }
   }, [messages]);
 
-  // Group messages by date
+  // Group messages by date in timezone
   const groupedMessages = messages?.reduce((groups, message) => {
-    const date = new Date(message.created_at).toDateString();
-    if (!groups[date]) {
-      groups[date] = [];
+    const dateKey = getDateKeyInTZ(message.created_at, timeZone);
+    if (!groups[dateKey]) {
+      groups[dateKey] = [];
     }
-    groups[date].push(message);
+    groups[dateKey].push(message);
     return groups;
   }, {} as Record<string, MessageWithSender[]>) || {};
-
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    const today = new Date();
-    const yesterday = new Date(today);
-    yesterday.setDate(today.getDate() - 1);
-
-    if (date.toDateString() === today.toDateString()) {
-      return "Aujourd'hui";
-    } else if (date.toDateString() === yesterday.toDateString()) {
-      return "Hier";
-    } else {
-      return date.toLocaleDateString('fr-FR', { 
-        weekday: 'long', 
-        year: 'numeric', 
-        month: 'long', 
-        day: 'numeric' 
-      });
-    }
-  };
 
   return (
     <div className="flex flex-col h-full bg-background/50">
@@ -83,7 +65,7 @@ export default function MessageList({ messages, loading }: MessageListProps) {
                   </div>
                   <div className="relative bg-background px-4 py-2">
                     <span className="text-xs font-medium text-muted-foreground bg-muted/50 px-3 py-1.5 rounded-full">
-                      {formatDate(date)}
+                      {formatDateLabel(date, timeZone)}
                     </span>
                   </div>
                 </div>
