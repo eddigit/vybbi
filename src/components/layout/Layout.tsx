@@ -76,7 +76,7 @@ export function Layout({ children }: LayoutProps) {
         {/* Mobile header - Always visible on mobile */}
         <MobileHeader />
         {/* Desktop header - Hidden on mobile */}
-        <div className="hidden md:block">
+        <div className="hidden lg:block">
           <Header />
         </div>
         <main className="flex-1 pb-10 relative overflow-x-hidden overflow-y-auto">
@@ -96,11 +96,11 @@ export function Layout({ children }: LayoutProps) {
       {/* Mobile header - Always visible on mobile */}
       <MobileHeader />
       {/* Desktop header - Hidden on mobile */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <Header />
       </div>
       {/* Desktop horizontal nav, hidden on mobile */}
-      <div className="hidden md:block">
+      <div className="hidden lg:block">
         <TopNav />
       </div>
       <main className="flex-1 p-2 sm:p-3 md:p-4 pb-16 md:pb-12 w-full relative overflow-x-hidden overflow-y-auto">
