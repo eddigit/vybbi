@@ -127,6 +127,13 @@ export default function GetStarted() {
         {/* Main Content */}
         <main className="flex-1 container mx-auto px-4 py-8 md:py-12">
           <div className="max-w-6xl mx-auto">
+            {/* Login link for existing users */}
+            <div className="flex justify-end items-center gap-2 mb-6">
+              <span className="text-sm text-muted-foreground">Déjà un compte ?</span>
+              <Button variant="ghost" size="sm" asChild>
+                <Link to="/auth?tab=signin">Connexion</Link>
+              </Button>
+            </div>
             {/* Mobile Layout */}
             <div className="lg:hidden space-y-6">
               {/* Profile Selection */}
