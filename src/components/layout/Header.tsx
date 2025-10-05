@@ -178,6 +178,24 @@ export function Header() {
               </>
             )}
 
+            {/* Auth buttons for non-authenticated users */}
+            {!user && (
+              <div className="flex items-center gap-2">
+                {/* Connexion button - Hidden on smallest screens */}
+                <Link to="/auth" className="hidden sm:block">
+                  <Button variant="outline" size="sm">
+                    <AutoTranslate text="Connexion" />
+                  </Button>
+                </Link>
+                {/* Commencer button - Always visible */}
+                <Link to="/get-started">
+                  <Button variant="default" size="sm">
+                    <AutoTranslate text="Commencer" />
+                  </Button>
+                </Link>
+              </div>
+            )}
+
             {/* Desktop Profile Dropdown - Hidden on mobile */}
             {profile && (
               <DropdownMenu>
