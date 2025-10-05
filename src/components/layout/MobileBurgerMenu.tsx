@@ -156,7 +156,7 @@ export function MobileBurgerMenu() {
         aria-label="Ouvrir le menu"
         style={{
           position: 'fixed',
-          top: 'max(calc(env(safe-area-inset-top, 16px) + 1rem), 2rem)',
+          top: 'calc(env(safe-area-inset-top, 0px) + 0.875rem)',
           right: '0.75rem',
           zIndex: 9999,
           display: 'flex',
