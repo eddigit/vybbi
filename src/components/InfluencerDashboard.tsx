@@ -6,10 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { supabase } from '@/integrations/supabase/client';
 import { useAuth } from '@/hooks/useAuth';
 import { InfluencerLink, AffiliateConversion } from '@/lib/types';
-import { Plus, ExternalLink, QrCode, Copy, TrendingUp, Users, DollarSign } from 'lucide-react';
+import { Plus, ExternalLink, QrCode, Copy, TrendingUp, Users, DollarSign, Instagram, Youtube, Mail } from 'lucide-react';
 import { toast } from '@/hooks/use-toast';
 import { AffiliateQRGenerator } from './AffiliateQRGenerator';
 import { AffiliateLinkDialog } from './AffiliateLinkDialog';
+import { InfluencerWelcomeModal } from './InfluencerWelcomeModal';
 
 interface DashboardStats {
   totalLinks: number;
@@ -33,12 +34,22 @@ export const InfluencerDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [showLinkDialog, setShowLinkDialog] = useState(false);
   const [selectedLink, setSelectedLink] = useState<InfluencerLink | null>(null);
+  const [showWelcomeModal, setShowWelcomeModal] = useState(false);
+  const [influencerProfileId, setInfluencerProfileId] = useState<string>('');
 
   useEffect(() => {
     if (user) {
       fetchInfluencerData();
     }
   }, [user]);
+
+  useEffect(() => {
+    // Show welcome modal only on first login if no links exist
+    const hasSeenWelcome = localStorage.getItem('influencer_welcome_shown');
+    if (!hasSeenWelcome && links.length === 0 && !loading && influencerProfileId) {
+      setShowWelcomeModal(true);
+    }
+  }, [links, loading, influencerProfileId]);
 
   const fetchInfluencerData = async () => {
     try {
@@ -53,6 +64,8 @@ export const InfluencerDashboard = () => {
         .maybeSingle();
 
       if (!profile) return;
+
+      setInfluencerProfileId(profile.id);
 
       // Fetch links
       const { data: linksData, error: linksError } = await supabase
@@ -166,6 +179,32 @@ export const InfluencerDashboard = () => {
             Nouveau lien
           </Button>
         </div>
+
+        {/* Banner: Create first link */}
+        {links.length === 0 && !loading && (
+          <Card className="bg-gradient-primary/10 border-primary/20">
+            <CardContent className="p-6">
+              <div className="flex flex-col md:flex-row items-start md:items-center gap-4">
+                <div className="w-12 h-12 rounded-full bg-gradient-primary flex items-center justify-center shrink-0">
+                  <Plus className="w-6 h-6 text-primary-foreground" />
+                </div>
+                <div className="flex-1">
+                  <h3 className="font-semibold text-lg mb-1">Créez votre premier lien</h3>
+                  <p className="text-sm text-muted-foreground">
+                    Générez un lien unique pour commencer à gagner des commissions. C'est simple et ça prend moins de 30 secondes !
+                  </p>
+                </div>
+                <Button 
+                  onClick={() => setShowLinkDialog(true)}
+                  size="lg"
+                  className="shrink-0"
+                >
+                  Créer maintenant
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
       {/* Stats Cards */}
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
@@ -311,6 +350,57 @@ export const InfluencerDashboard = () => {
         </TabsContent>
       </Tabs>
 
+      {/* Guide: How to share effectively */}
+      <Card className="bg-gradient-card border-border">
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            💡 Comment partager efficacement
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="grid md:grid-cols-3 gap-6">
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Instagram className="w-5 h-5 text-primary" />
+                <h4 className="font-semibold">Instagram & TikTok</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Ajoutez le lien dans votre bio ou créez des stories avec le sticker lien. 
+                Parlez de Vybbi dans vos posts et dirigez vers votre bio.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Youtube className="w-5 h-5 text-primary" />
+                <h4 className="font-semibold">YouTube</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Intégrez le lien dans la description de vos vidéos. Mentionnez-le à l'oral 
+                et ajoutez une annotation cliquable si possible.
+              </p>
+            </div>
+            <div className="space-y-2">
+              <div className="flex items-center gap-2 mb-2">
+                <Mail className="w-5 h-5 text-primary" />
+                <h4 className="font-semibold">Newsletter</h4>
+              </div>
+              <p className="text-sm text-muted-foreground">
+                Créez une section dédiée dans vos emails avec un CTA accrocheur. 
+                Expliquez les bénéfices de Vybbi pour votre audience.
+              </p>
+            </div>
+          </div>
+          <div className="mt-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
+            <p className="text-sm">
+              <strong className="text-primary">💰 Rappel des gains:</strong> 2€ par inscription réussie + 0,50€/mois récurrents tant que l'utilisateur reste actif*
+            </p>
+            <p className="text-xs text-muted-foreground mt-2">
+              *Paiements mensuels automatisés dès que vous atteignez 50€ de commissions
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Dialogs */}
       <AffiliateLinkDialog
         open={showLinkDialog}
@@ -323,6 +413,14 @@ export const InfluencerDashboard = () => {
         open={selectedLink !== null}
         onOpenChange={(open) => !open && setSelectedLink(null)}
       />
+
+      {influencerProfileId && (
+        <InfluencerWelcomeModal
+          isOpen={showWelcomeModal}
+          onClose={() => setShowWelcomeModal(false)}
+          influencerProfileId={influencerProfileId}
+        />
+      )}
     </div>
     </div>
   );

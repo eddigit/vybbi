@@ -10,7 +10,7 @@ import vybbiLogoMobile from "@/assets/vybbi-logo-mobile.png";
 import gillesK from "@/assets/gilles-k.png";
 import { toast } from 'sonner';
 
-type ProfileType = 'artist' | 'agent' | 'lieu';
+type ProfileType = 'artist' | 'agent' | 'lieu' | 'influenceur';
 
 const CEO_MESSAGES = {
   artist: {
@@ -95,7 +95,8 @@ export default function AccountSetup() {
       const profileTypeMap: Record<ProfileType, string> = {
         'artist': 'artist',
         'agent': 'agent',
-        'lieu': 'lieu'
+        'lieu': 'lieu',
+        'influenceur': 'influenceur'
       };
 
       await signUp(

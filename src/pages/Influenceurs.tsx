@@ -8,10 +8,20 @@ import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { SEOHead } from '@/components/SEOHead';
+import { useAuth } from '@/hooks/useAuth';
+import { InfluencerDashboard } from '@/components/InfluencerDashboard';
 
 export default function Influenceurs() {
+  const { user, profile } = useAuth();
   const [referrals, setReferrals] = useState(10);
   const [monthlyEarnings, setMonthlyEarnings] = useState(0);
+
+  // If user is logged in and is an influencer, show dashboard
+  if (user && profile?.profile_type === 'influenceur') {
+    return <InfluencerDashboard />;
+  }
+
+  // Otherwise show landing page
 
   const calculateEarnings = (referralCount: number) => {
     const oneTimeCommission = referralCount * 2; // 2€ par inscription
