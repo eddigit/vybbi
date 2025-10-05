@@ -243,9 +243,8 @@ export function useAuth() {
         setSession(session);
         setUser(session?.user ?? null);
         if (session?.user) {
-          setTimeout(() => {
-            fetchProfile(session.user.id);
-          }, 0);
+          setLoading(true);
+          fetchProfile(session.user.id);
         } else {
           setProfile(null);
           setRoles([]);
