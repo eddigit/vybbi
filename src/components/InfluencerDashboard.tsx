@@ -392,7 +392,7 @@ export const InfluencerDashboard = () => {
           </div>
           <div className="mt-6 p-4 bg-primary/10 border border-primary/20 rounded-lg">
             <p className="text-sm">
-              <strong className="text-primary">💰 Rappel des gains:</strong> 2€ par inscription réussie + 0,50€/mois récurrents tant que l'utilisateur reste actif*
+              <strong className="text-primary">💰 Rappel des gains:</strong> 2€ par abonnement payant souscrit + 0,50€/mois récurrents tant que l'utilisateur reste sur un abonnement payant*
             </p>
             <p className="text-xs text-muted-foreground mt-2">
               *Paiements mensuels automatisés dès que vous atteignez 50€ de commissions

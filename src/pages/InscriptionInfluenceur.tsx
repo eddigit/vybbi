@@ -158,8 +158,8 @@ export default function InscriptionInfluenceur() {
               <CardContent>
                 <p className="text-sm text-muted-foreground italic">
                   "Bienvenue dans notre programme d'affiliation exclusif ! En tant qu'influenceur Vybbi, 
-                  vous allez contribuer à démocratiser l'accès à la musique et gagner des revenus récurrents. 
-                  Créez votre compte en quelques secondes et commencez à partager !"
+                  vous allez contribuer à démocratiser l'accès à la musique et gagner des revenus récurrents 
+                  pour chaque abonnement payant souscrit via votre lien. Créez votre compte en quelques secondes et commencez à partager !"
                 </p>
                 <p className="text-sm font-semibold mt-3">— Gilles K., CEO Vybbi</p>
               </CardContent>

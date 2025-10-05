@@ -176,12 +176,13 @@ const handler = async (req: Request): Promise<Response> => {
 
               <div class="highlight">
                 <h2>💰 Vos gains potentiels</h2>
-                <p><strong>2€ par inscription + 0,50€/mois récurrents*</strong></p>
+                <p><strong>2€ par abonnement payant souscrit + 0,50€/mois récurrents*</strong></p>
               </div>
 
               <p style="font-size: 16px; color: #333;">
                 Félicitations pour avoir rejoint notre programme exclusif ! Vous allez pouvoir gagner 
-                des revenus en recommandant Vybbi à votre communauté.
+                des revenus en recommandant Vybbi à votre communauté. Attention : seuls les abonnements payants 
+                souscrits via votre lien génèrent des commissions.
               </p>
 
               <div class="steps">
@@ -221,11 +222,11 @@ const handler = async (req: Request): Promise<Response> => {
               <div class="stats">
                 <div class="stat-card">
                   <span class="number">2€</span>
-                  <span class="label">Par inscription</span>
+                  <span class="label">Par abonnement payant souscrit</span>
                 </div>
                 <div class="stat-card">
                   <span class="number">0,50€</span>
-                  <span class="label">Par mois récurrent</span>
+                  <span class="label">Par mois récurrent (abonnement payant)</span>
                 </div>
               </div>
 
@@ -234,7 +235,7 @@ const handler = async (req: Request): Promise<Response> => {
                 
                 <div class="faq-item">
                   <h4>Quand suis-je payé ?</h4>
-                  <p>Paiements mensuels automatiques dès que vous atteignez 50€ de commissions.</p>
+                  <p>Paiements mensuels automatiques dès que vous atteignez 50€ de commissions sur abonnements payants.</p>
                 </div>
 
                 <div class="faq-item">
@@ -254,7 +255,7 @@ const handler = async (req: Request): Promise<Response> => {
 
                 <div class="faq-item">
                   <h4>Combien de temps durent les commissions récurrentes ?</h4>
-                  <p>Tant que l'utilisateur reste actif sur Vybbi, vous continuez à gagner 0,50€/mois.</p>
+                  <p>Tant que l'utilisateur reste sur un abonnement payant Vybbi, vous continuez à gagner 0,50€/mois.</p>
                 </div>
               </div>
 
@@ -272,8 +273,9 @@ const handler = async (req: Request): Promise<Response> => {
                   <a href="${baseUrl}/contact" style="color: #8B5CF6; text-decoration: none;">Support</a>
                 </p>
                 <p style="margin-top: 15px; font-size: 12px;">
-                  *Détails des commissions : 2€ par inscription validée + 0,50€/mois tant que l'utilisateur reste actif sur Vybbi.
-                  Paiements mensuels automatiques via virement bancaire dès 50€ de commissions cumulées.
+                  *Détails des commissions : 2€ par abonnement payant souscrit + 0,50€/mois tant que l'utilisateur reste sur un abonnement payant Vybbi.
+                  Paiements mensuels automatiques via virement bancaire dès 50€ de commissions cumulées. 
+                  <strong>Important : Les inscriptions gratuites ne génèrent pas de commission.</strong>
                 </p>
               </div>
             </div>

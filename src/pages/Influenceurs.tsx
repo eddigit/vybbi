@@ -24,8 +24,8 @@ export default function Influenceurs() {
   // Otherwise show landing page
 
   const calculateEarnings = (referralCount: number) => {
-    const oneTimeCommission = referralCount * 2; // 2€ par inscription
-    const monthlyRecurring = referralCount * 0.5; // 0,50€ par mois par abonné parrainé
+    const oneTimeCommission = referralCount * 2; // 2€ par abonnement payant souscrit
+    const monthlyRecurring = referralCount * 0.5; // 0,50€ par mois par abonné parrainé (abonnement payant)
     const yearlyRecurring = monthlyRecurring * 12;
     return {
       oneTime: oneTimeCommission,
@@ -40,13 +40,13 @@ export default function Influenceurs() {
   const advantages = [
     {
       title: "Commission One-Shot",
-      description: "2€ par inscription réussie",
+      description: "2€ par abonnement payant souscrit",
       icon: Euro,
       highlight: "2€"
     },
     {
       title: "Revenus Récurrents*",
-      description: "0,50€/mois par abonné parrainé jusqu'au 31 janvier 2026*",
+      description: "0,50€/mois par abonné payant parrainé jusqu'au 31 janvier 2026*",
       icon: TrendingUp,
       highlight: "0,50€/mois*"
     },
@@ -78,7 +78,7 @@ export default function Influenceurs() {
     {
       step: "3",
       title: "Partagez et Gagnez",
-      description: "Chaque inscription via votre lien vous rapporte immédiatement 2€ + 0,50€/mois récurrents*"
+      description: "Chaque abonnement payant souscrit via votre lien vous rapporte immédiatement 2€ + 0,50€/mois récurrents*"
     }
   ];
 
@@ -86,21 +86,21 @@ export default function Influenceurs() {
     {
       name: "Marie D.",
       role: "Influenceuse Mode • 45K followers",
-      quote: "Avec 50 inscriptions par mois via mes liens Vybbi, je génère 325€ mensuels récurrents. C'est un complément de revenus fantastique !",
+      quote: "Avec 50 abonnements payants par mois via mes liens Vybbi, je génère 325€ mensuels récurrents. C'est un complément de revenus fantastique !",
       monthly_referrals: 50,
       monthly_revenue: 325
     },
     {
       name: "Alex K.", 
       role: "DJ/Producteur • 120K followers",
-      quote: "Le programme d'affiliation Vybbi m'a permis de monétiser ma passion. 150 parrainages = 1175€ par mois récurrents !",
+      quote: "Le programme d'affiliation Vybbi m'a permis de monétiser ma passion. 150 abonnements payants = 1175€ par mois récurrents !",
       monthly_referrals: 150,
       monthly_revenue: 1175
     },
     {
       name: "Sophie M.",
       role: "Content Creator • 80K followers", 
-      quote: "Excellente initiative ! Mes 80 parrainages mensuels me rapportent 640€. Et c'est récurrent chaque mois !",
+      quote: "Excellente initiative ! Mes 80 abonnements payants mensuels me rapportent 640€. Et c'est récurrent chaque mois !",
       monthly_referrals: 80,
       monthly_revenue: 640
     }
@@ -124,11 +124,11 @@ export default function Influenceurs() {
     },
     {
       question: "Comment sont calculées les commissions récurrentes ?",
-      answer: "0,50€ par mois pour chaque abonné parrainé. Si vous parrainez 100 personnes qui restent abonnées, vous recevez 50€ chaque mois de façon récurrente jusqu'au 31 janvier 2026."
+      answer: "0,50€ par mois pour chaque abonné payant parrainé. Si vous parrainez 100 personnes qui souscrivent et restent sur un abonnement payant, vous recevez 50€ chaque mois de façon récurrente jusqu'au 31 janvier 2026."
     },
     {
       question: "Que se passe-t-il après le 31 janvier 2026 ?",
-      answer: "Après le 31 janvier 2026, le programme devient uniquement une commission par nouveau abonné (plus de revenus récurrents). Les influenceurs déjà inscrits conservent leurs conditions avantageuses actuelles. Rejoignez avant le 31 octobre 2025 pour bénéficier de l'exclusivité !"
+      answer: "Après le 31 janvier 2026, le programme devient uniquement une commission par nouvel abonnement payant souscrit (plus de revenus récurrents). Les influenceurs déjà inscrits conservent leurs conditions avantageuses actuelles. Rejoignez avant le 31 octobre 2025 pour bénéficier de l'exclusivité !"
     },
     {
       question: "Y a-t-il un minimum de paiement ?",
@@ -179,14 +179,14 @@ export default function Influenceurs() {
               </div>
 
               {/* Key Numbers */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
                 <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
                   <div className="text-3xl font-bold text-primary mb-1">2€</div>
-                  <div className="text-sm text-muted-foreground">Par inscription</div>
+                  <div className="text-sm text-muted-foreground">Par abonnement payant souscrit</div>
                 </div>
                  <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
                    <div className="text-3xl font-bold text-primary mb-1">0,50€*</div>
-                   <div className="text-sm text-muted-foreground">Par mois et par abonné parrainé*</div>
+                   <div className="text-sm text-muted-foreground">Par mois et par abonné payant parrainé*</div>
                  </div>
                 <div className="text-center p-4 bg-gradient-card border border-border rounded-lg">
                   <div className="text-3xl font-bold text-primary mb-1">7000€</div>
