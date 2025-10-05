@@ -122,6 +122,19 @@ export function useAuth() {
         toast({ title: 'Trop de tentatives', description: message, variant: 'destructive' });
         throw new Error(message);
       }
+
+      // Validate password strength before proceeding
+      const { data: passwordValidation } = await supabase.rpc('validate_password_strength', { password });
+      
+      if (passwordValidation && !(passwordValidation as any).valid) {
+        const errors = (passwordValidation as any).errors || ['Le mot de passe ne respecte pas les critères de sécurité'];
+        toast({
+          title: "Mot de passe trop faible",
+          description: errors.join(' '),
+          variant: "destructive",
+        });
+        throw new Error('Password does not meet security requirements');
+      }
       
       const newAttempts = signUpAttempts + 1;
       setSignUpAttempts(newAttempts);
@@ -130,6 +143,20 @@ export function useAuth() {
       sessionStorage.setItem('lastSignUpAttempt', String(now));
 
       const redirectUrl = `${window.location.origin}/auth/callback`;
+      
+      // Log signup attempt for security monitoring
+      try {
+        await supabase.rpc('log_security_event', {
+          p_event_type: 'SIGNUP_ATTEMPT',
+          p_email: email,
+          p_metadata: {
+            profile_type: profileType,
+            display_name: displayName
+          }
+        });
+      } catch (logErr) {
+        console.log('Security logging error:', logErr);
+      }
       
       const { data, error } = await supabase.auth.signUp({
         email,
@@ -166,6 +193,17 @@ export function useAuth() {
       setConfirmationEmail(email);
       setShowEmailConfirmation(true);
     } catch (error: any) {
+      // Log failed signup attempt
+      try {
+        await supabase.rpc('log_security_event', {
+          p_event_type: 'SIGNUP_ERROR',
+          p_email: email,
+          p_metadata: { error: error.message }
+        });
+      } catch (logErr) {
+        console.log('Security logging error:', logErr);
+      }
+      
       toast({
         title: "Erreur lors de l'inscription",
         description: error.message,
@@ -177,6 +215,29 @@ export function useAuth() {
 
   const signIn = async (email: string, password: string, rememberMe: boolean = false) => {
     try {
+      // Check if user is currently blocked due to failed attempts
+      const { data: blockedCheck } = await supabase.rpc('is_user_blocked', {
+        p_email: email
+      });
+      
+      if (blockedCheck) {
+        const securitySettings = getSecuritySettings();
+        toast({
+          title: "Compte temporairement bloqué",
+          description: `Trop de tentatives de connexion. Veuillez attendre ${securitySettings.lockout_duration_minutes} minutes.`,
+          variant: "destructive",
+        });
+        try {
+          await supabase.rpc('log_security_event', {
+            p_event_type: 'BLOCKED_LOGIN_ATTEMPT',
+            p_email: email
+          });
+        } catch (logErr) {
+          console.log('Security logging error:', logErr);
+        }
+        throw new Error('Account temporarily blocked');
+      }
+
       // Store email for future use if remember me is checked
       if (rememberMe) {
         localStorage.setItem('vybbi_remembered_email', email);
@@ -189,7 +250,62 @@ export function useAuth() {
         password,
       });
       
-      if (error) throw error;
+      if (error) {
+        // Track failed login attempt
+        const { data: attemptResult } = await supabase.rpc('track_login_attempt', {
+          p_email: email,
+          p_success: false,
+          p_failure_reason: error.message,
+          p_user_agent: navigator.userAgent
+        });
+        
+        const result = attemptResult as any;
+        if (result?.blocked) {
+          toast({
+            title: "Compte bloqué",
+            description: `Trop de tentatives échouées. Compte bloqué pour ${result.block_duration_minutes} minutes.`,
+            variant: "destructive",
+          });
+          try {
+            await supabase.rpc('log_security_event', {
+              p_event_type: 'ACCOUNT_BLOCKED',
+              p_email: email,
+              p_metadata: { reason: 'too_many_failures' }
+            });
+          } catch (logErr) {
+            console.log('Security logging error:', logErr);
+          }
+        } else {
+          const securitySettings = getSecuritySettings();
+          const remaining = securitySettings.max_login_attempts - (result?.attempts_count || 0);
+          toast({
+            title: "Erreur de connexion",
+            description: `${error.message}. ${remaining} tentative(s) restante(s).`,
+            variant: "destructive",
+          });
+        }
+        throw error;
+      }
+
+      // Track successful login attempt
+      try {
+        await supabase.rpc('track_login_attempt', {
+          p_email: email,
+          p_success: true,
+          p_user_agent: navigator.userAgent
+        });
+      } catch (logErr) {
+        console.log('Login tracking error:', logErr);
+      }
+      
+      try {
+        await supabase.rpc('log_security_event', {
+          p_event_type: 'SUCCESSFUL_LOGIN',
+          p_email: email
+        });
+      } catch (logErr) {
+        console.log('Security logging error:', logErr);
+      }
 
       // Award daily login tokens after successful sign-in
       setTimeout(async () => {
@@ -205,6 +321,18 @@ export function useAuth() {
         }
       }, 1000);
     } catch (error: any) {
+      if (error.message !== 'Account temporarily blocked') {
+        try {
+          await supabase.rpc('log_security_event', {
+            p_event_type: 'LOGIN_ERROR',
+            p_email: email,
+            p_metadata: { error: error.message }
+          });
+        } catch (logErr) {
+          console.log('Security logging error:', logErr);
+        }
+      }
+      
       toast({
         title: "Erreur de connexion",
         description: error.message,

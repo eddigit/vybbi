@@ -25,7 +25,6 @@ import { useProfileTracking } from '@/hooks/useProfileTracking';
 import { DirectContactForm } from '@/components/DirectContactForm';
 import { PricingIndicator } from '@/components/PricingIndicator';
 import { ArtistAvailabilityCalendar } from '@/components/ArtistAvailabilityCalendar';
-import { PressKitGenerator } from '@/components/PressKitGenerator';
 import { RiderTechnicalManager } from '@/components/RiderTechnicalManager';
 import { TestimonialsSection } from '@/components/TestimonialsSection';
 import { ProfileShareButton } from '@/components/ProfileShareButton';
