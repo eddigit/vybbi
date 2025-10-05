@@ -1,6 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { VYBBI_SOCIAL_LINKS } from "@/lib/socialLinks";
 import { Instagram, Music, Headphones, Youtube, Linkedin, Facebook } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,8 +20,23 @@ export function Footer() {
     <footer className="bg-card/95 backdrop-blur-sm border-t border-border">
       <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
         {/* Mobile-first layout */}
-        <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
           <span className="text-xs text-muted-foreground">© {currentYear} Vybbi</span>
+          
+          {/* Navigation Links */}
+          <div className="flex flex-wrap gap-3 sm:gap-4 text-xs">
+            <Link to="/influenceurs" className="text-muted-foreground hover:text-primary transition-colors">
+              Programme d'affiliation
+            </Link>
+            <Link to="/a-propos" className="text-muted-foreground hover:text-primary transition-colors">
+              À propos
+            </Link>
+            <Link to="/contact" className="text-muted-foreground hover:text-primary transition-colors">
+              Contact
+            </Link>
+          </div>
+          
+          {/* Social Icons */}
           <div className="flex items-center gap-2 sm:gap-3">
             {Object.entries(socialIcons).map(([platform, Icon]) => (
               <Button

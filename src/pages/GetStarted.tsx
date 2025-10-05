@@ -1,12 +1,12 @@
 import { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Music, Users, Building2, ArrowRight, CheckCircle } from 'lucide-react';
+import { Music, Users, Building2, ArrowRight, CheckCircle, TrendingUp } from 'lucide-react';
 import { SEOHead } from '@/components/SEOHead';
 
-type ProfileType = 'artist' | 'agent' | 'lieu';
+type ProfileType = 'artist' | 'agent' | 'lieu' | 'influenceur';
 
 const PROFILE_MESSAGES = {
   artist: {
@@ -44,11 +44,24 @@ const PROFILE_MESSAGES = {
       'Contrats et riders centralisés',
       'Historique et avis des performances'
     ]
+  },
+  influenceur: {
+    title: 'Bienvenue chez les influenceurs',
+    subtitle: 'Gagnez des commissions en recommandant Vybbi',
+    benefits: [
+      '2€ par inscription réussie + 0,50€/mois récurrents*',
+      'Liens personnalisés avec tracking en temps réel',
+      'QR codes pour partage facilité',
+      'Dashboard de performance détaillé',
+      'Paiements mensuels automatisés',
+      'Support dédié aux influenceurs'
+    ]
   }
 };
 
 export default function GetStarted() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [selectedProfile, setSelectedProfile] = useState<ProfileType>('artist');
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -57,7 +70,13 @@ export default function GetStarted() {
     // Clear any stored data when component mounts
     localStorage.removeItem('signup_email');
     localStorage.removeItem('signup_profile_type');
-  }, []);
+    
+    // Detect type parameter from URL and auto-select profile
+    const typeParam = searchParams.get('type') as ProfileType;
+    if (typeParam && ['artist', 'agent', 'lieu', 'influenceur'].includes(typeParam)) {
+      setSelectedProfile(typeParam);
+    }
+  }, [searchParams]);
 
   const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -111,6 +130,12 @@ export default function GetStarted() {
       icon: Building2,
       label: 'Lieu / Établissement',
       description: 'Club, Salle, Festival'
+    },
+    {
+      type: 'influenceur' as ProfileType,
+      icon: TrendingUp,
+      label: 'Influenceur',
+      description: 'Parrainage & Affiliation'
     }
   ];
 
