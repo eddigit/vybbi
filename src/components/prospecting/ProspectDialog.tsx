@@ -606,7 +606,7 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
                       id="referral_source"
                       value={prospect.referral_source || ''}
                       onChange={(e) => setProspect({ ...prospect, referral_source: e.target.value })}
-                      placeholder="LinkedIn, événement, référence..."
+                      placeholder="Réseau pro, événement, référence..."
                     />
                   </div>
                 </div>
@@ -777,13 +777,13 @@ export default function ProspectDialog({ open, onOpenChange, prospectId, onProsp
                   <div className="space-y-2">
                     <Label htmlFor="linkedin_url" className="flex items-center gap-2">
                       <Linkedin className="h-4 w-4" />
-                      LinkedIn
+                      Réseau Professionnel
                     </Label>
                     <Input
                       id="linkedin_url"
                       value={prospect.linkedin_url || ''}
                       onChange={(e) => setProspect({ ...prospect, linkedin_url: e.target.value })}
-                      placeholder="https://linkedin.com/in/username"
+                      placeholder="https://votre-reseau-pro.com/profil"
                     />
                   </div>
 

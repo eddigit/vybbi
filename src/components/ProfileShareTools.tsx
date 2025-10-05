@@ -173,7 +173,7 @@ export function ProfileShareTools({ profileUrl, artistName, className = '' }: Pr
               onClick={() => shareOnSocial('linkedin')}
             >
               <LinkedinIcon className="h-6 w-6 mb-2 text-blue-700" />
-              <span className="text-xs">LinkedIn</span>
+              <span className="text-xs">Réseau Pro</span>
             </Button>
           </div>
           <div className="pt-4 border-t">

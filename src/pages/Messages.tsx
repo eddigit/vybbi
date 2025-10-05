@@ -301,12 +301,12 @@ export default function Messages() {
 
   const canSendMessage = selectedConversation && !selectedConversation.is_blocked;
 
-  // Desktop layout (lg and above) - LinkedIn style 3 columns
+  // Desktop layout (lg and above) - style réseau professionnel 3 colonnes
   if (!isMobile) {
     return (
       <div className="container mx-auto p-3 sm:p-6">
         <div className="min-h-[calc(100vh-200px)] flex bg-background border rounded-lg overflow-hidden">
-          {/* Left Sidebar - Conversations (320px like LinkedIn) */}
+          {/* Left Sidebar - Conversations (320px comme un réseau professionnel) */}
           <div className="w-96 flex-shrink-0 border-r border-border bg-background">
             <ConversationList
               conversations={conversations}
@@ -368,7 +368,7 @@ export default function Messages() {
             )}
           </div>
 
-          {/* Right Sidebar - Info Panel (ALWAYS visible like LinkedIn) */}
+          {/* Right Sidebar - Info Panel (ALWAYS visible comme un réseau professionnel) */}
           <div className="w-75 flex-shrink-0 bg-background">
             <RightInfoPanel
               conversation={selectedConversation}

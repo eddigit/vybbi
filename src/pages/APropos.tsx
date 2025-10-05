@@ -107,7 +107,7 @@ const APropos = () => {
 
           <Card className="bg-primary/5 border-primary/20 p-8">
             <blockquote className="text-xl italic text-center">
-              "Vybbi.app, c'est le LinkedIn de la nuit que l'industrie attendait. 
+              "Vybbi.app, c'est le réseau professionnel de la nuit que l'industrie attendait. 
               Une plateforme où votre talent compte plus que votre carnet d'adresses."
             </blockquote>
           </Card>
@@ -146,7 +146,7 @@ const APropos = () => {
             <h2 className="text-4xl font-bold mb-6">La Vision Vybbi : Un Écosystème Équitable</h2>
             <Card className="bg-primary/5 border-primary/20 p-8 max-w-4xl mx-auto">
               <h3 className="text-2xl font-bold mb-4 text-primary">
-                Le LinkedIn de la nuit enfin accessible à tous
+                Le réseau professionnel de la nuit enfin accessible à tous
               </h3>
               <p className="text-lg">
                 Une plateforme où votre talent compte plus que votre carnet d'adresses, 

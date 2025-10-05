@@ -124,7 +124,7 @@ export const ProfileShareButton: React.FC<ProfileShareButtonProps> = ({
           className="cursor-pointer hover:bg-accent/50 transition-colors"
         >
           <Linkedin className="h-4 w-4 mr-2" />
-          LinkedIn
+          Réseau Pro
         </DropdownMenuItem>
         
         <DropdownMenuItem 
