@@ -112,55 +112,8 @@ export default function Landing() {
     label: "Radio Vybbi"
   }];
   return <div className="min-h-screen bg-background">
-      {/* Navigation */}
-      <nav className="fixed top-0 w-full bg-background/95 backdrop-blur-sm border-b z-50 pt-safe-top">
-        <div className="container mx-auto px-2 sm:px-6 py-4">
-          <div className="flex items-center justify-between">
-              <div className="flex items-center gap-2">
-                <img src={vybbiLogoMobile} alt="Vybbi Logo" className="w-12 h-12" />
-                <span className="font-bold text-xl text-foreground">Vybbi</span>
-              </div>
-            
-            <div className="hidden md:flex items-center gap-6">
-              <Link to="/a-propos" className="text-muted-foreground hover:text-foreground transition-colors">
-                À propos
-              </Link>
-              <Link to="/top-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
-                Top Artistes
-              </Link>
-              <Link to="/pour-artistes" className="text-muted-foreground hover:text-foreground transition-colors">
-                Pour Artistes
-              </Link>
-              <Link to="/pour-agents-managers" className="text-muted-foreground hover:text-foreground transition-colors">
-                Pour Agents
-              </Link>
-              <Link to="/pour-lieux-evenements" className="text-muted-foreground hover:text-foreground transition-colors">
-                Pour Lieux
-              </Link>
-              <Link to="/technologie" className="text-muted-foreground hover:text-foreground transition-colors">
-                Technologie
-              </Link>
-              <Link to="/blog" className="text-muted-foreground hover:text-foreground transition-colors">
-                Blog
-              </Link>
-            </div>
-
-            <div className="flex items-center gap-2 sm:gap-4">
-              <div className="hidden sm:flex items-center gap-2">
-                <Button variant="ghost" size="sm" asChild>
-                  <Link to="/auth?tab=signin">Connexion</Link>
-                </Button>
-                <Button size="sm" asChild>
-                  <Link to="/get-started">Commencer</Link>
-                </Button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </nav>
-
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{ paddingTop: `calc(6rem + env(safe-area-inset-top))` }}>
+      <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{ paddingTop: `calc(3.5rem + env(safe-area-inset-top))` }}>
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-2 sm:px-4">
         <div className="hidden md:grid md:grid-cols-[180px_minmax(0,1fr)_180px] gap-6 items-start">
             {/* Left Ad Slot - Desktop only */}
