@@ -1497,6 +1497,170 @@ chmod +x scripts/deploy.sh
 
 ---
 
+## 📦 Export et Sauvegarde des Secrets
+
+### Depuis l'interface Admin Coffre-Fort
+
+L'interface Admin Coffre-Fort (`/admin/coffre-fort`) permet d'exporter tous les secrets de deux manières :
+
+#### 1. Export JSON (Backup complet)
+
+**Utilisation :**
+1. Se connecter en tant qu'admin
+2. Accéder à **Admin → Coffre-Fort**
+3. Cliquer sur le bouton **"Export JSON"**
+4. Confirmer l'export (popup de sécurité)
+5. Le fichier `vybbi-secrets-YYYY-MM-DD-HHmm.json` est téléchargé
+
+**Format du fichier :**
+```json
+{
+  "metadata": {
+    "exported_at": "2025-01-20T14:30:00.000Z",
+    "total_secrets": 12,
+    "exported_by": "admin@vybbi.app",
+    "export_id": "uuid-unique",
+    "warning": "⚠️ CONFIDENTIEL - Ne pas partager"
+  },
+  "secrets": [
+    {
+      "name": "OpenAI API Key",
+      "category": "api_keys",
+      "value": "sk-proj-xxxxxx",
+      "description": "Clé pour l'assistant IA Vybbi",
+      "created_at": "2025-01-15T10:00:00.000Z",
+      "last_accessed_at": "2025-01-20T12:00:00.000Z"
+    }
+  ]
+}
+```
+
+**⚠️ Sécurité :**
+- **Ne jamais commiter ce fichier dans Git**
+- Stocker dans un gestionnaire de mots de passe (1Password, Bitwarden)
+- Chiffrer avant stockage cloud (7zip avec mot de passe fort)
+- Supprimer après importation dans un système sécurisé
+
+---
+
+#### 2. Export .env (Configuration locale)
+
+**Utilisation :**
+1. Se connecter en tant qu'admin
+2. Accéder à **Admin → Coffre-Fort**
+3. Cliquer sur le bouton **"Export .env"**
+4. Confirmer l'export
+5. Le fichier `.env.local-YYYY-MM-DD` est téléchargé
+
+**Configuration post-export :**
+```bash
+# Renommer le fichier
+mv ~/Downloads/.env.local-2025-01-20 .env.local
+
+# Vérifier que .env.local est dans .gitignore
+cat .gitignore | grep .env.local
+
+# Si absent, l'ajouter
+echo ".env.local" >> .gitignore
+```
+
+**Format du fichier :**
+```env
+# ========================================
+# VYBBI SECRETS - CONFIGURATION ENV
+# Exporté le 20/01/2025 15:30:00
+# ========================================
+
+# === CLÉS API ===
+# Clé pour l'assistant IA Vybbi
+OPENAI_API_KEY=sk-proj-xxxxxx
+# API Brevo pour les emails transactionnels
+BREVO_API_KEY=xkeysib-xxxxxx
+
+# === MAIL ACCOUNT ===
+# Mot de passe application Gmail pour SMTP
+GMAIL_APP_PASSWORD=abcd efgh ijkl mnop
+GMAIL_USER=contact@vybbi.app
+
+# === WALLETS CRYPTO ===
+# Wallet Solana pour les certifications blockchain
+SOLANA_PRIVATE_KEY=xxxxxxxxxxxxx
+
+# === BDD ===
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+**Utilisation dans le projet :**
+- Les variables sont automatiquement chargées par Vite
+- Accessible via `import.meta.env.VITE_*` (pour les clés publiques uniquement)
+- Pour les Edge Functions, utiliser `Deno.env.get('VARIABLE_NAME')`
+
+**⚠️ Sécurité :**
+- **Ne jamais commiter .env.local dans Git**
+- Ne pas exposer les secrets côté client (React)
+- Utiliser les Edge Functions pour les appels API sensibles
+- Rotation régulière des clés API (tous les 3-6 mois)
+
+---
+
+### Bonnes pratiques de stockage
+
+#### Option 1 : Gestionnaire de mots de passe (recommandé)
+```bash
+# Exporter en JSON
+# Importer dans 1Password / Bitwarden en tant que "Document sécurisé"
+```
+
+#### Option 2 : Chiffrement local
+```bash
+# Installer 7zip
+sudo apt-get install p7zip-full  # Linux
+brew install p7zip                # macOS
+
+# Chiffrer le fichier JSON
+7z a -p -mhe=on vybbi-secrets.7z vybbi-secrets-2025-01-20.json
+
+# Déchiffrer
+7z x vybbi-secrets.7z
+```
+
+#### Option 3 : Variables d'environnement système
+```bash
+# Linux/macOS : Ajouter au ~/.bashrc ou ~/.zshrc
+export OPENAI_API_KEY="sk-proj-xxxxxx"
+export BREVO_API_KEY="xkeysib-xxxxxx"
+
+# Recharger
+source ~/.bashrc
+```
+
+---
+
+### Restauration des secrets
+
+#### Depuis un fichier JSON exporté
+1. Accéder à **Admin → Coffre-Fort**
+2. Ouvrir le fichier JSON
+3. Pour chaque secret, cliquer sur **"Nouveau Secret"** et copier les valeurs
+
+#### Depuis un fichier .env exporté
+1. Renommer en `.env.local`
+2. Placer à la racine du projet
+3. Redémarrer le serveur de développement (`npm run dev`)
+
+---
+
+### Checklist de sécurité avant export
+
+- [ ] Confirmer que je suis seul devant mon écran
+- [ ] Désactiver l'enregistrement d'écran
+- [ ] Vérifier que le fichier ne sera pas synchronisé (Dropbox, Google Drive)
+- [ ] Supprimer le fichier après importation dans un gestionnaire sécurisé
+- [ ] Vérifier que `.env.local` est dans `.gitignore`
+- [ ] Ne jamais partager le fichier par email/Slack
+
+---
+
 ## 🎯 Conclusion
 
 Ce guide couvre **100% du workflow de développement local** pour Vybbi :
@@ -1507,6 +1671,7 @@ Ce guide couvre **100% du workflow de développement local** pour Vybbi :
 ✅ **Tests automatisés** avec Deno Test et k6 pour les charges
 ✅ **CI/CD** avec GitHub Actions pour déploiement automatique
 ✅ **Migration depuis Lovable** vers environnement 100% local
+✅ **Export et sauvegarde sécurisée des secrets**
 ✅ **Production-ready** avec mocking, monitoring, et checklists
 
 **💡 Principe clé :** Développer à 90% en local, valider 10% en staging, déployer en production en toute confiance.
@@ -1516,7 +1681,8 @@ Ce guide couvre **100% du workflow de développement local** pour Vybbi :
 2. Démarrer Supabase local (`supabase start`)
 3. Tester votre première fonction (`./test-scripts/test-auth-email.sh`)
 4. Debugger avec VSCode (F5)
-5. Automatiser avec GitHub Actions
+5. Exporter les secrets depuis l'interface Admin pour développement local
+6. Automatiser avec GitHub Actions
 
 ---
 

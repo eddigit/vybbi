@@ -11,7 +11,7 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Edit, Trash2, Key, Shield, Eye, EyeOff, Copy, Search, Filter, GripVertical } from "lucide-react";
+import { Plus, Edit, Trash2, Key, Shield, Eye, EyeOff, Copy, Search, Filter, GripVertical, Download, FileText } from "lucide-react";
 import { toast } from "sonner";
 import { DragDropContext, Droppable, Draggable, DropResult } from "react-beautiful-dnd";
 
@@ -268,6 +268,113 @@ export default function AdminCoffreFort() {
     }
   };
 
+  const handleExportJSON = () => {
+    if (!confirm('⚠️ Vous êtes sur le point d\'exporter TOUS les secrets en clair. Continuer ?')) {
+      return;
+    }
+
+    try {
+      const exportData = {
+        metadata: {
+          exported_at: new Date().toISOString(),
+          total_secrets: secrets.length,
+          exported_by: user?.email || 'admin',
+          export_id: crypto.randomUUID(),
+          warning: '⚠️ CONFIDENTIEL - Ne pas partager'
+        },
+        secrets: secrets.map(secret => ({
+          name: secret.name,
+          category: secret.category,
+          value: secret.value,
+          description: secret.description,
+          created_at: secret.created_at,
+          last_accessed_at: secret.last_accessed_at
+        }))
+      };
+
+      const blob = new Blob([JSON.stringify(exportData, null, 2)], {
+        type: 'application/json'
+      });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `vybbi-secrets-${new Date().toISOString().slice(0,16).replace(/:/g,'-')}.json`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      toast.success('Export JSON réussi', {
+        description: 'Fichier téléchargé avec succès'
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Erreur lors de l\'export JSON');
+    }
+  };
+
+  const handleExportENV = () => {
+    if (!confirm('⚠️ Vous êtes sur le point d\'exporter TOUS les secrets en format .env. Continuer ?')) {
+      return;
+    }
+
+    try {
+      let envContent = '# ========================================\n';
+      envContent += '# VYBBI SECRETS - CONFIGURATION ENV\n';
+      envContent += `# Exporté le ${new Date().toLocaleString('fr-FR')}\n`;
+      envContent += '# ========================================\n\n';
+
+      // Grouper par catégorie
+      const groupedByCategory = secrets.reduce((acc, secret) => {
+        if (!acc[secret.category]) {
+          acc[secret.category] = [];
+        }
+        acc[secret.category].push(secret);
+        return acc;
+      }, {} as Record<string, AdminSecret[]>);
+
+      // Générer le contenu ENV par catégorie
+      Object.entries(groupedByCategory).forEach(([category, categorySecrets]) => {
+        envContent += `# === ${categoryLabels[category as keyof typeof categoryLabels].toUpperCase()} ===\n`;
+        
+        categorySecrets.forEach(secret => {
+          // Convertir le nom en UPPER_SNAKE_CASE
+          const envKey = secret.name
+            .toUpperCase()
+            .replace(/[^A-Z0-9]+/g, '_')
+            .replace(/^_+|_+$/g, '');
+
+          // Description en commentaire si disponible
+          if (secret.description) {
+            envContent += `# ${secret.description}\n`;
+          }
+
+          // Gestion des valeurs multiligne
+          const value = secret.value.includes('\n') 
+            ? `"${secret.value.replace(/"/g, '\\"')}"` 
+            : secret.value;
+
+          envContent += `${envKey}=${value}\n`;
+        });
+        
+        envContent += '\n';
+      });
+
+      const blob = new Blob([envContent], { type: 'text/plain' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = `.env.local-${new Date().toISOString().slice(0,10)}`;
+      link.click();
+      URL.revokeObjectURL(url);
+
+      toast.success('Export .env réussi', {
+        description: 'Renommez le fichier en .env.local avant utilisation'
+      });
+    } catch (error) {
+      console.error('Export error:', error);
+      toast.error('Erreur lors de l\'export .env');
+    }
+  };
+
   // Access control
   if (!user || !hasRole('admin')) {
     return (
@@ -312,14 +419,23 @@ export default function AdminCoffreFort() {
           </p>
         </div>
         
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="h-4 w-4 mr-2" />
-              Nouveau Secret
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="sm:max-w-[525px]">
+        <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={handleExportJSON}>
+            <Download className="h-4 w-4 mr-2" />
+            Export JSON
+          </Button>
+          <Button variant="outline" onClick={handleExportENV}>
+            <FileText className="h-4 w-4 mr-2" />
+            Export .env
+          </Button>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button>
+                <Plus className="h-4 w-4 mr-2" />
+                Nouveau Secret
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[525px]">
             <DialogHeader>
               <DialogTitle>
                 {editingSecret ? 'Modifier le Secret' : 'Nouveau Secret'}
@@ -394,6 +510,7 @@ export default function AdminCoffreFort() {
             </form>
           </DialogContent>
         </Dialog>
+        </div>
       </div>
 
       {/* Stats Cards */}
