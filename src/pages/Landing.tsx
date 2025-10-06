@@ -2,9 +2,17 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import vybbiLogoMobile from "@/assets/vybbi-logo-mobile.png";
-import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket } from 'lucide-react';
+import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket, Search } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 import { TickerBanner } from "@/components/TickerBanner";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
 
@@ -149,14 +157,69 @@ export default function Landing() {
               </Button>
             </div>
 
-            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center mb-8 sm:mb-12 px-4 sm:px-0">
-              <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
+            <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-8 sm:mb-12 px-4 sm:px-0">
+              <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target relative" asChild>
                 <Link to="/get-started">
-                  Créer ma carte de visite pro
+                  <Badge variant="secondary" className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 animate-pulse">
+                    GRATUIT
+                  </Badge>
+                  Commencer gratuitement
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
+              
+              {/* Explorer dropdown */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button size="lg" variant="outline" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target">
+                    <Search className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                    Explorer
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="center" className="w-64 bg-background">
+                  <DropdownMenuLabel>Que recherchez-vous ?</DropdownMenuLabel>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/artists" className="flex items-center cursor-pointer py-3">
+                      <Music className="mr-3 h-5 w-5 text-primary" />
+                      <div>
+                        <div className="font-medium">Trouver un artiste</div>
+                        <div className="text-xs text-muted-foreground">DJs, groupes, performers...</div>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/partners?type=agent" className="flex items-center cursor-pointer py-3">
+                      <Users className="mr-3 h-5 w-5 text-purple-500" />
+                      <div>
+                        <div className="font-medium">Trouver un agent</div>
+                        <div className="text-xs text-muted-foreground">Managers, bookers...</div>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <Link to="/lieux" className="flex items-center cursor-pointer py-3">
+                      <Building2 className="mr-3 h-5 w-5 text-blue-500" />
+                      <div>
+                        <div className="font-medium">Trouver un lieu</div>
+                        <div className="text-xs text-muted-foreground">Clubs, salles, festivals...</div>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator />
+                  <DropdownMenuItem asChild>
+                    <Link to="/annonces-wall" className="flex items-center cursor-pointer py-3">
+                      <Star className="mr-3 h-5 w-5 text-green-500" />
+                      <div>
+                        <div className="font-medium">Voir les offres</div>
+                        <div className="text-xs text-muted-foreground">Annonces et opportunités</div>
+                      </div>
+                    </Link>
+                  </DropdownMenuItem>
+                </DropdownMenuContent>
+              </DropdownMenu>
+              
+              <Button size="lg" variant="ghost" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
                 <Link to="/demo">
                   <Play className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                   Voir la démo

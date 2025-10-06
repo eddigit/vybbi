@@ -3,7 +3,7 @@ import { AutoTranslate } from "@/components/AutoTranslate";
 import { useTranslate } from "@/hooks/useTranslate";
 import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
 import { VybbiTokenBalance } from "@/components/vybbi/VybbiTokenBalance";
-import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Coins, Target } from "lucide-react";
+import { Bell, Search, User, Pencil, MessageSquare, Users, LogOut, MapPin, Star, LayoutDashboard, Megaphone, Trophy, Radio, Coins, Target, Menu, Music2, PlusCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -187,12 +187,54 @@ export function Header() {
                     <AutoTranslate text="Connexion" />
                   </Button>
                 </Link>
-                {/* Commencer button - Always visible */}
+                {/* Inscription gratuite button - Always visible */}
                 <Link to="/get-started">
-                  <Button variant="default" size="sm">
-                    <AutoTranslate text="Commencer" />
+                  <Button variant="default" size="sm" className="relative">
+                    <Badge variant="secondary" className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1 py-0 animate-pulse">
+                      GRATUIT
+                    </Badge>
+                    <AutoTranslate text="Inscription gratuite" />
                   </Button>
                 </Link>
+                
+                {/* Actions rapides dropdown - Desktop only */}
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild className="hidden lg:flex">
+                    <Button variant="ghost" size="sm">
+                      <Menu className="h-4 w-4" />
+                      <span className="ml-1">Actions</span>
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end" className="w-56 bg-background">
+                    <DropdownMenuLabel>Actions rapides</DropdownMenuLabel>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/artists" className="flex items-center cursor-pointer">
+                        <Music2 className="mr-2 h-4 w-4 text-primary" />
+                        <span>Trouver un artiste</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/partners?type=agent" className="flex items-center cursor-pointer">
+                        <Users className="mr-2 h-4 w-4 text-purple-500" />
+                        <span>Trouver un agent</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem asChild>
+                      <Link to="/lieux" className="flex items-center cursor-pointer">
+                        <MapPin className="mr-2 h-4 w-4 text-blue-500" />
+                        <span>Trouver un lieu</span>
+                      </Link>
+                    </DropdownMenuItem>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                      <Link to="/annonces-wall" className="flex items-center cursor-pointer">
+                        <PlusCircle className="mr-2 h-4 w-4 text-green-500" />
+                        <span>Publier une offre</span>
+                      </Link>
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
               </div>
             )}
 
