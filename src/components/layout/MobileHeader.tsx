@@ -11,7 +11,7 @@ export function MobileHeader() {
     <header className={cn(
       "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-40 md:hidden"
     )}>
-      <div className="flex h-14 items-center justify-between px-3">
+      <div className="flex h-14 items-center justify-between px-6">
         {/* Logo - Always visible */}
         <Link 
           to={user ? (hasRole('admin') ? "/dashboard" : "/") : "/"} 

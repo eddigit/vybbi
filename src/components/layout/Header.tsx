@@ -138,7 +138,7 @@ export function Header() {
     <header className={cn(
       "border-b border-border bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 sticky top-0 pt-safe-top z-40"
     )}>
-      <div className="flex h-14 sm:h-16 items-center justify-between px-3 sm:px-4">
+      <div className="flex h-14 sm:h-16 items-center justify-between px-6 sm:px-8 lg:px-12">
           {/* Mobile: Logo only, Desktop: Logo + Name */}
           <Link to={user ? (hasRole('admin') ? "/dashboard" : "/") : "/"} className="flex items-center gap-2 sm:gap-3 min-w-0 hover:opacity-80 transition-opacity">
             <img 
