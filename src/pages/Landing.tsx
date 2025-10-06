@@ -158,12 +158,9 @@ export default function Landing() {
             </div>
 
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-center items-center mb-8 sm:mb-12 px-4 sm:px-0">
-              <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target relative" asChild>
+              <Button size="lg" className="text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto touch-target" asChild>
                 <Link to="/get-started">
-                  <Badge variant="secondary" className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-2 py-1 animate-pulse">
-                    GRATUIT
-                  </Badge>
-                  Commencer gratuitement
+                  Inscription gratuite
                   <ArrowRight className="ml-2 h-4 w-4 sm:h-5 sm:w-5" />
                 </Link>
               </Button>
@@ -180,7 +177,7 @@ export default function Landing() {
                   <DropdownMenuLabel>Que recherchez-vous ?</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/artists" className="flex items-center cursor-pointer py-3">
+                    <Link to="/trouver-artiste" className="flex items-center cursor-pointer py-3">
                       <Music className="mr-3 h-5 w-5 text-primary" />
                       <div>
                         <div className="font-medium">Trouver un artiste</div>
@@ -189,7 +186,7 @@ export default function Landing() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/partners?type=agent" className="flex items-center cursor-pointer py-3">
+                    <Link to="/trouver-agent" className="flex items-center cursor-pointer py-3">
                       <Users className="mr-3 h-5 w-5 text-purple-500" />
                       <div>
                         <div className="font-medium">Trouver un agent</div>
@@ -198,7 +195,7 @@ export default function Landing() {
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
-                    <Link to="/lieux" className="flex items-center cursor-pointer py-3">
+                    <Link to="/trouver-lieu" className="flex items-center cursor-pointer py-3">
                       <Building2 className="mr-3 h-5 w-5 text-blue-500" />
                       <div>
                         <div className="font-medium">Trouver un lieu</div>
@@ -208,11 +205,11 @@ export default function Landing() {
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem asChild>
-                    <Link to="/annonces-wall" className="flex items-center cursor-pointer py-3">
+                    <Link to="/publier-offre" className="flex items-center cursor-pointer py-3">
                       <Star className="mr-3 h-5 w-5 text-green-500" />
                       <div>
-                        <div className="font-medium">Voir les offres</div>
-                        <div className="text-xs text-muted-foreground">Annonces et opportunités</div>
+                        <div className="font-medium">Publier une offre</div>
+                        <div className="text-xs text-muted-foreground">Postez votre besoin</div>
                       </div>
                     </Link>
                   </DropdownMenuItem>

@@ -22,6 +22,11 @@ import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
 import LegacyProfileRedirect from './pages/LegacyProfileRedirect';
 
+import TrouverArtiste from './pages/TrouverArtiste';
+import TrouverAgent from './pages/TrouverAgent';
+import TrouverLieu from './pages/TrouverLieu';
+import PublierOffre from './pages/PublierOffre';
+
 import { ConditionalHomePage } from '@/components/ConditionalHomePage';
 import SocialWall from "./pages/SocialWall";
 import Dashboard from "./pages/Dashboard";
@@ -177,6 +182,12 @@ const App = () => (
                     <ScrollToTop />
                     <Layout>
                     <Routes>
+                      {/* Conversion pages for non-authenticated users */}
+                      <Route path="/trouver-artiste" element={<TrouverArtiste />} />
+                      <Route path="/trouver-agent" element={<TrouverAgent />} />
+                      <Route path="/trouver-lieu" element={<TrouverLieu />} />
+                      <Route path="/publier-offre" element={<PublierOffre />} />
+                      
                       {/* SEO-friendly slug URLs */}
                       <Route path="/artistes/:slug" element={<ArtistProfileBySlug />} />
                       <Route path="/lieux/:slug" element={<VenueProfileBySlug />} />

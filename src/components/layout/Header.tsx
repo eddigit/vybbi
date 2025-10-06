@@ -209,26 +209,26 @@ export function Header() {
                     <DropdownMenuLabel>Actions rapides</DropdownMenuLabel>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/artists" className="flex items-center cursor-pointer">
+                      <Link to="/trouver-artiste" className="flex items-center cursor-pointer">
                         <Music2 className="mr-2 h-4 w-4 text-primary" />
                         <span>Trouver un artiste</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/partners?type=agent" className="flex items-center cursor-pointer">
+                      <Link to="/trouver-agent" className="flex items-center cursor-pointer">
                         <Users className="mr-2 h-4 w-4 text-purple-500" />
                         <span>Trouver un agent</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
-                      <Link to="/lieux" className="flex items-center cursor-pointer">
+                      <Link to="/trouver-lieu" className="flex items-center cursor-pointer">
                         <MapPin className="mr-2 h-4 w-4 text-blue-500" />
                         <span>Trouver un lieu</span>
                       </Link>
                     </DropdownMenuItem>
                     <DropdownMenuSeparator />
                     <DropdownMenuItem asChild>
-                      <Link to="/annonces-wall" className="flex items-center cursor-pointer">
+                      <Link to="/publier-offre" className="flex items-center cursor-pointer">
                         <PlusCircle className="mr-2 h-4 w-4 text-green-500" />
                         <span>Publier une offre</span>
                       </Link>
