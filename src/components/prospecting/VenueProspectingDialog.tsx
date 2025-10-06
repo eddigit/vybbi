@@ -113,7 +113,7 @@ Identifiants temporaires :
       toast({
         title: "🔐 Identifiants créés",
         description: credentialsMessage,
-        duration: 10000
+        duration: 3000
       });
 
       // Reset form

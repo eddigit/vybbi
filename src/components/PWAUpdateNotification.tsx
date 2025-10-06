@@ -22,7 +22,7 @@ export function PWAUpdateNotification({ needRefresh, updateSW, onDismiss }: PWAU
       toast({
         title: "🚀 Mise à jour disponible",
         description: "Une nouvelle version de Vybbi est prête à être installée",
-        duration: 5000,
+        duration: 3000,
       });
     }
   }, [needRefresh, toast]);
@@ -41,7 +41,7 @@ export function PWAUpdateNotification({ needRefresh, updateSW, onDismiss }: PWAU
         toast({
           title: "📱 Rappel de mise à jour",
           description: "N'oubliez pas de mettre à jour Vybbi pour profiter des dernières améliorations",
-          duration: 8000,
+          duration: 3000,
         });
       }
     }, 30 * 60 * 1000); // 30 minutes

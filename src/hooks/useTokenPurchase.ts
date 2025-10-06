@@ -25,7 +25,7 @@ export const useTokenPurchase = () => {
         } else {
           toast.success(
             `🎉 Félicitations ! Vous avez reçu ${data.tokensAwarded} jetons VYBBI !`,
-            { duration: 5000 }
+            { duration: 3000 }
           );
         }
         return data;

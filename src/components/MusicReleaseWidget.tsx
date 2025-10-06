@@ -429,7 +429,7 @@ export const MusicReleaseWidget: React.FC<MusicReleaseWidgetProps> = ({
         toast({
           title: "Certification Blockchain disponible",
           description: "Vous pouvez maintenant certifier votre œuvre sur la blockchain pour une protection renforcée.",
-          duration: 8000,
+          duration: 3000,
         });
       }
 

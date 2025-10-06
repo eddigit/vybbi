@@ -203,7 +203,7 @@ export function useProspectNotifications() {
     toast({
       title: notification.title,
       description: notification.message,
-      duration: notification.priority === 'critical' ? 8000 : 5000,
+      duration: 3000,
       variant: notification.priority === 'critical' ? 'destructive' : 'default'
     });
 

@@ -50,7 +50,7 @@ export function RealtimeNotificationProvider({ children }: Props) {
       toast({
         title: `💬 Message de ${data.senderName}`,
         description: data.messagePreview,
-        duration: 4000,
+        duration: 3000,
         action: (
           <button 
             onClick={() => {
@@ -74,7 +74,7 @@ export function RealtimeNotificationProvider({ children }: Props) {
       toast({
         title: '📅 Nouvelle demande de booking',
         description: `${data.venueName} souhaite vous booker pour ${data.eventTitle || 'un événement'}`,
-        duration: 6000,
+        duration: 3000,
         action: (
           <button 
             onClick={() => navigate('/dashboard')}
@@ -92,7 +92,7 @@ export function RealtimeNotificationProvider({ children }: Props) {
       toast({
         title: '🎯 Demande de représentation',
         description: `${data.agentName} souhaite devenir votre agent`,
-        duration: 6000,
+        duration: 3000,
         action: (
           <button 
             onClick={() => navigate('/dashboard')}
@@ -110,7 +110,7 @@ export function RealtimeNotificationProvider({ children }: Props) {
       toast({
         title: '👔 Demande de management',
         description: `${data.managerName} souhaite devenir votre manager`,
-        duration: 6000,
+        duration: 3000,
         action: (
           <button 
             onClick={() => navigate('/dashboard')}
@@ -128,7 +128,7 @@ export function RealtimeNotificationProvider({ children }: Props) {
       toast({
         title: '⭐ Nouvelle review',
         description: `Vous avez reçu une review de ${data.reviewerName}`,
-        duration: 5000,
+        duration: 3000,
         action: (
           <button 
             onClick={() => navigate('/dashboard')}
@@ -146,7 +146,7 @@ export function RealtimeNotificationProvider({ children }: Props) {
       toast({
         title: '📝 Nouvelle candidature',
         description: `${data.applicantName} a postulé à votre annonce "${data.annonceTitle}"`,
-        duration: 5000,
+        duration: 3000,
         action: (
           <button 
             onClick={() => navigate('/annonces-manager')}
