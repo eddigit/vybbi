@@ -189,10 +189,7 @@ export function Header() {
                 </Link>
                 {/* Inscription gratuite button - Always visible */}
                 <Link to="/get-started">
-                  <Button variant="default" size="sm" className="relative">
-                    <Badge variant="secondary" className="absolute -top-2 -right-2 bg-green-500 text-white text-xs px-1 py-0 animate-pulse">
-                      GRATUIT
-                    </Badge>
+                  <Button variant="default" size="sm">
                     <AutoTranslate text="Inscription gratuite" />
                   </Button>
                 </Link>
