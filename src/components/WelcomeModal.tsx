@@ -18,6 +18,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { AutoTranslate } from '@/components/AutoTranslate';
+import vybbiLogo from '@/assets/vybbi-logo.png';
 
 interface WelcomeModalProps {
   isOpen: boolean;
@@ -222,8 +223,8 @@ export function WelcomeModal({ isOpen, onClose, profileType, displayName, profil
       <DialogContent className="max-w-sm sm:max-w-2xl lg:max-w-4xl max-h-[90vh] overflow-y-auto p-4 sm:p-6">
         <DialogHeader className="text-center space-y-4">
           <div className="mx-auto">
-            <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${content.gradient} flex items-center justify-center shadow-glow`}>
-              <IconComponent className="w-10 h-10 text-white" />
+            <div className={`w-20 h-20 rounded-full bg-gradient-to-br ${content.gradient} flex items-center justify-center shadow-glow p-3`}>
+              <img src={vybbiLogo} alt="Vybbi Logo" className="w-full h-full object-contain" />
             </div>
           </div>
           

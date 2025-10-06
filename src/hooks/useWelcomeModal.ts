@@ -13,14 +13,23 @@ export function useWelcomeModal() {
       return;
     }
 
+    // Get/increment login counter
+    const loginCountKey = `login_count_${profile.id}`;
+    const currentCount = parseInt(localStorage.getItem(loginCountKey) || '0');
+    const newCount = currentCount + 1;
+    localStorage.setItem(loginCountKey, newCount.toString());
+
     // Check if this is a new user (onboarding just completed)
     const isNewUser = profile.onboarding_completed && !localStorage.getItem(`welcome_shown_${profile.id}`);
     
     // Check if user manually dismissed the modal before
     const userDismissed = localStorage.getItem(`welcome_dismissed_${profile.id}`);
     
-    // Show modal for new users who haven't dismissed it
-    if (isNewUser && !userDismissed) {
+    // Only show within first 4 logins
+    const withinLimit = newCount <= 4;
+    
+    // Show modal for new users who haven't dismissed it and within login limit
+    if (isNewUser && !userDismissed && withinLimit) {
       // Small delay to ensure smooth transition from onboarding
       const timer = setTimeout(() => {
         setIsWelcomeModalOpen(true);
