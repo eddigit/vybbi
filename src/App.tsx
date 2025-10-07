@@ -165,6 +165,35 @@ const ConditionalRadioPlayer = () => {
   return shouldShowPlayer ? <RadioPlayer /> : null;
 };
 
+function DebugSupabase() {
+  const url = import.meta.env.VITE_SUPABASE_URL;
+  const anon = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+  useEffect(() => {
+    if (import.meta.env.DEV) {
+      console.log('[Supabase] URL=', url, '| ANON=', anon);
+    }
+  }, [url, anon]);
+
+  const copyKey = () => {
+    navigator.clipboard.writeText(anon);
+  };
+
+  if (!import.meta.env.DEV) return null;
+
+  return (
+    <div style={{ background: '#222', color: '#fff', padding: 16, margin: 16, borderRadius: 8 }}>
+      <h3>Debug Supabase</h3>
+      <div><strong>Supabase URL:</strong> <span>{url}</span></div>
+      <div>
+        <strong>Supabase ANON KEY:</strong>
+        <span style={{ wordBreak: 'break-all', marginLeft: 8 }}>{anon}</span>
+        <button style={{ marginLeft: 8 }} onClick={copyKey}>Copier la clé</button>
+      </div>
+    </div>
+  );
+}
+
 // App component - optimized architecture with performance enhancements
 const App = () => (
   <ErrorBoundary>
@@ -181,6 +210,7 @@ const App = () => (
                     <AuthHashRedirect />
                     <ScrollToTop />
                     <Layout>
+                    <DebugSupabase />
                     <Routes>
                       {/* Conversion pages for non-authenticated users */}
                       <Route path="/trouver-artiste" element={<TrouverArtiste />} />

@@ -1,5 +1,10 @@
 -- Create radio requests system for real-time music requests
 
+DO $$
+BEGIN
+  IF EXISTS (SELECT 1 FROM information_schema.tables WHERE table_schema = 'public' AND table_name IN ('media_assets', 'music_releases')) THEN
+    -- BEGIN original statements
+
 -- Table for user music requests
 CREATE TABLE public.radio_requests (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
@@ -32,11 +37,11 @@ CREATE TABLE public.radio_queue (
   id UUID NOT NULL DEFAULT gen_random_uuid() PRIMARY KEY,
   request_id UUID REFERENCES public.radio_requests(id) ON DELETE CASCADE,
   media_asset_id UUID NOT NULL REFERENCES public.media_assets(id) ON DELETE CASCADE,
-  position INTEGER NOT NULL,
+  queue_position INTEGER NOT NULL,
   estimated_play_time TIMESTAMP WITH TIME ZONE,
   is_priority BOOLEAN NOT NULL DEFAULT false,
   added_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT now(),
-  UNIQUE(position)
+  UNIQUE(queue_position)
 );
 
 -- Enable RLS
@@ -86,7 +91,7 @@ CREATE INDEX idx_radio_requests_status ON public.radio_requests(status);
 CREATE INDEX idx_radio_requests_user_id ON public.radio_requests(user_id);
 CREATE INDEX idx_radio_requests_priority ON public.radio_requests(priority DESC);
 CREATE INDEX idx_radio_requests_requested_at ON public.radio_requests(requested_at);
-CREATE INDEX idx_radio_queue_position ON public.radio_queue(position);
+CREATE INDEX idx_radio_queue_position ON public.radio_queue(queue_position);
 CREATE INDEX idx_radio_request_votes_request_id ON public.radio_request_votes(request_id);
 
 -- Trigger for updated_at
@@ -97,7 +102,8 @@ CREATE TRIGGER update_radio_requests_updated_at
 
 -- Function to update votes count
 CREATE OR REPLACE FUNCTION public.update_request_votes_count()
-RETURNS TRIGGER AS $$
+RETURNS TRIGGER
+LANGUAGE plpgsql AS $f1$
 BEGIN
   IF TG_OP = 'INSERT' THEN
     UPDATE public.radio_requests 
@@ -119,7 +125,7 @@ BEGIN
   END IF;
   RETURN NULL;
 END;
-$$ LANGUAGE plpgsql;
+$f1$;
 
 -- Create trigger for votes count
 CREATE TRIGGER update_request_votes_count_trigger
@@ -133,7 +139,7 @@ RETURNS TABLE(
   queue_id UUID,
   request_id UUID,
   media_asset_id UUID,
-  position INTEGER,
+  queue_position INTEGER,
   estimated_play_time TIMESTAMP WITH TIME ZONE,
   is_priority BOOLEAN,
   file_url TEXT,
@@ -148,14 +154,14 @@ RETURNS TABLE(
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
-AS $$
+AS $f2$
 BEGIN
   RETURN QUERY
   SELECT 
     rq.id as queue_id,
     rr.id as request_id,
     ma.id as media_asset_id,
-    rq.position,
+    rq.queue_position,
     rq.estimated_play_time,
     rq.is_priority,
     ma.file_url,
@@ -173,9 +179,9 @@ BEGIN
   LEFT JOIN profiles requester_p ON requester_p.user_id = rr.user_id
   WHERE ma.media_type = 'audio'
     AND artist_p.is_public = true
-  ORDER BY rq.position ASC;
+  ORDER BY rq.queue_position ASC;
 END;
-$$;
+$f2$;
 
 -- Function to add request to queue
 CREATE OR REPLACE FUNCTION public.add_request_to_queue(
@@ -186,7 +192,7 @@ RETURNS BOOLEAN
 LANGUAGE plpgsql
 SECURITY DEFINER
 SET search_path = public
-AS $$
+AS $f3$
 DECLARE
   v_media_asset_id UUID;
   v_next_position INTEGER;
@@ -201,11 +207,11 @@ BEGIN
   END IF;
   
   -- Get next position
-  SELECT COALESCE(MAX(position), 0) + 1 INTO v_next_position
+  SELECT COALESCE(MAX(queue_position), 0) + 1 INTO v_next_position
   FROM radio_queue;
   
   -- Add to queue
-  INSERT INTO radio_queue (request_id, media_asset_id, position, is_priority)
+  INSERT INTO radio_queue (request_id, media_asset_id, queue_position, is_priority)
   VALUES (p_request_id, v_media_asset_id, v_next_position, p_is_priority);
   
   -- Update request status
@@ -214,5 +220,12 @@ BEGIN
   WHERE id = p_request_id;
   
   RETURN true;
+END;
+$f3$;
+
+    -- END original statements
+  ELSE
+    RAISE NOTICE 'Dependencies not found, skipping radio requests migration';
+  END IF;
 END;
 $$;

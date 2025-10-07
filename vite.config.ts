@@ -8,8 +8,9 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "127.0.0.1",
-    port: 8080,
+    host: "localhost",
+    port: 5173,
+    strictPort: true,
   },
   define: {
     // Fix buffer issue for Solana web3.js

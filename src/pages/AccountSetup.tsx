@@ -27,6 +27,11 @@ const CEO_MESSAGES = {
     message: "Merci de nous rejoindre ! Les établissements comme le vôtre sont au cœur de la scène musicale. Vybbi simplifie votre recherche de talents et la gestion de vos événements.",
     author: "Gilles K.",
     role: "Fondateur"
+  },
+  influenceur: {
+    message: "Excellent choix ! En tant qu'influenceur, vous avez le pouvoir d'amplifier la musique et de connecter les artistes à leur audience. Vybbi vous offre les opportunités que vous recherchez.",
+    author: "Gilles K.",
+    role: "Fondateur"
   }
 };
 
@@ -116,9 +121,13 @@ export default function AccountSetup() {
       // Redirect to auth page with a confirmation message
       navigate('/auth?confirmed=true');
       
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error('Signup error:', error);
-      toast.error(error.message || 'Erreur lors de la création du compte');
+      if (error instanceof Error) {
+        toast.error(error.message || 'Erreur lors de la création du compte');
+      } else {
+        toast.error('Erreur lors de la création du compte');
+      }
       setLoading(false);
     }
   };
@@ -127,7 +136,7 @@ export default function AccountSetup() {
     navigate('/get-started');
   };
 
-  const currentMessage = CEO_MESSAGES[profileType];
+  const currentMessage = CEO_MESSAGES[profileType] || CEO_MESSAGES.artist;
 
   const StrengthIndicator = ({ met, text }: { met: boolean; text: string }) => (
     <div className="flex items-center gap-2 text-sm">
