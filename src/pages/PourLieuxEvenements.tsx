@@ -70,17 +70,17 @@ export default function PourLieuxEvenements() {
     {
       title: "Clubs & Discothèques",
       description: "Programmez vos soirées avec les meilleurs DJs et artistes électro",
-      image: "/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png"
+      image: "/images/personas/wolf-festival.png"
     },
     {
       title: "Festivals & Événements",
       description: "Créez des line-ups exceptionnels pour vos festivals et événements",
-      image: "/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png"
+      image: "/images/brand/vybbi-logo-alt.png"
     },
     {
       title: "Bars & Restaurants",
       description: "Ambiance musicale parfaite pour vos établissements",
-      image: "/lovable-uploads/ffb981ca-4640-4145-8e4a-6436a01f2401.png"
+      image: "/images/personas/wolf-dj-artist.png"
     }
   ];
 
@@ -107,7 +107,7 @@ export default function PourLieuxEvenements() {
                 </Link>
               </Button>
               <div className="flex items-center gap-2">
-                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+                <img src="/images/brand/vybbi-logo.png" alt="Vybbi Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
                 <span className="font-bold text-base sm:text-lg">Vybbi</span>
               </div>
             </div>

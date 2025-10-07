@@ -40,40 +40,40 @@ export function PWAInstallPrompt() {
   };
 
   return (
-    <Card className="fixed bottom-4 left-4 right-4 z-50 mobile-card border-primary/20 bg-card/95 backdrop-blur-sm shadow-lg md:left-auto md:right-4 md:max-w-sm">
-      <CardContent className="p-4">
-        <div className="flex items-start gap-3">
+    <Card className="fixed top-4 left-1/2 -translate-x-1/2 z-[60] max-w-md w-[calc(100%-2rem)] border-primary/20 bg-card/95 backdrop-blur-sm shadow-lg animate-in slide-in-from-top-5 fade-in duration-300">
+      <CardContent className="p-3">
+        <div className="flex items-center gap-3">
           {isMobile ? (
-            <Smartphone className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+            <Smartphone className="h-4 w-4 text-primary flex-shrink-0" />
           ) : (
-            <Monitor className="h-5 w-5 text-primary mt-0.5 flex-shrink-0" />
+            <Monitor className="h-4 w-4 text-primary flex-shrink-0" />
           )}
           
           <div className="flex-1 min-w-0">
-            <h3 className="font-semibold text-sm mb-1">
+            <h3 className="font-semibold text-xs mb-1">
               Installer Vybbi
             </h3>
-            <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
+            <p className="text-xs text-muted-foreground mb-2 leading-relaxed">
               {isMobile 
-                ? "Ajoutez Vybbi à votre écran d'accueil pour un accès rapide et une expérience optimisée."
-                : "Installez Vybbi comme application pour une expérience plus fluide."
+                ? "Accès rapide depuis votre écran d'accueil"
+                : "Profitez d'une expérience optimisée"
               }
             </p>
             
-            <div className="flex gap-2">
+            <div className="flex gap-2 items-center">
               <Button
                 size="sm"
                 onClick={handleInstall}
-                className="flex-1 h-8 text-xs touch-target"
+                className="h-7 text-xs px-3"
               >
                 <Download className="h-3 w-3 mr-1" />
                 Installer
               </Button>
               <Button
                 size="sm"
-                variant="outline"
+                variant="ghost"
                 onClick={handleDismiss}
-                className="h-8 px-3 touch-target"
+                className="h-7 w-7 p-0"
               >
                 <X className="h-3 w-3" />
               </Button>

@@ -140,7 +140,7 @@ export function AppSidebar() {
       <SidebarContent>
         <div className="p-4">
           <div className="flex items-center gap-2">
-            <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-8 h-8" />
+            <img src="/images/brand/vybbi-logo.png" alt="Vybbi Logo" className="w-8 h-8" />
             {open && (
               <span className="font-bold text-lg text-foreground">Vybbi</span>
             )}

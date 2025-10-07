@@ -311,7 +311,7 @@ export default function Landing() {
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/lovable-uploads/ffb981ca-4640-4145-8e4a-6436a01f2401.png" alt="DJ Wolf Artist" className="w-full h-full object-cover" />
+                  <img src="/images/personas/wolf-dj-artist.png" alt="DJ Wolf Artist" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
             <p className="text-muted-foreground mb-6">
@@ -381,7 +381,7 @@ export default function Landing() {
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/lovable-uploads/019274cb-5be3-4748-891a-56febf29aa09.png" alt="Wolf Agent Manager" className="w-full h-full object-cover" />
+                  <img src="/images/personas/wolf-agent.png" alt="Wolf Agent Manager" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
@@ -451,7 +451,7 @@ export default function Landing() {
           <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/lovable-uploads/bcdf994a-5708-4cfd-8dd9-6fa2614cc766.png" alt="Wolf DJ at Festival Organisateur" className="w-full h-full object-cover" />
+                  <img src="/images/personas/wolf-festival.png" alt="Wolf DJ at Festival Organisateur" className="w-full h-full object-cover" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
@@ -1190,7 +1190,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-8 h-8" />
+                <img src="/images/brand/vybbi-logo.png" alt="Vybbi Logo" className="w-8 h-8" />
                  <span className="font-bold text-xl text-foreground">Vybbi</span>
                </div>
                <p className="text-muted-foreground">

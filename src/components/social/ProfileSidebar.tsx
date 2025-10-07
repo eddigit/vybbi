@@ -109,7 +109,7 @@ export function ProfileSidebar() {
         title="Boostez votre carrière"
         description="Découvrez nos offres premium pour artistes"
         buttonText="En savoir plus"
-        imageUrl="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png"
+        imageUrl="/images/brand/vybbi-logo.png"
       />
     </div>
   );

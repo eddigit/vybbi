@@ -37,21 +37,21 @@ const suggestedConnections = [
     id: 1,
     name: "DJ Martin",
     type: "artist",
-    avatar: "/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png",
+    avatar: "/images/brand/vybbi-logo-alt.png",
     mutualConnections: 12
   },
   {
     id: 2,
     name: "Club Moonlight",
     type: "venue",
-    avatar: "/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png",
+    avatar: "/images/avatars/avatar-example-1.png",
     mutualConnections: 8
   },
   {
     id: 3,
     name: "Sarah Events",
     type: "agent",
-    avatar: "/lovable-uploads/b2d290dd-d32c-44c9-944e-f842fb2b1d24.png",
+    avatar: "/images/founders/gilles-founder.png",
     mutualConnections: 5
   }
 ];
@@ -221,7 +221,7 @@ export function RightSidebar() {
         title="Vybbi Premium"
         description="Débloquez des fonctionnalités exclusives"
         buttonText="Découvrir"
-        imageUrl="/lovable-uploads/ffb981ca-4640-4145-8e4a-6436a01f2401.png"
+        imageUrl="/images/personas/wolf-dj-artist.png"
       />
     </div>
   );

@@ -122,7 +122,7 @@ export default function ResetPassword() {
         <div className="text-center">
           <div className="flex justify-center mb-4">
             <img 
-              src="/lovable-uploads/341ddf13-d369-435e-afa6-45e70902ebf8.png" 
+              src="/images/brand/vybbi-logo-alt.png" 
               alt="Vybbi Logo" 
               className="w-16 h-16" 
             />

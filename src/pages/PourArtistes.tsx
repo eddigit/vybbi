@@ -77,7 +77,7 @@ export default function PourArtistes() {
                 </Link>
               </Button>
               <div className="flex items-center gap-2">
-                <img src="/lovable-uploads/952ba024-e787-4174-b9bc-50d160e2562a.png" alt="Vybbi Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+                <img src="/images/brand/vybbi-logo.png" alt="Vybbi Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
                 <span className="font-bold text-base sm:text-lg">Vybbi</span>
               </div>
             </div>
