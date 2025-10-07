@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import vybbiLogoMobile from "@/assets/vybbi-logo-mobile.png";
+import vybbiLogo from "@/assets/vybbi-logo.png";
 import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket, Search } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
@@ -1190,7 +1191,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src="/images/brand/vybbi-logo.png" alt="Vybbi Logo" className="w-8 h-8" />
+                <img src={vybbiLogo} alt="Vybbi Logo" className="w-8 h-8" />
                  <span className="font-bold text-xl text-foreground font-vybbi">Vybbi</span>
                </div>
                <p className="text-muted-foreground">
