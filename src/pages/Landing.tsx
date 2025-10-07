@@ -117,7 +117,7 @@ export default function Landing() {
     label: "Villes couvertes"
   }, {
     number: "24h/24",
-    label: "Radio Vybbi"
+    label: "Radio <span className='font-vybbi'>Vybbi</span>"
   }];
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -146,7 +146,7 @@ export default function Landing() {
             </h1>
             
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-3 sm:px-2">
-              Vybbi devient LA référence sociale pour les artistes, agents et lieux de la nuit. Créez votre carte de visite digitale professionnelle, showcasez votre talent et connectez-vous avec l'écosystème musical mondial. Votre profil devient votre vitrine digitale officielle.
+              <span className="font-vybbi">Vybbi</span> devient LA référence sociale pour les artistes, agents et lieux de la nuit. Créez votre carte de visite digitale professionnelle, showcasez votre talent et connectez-vous avec l'écosystème musical mondial. Votre profil devient votre vitrine digitale officielle.
             </p>
 
             <div className="mb-6 sm:mb-8">
@@ -258,7 +258,7 @@ export default function Landing() {
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
-              Vybbi est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
+              <span className="font-vybbi">Vybbi</span> est la plateforme qui met en relation les talents de la nuit avec leur environnement. 
               Découvrez, connectez et développez l'écosystème musical et nocturne. Notre marketplace unifiée permet aux organisateurs de trouver, sur une seule et même plateforme, un DJ, un groupe de rock, des danseurs et le lieu pour leur événement.
             </p>
 
@@ -324,7 +324,7 @@ export default function Landing() {
               </li>
               <li className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-success mr-2" />
-                <span className="text-card-foreground">Diffusion Radio Vybbi mondiale</span>
+                <span className="text-card-foreground">Diffusion Radio <span className="font-vybbi">Vybbi</span> mondiale</span>
               </li>
               <li className="flex items-center">
                 <CheckCircle className="w-4 h-4 text-success mr-2" />
@@ -527,7 +527,7 @@ export default function Landing() {
           <div className="text-center mb-16">
             <h2 className="text-4xl font-bold mb-4">Le premier réseau social de l'écosystème nocturne</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Vybbi révolutionne la découverte et le networking professionnel dans l'industrie de la nuit. 
+              <span className="font-vybbi">Vybbi</span> révolutionne la découverte et le networking professionnel dans l'industrie de la nuit. 
               Votre profil devient votre référence officielle reconnue par tous les acteurs du secteur.
             </p>
           </div>
@@ -564,7 +564,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-xl font-bold mb-4 text-foreground">Visibilité Mondiale</h3>
                 <p className="text-muted-foreground">
-                  Votre profil Vybbi devient votre carte de visite officielle, partageable et reconnue dans le monde entier.
+                  Votre profil <span className="font-vybbi">Vybbi</span> devient votre carte de visite officielle, partageable et reconnue dans le monde entier.
                 </p>
               </CardContent>
             </Card>
@@ -631,11 +631,11 @@ export default function Landing() {
           <div className="text-center mb-16">
             <Badge className="mb-6 text-sm px-4 py-2">
               <Zap className="w-4 h-4 mr-2" />
-              DÉCOUVREZ VYBBI SANS RISQUE
+              DÉCOUVREZ <span className="font-vybbi">VYBBI</span> SANS RISQUE
             </Badge>
             <h2 className="text-4xl font-bold mb-4 text-foreground">Commencez votre essai gratuit</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Nous facilitons votre adoption de Vybbi avec des offres de lancement exclusives 
+              Nous facilitons votre adoption de <span className="font-vybbi">Vybbi</span> avec des offres de lancement exclusives 
               et un écosystème de partenaires pour vous accompagner dans votre croissance.
             </p>
           </div>
@@ -666,7 +666,7 @@ export default function Landing() {
                 </div>
                 <h3 className="text-lg font-bold mb-2 text-foreground">Démo interactive</h3>
                 <p className="text-sm text-muted-foreground mb-4">
-                  Découvrez Vybbi en action avec nos scénarios d'utilisation détaillés.
+                  Découvrez <span className="font-vybbi">Vybbi</span> en action avec nos scénarios d'utilisation détaillés.
                 </p>
                 <Button variant="outline" size="sm" className="w-full" asChild>
                   <Link to="/demo">Voir la démo</Link>
@@ -762,7 +762,7 @@ export default function Landing() {
                 Prêt à transformer votre activité musicale ?
               </h3>
               <p className="text-muted-foreground mb-6">
-                Rejoignez plus de 10 000 professionnels qui utilisent déjà Vybbi pour développer 
+                Rejoignez plus de 10 000 professionnels qui utilisent déjà <span className="font-vybbi">Vybbi</span> pour développer 
                 leur réseau et augmenter leurs bookings. Essai gratuit de {isLoading ? '...' : trialDays} jours, puis seulement 49€/mois.
                 {isPromotionalActive && !isLoading && <span className="block mt-2 text-green-600 font-medium">
                     🎉 Offre limitée : {trialDays} jours d'essai pour les premiers inscrits !
@@ -796,10 +796,10 @@ export default function Landing() {
                 <Gift className="w-4 h-4 mr-2" />
                 PROGRAMME EXCLUSIF JUSQU'AU 31/01/2026
               </Badge>
-              <h2 className="text-4xl font-bold mb-4 text-foreground">Programme d'Affiliation Vybbi</h2>
+              <h2 className="text-4xl font-bold mb-4 text-foreground">Programme d'Affiliation <span className="font-vybbi">Vybbi</span></h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Rejoignez notre programme d'affiliation exclusif et générez des revenus récurrents 
-                en recommandant Vybbi. 2€ par inscription + 0,50€/mois récurrents.
+                en recommandant <span className="font-vybbi">Vybbi</span>. 2€ par inscription + 0,50€/mois récurrents.
               </p>
             </div>
 
@@ -849,7 +849,7 @@ export default function Landing() {
                 <div className="flex flex-col sm:flex-row gap-4 justify-center">
                   <Button size="lg" className="text-lg px-8 py-6" asChild>
                     <Link to="/influenceurs">
-                      Devenir Influenceur Vybbi
+                      Devenir Influenceur <span className="font-vybbi">Vybbi</span>
                       <ArrowRight className="ml-2 h-5 w-5" />
                     </Link>
                   </Button>
@@ -868,9 +868,9 @@ export default function Landing() {
        <section className="py-16 px-2 sm:px-6 bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10">
          <div className="container mx-auto">
            <div className="text-center mb-12">
-             <h2 className="text-4xl font-bold mb-4">Radio Vybbi 24h/24</h2>
+             <h2 className="text-4xl font-bold mb-4">Radio <span className="font-vybbi">Vybbi</span> 24h/24</h2>
              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-               Diffusez votre talent au monde entier avec notre radio dédiée aux artistes Vybbi. 
+               Diffusez votre talent au monde entier avec notre radio dédiée aux artistes <span className="font-vybbi">Vybbi</span>. 
                Être écouté partout, à tout moment, et grimper dans notre Top 50.
              </p>
            </div>
@@ -937,7 +937,7 @@ export default function Landing() {
             </Badge>
             <h2 className="text-4xl font-bold mb-4">Avis vérifiés et transparents</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
-              Vybbi promeut la transparence et le professionnalisme en permettant aux lieux, agents et managers 
+              <span className="font-vybbi">Vybbi</span> promeut la transparence et le professionnalisme en permettant aux lieux, agents et managers 
               de laisser des avis vérifiés sur les artistes. Cette exigence de qualité distingue notre plateforme 
               et garantit le sérieux de tous nos talents.
             </p>
@@ -978,7 +978,7 @@ export default function Landing() {
                 <h3 className="text-xl font-bold mb-4 text-foreground">Excellence renforcée</h3>
                 <p className="text-muted-foreground">
                   Cette exigence de transparence pousse tous les artistes vers l'excellence 
-                  et renforce la qualité globale de l'écosystème Vybbi.
+                  et renforce la qualité globale de l'écosystème <span className="font-vybbi">Vybbi</span>.
                 </p>
               </CardContent>
             </Card>
@@ -1033,7 +1033,7 @@ export default function Landing() {
             </div>
             
             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
-              Le VYBBI Token 🚀
+              Le <span className="font-vybbi">VYBBI</span> Token 🚀
             </h2>
             
             <p className="text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto mb-2">
@@ -1041,7 +1041,7 @@ export default function Landing() {
             </p>
             
             <p className="text-base text-muted-foreground/80 max-w-2xl mx-auto">
-              Plus qu'une cryptomonnaie, le VYBBI est le carburant de votre succès dans l'écosystème musical.
+              Plus qu'une cryptomonnaie, le <span className="font-vybbi">VYBBI</span> est le carburant de votre succès dans l'écosystème musical.
             </p>
           </div>
 
@@ -1134,7 +1134,7 @@ export default function Landing() {
               >
                 <Link to="/token">
                   <Coins className="mr-2 h-5 w-5" />
-                  Découvrir le VYBBI Token
+                  Découvrir le <span className="font-vybbi">VYBBI</span> Token
                   <Rocket className="ml-2 h-5 w-5" />
                 </Link>
               </Button>
@@ -1191,7 +1191,7 @@ export default function Landing() {
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <img src="/images/brand/vybbi-logo.png" alt="Vybbi Logo" className="w-8 h-8" />
-                 <span className="font-bold text-xl text-foreground">Vybbi</span>
+                 <span className="font-bold text-xl text-foreground font-vybbi">Vybbi</span>
                </div>
                <p className="text-muted-foreground">
                  Le loup des nuits qui déniche les talents et connecte l'écosystème musical.
@@ -1228,7 +1228,7 @@ export default function Landing() {
           </div>
           
           <div className="border-t mt-8 pt-8 text-center text-muted-foreground">
-            <p>© 2025 Vybbi. Tous droits réservés.</p>
+            <p>© 2025 <span className="font-vybbi">Vybbi</span>. Tous droits réservés.</p>
           </div>
         </div>
       </footer>

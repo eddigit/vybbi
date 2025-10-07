@@ -21,7 +21,7 @@ export function Footer() {
       <div className="px-3 sm:px-4 py-3 sm:py-4 space-y-3 sm:space-y-0 sm:flex sm:items-center sm:justify-between">
         {/* Mobile-first layout */}
         <div className="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-6">
-          <span className="text-xs text-muted-foreground">© {currentYear} Vybbi</span>
+          <span className="text-xs text-muted-foreground">© {currentYear} <span className="font-vybbi">Vybbi</span></span>
           
           {/* Navigation Links */}
           <div className="flex flex-wrap gap-3 sm:gap-4 text-xs">

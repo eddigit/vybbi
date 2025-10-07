@@ -146,7 +146,7 @@ export function Header() {
               alt="Vybbi Logo" 
               className="w-7 h-7 sm:w-8 sm:h-8"
             />
-            <span className="hidden sm:block font-bold text-lg text-white">Vybbi</span>
+            <span className="hidden sm:block font-bold text-lg text-white font-vybbi">Vybbi</span>
           </Link>
 
 

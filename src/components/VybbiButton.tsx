@@ -25,7 +25,7 @@ export function VybbiButton({
     >
       <Link to="/recherche-avancee" className="flex items-center gap-2">
         <Bot className="h-4 w-4" />
-        {showText && "Assistant Vybbi"}
+        {showText && <span className="font-vybbi">Assistant Vybbi</span>}
       </Link>
     </Button>
   );

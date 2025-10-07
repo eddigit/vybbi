@@ -27,6 +27,9 @@ export default {
       '2xl': '1536px',
     },
     extend: {
+      fontFamily: {
+        'vybbi': ['Vybbi Display', 'sans-serif'],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

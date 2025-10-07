@@ -22,7 +22,7 @@ export function MobileHeader() {
             alt="Vybbi Logo" 
             className="w-7 h-7"
           />
-          <span className="font-bold text-lg text-white">Vybbi</span>
+          <span className="font-bold text-lg text-white font-vybbi">Vybbi</span>
         </Link>
 
         {/* VYBBI Token Balance Widget - Only for authenticated users */}
