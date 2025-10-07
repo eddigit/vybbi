@@ -796,7 +796,7 @@ export default function Landing() {
                 <Gift className="w-4 h-4 mr-2" />
                 PROGRAMME EXCLUSIF JUSQU'AU 31/01/2026
               </Badge>
-              <h2 className="text-4xl font-bold mb-4 text-foreground">Programme d'Affiliation <span className="font-vybbi">Vybbi.app</span></h2>
+              <h2 className="text-4xl font-bold mb-4 text-foreground">Programme d'Affiliation <span className="font-vybbi">Vybbi</span></h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Rejoignez notre programme d'affiliation exclusif et générez des revenus récurrents 
                 en recommandant <span className="font-vybbi">Vybbi</span>. 2€ par inscription + 0,50€/mois récurrents.
