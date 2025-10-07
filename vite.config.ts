@@ -8,7 +8,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => ({
   server: {
-    host: "127.0.0.1",
+    host: true, // Écoute sur toutes les interfaces réseau (localhost, 127.0.0.1, etc.)
     port: 8080,
   },
   define: {
