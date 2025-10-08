@@ -56,14 +56,15 @@ const APropos = () => {
               </Card>
             </div>
             <div className="flex justify-center">
-              <div className="relative">
-                <img src="/images/founders/gilles-founder.png" alt="Gilles, Fondateur de Vybbi.app" className="w-64 h-64 object-cover rounded-2xl shadow-2xl" />
-                <div className="absolute -bottom-2 -right-2 bg-primary text-primary-foreground p-3 rounded-xl shadow-lg">
-                  <div className="text-center text-sm">
-                    <p className="font-bold">Gilles</p>
-                    <p className="opacity-90">Fondateur</p>
-                  </div>
-                </div>
+              <div className="relative w-full max-w-md aspect-video rounded-2xl overflow-hidden shadow-2xl">
+                <iframe
+                  src="https://www.youtube.com/embed/1JP69VMCfgc?controls=0&modestbranding=1&rel=0&showinfo=0&fs=0&disablekb=1&iv_load_policy=3&playsinline=1"
+                  title="Présentation Vybbi.app"
+                  className="w-full h-full"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                  style={{ border: 'none' }}
+                />
               </div>
             </div>
           </div>
