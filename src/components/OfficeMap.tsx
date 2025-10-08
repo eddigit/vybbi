@@ -60,14 +60,41 @@ const offices: Office[] = [
 export default function OfficeMap() {
   const mapContainer = useRef<HTMLDivElement>(null);
   const map = useRef<mapboxgl.Map | null>(null);
-const [mapboxToken, setMapboxToken] = useState<string>(() => {
-  try {
-    return localStorage.getItem('mapbox_token') || '';
-  } catch {
-    return '';
-  }
-});
+  const [mapboxToken, setMapboxToken] = useState<string>('');
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedOffice, setSelectedOffice] = useState<Office | null>(null);
+
+  // Fetch Mapbox token from edge function
+  useEffect(() => {
+    const fetchToken = async () => {
+      try {
+        const response = await fetch(
+          'https://fepxacqrrjvnvpgzwhyr.supabase.co/functions/v1/get-mapbox-token',
+          {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error('Failed to fetch Mapbox token');
+        }
+
+        const data = await response.json();
+        setMapboxToken(data.token);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching Mapbox token:', err);
+        setError('Impossible de charger la carte. Veuillez réessayer plus tard.');
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchToken();
+  }, []);
 
   useEffect(() => {
     if (!mapContainer.current || !mapboxToken) return;
@@ -149,37 +176,33 @@ const [mapboxToken, setMapboxToken] = useState<string>(() => {
     };
   }, [mapboxToken]);
 
-  if (!mapboxToken) {
+  if (isLoading) {
     return (
       <Card className="p-6">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2">
-            <Globe className="h-8 w-8 text-primary" />
+            <Globe className="h-8 w-8 text-primary animate-pulse" />
           </div>
-          <h3 className="text-lg font-semibold">Configuration de la carte</h3>
+          <h3 className="text-lg font-semibold">Chargement de la carte...</h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            Pour afficher la carte interactive de nos bureaux, veuillez entrer votre token Mapbox. 
-            Vous pouvez l'obtenir gratuitement sur{' '}
-            <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">
-              mapbox.com
-            </a>
+            Préparation de la carte interactive de nos bureaux
           </p>
-          <div className="max-w-md mx-auto">
-            <Input
-              type="text"
-              placeholder="pk.eyJ1IjoiLi4u (Token Mapbox)"
-              value={mapboxToken}
-              onChange={(e) => {
-                const t = e.target.value;
-                setMapboxToken(t);
-                try { localStorage.setItem('mapbox_token', t); } catch {}
-              }}
-              className="mb-4"
-            />
-            <p className="text-xs text-muted-foreground">
-              Token temporaire pour cette session uniquement
-            </p>
+        </div>
+      </Card>
+    );
+  }
+
+  if (error || !mapboxToken) {
+    return (
+      <Card className="p-6">
+        <div className="text-center space-y-4">
+          <div className="flex items-center justify-center gap-2">
+            <Globe className="h-8 w-8 text-destructive" />
           </div>
+          <h3 className="text-lg font-semibold">Erreur de chargement</h3>
+          <p className="text-muted-foreground text-sm max-w-md mx-auto">
+            {error || 'Impossible de charger la carte pour le moment.'}
+          </p>
         </div>
       </Card>
     );
