@@ -72,8 +72,11 @@ export default function OfficeMap() {
         const response = await fetch(
           'https://fepxacqrrjvnvpgzwhyr.supabase.co/functions/v1/get-mapbox-token',
           {
+            method: 'GET',
             headers: {
               'Content-Type': 'application/json',
+              'apikey': 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlcHhhY3Fycmp2bnZwZ3p3aHlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczNDI1NTMsImV4cCI6MjA3MjkxODU1M30.JK643QTk7c6wcmGZFwl-1C4t3M2uqgC4hE74S3kliZI',
+              'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlcHhhY3Fycmp2bnZwZ3p3aHlyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTczNDI1NTMsImV4cCI6MjA3MjkxODU1M30.JK643QTk7c6wcmGZFwl-1C4t3M2uqgC4hE74S3kliZI',
             },
           }
         );
@@ -197,12 +200,26 @@ export default function OfficeMap() {
       <Card className="p-6">
         <div className="text-center space-y-4">
           <div className="flex items-center justify-center gap-2">
-            <Globe className="h-8 w-8 text-destructive" />
+            <Globe className="h-8 w-8 text-primary" />
           </div>
-          <h3 className="text-lg font-semibold">Erreur de chargement</h3>
+          <h3 className="text-lg font-semibold">Configuration de la carte</h3>
           <p className="text-muted-foreground text-sm max-w-md mx-auto">
-            {error || 'Impossible de charger la carte pour le moment.'}
+            {error ? 'Le chargement automatique a échoué.' : 'Pour afficher la carte interactive de nos bureaux,'} entrez votre token Mapbox public. Vous pouvez l'obtenir gratuitement sur{' '}
+            <a href="https://mapbox.com" target="_blank" rel="noopener noreferrer" className="text-primary hover:underline">mapbox.com</a>
           </p>
+          <div className="max-w-md mx-auto">
+            <Input
+              type="text"
+              placeholder="pk.eyJ1Ijoi... (Token Mapbox)"
+              value={mapboxToken}
+              onChange={(e) => {
+                setMapboxToken(e.target.value.trim());
+                setError(null);
+              }}
+              className="mb-2"
+            />
+            <p className="text-xs text-muted-foreground">Token utilisé uniquement côté client pour cette session.</p>
+          </div>
         </div>
       </Card>
     );
