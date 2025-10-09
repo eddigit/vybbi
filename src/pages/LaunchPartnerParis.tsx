@@ -1,37 +1,12 @@
-import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { 
-  Rocket, 
-  Users, 
-  Building2, 
-  Radio, 
-  Brain, 
-  Calendar, 
-  FileCheck, 
-  CheckCircle, 
-  Target, 
-  TrendingUp, 
-  Shield, 
-  AlertTriangle, 
-  Coins,
-  Clock,
-  Award,
-  Download,
-  Zap
-} from 'lucide-react';
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@/components/ui/accordion";
+import { Rocket, Users, Building2, Radio, Brain, Calendar, FileCheck, CheckCircle, Target, TrendingUp, Shield, AlertTriangle, Coins, Clock, Award, Download, Zap } from 'lucide-react';
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { PartnershipCTA } from '@/components/PartnershipCTA';
 import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
-
 export default function LaunchPartnerParis() {
   // Structured Data pour l'offre
   const offerStructuredData = {
@@ -56,116 +31,53 @@ export default function LaunchPartnerParis() {
   const faqStructuredData = {
     "@context": "https://schema.org",
     "@type": "FAQPage",
-    "mainEntity": [
-      {
-        "@type": "Question",
-        "name": "Combien de temps pour être visible après signature ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Sous 7 jours ouvrés : branding 'Presented by' en place; sous 14 jours : activation planifiée avec vos équipes."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Puis-je avoir l'exclusivité de ma catégorie ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Oui, avec le Pack Flagship (10 000 €), vous bénéficiez d'une exclusivité catégorielle (audio, boisson, média, etc.)."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Quels KPIs recevrons-nous ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Inscriptions, reach, vues, participations, clics UTM, mentions sociales. Reporting hebdomadaire et case study final."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Conditions pour marques alcool ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Ciblage 18+, mentions sanitaires obligatoires, inventaires conformes à la loi Evin."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Quelle est la durée du partenariat ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, prévu le 8 avril 2025."
-        }
-      },
-      {
-        "@type": "Question",
-        "name": "Peut-on personnaliser l'activation locale ?",
-        "acceptedAnswer": {
-          "@type": "Answer",
-          "text": "Oui, vous choisissez entre 3 formats : Vybbi Sessions Paris (3 masterclass), Top 50 Paris sponsorisé, ou concours 'Road to [Lieu]'. Nous pouvons adapter selon vos objectifs."
-        }
+    "mainEntity": [{
+      "@type": "Question",
+      "name": "Quelle est la durée du partenariat Launch Partner Paris ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, prévu début décembre 2025."
       }
-    ]
+    }, {
+      "@type": "Question",
+      "name": "Qu'est-ce que l'exclusivité géographique ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vous êtes le seul partenaire de votre catégorie dans la région parisienne pendant 90 jours. Pour le pack 10k€, l'exclusivité s'étend à toutes les catégories."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Quelles mesures de performance sont fournies ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Vous recevrez un reporting hebdomadaire incluant : inscriptions, reach, engagement, clics UTM, et conversion. Un case study final complet sera fourni en fin de partenariat."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Quelles sont les modalités de paiement ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Paiement en une fois ou en deux versements (50% au lancement, 50% à J+45). Facture conforme, contrat de partenariat fourni."
+      }
+    }, {
+      "@type": "Question",
+      "name": "Peut-on personnaliser l'activation locale ?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Oui, vous choisissez entre 3 formats : Vybbi Sessions Paris (3 masterclass), Top 50 Paris sponsorisé, ou concours 'Road to [Lieu]'. Nous pouvons adapter selon vos objectifs."
+      }
+    }]
   };
-
   const handleDownload = () => {
     if (typeof window !== 'undefined' && (window as any).gtag) {
       (window as any).gtag('event', 'onepager_download', {
         event_category: 'Partnership',
-        event_label: 'pdf_download',
+        event_label: 'pdf_download'
       });
     }
   };
-
-  // Charger Calendly dynamiquement
-  useEffect(() => {
-    // Charger le CSS Calendly
-    const link = document.createElement('link');
-    link.href = 'https://assets.calendly.com/assets/external/widget.css';
-    link.rel = 'stylesheet';
-    document.head.appendChild(link);
-
-    // Charger le JS Calendly
-    const script = document.createElement('script');
-    script.src = 'https://assets.calendly.com/assets/external/widget.js';
-    script.async = true;
-    document.body.appendChild(script);
-
-    // Écouter l'événement de planification Calendly
-    const handleCalendlyEvent = (e: MessageEvent) => {
-      if (e.data?.event === 'calendly.event_scheduled') {
-        if (typeof (window as any).gtag === 'function') {
-          (window as any).gtag('event', 'calendly_event_scheduled', {
-            event_category: 'booking',
-            event_label: 'sponsor'
-          });
-        }
-        if (typeof (window as any).fbq === 'function') {
-          (window as any).fbq('track', 'Schedule', { content_name: 'sponsor' });
-        }
-      }
-    };
-
-    window.addEventListener('message', handleCalendlyEvent);
-
-    // Cleanup
-    return () => {
-      document.head.removeChild(link);
-      document.body.removeChild(script);
-      window.removeEventListener('message', handleCalendlyEvent);
-    };
-  }, []);
-
-  return (
-    <>
-      <SEOHead
-        title="Launch Partner Paris – Vybbi (sponsoring exclusif 90 jours)"
-        description="Devenez le partenaire exclusif du lancement de Vybbi à Paris. 90 jours d'activation, branding 'Presented by', activations locales, reporting. Réservez un call de 15 min."
-        keywords="partnership, sponsoring, marketing, paris, nightlife, music industry, launch partner, brand activation, exclusivité géographique"
-        canonicalUrl="https://vybbi.com/partners/launch-paris"
-        structuredData={[offerStructuredData, faqStructuredData]}
-        type="website"
-      />
+  return <>
+      <SEOHead title="Launch Partner Paris - Devenez le partenaire exclusif de Vybbi" description="Rejoignez Vybbi comme Launch Partner exclusif à Paris. 90 jours d'activation, branding 'Presented by', reporting complet. 1 seul slot disponible." keywords="partnership, sponsoring, marketing, paris, nightlife, music industry, launch partner, brand activation" canonicalUrl="https://vybbi.com/partners/launch-paris" structuredData={[offerStructuredData, faqStructuredData]} type="website" />
 
       <div className="min-h-screen bg-background">
         {/* Hero Section */}
@@ -180,9 +92,9 @@ export default function LaunchPartnerParis() {
                 </Badge>
               </div>
               
-          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent font-vybbi">
-            Launch Partner Paris — Vybbi
-          </h1>
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
+                Launch Partner Paris — Vybbi
+              </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
                 Devenez le partenaire exclusif qui propulse le lancement de Vybbi à Paris. 
@@ -190,7 +102,7 @@ export default function LaunchPartnerParis() {
                 "Presented by [Marque]" sur tous nos supports, et une audience ultra-ciblée d'artistes et de programmateurs.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <PartnershipCTA source="landing-hero" size="lg" />
                 <Button variant="outline" size="lg" asChild onClick={handleDownload}>
                   <a href="/docs/vybbi-launch-partner-paris.pdf" download="Vybbi-Launch-Partner-Paris.pdf">
@@ -199,18 +111,6 @@ export default function LaunchPartnerParis() {
                   </a>
                 </Button>
               </div>
-              
-              <p className="text-sm text-muted-foreground mb-12">
-                Problème avec le formulaire ? <a 
-                  href="https://calendly.com/vybbiapp/30min" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="underline hover:text-foreground"
-                  data-event="cta_calendly_fallback"
-                >
-                  Réservez via ce lien direct Calendly
-                </a>
-              </p>
 
               {/* Mockup "Presented by" */}
               <Card className="shadow-2xl border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30">
@@ -249,55 +149,37 @@ export default function LaunchPartnerParis() {
               </div>
 
               <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {[
-                  { icon: Users, label: 'Matching IA', color: 'text-blue-500' },
-                  { icon: Building2, label: 'Profils vérifiés', color: 'text-green-500' },
-                  { icon: Radio, label: 'Radio 24/7', color: 'text-purple-500' },
-                  { icon: Brain, label: 'Recommandations IA', color: 'text-pink-500' },
-                  { icon: Calendar, label: 'Calendriers intégrés', color: 'text-orange-500' },
-                  { icon: FileCheck, label: 'Gestion d\'événements', color: 'text-cyan-500' }
-                ].map((item, index) => (
-                  <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                {[{
+                icon: Users,
+                label: 'Matching IA',
+                color: 'text-blue-500'
+              }, {
+                icon: Building2,
+                label: 'Profils vérifiés',
+                color: 'text-green-500'
+              }, {
+                icon: Radio,
+                label: 'Radio 24/7',
+                color: 'text-purple-500'
+              }, {
+                icon: Brain,
+                label: 'Recommandations IA',
+                color: 'text-pink-500'
+              }, {
+                icon: Calendar,
+                label: 'Calendriers intégrés',
+                color: 'text-orange-500'
+              }, {
+                icon: FileCheck,
+                label: 'Gestion d\'événements',
+                color: 'text-cyan-500'
+              }].map((item, index) => <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <item.icon className={`w-10 h-10 mx-auto mb-3 ${item.color}`} />
                       <p className="font-semibold text-sm">{item.label}</p>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
-            </div>
-          </div>
-        </section>
-
-        {/* Timeline "Ce que vous obtenez en 15 jours" */}
-        <section className="py-12 px-6 bg-gradient-to-br from-green-500/10 to-background">
-          <div className="container mx-auto">
-            <div className="max-w-4xl mx-auto">
-              <Card className="border-2 border-green-500/30">
-                <CardHeader className="text-center">
-                  <div className="flex items-center justify-center gap-3 mb-2">
-                    <Zap className="w-8 h-8 text-green-500" />
-                    <CardTitle className="text-2xl md:text-3xl">Ce que vous obtenez en 15 jours</CardTitle>
-                  </div>
-                  <CardDescription>Activation ultra-rapide pour maximiser votre impact</CardDescription>
-                </CardHeader>
-                <CardContent>
-                  <div className="space-y-4">
-                    <div className="flex items-start gap-4">
-                      <Badge variant="outline" className="shrink-0 bg-green-500/20 text-green-700 dark:text-green-400">J+7</Badge>
-                      <p className="text-sm md:text-base">
-                        <span className="font-semibold">Visibilité "Presented by" en place</span> — Votre branding live sur la plateforme, site web, emails et réseaux sociaux.
-                      </p>
-                    </div>
-                    <div className="flex items-start gap-4">
-                      <Badge variant="outline" className="shrink-0 bg-green-500/20 text-green-700 dark:text-green-400">J+14</Badge>
-                      <p className="text-sm md:text-base">
-                        <span className="font-semibold">Activation planifiée, assets validés</span> — Format défini avec vos équipes, planning détaillé, matériel prêt.
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
             </div>
           </div>
         </section>
@@ -308,49 +190,54 @@ export default function LaunchPartnerParis() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">L'offre Launch Partner Paris</h2>
-                <p className="text-lg text-muted-foreground">
-                  Pilote 90 jours — 2 packs au choix
-                </p>
+                
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 mb-12">
-                {/* Pack Launch (5k€) */}
+                {/* Pack 5k€ */}
                 <Card className="border-2 hover:shadow-xl transition-all">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Launch</CardTitle>
+                      <CardTitle className="text-2xl">Pack Essential</CardTitle>
                       <Badge variant="outline">5 000 €</Badge>
                     </div>
-                    <CardDescription>Exclusivité géographique Paris (1 sponsor unique)</CardDescription>
+                    <CardDescription>Exclusivité géographique Paris</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Branding "Presented by [Marque]"</p>
-                          <p className="text-sm text-muted-foreground">Sur bêta, site, emails, réseaux</p>
+                          <p className="font-semibold">Branding exclusif</p>
+                          <p className="text-sm text-muted-foreground">"Presented by [Marque]" sur bêta, site, emails</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">1 activation locale</p>
+                          <p className="font-semibold">Activation locale au choix</p>
                           <p className="text-sm text-muted-foreground">Sessions / Top 50 / Concours</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Page sponsor standard</p>
+                          <p className="font-semibold">Page sponsor dédiée</p>
                           <p className="text-sm text-muted-foreground">Présentation + offres + liens UTM</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Reporting hebdo + case study final</p>
-                          <p className="text-sm text-muted-foreground">KPIs détaillés et recommandations</p>
+                          <p className="font-semibold">Exclusivité Paris 90j</p>
+                          <p className="text-sm text-muted-foreground">Votre catégorie uniquement</p>
+                        </div>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                        <div>
+                          <p className="font-semibold">Reporting & Co-RP</p>
+                          <p className="text-sm text-muted-foreground">Hebdo + case study final</p>
                         </div>
                       </div>
                     </div>
@@ -358,7 +245,7 @@ export default function LaunchPartnerParis() {
                   </CardContent>
                 </Card>
 
-                {/* Pack Flagship (10k€) */}
+                {/* Pack 10k€ */}
                 <Card className="border-2 border-primary/50 hover:shadow-xl transition-all relative">
                   <div className="absolute -top-3 right-6">
                     <Badge className="bg-gradient-to-r from-primary to-purple-500 text-white">
@@ -368,46 +255,46 @@ export default function LaunchPartnerParis() {
                   </div>
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Flagship</CardTitle>
+                      <CardTitle className="text-2xl">Pack Premium</CardTitle>
                       <Badge variant="default">10 000 €</Badge>
                     </div>
-                    <CardDescription>Tout le Pack Launch, plus :</CardDescription>
+                    <CardDescription>Exclusivité catégorielle complète</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-start">
-                        <Zap className="w-5 h-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Exclusivité catégorielle</p>
-                          <p className="text-sm text-muted-foreground">Audio / boisson / média / etc. (au choix)</p>
+                          <p className="font-semibold">Branding exclusif renforcé</p>
+                          <p className="text-sm text-muted-foreground">+ mentions dans vidéos & réseaux sociaux</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">2 activations locales</p>
-                          <p className="text-sm text-muted-foreground">Formats combinables selon vos objectifs</p>
+                          <p className="text-sm text-muted-foreground">Combinez plusieurs formats</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">Page sponsor premium</p>
-                          <p className="text-sm text-muted-foreground">Design sur-mesure, vidéo, contenus enrichis</p>
+                          <p className="text-sm text-muted-foreground">Design sur-mesure + contenus enrichis</p>
                         </div>
                       </div>
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                        <Zap className="w-5 h-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Branding renforcé</p>
-                          <p className="text-sm text-muted-foreground">Mentions dans vidéos & réseaux</p>
+                          <p className="font-semibold">Exclusivité TOUTES catégories</p>
+                          <p className="text-sm text-muted-foreground">Aucun autre sponsor Paris 90j</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">Co-RP amplifiée</p>
-                          <p className="text-sm text-muted-foreground">Communiqué + médias partenaires</p>
+                          <p className="text-sm text-muted-foreground">Communiqué de presse + médias partenaires</p>
                         </div>
                       </div>
                     </div>
@@ -541,45 +428,38 @@ export default function LaunchPartnerParis() {
               </div>
 
               <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-                {[
-                  {
-                    icon: Calendar,
-                    week: 'Semaine 1',
-                    title: 'Validation',
-                    description: 'Validation du co-branding, choix de l\'activation, plan médias',
-                    color: 'text-blue-500'
-                  },
-                  {
-                    icon: Rocket,
-                    week: 'Semaines 2-4',
-                    title: 'Lancement',
-                    description: 'Lancement bêta + mise en avant "Presented by [Marque]"',
-                    color: 'text-green-500'
-                  },
-                  {
-                    icon: Zap,
-                    week: 'Semaines 5-8',
-                    title: 'Activation',
-                    description: 'Activation locale (Sessions/Top 50/Concours) + amplification',
-                    color: 'text-orange-500'
-                  },
-                  {
-                    icon: FileCheck,
-                    week: 'Semaines 9-12',
-                    title: 'Wrap-up',
-                    description: 'Reporting final, recommandations next steps, case study',
-                    color: 'text-purple-500'
-                  }
-                ].map((step, index) => (
-                  <Card key={index} className="text-center hover:shadow-lg transition-shadow">
+                {[{
+                icon: Calendar,
+                week: 'Semaine 1',
+                title: 'Validation',
+                description: 'Validation du co-branding, choix de l\'activation, plan médias',
+                color: 'text-blue-500'
+              }, {
+                icon: Rocket,
+                week: 'Semaines 2-4',
+                title: 'Lancement',
+                description: 'Lancement bêta + mise en avant "Presented by [Marque]"',
+                color: 'text-green-500'
+              }, {
+                icon: Zap,
+                week: 'Semaines 5-8',
+                title: 'Activation',
+                description: 'Activation locale (Sessions/Top 50/Concours) + amplification',
+                color: 'text-orange-500'
+              }, {
+                icon: FileCheck,
+                week: 'Semaines 9-12',
+                title: 'Wrap-up',
+                description: 'Reporting final, recommandations next steps, case study',
+                color: 'text-purple-500'
+              }].map((step, index) => <Card key={index} className="text-center hover:shadow-lg transition-shadow">
                     <CardContent className="p-6">
                       <step.icon className={`w-12 h-12 mx-auto mb-4 ${step.color}`} />
                       <Badge variant="outline" className="mb-3">{step.week}</Badge>
                       <h3 className="font-bold text-lg mb-2">{step.title}</h3>
                       <p className="text-sm text-muted-foreground">{step.description}</p>
                     </CardContent>
-                  </Card>
-                ))}
+                  </Card>)}
               </div>
             </div>
           </div>
@@ -595,53 +475,57 @@ export default function LaunchPartnerParis() {
 
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
-                  <AccordionTrigger>Combien de temps pour être visible après signature ?</AccordionTrigger>
+                  <AccordionTrigger>Quelle est la durée du partenariat ?</AccordionTrigger>
                   <AccordionContent>
-                    Sous 7 jours ouvrés : branding "Presented by" en place; sous 14 jours : activation planifiée avec vos équipes. 
-                    Nous garantissons un démarrage ultra-rapide pour maximiser votre impact dès le lancement.
+                    Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, 
+                    prévu le 8 avril 2025. Cette période couvre le lancement, l'activation locale et le reporting final.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-2">
-                  <AccordionTrigger>Puis-je avoir l'exclusivité de ma catégorie ?</AccordionTrigger>
+                  <AccordionTrigger>Qu'est-ce que l'exclusivité géographique ?</AccordionTrigger>
                   <AccordionContent>
-                    Oui, avec le Pack Flagship (10 000 €), vous bénéficiez d'une exclusivité catégorielle (audio, boisson, média, etc.). 
-                    Cela signifie qu'aucun concurrent direct de votre secteur ne pourra sponsoriser Vybbi Paris pendant 90 jours.
+                    Pour le pack Essential (5k€), vous êtes le seul partenaire de votre catégorie (ex: boissons, équipement) 
+                    dans la région parisienne pendant 90 jours. Pour le pack Premium (10k€), l'exclusivité s'étend à 
+                    <strong> toutes les catégories</strong> : aucun autre sponsor ne peut être associé à Vybbi Paris pendant cette période.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-3">
-                  <AccordionTrigger>Quels KPIs recevrons-nous ?</AccordionTrigger>
+                  <AccordionTrigger>Quelles mesures de performance sont fournies ?</AccordionTrigger>
                   <AccordionContent>
-                    Inscriptions, reach, vues, participations aux activations, clics UTM vers votre page sponsor, 
-                    mentions sociales et engagement. Vous recevrez un reporting hebdomadaire détaillé et un case study final 
-                    avec recommandations stratégiques pour la suite.
+                    Vous recevrez un reporting hebdomadaire incluant : nombre d'inscriptions depuis le lancement, 
+                    reach des publications mentionnant votre marque, engagement (likes, partages, commentaires), 
+                    clics UTM vers votre page sponsor, et taux de conversion. Un case study final complet sera fourni 
+                    en fin de partenariat avec recommandations stratégiques.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-4">
-                  <AccordionTrigger>Conditions pour marques alcool ?</AccordionTrigger>
+                  <AccordionTrigger>Quelles sont les modalités de paiement ?</AccordionTrigger>
                   <AccordionContent>
-                    Ciblage strict 18+, mentions sanitaires obligatoires, contenus et inventaires conformes à la loi Evin. 
-                    Nous nous assurons que toute publicité pour l'alcool respecte la réglementation française en vigueur.
+                    Paiement en une fois ou en deux versements (50% au lancement, 50% à J+45). 
+                    Facture conforme fournie, contrat de partenariat détaillé. Nous acceptons virement bancaire 
+                    et paiements CB pour les structures. Devis personnalisé disponible sur demande.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-5">
-                  <AccordionTrigger>Quelle est la durée du partenariat ?</AccordionTrigger>
-                  <AccordionContent>
-                    Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, 
-                    prévu le 8 avril 2025. Cette période couvre le lancement, les activations locales et le reporting final.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-6">
                   <AccordionTrigger>Peut-on personnaliser l'activation locale ?</AccordionTrigger>
                   <AccordionContent>
                     Absolument ! Vous choisissez entre 3 formats : <strong>Vybbi Sessions Paris</strong> (3 masterclass courtes), 
                     <strong>Top 50 Paris sponsorisé</strong> (classement des artistes les plus actifs), ou 
                     <strong>concours "Road to [Lieu]"</strong> (gagnant booké dans un lieu partenaire). 
                     Nous pouvons adapter le format selon vos objectifs et votre audience cible.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-6">
+                  <AccordionTrigger>Quelle audience puis-je toucher ?</AccordionTrigger>
+                  <AccordionContent>
+                    Vybbi cible les professionnels de la nuit et du spectacle à Paris : DJs, producteurs, 
+                    chanteurs, danseurs, magiciens, agents/managers, programmateurs de clubs, festivals et événements. 
+                    Une audience premium, ultra-engagée, avec un fort pouvoir de prescription dans l'industrie.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -661,7 +545,7 @@ export default function LaunchPartnerParis() {
                 une activation sur-mesure pour votre marque.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <PartnershipCTA source="landing-footer" size="lg" />
                 <Button variant="outline" size="lg" asChild onClick={handleDownload}>
                   <a href="/docs/vybbi-launch-partner-paris.pdf" download="Vybbi-Launch-Partner-Paris.pdf">
@@ -670,52 +554,9 @@ export default function LaunchPartnerParis() {
                   </a>
                 </Button>
               </div>
-              
-              <p className="text-sm text-muted-foreground">
-                Problème avec le formulaire ? <a 
-                  href="https://calendly.com/vybbiapp/30min" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="underline hover:text-foreground"
-                  data-event="cta_calendly_fallback"
-                >
-                  Réservez via ce lien direct Calendly
-                </a>
-              </p>
             </div>
           </div>
         </section>
-
-        {/* Section Calendly */}
-        <section className="py-16 px-6 bg-card border-t">
-          <div className="container mx-auto">
-            <div className="max-w-4xl mx-auto">
-              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-center">
-                Réservez votre échange Sponsoring avec Vybbi
-              </h2>
-              <p className="text-lg text-muted-foreground mb-8 text-center max-w-2xl mx-auto">
-                Choisissez le créneau qui vous convient. Nous préparerons des idées adaptées à votre audience et vos objectifs.
-              </p>
-
-              <div 
-                className="calendly-inline-widget calendly-dark-theme rounded-xl overflow-hidden shadow-lg"
-                data-url="https://calendly.com/vybbiapp/30min?hide_gdpr_banner=1&utm_source=site&utm_medium=widget&utm_campaign=sponsor"
-                style={{ minWidth: '320px', height: '700px' }}
-              />
-            </div>
-          </div>
-        </section>
-
-        <style>{`
-          /* Force dark theme on Calendly widget */
-          .calendly-dark-theme {
-            background-color: #14171F !important;
-          }
-          
-          .calendly-dark-theme iframe {
-            filter: invert(0.9) hue-rotate(180deg) brightness(0.95);
-          }
-        `}</style>
 
         {/* Footer conformité */}
         <footer className="border-t py-8 bg-muted/30">
@@ -741,6 +582,5 @@ export default function LaunchPartnerParis() {
           </div>
         </footer>
       </div>
-    </>
-  );
+    </>;
 }
