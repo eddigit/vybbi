@@ -78,6 +78,7 @@ import Blog from "./pages/Blog";
 import BlogPost from './pages/BlogPost';
 import Technologie from './pages/Technologie';
 import Fondateurs from './pages/Fondateurs';
+import LaunchPartnerParis from './pages/LaunchPartnerParis';
 import APropos from './pages/APropos';
 import AdminAds from './pages/AdminAds';
 import TopArtistes from './pages/TopArtistes';
@@ -255,6 +256,8 @@ const App = () => (
                       <Route path="/admin/prospecting" element={<AdminProspecting />} />
                       <Route path="/admin/email-diagnostics" element={<AdminEmailDiagnostics />} />
                       <Route path="/admin/mock-profiles" element={<AdminMockProfiles />} />
+
+                      <Route path="/partners/launch-paris" element={<LaunchPartnerParis />} />
 
                       <Route path="/affiliation" element={<InfluenceurDashboard />} />
                       <Route path="/influenceurs/:slug" element={<ArtistProfileBySlug />} />

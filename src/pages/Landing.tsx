@@ -331,6 +331,88 @@ export default function Landing() {
         </div>
       </section>
 
+      {/* Launch Partner Paris Section */}
+      <section className="py-16 px-6 bg-gradient-to-br from-primary/10 to-purple-500/10 border-y">
+        <div className="container mx-auto">
+          <div className="max-w-5xl mx-auto">
+            
+            {/* Badge exclusivité */}
+            <div className="flex justify-center mb-6">
+              <Badge variant="outline" className="text-sm px-4 py-2 bg-gradient-to-r from-purple-500/20 to-pink-500/20 border-purple-500/30 animate-pulse">
+                <Rocket className="w-4 h-4 mr-2" />
+                Exclusif – 1 seul slot disponible
+              </Badge>
+            </div>
+
+            <div className="grid lg:grid-cols-2 gap-12 items-center">
+              
+              {/* Colonne gauche : Texte */}
+              <div>
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                  Devenez le <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">Launch Partner Paris</span>
+                </h2>
+                <p className="text-lg md:text-xl text-muted-foreground mb-6">
+                  Vybbi ouvre sa bêta à Paris le 8 avril 2025 et cherche un partenaire unique pour porter le lancement.
+                </p>
+
+                {/* Liste des 5 bénéfices avec icônes CheckCircle */}
+                <ul className="space-y-3 mb-8">
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                    <span>Exclusivité Launch Partner Paris pendant 90 jours</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                    <span>"Presented by [Marque]" sur site, emails, réseaux et bêta</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                    <span>1 activation locale clé en main (Sessions/Top 50/Concours)</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                    <span>Page sponsor dédiée, liens traqués, reporting hebdo</span>
+                  </li>
+                  <li className="flex items-start">
+                    <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                    <span>Case study final et co-RP locale</span>
+                  </li>
+                </ul>
+
+                <Button size="lg" className="text-lg px-8 py-6" asChild>
+                  <Link to="/partners/launch-paris?utm_source=homepage&utm_medium=launch-section&utm_campaign=launch-paris">
+                    Demander un call de 15 min
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
+              </div>
+
+              {/* Colonne droite : Mockup visuel */}
+              <Card className="shadow-2xl border-2 border-primary/20">
+                <CardContent className="p-0">
+                  <div className="aspect-video bg-gradient-to-br from-background to-muted flex items-center justify-center relative overflow-hidden">
+                    {/* Logo Vybbi */}
+                    <div className="text-center p-8">
+                      <img src={vybbiLogo} alt="Vybbi" className="h-12 mx-auto mb-4" />
+                      <Badge className="bg-white/90 text-foreground text-lg px-6 py-2 shadow-lg">
+                        Presented by <span className="font-bold ml-2">[VOTRE MARQUE]</span>
+                      </Badge>
+                      <p className="text-sm text-muted-foreground mt-4">
+                        Votre logo sur tous nos supports pendant 90 jours
+                      </p>
+                    </div>
+                    {/* Éléments décoratifs */}
+                    <div className="absolute top-4 right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
+                    <div className="absolute bottom-4 left-4 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl" />
+                  </div>
+                </CardContent>
+              </Card>
+
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* Audiences Section */}
       <section className="py-12 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
