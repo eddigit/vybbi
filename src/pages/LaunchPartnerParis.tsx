@@ -644,13 +644,24 @@ export default function LaunchPartnerParis() {
               </p>
 
               <div 
-                className="calendly-inline-widget rounded-xl overflow-hidden shadow-lg"
-                data-url="https://calendly.com/vybbiapp/30min?hide_gdpr_banner=1&background_color=%2314171F&primary_color=%239D5CFF&text_color=%23ECECEE&utm_source=site&utm_medium=widget&utm_campaign=sponsor"
+                className="calendly-inline-widget calendly-dark-theme rounded-xl overflow-hidden shadow-lg"
+                data-url="https://calendly.com/vybbiapp/30min?hide_gdpr_banner=1&utm_source=site&utm_medium=widget&utm_campaign=sponsor"
                 style={{ minWidth: '320px', height: '700px' }}
               />
             </div>
           </div>
         </section>
+
+        <style>{`
+          /* Force dark theme on Calendly widget */
+          .calendly-dark-theme {
+            background-color: #14171F !important;
+          }
+          
+          .calendly-dark-theme iframe {
+            filter: invert(0.9) hue-rotate(180deg) brightness(0.95);
+          }
+        `}</style>
 
         {/* Footer conformité */}
         <footer className="border-t py-8 bg-muted/30">
