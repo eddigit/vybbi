@@ -62,7 +62,7 @@ export default function Parrainage() {
     {
       step: "2",
       title: "Vos contacts s'inscrivent",
-      description: "Ils bénéficient de {isLoading ? '...' : trialDays} jours gratuits + 20% de réduction sur leur premier abonnement{isPromotionalActive && !isLoading ? ' (Offre limitée)' : ''}",
+      description: `Ils bénéficient de ${trialDays || 14} jours gratuits + 20% de réduction sur leur premier abonnement${isPromotionalActive ? ' (Offre limitée)' : ''}`,
       icon: Gift
     },
     {
@@ -190,8 +190,8 @@ export default function Parrainage() {
                 </div>
                 <div className="text-left">
                   <div className="text-xl font-bold text-foreground">
-                    {isLoading ? '...' : trialDays} jours gratuits
-                    {isPromotionalActive && !isLoading && ' 🎉'}
+                    {trialDays || 14} jours gratuits
+                    {isPromotionalActive && ' 🎉'}
                   </div>
                   <div className="text-muted-foreground">Accès complet sans engagement</div>
                 </div>

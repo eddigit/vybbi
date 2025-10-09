@@ -231,7 +231,7 @@ export default function NosArtistes() {
         
         <div className="bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10 rounded-2xl p-6 max-w-4xl mx-auto">
           <p className="text-lg text-foreground font-medium mb-4">
-            ✨ Inscription gratuite • {trialLoading ? '...' : trialDays} jours d'essai offerts
+            ✨ Inscription gratuite • {trialDays || 14} jours d'essai offerts
             {isPromotionalActive && !trialLoading && (
               <span className="text-sm ml-2 text-green-600">(Offre limitée)</span>
             )}

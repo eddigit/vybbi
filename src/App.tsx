@@ -110,6 +110,7 @@ import WebTV from "./pages/WebTV";
 import Radio from "./pages/Radio";
 import Token from "./pages/Token";
 import VybbiTokens from "./pages/VybbiTokens";
+import BetaStats from "./pages/BetaStats";
 import ClaimVenueProfile from "./pages/ClaimVenueProfile";
 
 // Configure React Query with optimizations
@@ -273,6 +274,7 @@ const App = () => (
                       <Route path="/contact" element={<Contact />} />
                       <Route path="/token" element={<Token />} />
                       <Route path="/vybbi-tokens" element={<VybbiTokens />} />
+                      <Route path="/beta-stats" element={<BetaStats />} />
                       <Route path="/system-test" element={<SystemTest />} />
                       <Route path="/webtv" element={<WebTV />} />
                       <Route path="/radio" element={<Radio />} />

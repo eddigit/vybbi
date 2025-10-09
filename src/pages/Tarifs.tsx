@@ -106,7 +106,7 @@ export default function Tarifs() {
             Des tarifs adaptés à chaque profil
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Choisissez l'abonnement qui correspond à vos besoins. Tous les plans incluent {trialDays} jours d'essai gratuit 
+            Choisissez l'abonnement qui correspond à vos besoins. Tous les plans incluent {trialDays || 14} jours d'essai gratuit 
             {isPromotionalActive && " (offre limitée)"}.
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
@@ -146,7 +146,7 @@ export default function Tarifs() {
                       <span className="text-muted-foreground">{plan.period}</span>
                     </div>
                     <p className="text-sm text-success font-medium">
-                      {trialDays} jours gratuits{isPromotionalActive && " (offre limitée)"}
+                      {trialDays || 14} jours gratuits{isPromotionalActive && " (offre limitée)"}
                     </p>
                   </CardHeader>
                   
@@ -167,7 +167,7 @@ export default function Tarifs() {
                       asChild
                     >
                       <Link to="/auth">
-                        Commencer {trialDays} jours gratuits
+                        Commencer {trialDays || 14} jours gratuits
                       </Link>
                     </Button>
                   </CardContent>
@@ -255,7 +255,7 @@ export default function Tarifs() {
               <CardContent className="p-6">
                 <h3 className="font-semibold text-lg mb-2">Comment fonctionne l'essai gratuit ?</h3>
                 <p className="text-muted-foreground">
-                  Vous bénéficiez de {trialDays} jours d'accès complet à toutes les fonctionnalités, sans aucun engagement. 
+                  Vous bénéficiez de {trialDays || 14} jours d'accès complet à toutes les fonctionnalités, sans aucun engagement. 
                   Vous pouvez annuler à tout moment pendant cette période.
                 </p>
               </CardContent>
@@ -283,7 +283,7 @@ export default function Tarifs() {
           </p>
           <Button size="lg" asChild className="text-lg px-8 py-6">
             <Link to="/auth">
-              Commencer {trialDays} jours gratuits
+              Commencer {trialDays || 14} jours gratuits
             </Link>
           </Button>
         </div>

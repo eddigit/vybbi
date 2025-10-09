@@ -83,39 +83,39 @@ export default function Landing() {
     gradient: "from-violet-500 to-purple-500"
   }];
   const testimonials = [{
-    name: "Alexandre M.",
-    role: "Bêta-testeur • DJ Techno",
-    image: "/placeholder.svg",
-    quote: "En phase de test depuis 3 mois, l'interface est vraiment pensée pour nous. Hâte du lancement officiel !",
+    name: "Hugo KORZEC",
+    role: "Co-fondateur & CEO Vybbi",
+    image: "/images/team/hugo.jpg",
+    quote: "Notre mission: créer LA référence sociale de la nuit. Vous n'êtes pas des utilisateurs, vous êtes des fondateurs.",
     rating: 5
   }, {
-    name: "Sarah L.",
-    role: "Early Adopter • Organisatrice événements",
-    image: "/placeholder.svg",
-    quote: "J'ai eu accès à la preview et c'est exactement ce qu'il nous manquait dans l'industrie. Révolutionnaire.",
+    name: "Gil ANDERSON",
+    role: "Co-fondateur & CTO Vybbi",
+    image: "/images/team/gil.jpg",
+    quote: "Technologie blockchain + IA pour garantir authenticité et sécurité. Vos données sont sacrées.",
     rating: 5
   }, {
     name: "Le Studio 404",
-    role: "Partenaire de lancement • Paris",
-    image: "/placeholder.svg",
-    quote: "Nous avons choisi d'être partenaire fondateur car cette plateforme va changer la donne.",
+    role: "Partenaire Bêta • Paris 11e",
+    image: "/images/partners/studio404.jpg",
+    quote: "Premiers à tester le système de booking intelligent. Impressionnés par la roadmap et l'engagement de l'équipe.",
     rating: 5
   }];
   const stats = [{
-    number: "10K+",
-    label: "Artistes ciblés"
+    number: "Beta",
+    label: "Phase de lancement Paris"
   }, {
-    number: "€2M+",
-    label: "Volume d'affaires traité"
+    number: "50+",
+    label: "Bêta-testeurs actifs"
   }, {
-    number: "5K+",
-    label: "Opportunités événementielles"
+    number: "Objectif 5K",
+    label: "Opportunités en 12 mois"
   }, {
-    number: "500+",
-    label: "Lieux partenaires"
+    number: "100+",
+    label: "Lieux ciblés Paris/IDF"
   }, {
-    number: "150+",
-    label: "Villes couvertes"
+    number: "Q3 2025",
+    label: "Déploiement national"
   }, {
     number: "24h/24",
     label: "Radio <span className='font-vybbi'>Vybbi</span>"
@@ -297,6 +297,39 @@ export default function Landing() {
       </div>
     </div>
     </section>
+
+      {/* Brand Safety & Conformity Section */}
+      <section className="py-8 bg-muted/50 border-y">
+        <div className="container mx-auto text-center">
+          <div className="max-w-5xl mx-auto">
+            <div className="flex justify-center items-center gap-6 flex-wrap mb-4">
+              <Badge variant="outline" className="text-sm px-4 py-2 bg-background">
+                <Shield className="w-4 h-4 mr-2 text-green-600" />
+                🔒 RGPD Conforme
+              </Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2 bg-background">
+                <CheckCircle className="w-4 h-4 mr-2 text-blue-600" />
+                ✓ Modération 24/7
+              </Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2 bg-background">
+                <Shield className="w-4 h-4 mr-2 text-purple-600" />
+                🛡️ Brand Safety Certifié
+              </Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2 bg-background">
+                <Globe className="w-4 h-4 mr-2 text-primary" />
+                🇫🇷 Hébergement France (Supabase EU)
+              </Badge>
+              <Badge variant="outline" className="text-sm px-4 py-2 bg-background">
+                <Blockchain className="w-4 h-4 mr-2 text-violet-600" />
+                Certification Blockchain (Solana)
+              </Badge>
+            </div>
+            <p className="text-xs text-muted-foreground mt-2">
+              Plateforme sécurisée, données cryptées, authentification multi-facteurs disponible
+            </p>
+          </div>
+        </div>
+      </section>
 
       {/* Audiences Section */}
       <section className="py-12 px-2 sm:px-6 bg-muted/30">
@@ -763,8 +796,7 @@ export default function Landing() {
                 Prêt à transformer votre activité musicale ?
               </h3>
               <p className="text-muted-foreground mb-6">
-                Rejoignez plus de 10 000 professionnels qui utilisent déjà <span className="font-vybbi">Vybbi</span> pour développer 
-                leur réseau et augmenter leurs bookings. Essai gratuit de {isLoading ? '...' : trialDays} jours, puis seulement 49€/mois.
+                Rejoignez notre communauté beta limitée de professionnels pionniers qui testent Vybbi et façonnent l'avenir du networking dans la nuit. Essai gratuit de {trialDays || 14} jours, puis seulement 49€/mois.
                 {isPromotionalActive && !isLoading && <span className="block mt-2 text-green-600 font-medium">
                     🎉 Offre limitée : {trialDays} jours d'essai pour les premiers inscrits !
                   </span>}

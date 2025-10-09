@@ -43,6 +43,26 @@ const Token = () => {
       />
       
       <div className="min-h-screen bg-gradient-to-b from-background via-background/95 to-muted/30">
+        {/* Disclaimer Warning */}
+        <section className="py-6 px-4 bg-orange-50 dark:bg-orange-950/20 border-b border-orange-200 dark:border-orange-800">
+          <div className="max-w-4xl mx-auto">
+            <div className="flex items-start gap-4">
+              <Info className="w-6 h-6 text-orange-600 dark:text-orange-400 shrink-0 mt-1" />
+              <div>
+                <h3 className="font-semibold text-lg text-orange-900 dark:text-orange-100 mb-2">
+                  Option Crypto (Bêta testeurs uniquement)
+                </h3>
+                <p className="text-sm text-orange-800 dark:text-orange-200 leading-relaxed">
+                  Le token VYBBI est une option expérimentale <strong>SÉPARÉE de l'abonnement professionnel</strong>. 
+                  Aucune obligation d'achat. La plateforme Vybbi est 100% fonctionnelle sans token. Les investissements 
+                  en cryptomonnaies comportent des risques importants de perte en capital. Ne pas investir plus que 
+                  ce que vous êtes prêt à perdre. Ce token n'est pas un instrument financier réglementé.
+                </p>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Hero Section */}
         <section className="relative py-20 px-4 overflow-hidden">
           <div className="absolute inset-0 bg-gradient-to-r from-primary/10 to-primary-glow/10" />

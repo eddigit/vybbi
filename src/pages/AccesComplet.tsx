@@ -49,8 +49,8 @@ export default function AccesComplet() {
               </Badge>
             </div>
             <p className="text-xl font-semibold text-foreground mb-2">
-              Inscription gratuite • {isLoading ? '...' : trialDays} jours d'essai offerts
-              {isPromotionalActive && !isLoading && (
+              Inscription gratuite • {trialDays || 14} jours d'essai offerts
+              {isPromotionalActive && (
                 <span className="text-sm ml-2 text-muted-foreground">(Offre limitée)</span>
               )}
             </p>
@@ -151,10 +151,10 @@ export default function AccesComplet() {
         <div className="mt-16 text-center">
           <p className="text-xs text-muted-foreground max-w-2xl mx-auto">
             En créant un compte, vous acceptez nos conditions d'utilisation et notre politique de confidentialité. 
-            L'essai gratuit de {isLoading ? '...' : trialDays} jours vous permet de découvrir toutes les fonctionnalités sans restriction.
-            {isPromotionalActive && !isLoading && (
+            L'essai gratuit de {trialDays || 14} jours vous permet de découvrir toutes les fonctionnalités sans restriction.
+            {isPromotionalActive && (
               <span className="block mt-1 text-green-600">
-                🎉 Offre limitée : {trialDays} jours d'essai gratuit pour les premiers inscrits !
+                🎉 Offre limitée : {trialDays || 14} jours d'essai gratuit pour les premiers inscrits !
               </span>
             )}
           </p>
