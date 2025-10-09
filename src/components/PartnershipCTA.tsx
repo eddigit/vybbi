@@ -14,7 +14,7 @@ export const PartnershipCTA = ({
   size = 'lg',
   className 
 }: PartnershipCTAProps) => {
-  const calendlyUrl = `https://calendly.com/vybbi/launch-partner?utm_source=${source}&utm_medium=website&utm_campaign=launch-paris`;
+  const calendlyUrl = `https://calendly.com/vybbiapp/30min?utm_source=${source}&utm_medium=website&utm_campaign=launch-paris`;
   
   const handleClick = () => {
     // Analytics event (si Google Analytics configuré)
