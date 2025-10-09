@@ -172,9 +172,9 @@ export default function LaunchPartnerParis() {
                 </Badge>
               </div>
               
-              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">
-                Launch Partner Paris — Vybbi
-              </h1>
+          <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent font-vybbi">
+            Launch Partner Paris — Vybbi
+          </h1>
               
               <p className="text-xl md:text-2xl text-muted-foreground mb-8 max-w-3xl mx-auto">
                 Devenez le partenaire exclusif qui propulse le lancement de Vybbi à Paris. 
