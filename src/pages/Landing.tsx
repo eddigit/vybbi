@@ -352,7 +352,7 @@ export default function Landing() {
                   Devenez le <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">Launch Partner Paris</span>
                 </h2>
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
-                  Vybbi ouvre sa bêta à Paris le 8 avril 2025 et cherche un partenaire unique pour porter le lancement.
+                  Vybbi ouvre sa bêta à Paris début décembre 2025 et cherche un partenaire unique pour porter le lancement.
                 </p>
 
                 {/* Liste des 5 bénéfices avec icônes CheckCircle */}
@@ -363,15 +363,15 @@ export default function Landing() {
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                    <span>"Presented by [Marque]" sur site, emails, réseaux et bêta</span>
+                    <span>"Presented by [Marque]" sur site, bêta, emails et réseaux</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                    <span>1 activation locale clé en main (Sessions/Top 50/Concours)</span>
+                    <span>1 activation locale clé en main (Sessions / Top 50 / Concours)</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                    <span>Page sponsor dédiée, liens traqués, reporting hebdo</span>
+                    <span>Page sponsor dédiée, liens traqués, reporting hebdomadaire</span>
                   </li>
                   <li className="flex items-start">
                     <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />

@@ -48,7 +48,7 @@ export default function LaunchPartnerParis() {
       "url": "https://vybbi.com"
     },
     "validFrom": "2025-01-15",
-    "validThrough": "2025-08-30"
+    "validThrough": "2026-02-28"
   };
 
   // Structured Data pour les FAQ
@@ -61,7 +61,7 @@ export default function LaunchPartnerParis() {
         "name": "Quelle est la durée du partenariat Launch Partner Paris ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, prévu le 8 avril 2025."
+          "text": "Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, prévu début décembre 2025."
         }
       },
       {
@@ -236,7 +236,7 @@ export default function LaunchPartnerParis() {
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">Branding exclusif</p>
-                          <p className="text-sm text-muted-foreground">"Presented by [Marque]" sur bêta, homepage, emails</p>
+                          <p className="text-sm text-muted-foreground">"Presented by [Marque]" sur bêta, site, emails</p>
                         </div>
                       </div>
                       <div className="flex items-start">
@@ -346,7 +346,7 @@ export default function LaunchPartnerParis() {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <p className="text-lg">
-                    Lancement bêta Paris le <span className="font-bold text-orange-500">8 avril 2025</span>. 
+                    Lancement bêta Paris <span className="font-bold text-orange-500">début décembre 2025</span>. 
                   </p>
                   <p className="text-muted-foreground">
                     Être Launch Partner, c'est devenir l'<span className="font-semibold text-foreground">"early believer" fondateur</span>, 
