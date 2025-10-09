@@ -34,8 +34,14 @@ export const PartnershipCTA = ({
       asChild
       onClick={handleClick}
     >
-      <a href={calendlyUrl} target="_blank" rel="noopener noreferrer">
-        Réserver un call de 15 min
+      <a 
+        href={calendlyUrl} 
+        target="_blank" 
+        rel="noopener noreferrer"
+        aria-label="Réserver un call de 15 minutes – Launch Partner Paris"
+        data-event="cta_launch_partner_paris_page"
+      >
+        Réserver un call de 15 min aujourd'hui
         <ArrowRight className="ml-2 h-4 w-4" />
       </a>
     </Button>

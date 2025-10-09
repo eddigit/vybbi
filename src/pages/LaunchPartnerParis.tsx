@@ -59,34 +59,42 @@ export default function LaunchPartnerParis() {
     "mainEntity": [
       {
         "@type": "Question",
-        "name": "Quelle est la durée du partenariat Launch Partner Paris ?",
+        "name": "Combien de temps pour être visible après signature ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, prévu début décembre 2025."
+          "text": "Sous 7 jours ouvrés : branding 'Presented by' en place; sous 14 jours : activation planifiée avec vos équipes."
         }
       },
       {
         "@type": "Question",
-        "name": "Qu'est-ce que l'exclusivité géographique ?",
+        "name": "Puis-je avoir l'exclusivité de ma catégorie ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Vous êtes le seul partenaire de votre catégorie dans la région parisienne pendant 90 jours. Pour le pack 10k€, l'exclusivité s'étend à toutes les catégories."
+          "text": "Oui, avec le Pack Flagship (10 000 €), vous bénéficiez d'une exclusivité catégorielle (audio, boisson, média, etc.)."
         }
       },
       {
         "@type": "Question",
-        "name": "Quelles mesures de performance sont fournies ?",
+        "name": "Quels KPIs recevrons-nous ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Vous recevrez un reporting hebdomadaire incluant : inscriptions, reach, engagement, clics UTM, et conversion. Un case study final complet sera fourni en fin de partenariat."
+          "text": "Inscriptions, reach, vues, participations, clics UTM, mentions sociales. Reporting hebdomadaire et case study final."
         }
       },
       {
         "@type": "Question",
-        "name": "Quelles sont les modalités de paiement ?",
+        "name": "Conditions pour marques alcool ?",
         "acceptedAnswer": {
           "@type": "Answer",
-          "text": "Paiement en une fois ou en deux versements (50% au lancement, 50% à J+45). Facture conforme, contrat de partenariat fourni."
+          "text": "Ciblage 18+, mentions sanitaires obligatoires, inventaires conformes à la loi Evin."
+        }
+      },
+      {
+        "@type": "Question",
+        "name": "Quelle est la durée du partenariat ?",
+        "acceptedAnswer": {
+          "@type": "Answer",
+          "text": "Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, prévu le 8 avril 2025."
         }
       },
       {
@@ -151,9 +159,9 @@ export default function LaunchPartnerParis() {
   return (
     <>
       <SEOHead
-        title="Launch Partner Paris - Devenez le partenaire exclusif de Vybbi"
-        description="Rejoignez Vybbi comme Launch Partner exclusif à Paris. 90 jours d'activation, branding 'Presented by', reporting complet. 1 seul slot disponible."
-        keywords="partnership, sponsoring, marketing, paris, nightlife, music industry, launch partner, brand activation"
+        title="Launch Partner Paris – Vybbi (sponsoring exclusif 90 jours)"
+        description="Devenez le partenaire exclusif du lancement de Vybbi à Paris. 90 jours d'activation, branding 'Presented by', activations locales, reporting. Réservez un call de 15 min."
+        keywords="partnership, sponsoring, marketing, paris, nightlife, music industry, launch partner, brand activation, exclusivité géographique"
         canonicalUrl="https://vybbi.com/partners/launch-paris"
         structuredData={[offerStructuredData, faqStructuredData]}
         type="website"
@@ -182,7 +190,7 @@ export default function LaunchPartnerParis() {
                 "Presented by [Marque]" sur tous nos supports, et une audience ultra-ciblée d'artistes et de programmateurs.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
                 <PartnershipCTA source="landing-hero" size="lg" />
                 <Button variant="outline" size="lg" asChild onClick={handleDownload}>
                   <a href="/docs/vybbi-launch-partner-paris.pdf" download="Vybbi-Launch-Partner-Paris.pdf">
@@ -191,6 +199,18 @@ export default function LaunchPartnerParis() {
                   </a>
                 </Button>
               </div>
+              
+              <p className="text-sm text-muted-foreground mb-12">
+                Problème avec le formulaire ? <a 
+                  href="https://calendly.com/vybbiapp/30min" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="underline hover:text-foreground"
+                  data-event="cta_calendly_fallback"
+                >
+                  Réservez via ce lien direct Calendly
+                </a>
+              </p>
 
               {/* Mockup "Presented by" */}
               <Card className="shadow-2xl border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30">
@@ -249,6 +269,39 @@ export default function LaunchPartnerParis() {
           </div>
         </section>
 
+        {/* Timeline "Ce que vous obtenez en 15 jours" */}
+        <section className="py-12 px-6 bg-gradient-to-br from-green-500/10 to-background">
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto">
+              <Card className="border-2 border-green-500/30">
+                <CardHeader className="text-center">
+                  <div className="flex items-center justify-center gap-3 mb-2">
+                    <Zap className="w-8 h-8 text-green-500" />
+                    <CardTitle className="text-2xl md:text-3xl">Ce que vous obtenez en 15 jours</CardTitle>
+                  </div>
+                  <CardDescription>Activation ultra-rapide pour maximiser votre impact</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-4">
+                    <div className="flex items-start gap-4">
+                      <Badge variant="outline" className="shrink-0 bg-green-500/20 text-green-700 dark:text-green-400">J+7</Badge>
+                      <p className="text-sm md:text-base">
+                        <span className="font-semibold">Visibilité "Presented by" en place</span> — Votre branding live sur la plateforme, site web, emails et réseaux sociaux.
+                      </p>
+                    </div>
+                    <div className="flex items-start gap-4">
+                      <Badge variant="outline" className="shrink-0 bg-green-500/20 text-green-700 dark:text-green-400">J+14</Badge>
+                      <p className="text-sm md:text-base">
+                        <span className="font-semibold">Activation planifiée, assets validés</span> — Format défini avec vos équipes, planning détaillé, matériel prêt.
+                      </p>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
         {/* L'Offre Launch Partner */}
         <section className="py-16 px-6">
           <div className="container mx-auto">
@@ -256,55 +309,48 @@ export default function LaunchPartnerParis() {
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">L'offre Launch Partner Paris</h2>
                 <p className="text-lg text-muted-foreground">
-                  Pilote 90 jours — 1 partenaire unique pour Paris
+                  Pilote 90 jours — 2 packs au choix
                 </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 mb-12">
-                {/* Pack 5k€ */}
+                {/* Pack Launch (5k€) */}
                 <Card className="border-2 hover:shadow-xl transition-all">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Essential</CardTitle>
+                      <CardTitle className="text-2xl">Pack Launch</CardTitle>
                       <Badge variant="outline">5 000 €</Badge>
                     </div>
-                    <CardDescription>Exclusivité géographique Paris</CardDescription>
+                    <CardDescription>Exclusivité géographique Paris (1 sponsor unique)</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Branding exclusif</p>
-                          <p className="text-sm text-muted-foreground">"Presented by [Marque]" sur bêta, site, emails</p>
+                          <p className="font-semibold">Branding "Presented by [Marque]"</p>
+                          <p className="text-sm text-muted-foreground">Sur bêta, site, emails, réseaux</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Activation locale au choix</p>
+                          <p className="font-semibold">1 activation locale</p>
                           <p className="text-sm text-muted-foreground">Sessions / Top 50 / Concours</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Page sponsor dédiée</p>
+                          <p className="font-semibold">Page sponsor standard</p>
                           <p className="text-sm text-muted-foreground">Présentation + offres + liens UTM</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Exclusivité Paris 90j</p>
-                          <p className="text-sm text-muted-foreground">Votre catégorie uniquement</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Reporting & Co-RP</p>
-                          <p className="text-sm text-muted-foreground">Hebdo + case study final</p>
+                          <p className="font-semibold">Reporting hebdo + case study final</p>
+                          <p className="text-sm text-muted-foreground">KPIs détaillés et recommandations</p>
                         </div>
                       </div>
                     </div>
@@ -312,7 +358,7 @@ export default function LaunchPartnerParis() {
                   </CardContent>
                 </Card>
 
-                {/* Pack 10k€ */}
+                {/* Pack Flagship (10k€) */}
                 <Card className="border-2 border-primary/50 hover:shadow-xl transition-all relative">
                   <div className="absolute -top-3 right-6">
                     <Badge className="bg-gradient-to-r from-primary to-purple-500 text-white">
@@ -322,46 +368,46 @@ export default function LaunchPartnerParis() {
                   </div>
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Premium</CardTitle>
+                      <CardTitle className="text-2xl">Pack Flagship</CardTitle>
                       <Badge variant="default">10 000 €</Badge>
                     </div>
-                    <CardDescription>Exclusivité catégorielle complète</CardDescription>
+                    <CardDescription>Tout le Pack Launch, plus :</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
+                        <Zap className="w-5 h-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Branding exclusif renforcé</p>
-                          <p className="text-sm text-muted-foreground">+ mentions dans vidéos & réseaux sociaux</p>
+                          <p className="font-semibold">Exclusivité catégorielle</p>
+                          <p className="text-sm text-muted-foreground">Audio / boisson / média / etc. (au choix)</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">2 activations locales</p>
-                          <p className="text-sm text-muted-foreground">Combinez plusieurs formats</p>
+                          <p className="text-sm text-muted-foreground">Formats combinables selon vos objectifs</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">Page sponsor premium</p>
-                          <p className="text-sm text-muted-foreground">Design sur-mesure + contenus enrichis</p>
+                          <p className="text-sm text-muted-foreground">Design sur-mesure, vidéo, contenus enrichis</p>
                         </div>
                       </div>
                       <div className="flex items-start">
-                        <Zap className="w-5 h-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
-                          <p className="font-semibold">Exclusivité TOUTES catégories</p>
-                          <p className="text-sm text-muted-foreground">Aucun autre sponsor Paris 90j</p>
+                          <p className="font-semibold">Branding renforcé</p>
+                          <p className="text-sm text-muted-foreground">Mentions dans vidéos & réseaux</p>
                         </div>
                       </div>
                       <div className="flex items-start">
                         <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
                         <div>
                           <p className="font-semibold">Co-RP amplifiée</p>
-                          <p className="text-sm text-muted-foreground">Communiqué de presse + médias partenaires</p>
+                          <p className="text-sm text-muted-foreground">Communiqué + médias partenaires</p>
                         </div>
                       </div>
                     </div>
@@ -549,57 +595,53 @@ export default function LaunchPartnerParis() {
 
               <Accordion type="single" collapsible className="w-full">
                 <AccordionItem value="item-1">
-                  <AccordionTrigger>Quelle est la durée du partenariat ?</AccordionTrigger>
+                  <AccordionTrigger>Combien de temps pour être visible après signature ?</AccordionTrigger>
                   <AccordionContent>
-                    Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, 
-                    prévu le 8 avril 2025. Cette période couvre le lancement, l'activation locale et le reporting final.
+                    Sous 7 jours ouvrés : branding "Presented by" en place; sous 14 jours : activation planifiée avec vos équipes. 
+                    Nous garantissons un démarrage ultra-rapide pour maximiser votre impact dès le lancement.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-2">
-                  <AccordionTrigger>Qu'est-ce que l'exclusivité géographique ?</AccordionTrigger>
+                  <AccordionTrigger>Puis-je avoir l'exclusivité de ma catégorie ?</AccordionTrigger>
                   <AccordionContent>
-                    Pour le pack Essential (5k€), vous êtes le seul partenaire de votre catégorie (ex: boissons, équipement) 
-                    dans la région parisienne pendant 90 jours. Pour le pack Premium (10k€), l'exclusivité s'étend à 
-                    <strong> toutes les catégories</strong> : aucun autre sponsor ne peut être associé à Vybbi Paris pendant cette période.
+                    Oui, avec le Pack Flagship (10 000 €), vous bénéficiez d'une exclusivité catégorielle (audio, boisson, média, etc.). 
+                    Cela signifie qu'aucun concurrent direct de votre secteur ne pourra sponsoriser Vybbi Paris pendant 90 jours.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-3">
-                  <AccordionTrigger>Quelles mesures de performance sont fournies ?</AccordionTrigger>
+                  <AccordionTrigger>Quels KPIs recevrons-nous ?</AccordionTrigger>
                   <AccordionContent>
-                    Vous recevrez un reporting hebdomadaire incluant : nombre d'inscriptions depuis le lancement, 
-                    reach des publications mentionnant votre marque, engagement (likes, partages, commentaires), 
-                    clics UTM vers votre page sponsor, et taux de conversion. Un case study final complet sera fourni 
-                    en fin de partenariat avec recommandations stratégiques.
+                    Inscriptions, reach, vues, participations aux activations, clics UTM vers votre page sponsor, 
+                    mentions sociales et engagement. Vous recevrez un reporting hebdomadaire détaillé et un case study final 
+                    avec recommandations stratégiques pour la suite.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-4">
-                  <AccordionTrigger>Quelles sont les modalités de paiement ?</AccordionTrigger>
+                  <AccordionTrigger>Conditions pour marques alcool ?</AccordionTrigger>
                   <AccordionContent>
-                    Paiement en une fois ou en deux versements (50% au lancement, 50% à J+45). 
-                    Facture conforme fournie, contrat de partenariat détaillé. Nous acceptons virement bancaire 
-                    et paiements CB pour les structures. Devis personnalisé disponible sur demande.
+                    Ciblage strict 18+, mentions sanitaires obligatoires, contenus et inventaires conformes à la loi Evin. 
+                    Nous nous assurons que toute publicité pour l'alcool respecte la réglementation française en vigueur.
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-5">
+                  <AccordionTrigger>Quelle est la durée du partenariat ?</AccordionTrigger>
+                  <AccordionContent>
+                    Le partenariat Launch Partner dure 90 jours à partir du lancement de la bêta Vybbi à Paris, 
+                    prévu le 8 avril 2025. Cette période couvre le lancement, les activations locales et le reporting final.
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-6">
                   <AccordionTrigger>Peut-on personnaliser l'activation locale ?</AccordionTrigger>
                   <AccordionContent>
                     Absolument ! Vous choisissez entre 3 formats : <strong>Vybbi Sessions Paris</strong> (3 masterclass courtes), 
                     <strong>Top 50 Paris sponsorisé</strong> (classement des artistes les plus actifs), ou 
                     <strong>concours "Road to [Lieu]"</strong> (gagnant booké dans un lieu partenaire). 
                     Nous pouvons adapter le format selon vos objectifs et votre audience cible.
-                  </AccordionContent>
-                </AccordionItem>
-
-                <AccordionItem value="item-6">
-                  <AccordionTrigger>Quelle audience puis-je toucher ?</AccordionTrigger>
-                  <AccordionContent>
-                    Vybbi cible les professionnels de la nuit et du spectacle à Paris : DJs, producteurs, 
-                    chanteurs, danseurs, magiciens, agents/managers, programmateurs de clubs, festivals et événements. 
-                    Une audience premium, ultra-engagée, avec un fort pouvoir de prescription dans l'industrie.
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
@@ -619,7 +661,7 @@ export default function LaunchPartnerParis() {
                 une activation sur-mesure pour votre marque.
               </p>
               
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
+              <div className="flex flex-col sm:flex-row gap-4 justify-center mb-4">
                 <PartnershipCTA source="landing-footer" size="lg" />
                 <Button variant="outline" size="lg" asChild onClick={handleDownload}>
                   <a href="/docs/vybbi-launch-partner-paris.pdf" download="Vybbi-Launch-Partner-Paris.pdf">
@@ -628,6 +670,18 @@ export default function LaunchPartnerParis() {
                   </a>
                 </Button>
               </div>
+              
+              <p className="text-sm text-muted-foreground">
+                Problème avec le formulaire ? <a 
+                  href="https://calendly.com/vybbiapp/30min" 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  className="underline hover:text-foreground"
+                  data-event="cta_calendly_fallback"
+                >
+                  Réservez via ce lien direct Calendly
+                </a>
+              </p>
             </div>
           </div>
         </section>
