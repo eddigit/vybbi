@@ -633,7 +633,7 @@ export default function LaunchPartnerParis() {
         </section>
 
         {/* Section Calendly */}
-        <section className="py-16 px-6 bg-background">
+        <section className="py-16 px-6 bg-card border-t">
           <div className="container mx-auto">
             <div className="max-w-4xl mx-auto">
               <h2 className="text-3xl md:text-4xl font-bold mb-3 text-center">
@@ -645,8 +645,8 @@ export default function LaunchPartnerParis() {
 
               <div 
                 className="calendly-inline-widget rounded-xl overflow-hidden shadow-lg"
-                data-url="https://calendly.com/d/ctcx-rhp-tx5?hide_gdpr_banner=1&background_color=%23F7F9FC&primary_color=%235B7CFF&text_color=%230A1F44&utm_source=site&utm_medium=widget&utm_campaign=sponsor"
-                style={{ minWidth: '320px', height: '740px' }}
+                data-url="https://calendly.com/vybbiapp/30min?hide_gdpr_banner=1&background_color=%2314171F&primary_color=%239D5CFF&text_color=%23ECECEE&utm_source=site&utm_medium=widget&utm_campaign=sponsor"
+                style={{ minWidth: '320px', height: '700px' }}
               />
             </div>
           </div>
