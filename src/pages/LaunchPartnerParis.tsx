@@ -115,20 +115,7 @@ export default function LaunchPartnerParis() {
               {/* Mockup "Presented by" */}
               <Card className="shadow-2xl border-2 border-primary/20 bg-gradient-to-br from-background to-muted/30">
                 <CardContent className="p-0">
-                  <div className="aspect-video flex items-center justify-center relative overflow-hidden">
-                    <div className="text-center p-8">
-                      <img src={vybbiLogo} alt="Vybbi" className="h-12 md:h-16 mx-auto mb-6" />
-                      <Badge className="bg-white/90 text-gray-900 text-base md:text-lg px-6 py-2 shadow-lg">
-                        Presented by <span className="font-bold ml-2">[VOTRE MARQUE]</span>
-                      </Badge>
-                      <p className="text-sm md:text-base text-muted-foreground mt-6">
-                        Votre logo sur tous nos supports pendant 90 jours
-                      </p>
-                    </div>
-                    {/* Decorative elements */}
-                    <div className="absolute top-4 right-4 w-24 h-24 bg-primary/10 rounded-full blur-2xl" />
-                    <div className="absolute bottom-4 left-4 w-32 h-32 bg-purple-500/10 rounded-full blur-2xl" />
-                  </div>
+                  
                 </CardContent>
               </Card>
             </div>
