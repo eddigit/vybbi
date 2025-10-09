@@ -6,14 +6,7 @@ import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
 import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket, Search } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { TickerBanner } from "@/components/TickerBanner";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
 
@@ -46,16 +39,28 @@ export default function Landing() {
     isPromotionalActive,
     isLoading
   } = useTrialConfig();
-
-  const navigationLinks = [
-    { href: "/a-propos", label: "À propos" },
-    { href: "/top-artistes", label: "Top Artistes" },
-    { href: "/pour-artistes", label: "Pour Artistes" },
-    { href: "/pour-agents-managers", label: "Pour Agents" },
-    { href: "/pour-lieux-evenements", label: "Pour Lieux" },
-    { href: "/technologie", label: "Technologie" },
-    { href: "/blog", label: "Blog" }
-  ];
+  const navigationLinks = [{
+    href: "/a-propos",
+    label: "À propos"
+  }, {
+    href: "/top-artistes",
+    label: "Top Artistes"
+  }, {
+    href: "/pour-artistes",
+    label: "Pour Artistes"
+  }, {
+    href: "/pour-agents-managers",
+    label: "Pour Agents"
+  }, {
+    href: "/pour-lieux-evenements",
+    label: "Pour Lieux"
+  }, {
+    href: "/technologie",
+    label: "Technologie"
+  }, {
+    href: "/blog",
+    label: "Blog"
+  }];
   const features = [{
     icon: Users,
     title: "Marketplace Unifiée",
@@ -122,7 +127,9 @@ export default function Landing() {
   }];
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
-      <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{ paddingTop: `calc(3.5rem + env(safe-area-inset-top))` }}>
+      <section className="pt-24 sm:pt-28 pb-4 px-3 sm:px-6" style={{
+      paddingTop: `calc(3.5rem + env(safe-area-inset-top))`
+    }}>
         <div className="mx-auto max-w-[1800px] 2xl:max-w-[1920px] px-2 sm:px-4">
         <div className="hidden md:grid md:grid-cols-[180px_minmax(0,1fr)_180px] gap-6 items-start">
             {/* Left Ad Slot - Desktop only */}
@@ -394,7 +401,7 @@ export default function Landing() {
                     {/* Logo Vybbi */}
                     <div className="text-center p-8">
                       <img src={vybbiLogo} alt="Vybbi" className="h-12 mx-auto mb-4" />
-                      <Badge className="bg-white/90 text-foreground text-lg px-6 py-2 shadow-lg">
+                      <Badge className="text-foreground text-lg px-6 py-2 shadow-lg bg-fuchsia-900">
                         Presented by <span className="font-bold ml-2">[VOTRE MARQUE]</span>
                       </Badge>
                       <p className="text-sm text-muted-foreground mt-4">
@@ -1165,11 +1172,7 @@ export default function Landing() {
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
               <div className="relative bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-2xl p-6 backdrop-blur-sm border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
-                <img 
-                  src={vybbiMemeSpace} 
-                  alt="VYBBI Token Space Meme" 
-                  className="w-full h-auto rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300"
-                />
+                <img src={vybbiMemeSpace} alt="VYBBI Token Space Meme" className="w-full h-auto rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300" />
                 <div className="absolute top-4 right-4">
                   <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-purple-500/30">
                     <span className="text-xs font-medium text-purple-300">🌌 To the Moon!</span>
@@ -1182,11 +1185,7 @@ export default function Landing() {
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
               <div className="relative bg-gradient-to-bl from-pink-900/30 to-purple-900/30 rounded-2xl p-6 backdrop-blur-sm border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:scale-105">
-                <img 
-                  src={vybbiDjToken} 
-                  alt="VYBBI DJ Control Token" 
-                  className="w-full h-auto rounded-xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300"
-                />
+                <img src={vybbiDjToken} alt="VYBBI DJ Control Token" className="w-full h-auto rounded-xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300" />
                 <div className="absolute top-4 right-4">
                   <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-pink-500/30">
                     <span className="text-xs font-medium text-pink-300">🎧 Music Power</span>
@@ -1242,11 +1241,7 @@ export default function Landing() {
           {/* CTA Section */}
           <div className="text-center">
             <div className="inline-flex flex-col sm:flex-row gap-4 bg-gradient-to-r from-purple-900/30 to-pink-900/30 backdrop-blur-sm rounded-2xl p-8 border border-purple-500/20">
-              <Button 
-                size="lg" 
-                className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-none shadow-lg hover:shadow-purple-500/25 text-lg px-8 py-6 animate-pulse hover:animate-none" 
-                asChild
-              >
+              <Button size="lg" className="bg-gradient-to-r from-purple-500 to-pink-500 hover:from-purple-600 hover:to-pink-600 text-white border-none shadow-lg hover:shadow-purple-500/25 text-lg px-8 py-6 animate-pulse hover:animate-none" asChild>
                 <Link to="/token">
                   <Coins className="mr-2 h-5 w-5" />
                   Découvrir le <span className="font-vybbi">VYBBI</span> Token
@@ -1254,12 +1249,7 @@ export default function Landing() {
                 </Link>
               </Button>
               
-              <Button 
-                size="lg" 
-                variant="outline" 
-                className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400/50 text-lg px-8 py-6" 
-                asChild
-              >
+              <Button size="lg" variant="outline" className="border-purple-500/30 text-purple-300 hover:bg-purple-500/10 hover:border-purple-400/50 text-lg px-8 py-6" asChild>
                 <Link to="/token#roadmap">
                   <Star className="mr-2 h-4 w-4" />
                   Voir la Roadmap
