@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
@@ -107,6 +108,45 @@ export default function LaunchPartnerParis() {
       });
     }
   };
+
+  // Charger Calendly dynamiquement
+  useEffect(() => {
+    // Charger le CSS Calendly
+    const link = document.createElement('link');
+    link.href = 'https://assets.calendly.com/assets/external/widget.css';
+    link.rel = 'stylesheet';
+    document.head.appendChild(link);
+
+    // Charger le JS Calendly
+    const script = document.createElement('script');
+    script.src = 'https://assets.calendly.com/assets/external/widget.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    // Écouter l'événement de planification Calendly
+    const handleCalendlyEvent = (e: MessageEvent) => {
+      if (e.data?.event === 'calendly.event_scheduled') {
+        if (typeof (window as any).gtag === 'function') {
+          (window as any).gtag('event', 'calendly_event_scheduled', {
+            event_category: 'booking',
+            event_label: 'sponsor'
+          });
+        }
+        if (typeof (window as any).fbq === 'function') {
+          (window as any).fbq('track', 'Schedule', { content_name: 'sponsor' });
+        }
+      }
+    };
+
+    window.addEventListener('message', handleCalendlyEvent);
+
+    // Cleanup
+    return () => {
+      document.head.removeChild(link);
+      document.body.removeChild(script);
+      window.removeEventListener('message', handleCalendlyEvent);
+    };
+  }, []);
 
   return (
     <>
@@ -588,6 +628,26 @@ export default function LaunchPartnerParis() {
                   </a>
                 </Button>
               </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Section Calendly */}
+        <section className="py-16 px-6 bg-background">
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold mb-3 text-center">
+                Réservez votre échange Sponsoring avec Vybbi
+              </h2>
+              <p className="text-lg text-muted-foreground mb-8 text-center max-w-2xl mx-auto">
+                Choisissez le créneau qui vous convient. Nous préparerons des idées adaptées à votre audience et vos objectifs.
+              </p>
+
+              <div 
+                className="calendly-inline-widget rounded-xl overflow-hidden shadow-lg"
+                data-url="https://calendly.com/d/ctcx-rhp-tx5?hide_gdpr_banner=1&background_color=%23F7F9FC&primary_color=%235B7CFF&text_color=%230A1F44&utm_source=site&utm_medium=widget&utm_campaign=sponsor"
+                style={{ minWidth: '320px', height: '740px' }}
+              />
             </div>
           </div>
         </section>
