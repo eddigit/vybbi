@@ -29,7 +29,7 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { PartnershipCTA } from '@/components/PartnershipCTA';
-import vybbiLogo from "@/assets/vybbi-logo.png";
+import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
 
 export default function LaunchPartnerParis() {
   // Structured Data pour l'offre
@@ -158,7 +158,7 @@ export default function LaunchPartnerParis() {
                   <div className="aspect-video flex items-center justify-center relative overflow-hidden">
                     <div className="text-center p-8">
                       <img src={vybbiLogo} alt="Vybbi" className="h-12 md:h-16 mx-auto mb-6" />
-                      <Badge className="bg-white/90 text-foreground text-base md:text-lg px-6 py-2 shadow-lg">
+                      <Badge className="bg-white/90 text-gray-900 text-base md:text-lg px-6 py-2 shadow-lg">
                         Presented by <span className="font-bold ml-2">[VOTRE MARQUE]</span>
                       </Badge>
                       <p className="text-sm md:text-base text-muted-foreground mt-6">

@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Link } from 'react-router-dom';
 import React from 'react';
 import vybbiLogoMobile from "@/assets/vybbi-logo-mobile.png";
-import vybbiLogo from "@/assets/vybbi-logo.png";
+import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
 import { Music, Users, Building2, Star, MessageCircle, FileCheck, CreditCard, TrendingUp, ArrowRight, Play, CheckCircle, Zap, Globe, Shield, Gift, Brain, BarChart3, Trophy, Menu, X, Coins, Rocket, Search } from 'lucide-react';
 import { Badge } from "@/components/ui/badge";
 import { AdSlot } from "@/components/ads/AdSlot";
