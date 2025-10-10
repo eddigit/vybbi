@@ -105,7 +105,7 @@ export default function LaunchPartnerParis() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center mb-12">
                 <PartnershipCTA source="landing-hero" size="lg" />
                 <Button variant="outline" size="lg" asChild onClick={handleDownload}>
-                  <a href="/docs/vybbi-launch-partner-paris.pdf" download="Vybbi-Launch-Partner-Paris.pdf">
+                  <a href="/docs/vybbi-launch-partner-paris.pdf" download="VYBBIapp-La-plateforme-qui-revolutionne-la-decouverte-et-le-booking-des-jeunes-talents.pdf">
                     <Download className="mr-2 h-5 w-5" />
                     Télécharger le one-pager
                   </a>
@@ -535,7 +535,7 @@ export default function LaunchPartnerParis() {
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <PartnershipCTA source="landing-footer" size="lg" />
                 <Button variant="outline" size="lg" asChild onClick={handleDownload}>
-                  <a href="/docs/vybbi-launch-partner-paris.pdf" download="Vybbi-Launch-Partner-Paris.pdf">
+                  <a href="/docs/vybbi-launch-partner-paris.pdf" download="VYBBIapp-La-plateforme-qui-revolutionne-la-decouverte-et-le-booking-des-jeunes-talents.pdf">
                     <Download className="mr-2 h-5 w-5" />
                     Télécharger le one-pager
                   </a>
