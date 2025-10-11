@@ -3,7 +3,7 @@ import { SEOHead } from '@/components/SEOHead';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Rocket, Users, Building2, Radio, Brain, Calendar, FileCheck, CheckCircle, Target, TrendingUp, Shield, AlertTriangle, Coins, Clock, Award, Download, Zap } from 'lucide-react';
+import { Rocket, Users, Building2, Radio, Brain, Calendar, FileCheck, CheckCircle, Target, TrendingUp, Shield, AlertTriangle, Coins, Clock, Award, Download, Zap, X, Heart, Briefcase, MapPin } from 'lucide-react';
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 import { PartnershipCTA } from '@/components/PartnershipCTA';
 import vybbiLogo from "@/assets/vybbi-wolf-logo.png";
@@ -122,50 +122,264 @@ export default function LaunchPartnerParis() {
           </div>
         </section>
 
-        {/* Pourquoi Vybbi */}
+        {/* Notre Mission */}
+        <section className="py-16 px-6 bg-muted/30">
+          <div className="container mx-auto">
+            <div className="max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl md:text-4xl font-bold mb-6">Notre Mission</h2>
+              <p className="text-lg text-muted-foreground mb-4">
+                Vybbi connecte les <span className="font-semibold text-foreground">jeunes talents artistiques</span> (DJ, 
+                chanteurs, danseurs, magiciens) et les <span className="font-semibold text-foreground">professionnels de l'industrie</span> (agents, 
+                managers, lieux, festivals).
+              </p>
+              <p className="text-xl font-semibold text-primary">
+                Nous créons l'écosystème manquant pour propulser les talents de demain
+              </p>
+            </div>
+          </div>
+        </section>
+
+        {/* Le Problème Actuel */}
+        <section className="py-16 px-6">
+          <div className="container mx-auto">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Le Problème Actuel</h2>
+                <p className="text-lg text-muted-foreground">
+                  L'industrie musicale et du spectacle souffre d'un manque d'outils adaptés
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Pour les Jeunes Talents */}
+                <Card className="border-2 border-red-500/30 bg-red-500/5">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-red-600 dark:text-red-400">
+                      <AlertTriangle className="w-6 h-6" />
+                      Pour les Jeunes Talents
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Invisibilité sur les plateformes saturées</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Absence d'outils pro pour se faire remarquer</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Difficultés à trouver des dates et des agents</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-red-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Pas de visibilité sur leur progression</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Pour les Professionnels */}
+                <Card className="border-2 border-pink-500/30 bg-pink-500/5">
+                  <CardHeader>
+                    <CardTitle className="flex items-center gap-2 text-pink-600 dark:text-pink-400">
+                      <AlertTriangle className="w-6 h-6" />
+                      Pour les Professionnels
+                    </CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Recherche de talents chronophage et inefficace</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Bookings gérés par emails/WhatsApp = chaos</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Manque de données pour évaluer les artistes</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <X className="w-5 h-5 text-pink-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Réseau limité et peu évolutif</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* La Solution Vybbi */}
+        <section className="py-16 px-6 bg-gradient-to-br from-primary/5 via-purple-500/5 to-background">
+          <div className="container mx-auto">
+            <div className="max-w-6xl mx-auto">
+              <div className="text-center mb-12">
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">La Solution Vybbi</h2>
+                <p className="text-lg text-muted-foreground">
+                  Une plateforme tout-en-un pour révolutionner l'industrie
+                </p>
+              </div>
+
+              <div className="grid md:grid-cols-3 gap-6">
+                {/* Pour les Artistes */}
+                <Card className="border-2 border-blue-500/30 hover:shadow-xl transition-all">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Users className="w-8 h-8 text-blue-500" />
+                      <CardTitle>Pour les Artistes</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Profil pro avec portfolio multimédia</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Visibilité via radio 24/7 et tops</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Matching IA avec lieux et agents</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Analytics et progression trackée</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Calendrier et gestion de dates</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Networking ciblé et opportunités</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Pour Agents & Lieux */}
+                <Card className="border-2 border-green-500/30 hover:shadow-xl transition-all">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Building2 className="w-8 h-8 text-green-500" />
+                      <CardTitle>Pour Agents & Lieux</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Recherche intelligente multi-critères</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Suggestions IA de talents pertinents</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">CRM intégré pour prospection</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Booking simplifié en quelques clics</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Gestion d'événements et plannings</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Analytics et reporting automatisés</p>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Pour les Marques */}
+                <Card className="border-2 border-purple-500/30 hover:shadow-xl transition-all">
+                  <CardHeader>
+                    <div className="flex items-center gap-3 mb-2">
+                      <Coins className="w-8 h-8 text-purple-500" />
+                      <CardTitle>Pour les Marques</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Accès à une audience ultra-ciblée</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Activations sur-mesure (events, tops)</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Branding intégré non intrusif</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Reporting précis et mesurable</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Co-création de contenus engageants</p>
+                    </div>
+                    <div className="flex items-start gap-3">
+                      <CheckCircle className="w-5 h-5 text-green-500 flex-shrink-0 mt-0.5" />
+                      <p className="text-sm">Positionnement d'early supporter</p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Ce que vous obtenez en 15 jours */}
         <section className="py-16 px-6 bg-muted/30">
           <div className="container mx-auto">
             <div className="max-w-5xl mx-auto">
               <div className="text-center mb-12">
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">Pourquoi Vybbi ?</h2>
-                <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-                  Vybbi est le réseau professionnel dédié aux artistes (DJ, chanteurs, danseurs, magiciens), 
-                  aux agents/managers et aux lieux. Nous facilitons la découverte, la mise en relation et le booking 
-                  avec des outils pros.
+                <h2 className="text-3xl md:text-4xl font-bold mb-4">Ce que vous obtenez en 15 jours</h2>
+                <p className="text-lg text-muted-foreground">
+                  Une mise en place rapide pour maximiser votre visibilité dès le lancement
                 </p>
               </div>
 
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
-                {[{
-                icon: Users,
-                label: 'Matching IA',
-                color: 'text-blue-500'
-              }, {
-                icon: Building2,
-                label: 'Profils vérifiés',
-                color: 'text-green-500'
-              }, {
-                icon: Radio,
-                label: 'Radio 24/7',
-                color: 'text-purple-500'
-              }, {
-                icon: Brain,
-                label: 'Recommandations IA',
-                color: 'text-pink-500'
-              }, {
-                icon: Calendar,
-                label: 'Calendriers intégrés',
-                color: 'text-orange-500'
-              }, {
-                icon: FileCheck,
-                label: 'Gestion d\'événements',
-                color: 'text-cyan-500'
-              }].map((item, index) => <Card key={index} className="text-center hover:shadow-lg transition-shadow">
-                    <CardContent className="p-6">
-                      <item.icon className={`w-10 h-10 mx-auto mb-3 ${item.color}`} />
-                      <p className="font-semibold text-sm">{item.label}</p>
-                    </CardContent>
-                  </Card>)}
+              <div className="grid md:grid-cols-2 gap-6">
+                <Card className="border-2 border-primary/30">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold">
+                        J+7
+                      </div>
+                      <CardTitle>Visibilité immédiate</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Branding "Presented by [Marque]" en place sur la plateforme, 
+                      site web, emails d'activation et communications réseaux sociaux.
+                    </p>
+                  </CardContent>
+                </Card>
+
+                <Card className="border-2 border-primary/30">
+                  <CardHeader>
+                    <div className="flex items-center gap-3">
+                      <div className="bg-primary text-primary-foreground rounded-full w-10 h-10 flex items-center justify-center font-bold">
+                        J+14
+                      </div>
+                      <CardTitle>Activation planifiée</CardTitle>
+                    </div>
+                  </CardHeader>
+                  <CardContent>
+                    <p className="text-muted-foreground">
+                      Activation locale validée avec vos équipes, assets créatifs approuvés, 
+                      calendrier de diffusion défini et premiers KPIs établis.
+                    </p>
+                  </CardContent>
+                </Card>
               </div>
             </div>
           </div>
@@ -177,62 +391,45 @@ export default function LaunchPartnerParis() {
             <div className="max-w-6xl mx-auto">
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">L'offre Launch Partner Paris</h2>
-                
+                <p className="text-lg text-muted-foreground">
+                  Deux packs pour s'adapter à vos ambitions et votre budget
+                </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 mb-12">
-                {/* Pack 5k€ */}
+                {/* Pack Launch 5k€ */}
                 <Card className="border-2 hover:shadow-xl transition-all">
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Essential</CardTitle>
-                      <Badge variant="outline">5 000 €</Badge>
+                      <CardTitle className="text-2xl">Pack Launch</CardTitle>
+                      <Badge variant="outline" className="text-lg">5 000 €</Badge>
                     </div>
-                    <CardDescription>Exclusivité géographique Paris</CardDescription>
+                    <CardDescription>Exclusivité géographique Paris (1 sponsor unique)</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
                     <div className="space-y-3">
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Branding exclusif</p>
-                          <p className="text-sm text-muted-foreground">"Presented by [Marque]" sur bêta, site, emails</p>
-                        </div>
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>Branding "Presented by [Marque]"</strong> sur bêta, site, emails, réseaux</p>
                       </div>
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Activation locale au choix</p>
-                          <p className="text-sm text-muted-foreground">Sessions / Top 50 / Concours</p>
-                        </div>
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>1 activation locale</strong> (Sessions / Top 50 / Concours)</p>
                       </div>
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Page sponsor dédiée</p>
-                          <p className="text-sm text-muted-foreground">Présentation + offres + liens UTM</p>
-                        </div>
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>Page sponsor standard</strong> (présentation + offres + liens UTM)</p>
                       </div>
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Exclusivité Paris 90j</p>
-                          <p className="text-sm text-muted-foreground">Votre catégorie uniquement</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Reporting & Co-RP</p>
-                          <p className="text-sm text-muted-foreground">Hebdo + case study final</p>
-                        </div>
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>Reporting hebdo</strong> + case study final</p>
                       </div>
                     </div>
-                    <PartnershipCTA source="pricing-5k" variant="outline" />
+                    <PartnershipCTA source="pricing-launch" variant="outline" />
                   </CardContent>
                 </Card>
 
-                {/* Pack 10k€ */}
+                {/* Pack Flagship 10k€ */}
                 <Card className="border-2 border-primary/50 hover:shadow-xl transition-all relative">
                   <div className="absolute -top-3 right-6">
                     <Badge className="bg-gradient-to-r from-primary to-purple-500 text-white">
@@ -242,50 +439,36 @@ export default function LaunchPartnerParis() {
                   </div>
                   <CardHeader>
                     <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Premium</CardTitle>
-                      <Badge variant="default">10 000 €</Badge>
+                      <CardTitle className="text-2xl">Pack Flagship</CardTitle>
+                      <Badge variant="default" className="text-lg">10 000 €</Badge>
                     </div>
-                    <CardDescription>Exclusivité catégorielle complète</CardDescription>
+                    <CardDescription>Tout le Pack Launch + exclusivité catégorielle</CardDescription>
                   </CardHeader>
                   <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground mb-4">Tout le Pack Launch, plus :</p>
                     <div className="space-y-3">
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Branding exclusif renforcé</p>
-                          <p className="text-sm text-muted-foreground">+ mentions dans vidéos & réseaux sociaux</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">2 activations locales</p>
-                          <p className="text-sm text-muted-foreground">Combinez plusieurs formats</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Page sponsor premium</p>
-                          <p className="text-sm text-muted-foreground">Design sur-mesure + contenus enrichis</p>
-                        </div>
-                      </div>
-                      <div className="flex items-start">
                         <Zap className="w-5 h-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Exclusivité TOUTES catégories</p>
-                          <p className="text-sm text-muted-foreground">Aucun autre sponsor Paris 90j</p>
-                        </div>
+                        <p className="text-sm"><strong>Exclusivité catégorielle</strong> (audio / boisson / média / etc.)</p>
                       </div>
                       <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-success mr-3 mt-0.5 flex-shrink-0" />
-                        <div>
-                          <p className="font-semibold">Co-RP amplifiée</p>
-                          <p className="text-sm text-muted-foreground">Communiqué de presse + médias partenaires</p>
-                        </div>
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>2 activations locales</strong> (formats combinables)</p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>Page sponsor premium</strong> (design sur-mesure, vidéo, contenus enrichis)</p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>Branding renforcé</strong> (mentions dans vidéos & réseaux)</p>
+                      </div>
+                      <div className="flex items-start">
+                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
+                        <p className="text-sm"><strong>Co-RP amplifiée</strong> (communiqué + médias partenaires)</p>
                       </div>
                     </div>
-                    <PartnershipCTA source="pricing-10k" />
+                    <PartnershipCTA source="pricing-flagship" />
                   </CardContent>
                 </Card>
               </div>
