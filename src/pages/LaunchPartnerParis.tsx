@@ -122,6 +122,31 @@ export default function LaunchPartnerParis() {
           </div>
         </section>
 
+        {/* Durée / Zone / Objectif Banner */}
+        <section className="py-8 px-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border-y-2 border-orange-400/50">
+          <div className="container mx-auto">
+            <div className="max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-3 gap-6 text-center">
+                <div className="flex flex-col items-center gap-2">
+                  <Calendar className="w-8 h-8 text-orange-600" />
+                  <h3 className="font-bold text-lg">Durée</h3>
+                  <p className="text-muted-foreground">90 jours (Déc-Jan-Fév)</p>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <MapPin className="w-8 h-8 text-orange-600" />
+                  <h3 className="font-bold text-lg">Zone</h3>
+                  <p className="text-muted-foreground">Paris IDF (Exclusivité géo)</p>
+                </div>
+                <div className="flex flex-col items-center gap-2">
+                  <Target className="w-8 h-8 text-orange-600" />
+                  <h3 className="font-bold text-lg">Objectif</h3>
+                  <p className="text-muted-foreground">Impact Max (Lancement premium)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         {/* Notre Mission */}
         <section className="py-16 px-6 bg-muted/30">
           <div className="container mx-auto">
@@ -392,83 +417,209 @@ export default function LaunchPartnerParis() {
               <div className="text-center mb-12">
                 <h2 className="text-3xl md:text-4xl font-bold mb-4">L'offre Launch Partner Paris</h2>
                 <p className="text-lg text-muted-foreground">
-                  Deux packs pour s'adapter à vos ambitions et votre budget
+                  Deux formules pour accompagner votre stratégie de marque lors du lancement de Vybbi à Paris.
                 </p>
               </div>
 
-              <div className="grid md:grid-cols-2 gap-8 mb-12">
-                {/* Pack Launch 5k€ */}
-                <Card className="border-2 hover:shadow-xl transition-all">
+              <div className="grid md:grid-cols-2 gap-8">
+                {/* Pack SILVER */}
+                <Card className="border-2 border-slate-300 hover:border-slate-400 transition-all duration-300 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/30 dark:to-background">
                   <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Launch</CardTitle>
-                      <Badge variant="outline" className="text-lg">5 000 €</Badge>
+                    <div className="flex items-start justify-between mb-4">
+                      <Badge className="bg-gradient-to-r from-slate-400 to-slate-500 text-white px-4 py-1 text-sm font-bold">
+                        SILVER
+                      </Badge>
                     </div>
-                    <CardDescription>Exclusivité géographique Paris (1 sponsor unique)</CardDescription>
+                    <div className="mb-4">
+                      <p className="text-4xl font-bold">5 000 €</p>
+                      <p className="text-sm text-muted-foreground mt-1">Engagement 90 jours</p>
+                    </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <div className="space-y-3">
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Branding "Presented by [Marque]"</strong> sur bêta, site, emails, réseaux</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>1 activation locale</strong> (Sessions / Top 50 / Concours)</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Page sponsor standard</strong> (présentation + offres + liens UTM)</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Reporting hebdo</strong> + case study final</p>
-                      </div>
+                  <CardContent className="space-y-6">
+                    <div>
+                      <h4 className="font-semibold mb-3 text-slate-700 dark:text-slate-300">Visibilité & Branding</h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Mention <strong>"Powered by [Marque]"</strong></span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Page sponsor dédiée</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Logo emails campagne</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">10+ posts réseaux sociaux</span>
+                        </li>
+                      </ul>
                     </div>
-                    <PartnershipCTA source="pricing-launch" variant="outline" />
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-slate-700 dark:text-slate-300">Activations</h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">1 Session sponsorisée</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Top 50 mensuel</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">1 Concours co-brandé</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-slate-700 dark:text-slate-300">Performance</h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Liens UTM personnalisés</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Reporting hebdomadaire</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Case study final</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="pt-4 border-t">
+                      <PartnershipCTA 
+                        variant="outline" 
+                        source="pack-silver" 
+                        size="default"
+                        className="w-full border-slate-400 hover:bg-slate-50"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
 
-                {/* Pack Flagship 10k€ */}
-                <Card className="border-2 border-primary/50 hover:shadow-xl transition-all relative">
-                  <div className="absolute -top-3 right-6">
-                    <Badge className="bg-gradient-to-r from-primary to-purple-500 text-white">
-                      <Award className="w-3 h-3 mr-1" />
-                      Recommandé
-                    </Badge>
+                {/* Pack GOLD */}
+                <Card className="border-2 border-orange-400 hover:border-orange-500 transition-all duration-300 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 relative overflow-hidden shadow-lg">
+                  <div className="absolute top-0 right-0 bg-gradient-to-bl from-orange-500 to-amber-500 text-white px-4 py-1 text-xs font-semibold">
+                    RECOMMANDÉ
                   </div>
                   <CardHeader>
-                    <div className="flex justify-between items-start mb-2">
-                      <CardTitle className="text-2xl">Pack Flagship</CardTitle>
-                      <Badge variant="default" className="text-lg">10 000 €</Badge>
+                    <div className="flex items-start justify-between mb-4">
+                      <Badge className="bg-gradient-to-r from-orange-400 to-amber-500 text-white px-4 py-1 text-sm font-bold">
+                        GOLD
+                      </Badge>
                     </div>
-                    <CardDescription>Tout le Pack Launch + exclusivité catégorielle</CardDescription>
+                    <div className="mb-4">
+                      <p className="text-4xl font-bold text-orange-900 dark:text-orange-100">10 000 €</p>
+                      <p className="text-sm text-muted-foreground mt-1">Engagement 90 jours</p>
+                    </div>
                   </CardHeader>
-                  <CardContent className="space-y-4">
-                    <p className="text-sm text-muted-foreground mb-4">Tout le Pack Launch, plus :</p>
-                    <div className="space-y-3">
-                      <div className="flex items-start">
-                        <Zap className="w-5 h-5 text-yellow-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Exclusivité catégorielle</strong> (audio / boisson / média / etc.)</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>2 activations locales</strong> (formats combinables)</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Page sponsor premium</strong> (design sur-mesure, vidéo, contenus enrichis)</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Branding renforcé</strong> (mentions dans vidéos & réseaux)</p>
-                      </div>
-                      <div className="flex items-start">
-                        <CheckCircle className="w-5 h-5 text-green-500 mr-3 mt-0.5 flex-shrink-0" />
-                        <p className="text-sm"><strong>Co-RP amplifiée</strong> (communiqué + médias partenaires)</p>
-                      </div>
+                  <CardContent className="space-y-6">
+                    <div className="bg-orange-100 dark:bg-orange-900/30 border-2 border-orange-300 dark:border-orange-700 rounded-lg p-3">
+                      <p className="text-sm font-semibold text-orange-900 dark:text-orange-100">
+                        ✨ Tout Silver, PLUS :
+                      </p>
                     </div>
-                    <PartnershipCTA source="pricing-flagship" />
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                        <Award className="w-4 h-4 text-amber-500" />
+                        Exclusivités
+                      </h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Exclusivité catégorielle Paris</strong></span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Mention <strong>"Presented by"</strong></span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-orange-600" />
+                        Activations Renforcées
+                      </h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">3 Sessions sponsorisées (vs 1)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>Top 50 avec vos critères</strong></span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">2 Concours (vs 1)</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>5 talents ambassadeurs</strong></span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                        <Radio className="w-4 h-4 text-orange-600" />
+                        Contenus Premium
+                      </h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">3 vidéos co-créées</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Interview Radio/WebTV</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Newsletter 10K+ abonnés</span>
+                        </li>
+                      </ul>
+                    </div>
+
+                    <div>
+                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-orange-600" />
+                        ROI Garanti
+                      </h4>
+                      <ul className="space-y-2">
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>500k+ impressions</strong> min</span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm"><strong>50k+ interactions</strong></span>
+                        </li>
+                        <li className="flex items-start gap-2">
+                          <CheckCircle className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+                          <span className="text-sm">Reporting bi-hebdo</span>
+                        </li>
+                      </ul>
+                    </div>
+                    
+                    <div className="pt-4 border-t border-orange-200 dark:border-orange-800">
+                      <PartnershipCTA 
+                        variant="default" 
+                        source="pack-gold" 
+                        size="default"
+                        className="w-full bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600"
+                      />
+                    </div>
                   </CardContent>
                 </Card>
               </div>
