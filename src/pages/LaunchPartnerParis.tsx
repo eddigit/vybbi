@@ -123,22 +123,22 @@ export default function LaunchPartnerParis() {
         </section>
 
         {/* Durée / Zone / Objectif Banner */}
-        <section className="py-8 px-6 bg-gradient-to-r from-orange-50 to-amber-50 dark:from-orange-950/20 dark:to-amber-950/20 border-y-2 border-orange-400/50">
+        <section className="py-8 px-6 bg-gradient-to-r from-warning/10 to-background border-y border-warning/40">
           <div className="container mx-auto">
             <div className="max-w-5xl mx-auto">
               <div className="grid md:grid-cols-3 gap-6 text-center">
                 <div className="flex flex-col items-center gap-2">
-                  <Calendar className="w-8 h-8 text-orange-600" />
+                  <Calendar className="w-8 h-8 text-warning" />
                   <h3 className="font-bold text-lg">Durée</h3>
                   <p className="text-muted-foreground">90 jours (Déc-Jan-Fév)</p>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <MapPin className="w-8 h-8 text-orange-600" />
+                  <MapPin className="w-8 h-8 text-warning" />
                   <h3 className="font-bold text-lg">Zone</h3>
                   <p className="text-muted-foreground">Paris IDF (Exclusivité géo)</p>
                 </div>
                 <div className="flex flex-col items-center gap-2">
-                  <Target className="w-8 h-8 text-orange-600" />
+                  <Target className="w-8 h-8 text-warning" />
                   <h3 className="font-bold text-lg">Objectif</h3>
                   <p className="text-muted-foreground">Impact Max (Lancement premium)</p>
                 </div>
@@ -423,7 +423,7 @@ export default function LaunchPartnerParis() {
 
               <div className="grid md:grid-cols-2 gap-8">
                 {/* Pack SILVER */}
-                <Card className="border-2 border-slate-300 hover:border-slate-400 transition-all duration-300 bg-gradient-to-br from-slate-50 to-white dark:from-slate-900/30 dark:to-background">
+                <Card className="border-2 border-border hover:border-muted/60 transition-all duration-300 bg-gradient-to-br from-card to-background">
                   <CardHeader>
                     <div className="flex items-start justify-between mb-4">
                       <Badge className="bg-gradient-to-r from-slate-400 to-slate-500 text-white px-4 py-1 text-sm font-bold">
@@ -499,14 +499,14 @@ export default function LaunchPartnerParis() {
                         variant="outline" 
                         source="pack-silver" 
                         size="default"
-                        className="w-full border-slate-400 hover:bg-slate-50"
+                        className="w-full border-border hover:bg-secondary/30"
                       />
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Pack GOLD */}
-                <Card className="border-2 border-orange-400 hover:border-orange-500 transition-all duration-300 bg-gradient-to-br from-orange-50 to-amber-50 dark:from-orange-950/30 dark:to-amber-950/30 relative overflow-hidden shadow-lg">
+                <Card className="border-2 border-warning/50 hover:border-warning/60 transition-all duration-300 bg-gradient-to-br from-warning/10 to-background relative overflow-hidden shadow-lg">
                   <div className="absolute top-0 right-0 bg-gradient-to-bl from-orange-500 to-amber-500 text-white px-4 py-1 text-xs font-semibold">
                     RECOMMANDÉ
                   </div>
@@ -517,19 +517,19 @@ export default function LaunchPartnerParis() {
                       </Badge>
                     </div>
                     <div className="mb-4">
-                      <p className="text-4xl font-bold text-orange-900 dark:text-orange-100">10 000 €</p>
+                      <p className="text-4xl font-bold text-foreground">10 000 €</p>
                       <p className="text-sm text-muted-foreground mt-1">Engagement 90 jours</p>
                     </div>
                   </CardHeader>
                   <CardContent className="space-y-6">
-                    <div className="bg-orange-100 dark:bg-orange-900/30 border-2 border-orange-300 dark:border-orange-700 rounded-lg p-3">
-                      <p className="text-sm font-semibold text-orange-900 dark:text-orange-100">
+                    <div className="bg-warning/10 border-2 border-warning/40 rounded-lg p-3">
+                      <p className="text-sm font-semibold text-foreground">
                         ✨ Tout Silver, PLUS :
                       </p>
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
+                      <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
                         <Award className="w-4 h-4 text-amber-500" />
                         Exclusivités
                       </h4>
@@ -546,8 +546,8 @@ export default function LaunchPartnerParis() {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
-                        <TrendingUp className="w-4 h-4 text-orange-600" />
+                      <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                        <TrendingUp className="w-4 h-4 text-warning" />
                         Activations Renforcées
                       </h4>
                       <ul className="space-y-2">
@@ -571,8 +571,8 @@ export default function LaunchPartnerParis() {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
-                        <Radio className="w-4 h-4 text-orange-600" />
+                      <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                        <Radio className="w-4 h-4 text-warning" />
                         Contenus Premium
                       </h4>
                       <ul className="space-y-2">
@@ -592,8 +592,8 @@ export default function LaunchPartnerParis() {
                     </div>
 
                     <div>
-                      <h4 className="font-semibold mb-3 text-orange-900 dark:text-orange-100 flex items-center gap-2">
-                        <Shield className="w-4 h-4 text-orange-600" />
+                      <h4 className="font-semibold mb-3 text-foreground flex items-center gap-2">
+                        <Shield className="w-4 h-4 text-warning" />
                         ROI Garanti
                       </h4>
                       <ul className="space-y-2">
@@ -612,7 +612,7 @@ export default function LaunchPartnerParis() {
                       </ul>
                     </div>
                     
-                    <div className="pt-4 border-t border-orange-200 dark:border-orange-800">
+                    <div className="pt-4 border-t border-warning/30">
                       <PartnershipCTA 
                         variant="default" 
                         source="pack-gold" 
