@@ -46,7 +46,7 @@ import ArtistProfile from "./pages/ArtistProfile";
 import ArtistProfileBySlug from "./pages/ArtistProfileBySlug";
 import ArtistProfileEdit from "./pages/ArtistProfileEdit";
 import { AgentProfileEdit } from "./pages/AgentProfileEdit";
-import { ManagerProfileEdit } from "./pages/ManagerProfileEdit";
+import ManagerProfileEdit from "./pages/ManagerProfileEdit";
 import { AnnonceManager } from "./pages/AnnonceManager";
 import { AnnoncesWall } from "./pages/AnnoncesWall";
 import Landing from "./pages/Landing";

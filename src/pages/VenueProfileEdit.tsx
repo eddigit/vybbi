@@ -7,8 +7,9 @@ import { Textarea } from '@/components/ui/textarea';
 import { Label } from '@/components/ui/label';
 import { Badge } from '@/components/ui/badge';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { ArrowLeft, Building2, X, Plus } from 'lucide-react';
+import { ArrowLeft, Building2, X, Plus, Shield } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import ImageUpload from '@/components/ImageUpload';
@@ -20,11 +21,12 @@ const musicGenres = [
 ];
 
 export default function VenueProfileEdit() {
-  const { profile } = useAuth();
+  const { user, profile, roles } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
   const [loading, setLoading] = useState(false);
   const [newGenre, setNewGenre] = useState('');
+  const isAdmin = roles?.includes('admin');
 
   const [formData, setFormData] = useState({
     display_name: '',
@@ -66,7 +68,23 @@ export default function VenueProfileEdit() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!profile) return;
+    if (!profile || !user) return;
+
+    // Log admin edit if not own profile
+    if (isAdmin && profile?.user_id !== user?.id) {
+      const updateData = {
+        display_name: formData.display_name,
+        bio: formData.bio,
+        location: formData.location,
+        website: formData.website
+      };
+      
+      await supabase.from('admin_profile_edits').insert({
+        admin_user_id: user.id,
+        edited_profile_id: profile.id,
+        changes: updateData
+      });
+    }
 
     setLoading(true);
     try {
@@ -138,6 +156,15 @@ export default function VenueProfileEdit() {
 
   return (
     <div className="container mx-auto px-6 py-8 max-w-4xl">
+      {isAdmin && profile?.user_id !== user?.id && (
+        <Alert className="mb-4 border-warning bg-warning/10">
+          <Shield className="h-4 w-4" />
+          <AlertDescription>
+            🔐 Mode Administrateur : Vous modifiez le profil d'un autre utilisateur
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <div className="flex items-center gap-4 mb-8">
         <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
           <ArrowLeft className="h-4 w-4 mr-2" />

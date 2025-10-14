@@ -339,6 +339,59 @@ export type Database = {
           },
         ]
       }
+      admin_profile_edits: {
+        Row: {
+          admin_user_id: string | null
+          changes: Json
+          created_at: string
+          edited_profile_id: string | null
+          id: string
+        }
+        Insert: {
+          admin_user_id?: string | null
+          changes: Json
+          created_at?: string
+          edited_profile_id?: string | null
+          id?: string
+        }
+        Update: {
+          admin_user_id?: string | null
+          changes?: Json
+          created_at?: string
+          edited_profile_id?: string | null
+          id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_profile_edits_edited_profile_id_fkey"
+            columns: ["edited_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_profile_edits_edited_profile_id_fkey"
+            columns: ["edited_profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_profile_edits_edited_profile_id_fkey"
+            columns: ["edited_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "admin_profile_edits_edited_profile_id_fkey"
+            columns: ["edited_profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       admin_secrets: {
         Row: {
           category: string

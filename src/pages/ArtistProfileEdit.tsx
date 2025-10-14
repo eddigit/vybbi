@@ -11,7 +11,8 @@ import { Label } from '@/components/ui/label';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Upload, Trash2, Music, Instagram, Youtube } from 'lucide-react';
+import { Upload, Trash2, Music, Instagram, Youtube, Shield } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Profile, MediaAsset, MediaType } from '@/lib/types';
 import { LANGUAGES } from '@/lib/languages';
 import { HeaderImageEditor } from '@/components/HeaderImageEditor';
@@ -23,8 +24,10 @@ import { ArtistRepresentationManager } from '@/components/ArtistRepresentationMa
 export default function ArtistProfileEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, profile: authProfile } = useAuth();
+  const { user, profile: authProfile, roles } = useAuth();
   const { toast } = useToast();
+  
+  const isAdmin = roles?.includes('admin');
   
   const [profile, setProfile] = useState<Profile | null>(null);
   const [mediaAssets, setMediaAssets] = useState<MediaAsset[]>([]);
@@ -87,8 +90,8 @@ export default function ArtistProfileEdit() {
           return;
         }
       
-      // Check if user owns this profile - but only if user is loaded
-      if (user && data.user_id !== user.id) {
+      // Check if user owns this profile (or is admin)
+      if (user && data.user_id !== user.id && !isAdmin) {
         console.log('Access denied - Profile user_id:', data.user_id, 'Current user id:', user.id);
         toast({ title: "Accès refusé", variant: "destructive" });
         navigate('/', { replace: true });
@@ -387,6 +390,21 @@ export default function ArtistProfileEdit() {
     
     setSaving(true);
     try {
+      // Log admin edit if not own profile
+      if (isAdmin && profile?.user_id !== user?.id) {
+        const updateData = {
+          display_name: formData.display_name,
+          bio: formData.bio,
+          location: formData.location,
+          website: formData.website
+        };
+        
+        await supabase.from('admin_profile_edits').insert({
+          admin_user_id: user.id,
+          edited_profile_id: id,
+          changes: updateData
+        });
+      }
       // Convert genresString to genres array before saving
       const genresArray = formData.genresString
         .split(',')
@@ -456,6 +474,15 @@ export default function ArtistProfileEdit() {
 
   return (
     <div className="container mx-auto px-4 py-8 max-w-4xl">
+      {isAdmin && profile?.user_id !== user?.id && (
+        <Alert className="mb-4 border-warning bg-warning/10">
+          <Shield className="h-4 w-4" />
+          <AlertDescription>
+            🔐 Mode Administrateur : Vous modifiez le profil d'un autre utilisateur
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <Card>
         <CardHeader>
           <CardTitle>Modifier mon profil d'artiste</CardTitle>

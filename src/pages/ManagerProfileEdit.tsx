@@ -8,14 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
-import { Upload } from "lucide-react";
+import { Upload, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { Profile, ManagerArtist } from "@/lib/types";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
-export function ManagerProfileEdit() {
+export default function ManagerProfileEdit() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const { user, profile, refreshProfile } = useAuth();
+  const { user, profile, roles, refreshProfile } = useAuth();
+  const isAdmin = roles?.includes('admin');
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -39,7 +41,7 @@ export function ManagerProfileEdit() {
 
   useEffect(() => {
     if (user && profile) {
-      if (profile.profile_type !== "manager" || profile.id !== id) {
+      if (profile.profile_type !== "manager" || (profile.id !== id && !isAdmin)) {
         navigate("/");
         return;
       }
@@ -49,7 +51,7 @@ export function ManagerProfileEdit() {
     } else if (!loading && !user) {
       navigate("/auth");
     }
-  }, [user, profile, id, navigate, loading]);
+  }, [user, profile, id, navigate, loading, isAdmin]);
 
   const fetchProfile = async () => {
     try {
@@ -185,6 +187,22 @@ export function ManagerProfileEdit() {
   const handleSave = async () => {
     setSaving(true);
     try {
+      // Log admin edit if not own profile
+      if (isAdmin && profile?.user_id !== user?.id) {
+        const updateData = {
+          display_name: profileData.display_name,
+          bio: profileData.bio,
+          location: profileData.location,
+          website: profileData.website
+        };
+        
+        await supabase.from('admin_profile_edits').insert({
+          admin_user_id: user.id,
+          edited_profile_id: id,
+          changes: updateData
+        });
+      }
+      
       const { error } = await supabase
         .from("profiles")
         .update(profileData)
@@ -243,6 +261,15 @@ export function ManagerProfileEdit() {
 
   return (
     <div className="container mx-auto p-6 space-y-6">
+      {isAdmin && profile?.user_id !== user?.id && (
+        <Alert className="mb-4 border-warning bg-warning/10">
+          <Shield className="h-4 w-4" />
+          <AlertDescription>
+            🔐 Mode Administrateur : Vous modifiez le profil d'un autre utilisateur
+          </AlertDescription>
+        </Alert>
+      )}
+      
       <Card>
         <CardHeader>
           <CardTitle>Manager Profile Settings</CardTitle>
