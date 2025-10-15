@@ -396,3 +396,5 @@ export function AgentProfileEdit() {
       </Card>
     </div>;
 }
+
+export default AgentProfileEdit;

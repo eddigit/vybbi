@@ -617,3 +617,5 @@ export function AnnoncesWall() {
     </div>
   );
 }
+
+export default AnnoncesWall;
