@@ -17,7 +17,7 @@ const AdminProspectingAnalytics = lazy(() => import('@/pages/AdminProspectingAna
 const AdminRoadmap = lazy(() => import('@/pages/AdminRoadmap'));
 const AdminSEO = lazy(() => import('@/pages/AdminSEO'));
 const AdminBusinessIntegrations = lazy(() => import('@/pages/AdminBusinessIntegrations'));
-const BetaStats = lazy(() => import('@/pages/BetaStats'));
+const AdminBetaStats = lazy(() => import('@/pages/AdminBetaStats'));
 const SystemTest = lazy(() => import('@/pages/SystemTest'));
 
 export const adminRoutes: RouteObject[] = [
@@ -41,7 +41,7 @@ export const adminRoutes: RouteObject[] = [
       { path: 'roadmap', element: <AdminRoadmap /> },
       { path: 'seo', element: <AdminSEO /> },
       { path: 'business-integrations', element: <AdminBusinessIntegrations /> },
-      { path: 'beta-stats', element: <BetaStats /> },
+      { path: 'beta-stats', element: <AdminBetaStats /> },
       { path: 'system-test', element: <SystemTest /> }
     ]
   }

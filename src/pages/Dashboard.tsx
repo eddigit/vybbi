@@ -1,11 +1,10 @@
 
-
 import { useAuth } from "@/hooks/useAuth";
 import ArtistDashboard from "@/pages/ArtistDashboard";
 import PartnerDashboard from "@/pages/PartnerDashboard";
 import VenueDashboard from "@/pages/VenueDashboard";
 import InfluenceurDashboard from "@/pages/InfluenceurDashboard";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
 import { Users, Target, Euro, TrendingUp } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
@@ -16,37 +15,95 @@ import { AutoTranslate } from "@/components/AutoTranslate";
 import { WelcomeModal } from "@/components/WelcomeModal";
 import { useWelcomeModal } from "@/hooks/useWelcomeModal";
 import { LoadingSpinner } from "@/components/LoadingStates";
+import { supabase } from "@/integrations/supabase/client";
 
 export default function Dashboard() {
   const { profile, loading, hasRole, user } = useAuth();
   const [activeFilter, setActiveFilter] = useState("30d");
   const { isWelcomeModalOpen, closeWelcomeModal, handleNavigate } = useWelcomeModal();
+  
+  // États pour les vraies données
+  const [totalPartners, setTotalPartners] = useState(0);
+  const [totalCampaigns, setTotalCampaigns] = useState(0);
+  const [totalCommissions, setTotalCommissions] = useState(0);
+  const [monthlyGrowth, setMonthlyGrowth] = useState(0);
+  const [metricsLoading, setMetricsLoading] = useState(true);
+
+  // Charger les vraies données depuis la base
+  useEffect(() => {
+    const loadMetrics = async () => {
+      try {
+        // Compter les partenaires (agents + managers)
+        const { count: partnersCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .in('profile_type', ['agent', 'manager']);
+
+        // Compter les annonces publiées (comme "campagnes actives")
+        const { count: campaignsCount } = await supabase
+          .from('annonces')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'published');
+
+        // Calculer les commissions payées
+        const { data: commissions } = await supabase
+          .from('affiliate_conversions')
+          .select('commission_amount')
+          .eq('conversion_status', 'confirmed');
+
+        const totalCommissionsAmount = commissions?.reduce(
+          (sum, conv) => sum + (Number(conv.commission_amount) || 0), 
+          0
+        ) || 0;
+
+        // Calculer la croissance mensuelle (nouveaux utilisateurs ce mois)
+        const thirtyDaysAgo = new Date();
+        thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+        
+        const { count: newUsersCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true })
+          .gte('created_at', thirtyDaysAgo.toISOString());
+
+        setTotalPartners(partnersCount || 0);
+        setTotalCampaigns(campaignsCount || 0);
+        setTotalCommissions(totalCommissionsAmount);
+        setMonthlyGrowth(newUsersCount || 0);
+      } catch (error) {
+        console.error("Erreur lors du chargement des métriques:", error);
+      } finally {
+        setMetricsLoading(false);
+      }
+    };
+
+    loadMetrics();
+  }, []);
 
   const metrics = [
     {
       title: "Total Partenaires",
-      value: "0",
+      value: metricsLoading ? "..." : totalPartners.toString(),
       change: "+17%",
       changeType: "positive" as const,
       icon: Users,
     },
     {
       title: "Campagnes Actives", 
-      value: "0",
+      value: metricsLoading ? "..." : totalCampaigns.toString(),
       change: "+24%",
       changeType: "positive" as const,
       icon: Target,
     },
     {
       title: "Commissions Payées",
-      value: "0 €",
+      value: metricsLoading ? "..." : `${totalCommissions.toFixed(2)} €`,
       change: "+7%",
       changeType: "positive" as const,
       icon: Euro,
     },
     {
       title: "Croissance Mensuelle",
-      value: "10",
+      value: metricsLoading ? "..." : monthlyGrowth.toString(),
       change: "+16%",
       changeType: "positive" as const,
       icon: TrendingUp,
