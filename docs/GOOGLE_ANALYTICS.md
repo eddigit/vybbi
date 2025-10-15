@@ -1,8 +1,8 @@
-# Google Analytics 4 - Documentation
+# Google Analytics 4 Integration - Vybbi
 
 ## 📊 Vue d'ensemble
 
-Ce document décrit l'implémentation de Google Analytics 4 (GA4) avec Google Consent Mode v2 pour la plateforme Vybbi, garantissant la conformité RGPD.
+Ce document couvre l'intégration complète de Google Analytics 4 (GA4) avec Vybbi, incluant le tracking frontend avec Consent Mode v2 et l'intégration API pour le dashboard admin.
 
 ## 🏗️ Architecture
 
@@ -203,7 +203,153 @@ Accéder à : https://vybbi.app/admin/analytics-health
 4. ✅ Le bandeau réapparaît
 5. Tester les différents boutons
 
-## 🔍 Troubleshooting
+---
+
+## 🔌 Intégration API - Dashboard Admin
+
+### Architecture
+
+Le dashboard admin affiche les statistiques Google Analytics en temps réel via l'API Google Analytics Data v1.
+
+**Flux de données:**
+```
+Admin Dashboard (React)
+  ↓ useGAStats hook
+  ↓ Supabase Edge Function
+  ↓ Google Analytics Data API v1
+  ↓ GA4 Property
+```
+
+### Configuration
+
+#### 1. Créer un Service Account Google Cloud
+
+1. Aller sur [Google Cloud Console](https://console.cloud.google.com/)
+2. Créer ou sélectionner un projet
+3. Activer **Google Analytics Data API v1**
+4. Créer un Service Account:
+   - IAM & Admin → Service Accounts → Create Service Account
+   - Nom: `google-analytics-data-api-v1`
+   - Télécharger la clé JSON
+
+#### 2. Donner accès au Service Account dans GA4
+
+1. Aller sur [Google Analytics](https://analytics.google.com/)
+2. Admin → Property Access Management
+3. Ajouter le Service Account (email du JSON) avec le rôle **Viewer**
+
+#### 3. Configurer Supabase
+
+**Secret: GOOGLE_SERVICE_ACCOUNT_JSON**
+
+Ajouter le contenu complet du fichier JSON téléchargé dans les secrets Supabase.
+
+**Setting: ga4_property_id**
+```sql
+INSERT INTO admin_settings (setting_key, setting_value)
+VALUES ('ga4_property_id', '"464099935"')
+ON CONFLICT (setting_key) DO UPDATE SET setting_value = '"464099935"';
+```
+
+> **Trouver votre Property ID**: GA4 → Admin → Property Details → Property ID
+
+### Composants
+
+#### Edge Function: `ga4-fetch-data`
+
+**Endpoint**: `supabase/functions/ga4-fetch-data`
+**Auth**: JWT required (admin only)
+
+**Paramètres:**
+```json
+{
+  "startDate": "30daysAgo",  // ou format YYYY-MM-DD
+  "endDate": "today"
+}
+```
+
+**Réponse:**
+```json
+{
+  "activeUsers": 1234,
+  "newUsers": 567,
+  "sessions": 890,
+  "pageViews": 4567,
+  "conversions": 12,
+  "avgSessionDuration": 180.5,
+  "bounceRate": 0.35
+}
+```
+
+#### Hook React: `useGAStats`
+
+```typescript
+import { useGAStats } from '@/hooks/useGAStats';
+
+const { data, isLoading, error } = useGAStats('30daysAgo', 'today');
+```
+
+**Cache**: 5 minutes (React Query)
+**Retry**: 2 tentatives
+
+#### Composant: `GAStatsCards`
+
+Affiche les métriques GA4 dans des cartes stylisées avec le dark theme Vybbi.
+
+### Métriques disponibles
+
+| Métrique | Description |
+|----------|-------------|
+| `activeUsers` | Utilisateurs actifs sur la période |
+| `newUsers` | Nouveaux utilisateurs (première visite) |
+| `sessions` | Nombre de sessions |
+| `pageViews` | Pages vues |
+| `conversions` | Conversions (événements marqués comme conversions dans GA4) |
+| `avgSessionDuration` | Durée moyenne de session (secondes) |
+| `bounceRate` | Taux de rebond (0-1) |
+
+### Troubleshooting API
+
+#### Erreur: "GOOGLE_SERVICE_ACCOUNT_JSON secret not configured"
+
+**Solution**: Vérifier que le secret est bien ajouté dans Supabase Functions Secrets.
+
+#### Erreur: "GA4_PROPERTY_ID not configured"
+
+**Solution**: Ajouter le Property ID dans admin_settings:
+```sql
+INSERT INTO admin_settings (setting_key, setting_value)
+VALUES ('ga4_property_id', '"464099935"');
+```
+
+#### Erreur: "Failed to get access token"
+
+**Causes possibles:**
+1. Clé privée invalide dans le JSON
+2. Service Account supprimé ou désactivé
+3. Problème de format du JSON
+
+**Solution**: Re-télécharger le JSON depuis Google Cloud Console
+
+#### Erreur: "GA4 API error: 403"
+
+**Cause**: Le Service Account n'a pas accès à la propriété GA4
+
+**Solution**: 
+1. Copier l'email du Service Account (`client_email` dans le JSON)
+2. GA4 → Admin → Property Access Management
+3. Add Users → Coller l'email → Rôle "Viewer"
+
+#### Les métriques sont à 0
+
+**Vérifications:**
+1. Vérifier que le Property ID est correct
+2. Vérifier qu'il y a des données dans GA4 Realtime
+3. Vérifier les logs de l'edge function dans Supabase Dashboard
+
+---
+
+## 🔍 Troubleshooting Frontend
 
 ### Le script GA4 ne se charge pas
 

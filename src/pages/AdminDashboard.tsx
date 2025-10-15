@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { useAdminStats, useRealtimeMetrics } from "@/hooks/useAdminStats";
+import { useGAStats } from "@/hooks/useGAStats";
+import { GAStatsCards } from "@/components/admin/GAStatsCards";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
@@ -54,6 +56,7 @@ export default function AdminDashboard() {
   // Utilisation des hooks optimisés
   const { data: stats, isLoading: statsLoading, error: statsError } = useAdminStats();
   const { data: realtimeMetrics } = useRealtimeMetrics();
+  const { data: gaStats, isLoading: gaLoading, error: gaError } = useGAStats('30daysAgo', 'today');
 
   const loading = authLoading || statsLoading;
 
@@ -193,8 +196,18 @@ export default function AdminDashboard() {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
+          {/* Google Analytics Stats */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
+              <h3 className="text-lg font-semibold">Statistiques Google Analytics (30 derniers jours)</h3>
+            </div>
+            <GAStatsCards stats={gaStats} isLoading={gaLoading} error={gaError} />
+          </div>
+
           {/* Métriques principales */}
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <div className="space-y-2">
+            <h3 className="text-lg font-semibold">Statistiques de la plateforme</h3>
+            <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
                 <CardTitle className="text-sm font-medium">Total Utilisateurs</CardTitle>
@@ -248,6 +261,7 @@ export default function AdminDashboard() {
                 </p>
               </CardContent>
             </Card>
+            </div>
           </div>
 
           {/* Actions rapides */}
