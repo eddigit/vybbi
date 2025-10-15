@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { X, Download, Clock, Smartphone } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Download, Clock, Smartphone, RefreshCw } from 'lucide-react';
+import { toast } from 'sonner';
 
 interface PWAUpdateNotificationProps {
   needRefresh: boolean;
@@ -13,19 +13,31 @@ interface PWAUpdateNotificationProps {
 
 export function PWAUpdateNotification({ needRefresh, updateSW, onDismiss }: PWAUpdateNotificationProps) {
   const [show, setShow] = useState(false);
-  const { toast } = useToast();
 
   useEffect(() => {
     if (needRefresh) {
       setShow(true);
-      // Also show a toast for immediate notification
-      toast({
-        title: "🚀 Mise à jour disponible",
-        description: "Une nouvelle version de Vybbi est prête à être installée",
-        duration: 3000,
-      });
+      // Show Sonner toast for immediate notification
+      toast.info(
+        <div className="flex items-center gap-3">
+          <RefreshCw className="h-5 w-5" />
+          <div>
+            <p className="font-medium">Nouvelle version disponible</p>
+            <p className="text-sm text-muted-foreground">
+              Rechargez pour profiter des dernières améliorations
+            </p>
+          </div>
+        </div>,
+        {
+          duration: Infinity,
+          action: {
+            label: 'Recharger',
+            onClick: updateSW
+          }
+        }
+      );
     }
-  }, [needRefresh, toast]);
+  }, [needRefresh, updateSW]);
 
   const handleUpdate = () => {
     setShow(false);
@@ -35,16 +47,6 @@ export function PWAUpdateNotification({ needRefresh, updateSW, onDismiss }: PWAU
   const handleDismiss = () => {
     setShow(false);
     onDismiss();
-    // Show reminder after 30 minutes
-    setTimeout(() => {
-      if (needRefresh) {
-        toast({
-          title: "📱 Rappel de mise à jour",
-          description: "N'oubliez pas de mettre à jour Vybbi pour profiter des dernières améliorations",
-          duration: 3000,
-        });
-      }
-    }, 30 * 60 * 1000); // 30 minutes
   };
 
   if (!show || !needRefresh) return null;
