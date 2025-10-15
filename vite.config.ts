@@ -19,23 +19,7 @@ export default defineConfig(({ mode }) => ({
     include: ['buffer'],
   },
   build: {
-    // Optimisations pour réduire la taille des bundles
-    rollupOptions: {
-      output: {
-        manualChunks: {
-          // Séparer les vendors les plus lourds
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['@radix-ui/react-dialog', '@radix-ui/react-dropdown-menu', '@radix-ui/react-tabs'],
-          'query-vendor': ['@tanstack/react-query'],
-          'form-vendor': ['react-hook-form', '@hookform/resolvers', 'zod'],
-          'chart-vendor': ['recharts'],
-          'solana-vendor': ['@solana/web3.js'],
-        }
-      }
-    },
-    // Augmenter la limite d'avertissement
     chunkSizeWarningLimit: 1000,
-    // Minification optimisée
     minify: 'terser',
     terserOptions: {
       compress: {
