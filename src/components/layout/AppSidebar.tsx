@@ -25,7 +25,10 @@ import {
   Shield,
   Link as LinkIcon,
   Hash,
-  Lock
+  Lock,
+  Activity,
+  Search,
+  TrendingUp
 } from "lucide-react";
 
 import {
@@ -89,6 +92,10 @@ const influenceurItems = [
 
 const adminItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Analytics Health", url: "/admin/analytics-health", icon: Activity },
+  { title: "SEO", url: "/admin/seo", icon: Search },
+  { title: "Business Integrations", url: "/admin/business-integrations", icon: Briefcase },
+  { title: "Beta Stats", url: "/admin/beta-stats", icon: TrendingUp },
   { title: "Coffre-Fort", url: "/admin/coffre-fort", icon: Lock },
   { title: "Influenceurs", url: "/admin/influenceurs", icon: Users },
   { title: "Base de Connaissance", url: "/admin/knowledge", icon: BookOpen },
