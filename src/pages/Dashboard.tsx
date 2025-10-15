@@ -6,7 +6,7 @@ import VenueDashboard from "@/pages/VenueDashboard";
 import InfluenceurDashboard from "@/pages/InfluenceurDashboard";
 import { useState, useEffect } from "react";
 import { Navigate } from "react-router-dom";
-import { Users, Target, Euro, TrendingUp } from "lucide-react";
+import { Users, Target, Euro, TrendingUp, Eye } from "lucide-react";
 import { MetricCard } from "@/components/dashboard/MetricCard";
 import { TimeFilter } from "@/components/dashboard/TimeFilter";
 import { AcquisitionChart } from "@/components/dashboard/AcquisitionChart";
@@ -28,6 +28,8 @@ export default function Dashboard() {
   const [totalCommissions, setTotalCommissions] = useState(0);
   const [monthlyGrowth, setMonthlyGrowth] = useState(0);
   const [metricsLoading, setMetricsLoading] = useState(true);
+  const [totalUsers, setTotalUsers] = useState(0);
+  const [totalViews, setTotalViews] = useState(0);
 
   // Charger les vraies données depuis la base
   useEffect(() => {
@@ -65,10 +67,22 @@ export default function Dashboard() {
           .select('*', { count: 'exact', head: true })
           .gte('created_at', thirtyDaysAgo.toISOString());
 
+        // Compter les utilisateurs (profils)
+        const { count: usersCount } = await supabase
+          .from('profiles')
+          .select('*', { count: 'exact', head: true });
+
+        // Compter les vues totales de profils (visites)
+        const { count: viewsCount } = await supabase
+          .from('profile_views')
+          .select('*', { count: 'exact', head: true });
+
         setTotalPartners(partnersCount || 0);
         setTotalCampaigns(campaignsCount || 0);
         setTotalCommissions(totalCommissionsAmount);
         setMonthlyGrowth(newUsersCount || 0);
+        setTotalUsers(usersCount || 0);
+        setTotalViews(viewsCount || 0);
       } catch (error) {
         console.error("Erreur lors du chargement des métriques:", error);
       } finally {
@@ -107,6 +121,25 @@ export default function Dashboard() {
       change: "+16%",
       changeType: "positive" as const,
       icon: TrendingUp,
+    },
+  ];
+
+  // Métriques additionnelles pour les administrateurs
+  const adminMetrics = [
+    ...metrics,
+    {
+      title: "Membres inscrits",
+      value: metricsLoading ? "..." : totalUsers.toString(),
+      change: "+3%",
+      changeType: "positive" as const,
+      icon: Users,
+    },
+    {
+      title: "Visites de profils",
+      value: metricsLoading ? "..." : totalViews.toString(),
+      change: "+9%",
+      changeType: "positive" as const,
+      icon: Eye,
     },
   ];
 
@@ -149,7 +182,7 @@ export default function Dashboard() {
 
         {/* Metrics Cards */}
         <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          {metrics.map((metric) => (
+          {adminMetrics.map((metric) => (
             <MetricCard
               key={metric.title}
               title={metric.title}

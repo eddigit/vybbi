@@ -434,7 +434,7 @@ export default function Landing() {
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/images/personas/wolf-dj-artist-light.webp" alt="DJ Wolf Artist" className="w-full h-full object-cover" />
+                  <img src="/images/personas/wolf-dj-artist-light.webp" alt="DJ Wolf Artist" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Artistes</h3>
             <p className="text-muted-foreground mb-6">
@@ -504,7 +504,7 @@ export default function Landing() {
             <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/images/personas/wolf-agent.webp" alt="Wolf Agent Manager" className="w-full h-full object-cover" />
+                  <img src="/images/personas/wolf-agent.webp" alt="Wolf Agent Manager" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Agents & Managers</h3>
                 <p className="text-muted-foreground mb-6">
@@ -574,7 +574,7 @@ export default function Landing() {
           <Card className="group hover:shadow-glow transition-all duration-300 hover:-translate-y-2 bg-gradient-card border-border">
               <CardContent className="p-8 text-center">
                 <div className="w-24 h-24 rounded-full flex items-center justify-center mx-auto mb-6 group-hover:scale-110 transition-transform shadow-glow overflow-hidden">
-                  <img src="/images/personas/club-venue.webp" alt="Club Venue Event" className="w-full h-full object-cover" />
+                  <img src="/images/personas/club-venue.webp" alt="Club Venue Event" className="w-full h-full object-cover" loading="lazy" decoding="async" />
                 </div>
                 <h3 className="text-2xl font-bold mb-4 text-foreground">Lieux d'événements</h3>
                 <p className="text-muted-foreground mb-6">
@@ -1172,7 +1172,7 @@ export default function Landing() {
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-purple-500/20 to-pink-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
               <div className="relative bg-gradient-to-br from-purple-900/30 to-pink-900/30 rounded-2xl p-6 backdrop-blur-sm border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:scale-105">
-                <img src={vybbiMemeSpace} alt="VYBBI Token Space Meme" className="w-full h-auto rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300" />
+                <img src={vybbiMemeSpace} alt="VYBBI Token Space Meme" className="w-full h-auto rounded-xl shadow-2xl hover:shadow-purple-500/25 transition-all duration-300" loading="lazy" decoding="async" />
                 <div className="absolute top-4 right-4">
                   <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-purple-500/30">
                     <span className="text-xs font-medium text-purple-300">🌌 To the Moon!</span>
@@ -1185,7 +1185,7 @@ export default function Landing() {
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-pink-500/20 to-purple-500/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-300 animate-pulse"></div>
               <div className="relative bg-gradient-to-bl from-pink-900/30 to-purple-900/30 rounded-2xl p-6 backdrop-blur-sm border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:scale-105">
-                <img src={vybbiDjToken} alt="VYBBI DJ Control Token" className="w-full h-auto rounded-xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300" />
+                <img src={vybbiDjToken} alt="VYBBI DJ Control Token" className="w-full h-auto rounded-xl shadow-2xl hover:shadow-pink-500/25 transition-all duration-300" loading="lazy" decoding="async" />
                 <div className="absolute top-4 right-4">
                   <div className="bg-black/50 backdrop-blur-sm rounded-full px-3 py-1 border border-pink-500/30">
                     <span className="text-xs font-medium text-pink-300">🎧 Music Power</span>
@@ -1295,7 +1295,7 @@ export default function Landing() {
           <div className="grid md:grid-cols-4 gap-8">
             <div>
               <div className="flex items-center gap-2 mb-4">
-                <img src={vybbiLogo} alt="Vybbi Logo" className="w-8 h-8" />
+                <img src={vybbiLogo} alt="Vybbi Logo" className="w-8 h-8" loading="lazy" decoding="async" />
                  <span className="font-bold text-xl text-foreground font-vybbi">Vybbi</span>
                </div>
                <p className="text-muted-foreground">
