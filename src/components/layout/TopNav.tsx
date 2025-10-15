@@ -23,7 +23,11 @@ import {
   Hash,
   Radio,
   Lock,
-  Coins
+  Coins,
+  Activity,
+  Search,
+  Briefcase,
+  TrendingUp
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -100,6 +104,10 @@ const influenceurItems = [
 
 const adminItems = [
   { title: "Dashboard Admin", url: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Analytics Health", url: "/admin/analytics-health", icon: Activity },
+  { title: "SEO", url: "/admin/seo", icon: Search },
+  { title: "Business Integrations", url: "/admin/business-integrations", icon: Briefcase },
+  { title: "Beta Stats", url: "/admin/beta-stats", icon: TrendingUp },
   { title: "Régie Publicitaire", url: "/admin/ads", icon: Megaphone },
   { title: "Influenceurs", url: "/admin/influenceurs", icon: Users },
   { title: "Base de Connaissance", url: "/admin/knowledge", icon: BookOpen },
