@@ -4,13 +4,61 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, shrink-to-fit=no, viewport-fit=cover, minimal-ui, interactive-widget=resizes-content" />
     
-    <!-- Google tag (gtag.js) - Doit être en premier -->
+    <!-- Google Consent Mode v2 - Must be before gtag.js -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      
+      // Default consent state for EEA regions (GDPR compliant)
+      gtag('consent', 'default', {
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'analytics_storage': 'denied',
+        'functionality_storage': 'denied',
+        'security_storage': 'granted'
+      }, {
+        region: ['AT','BE','BG','HR','CY','CZ','DK','EE','FI','FR','DE','GR','HU','IS','IE','IT','LV','LI','LT','LU','MT','NL','NO','PL','PT','RO','SK','SI','ES','SE','GB','CH']
+      });
+      
+      // Global consent update functions
+      window.acceptAll = function() {
+        gtag('consent', 'update', {
+          'ad_storage': 'granted',
+          'ad_user_data': 'granted',
+          'ad_personalization': 'granted',
+          'analytics_storage': 'granted',
+          'functionality_storage': 'granted'
+        });
+      };
+      
+      window.acceptAnalyticsOnly = function() {
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted',
+          'functionality_storage': 'granted'
+        });
+      };
+      
+      window.refuseAll = function() {
+        gtag('consent', 'update', {
+          'ad_storage': 'denied',
+          'ad_user_data': 'denied',
+          'ad_personalization': 'denied',
+          'analytics_storage': 'denied',
+          'functionality_storage': 'denied'
+        });
+      };
+    </script>
+    
+    <!-- Google tag (gtag.js) - GA4 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-DKWTBNGQ47"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'G-DKWTBNGQ47');
+      gtag('config', 'G-DKWTBNGQ47', {
+        'send_page_view': false // We'll handle page views manually for SPA
+      });
     </script>
     
     <!-- Favicon et icônes -->

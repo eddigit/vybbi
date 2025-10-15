@@ -4,6 +4,7 @@ import { AdminLayout } from './components/AdminLayout';
 
 const AdminDashboard = lazy(() => import('@/pages/AdminDashboard'));
 const AdminAds = lazy(() => import('@/pages/AdminAds'));
+const AdminAnalyticsHealth = lazy(() => import('@/pages/AdminAnalyticsHealth'));
 const AdminCommunication = lazy(() => import('@/pages/AdminCommunication'));
 const AdminCoffreFort = lazy(() => import('@/pages/AdminCoffreFort'));
 const AdminEmailDiagnostics = lazy(() => import('@/pages/AdminEmailDiagnostics'));
@@ -27,6 +28,7 @@ export const adminRoutes: RouteObject[] = [
       { index: true, element: <AdminDashboard /> },
       { path: 'dashboard', element: <AdminDashboard /> },
       { path: 'ads', element: <AdminAds /> },
+      { path: 'analytics-health', element: <AdminAnalyticsHealth /> },
       { path: 'communication', element: <AdminCommunication /> },
       { path: 'coffre-fort', element: <AdminCoffreFort /> },
       { path: 'email-diagnostics', element: <AdminEmailDiagnostics /> },

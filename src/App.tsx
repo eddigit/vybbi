@@ -17,8 +17,10 @@ import { OfflineIndicator } from '@/components/OfflineIndicator';
 import { PWAUpdateHandler } from '@/components/PWAUpdateHandler';
 import { RealtimeNotificationProvider } from '@/components/RealtimeNotificationProvider';
 import { SuspenseLoader } from '@/components/common/SuspenseLoader';
+import { CookieConsentBanner } from '@/components/CookieConsentBanner';
 import { useIsMobile } from "@/hooks/use-mobile";
 import { useRadioPlayerVisibility } from "@/hooks/useRadioPlayerVisibility";
+import { useGAPageTracking } from "@/hooks/useGAPageTracking";
 
 // Import route configurations
 import { authRoutes } from '@/features/auth/routes';
@@ -75,6 +77,11 @@ const AuthHashRedirect = () => {
   return null;
 };
 
+const GAPageTracker = () => {
+  useGAPageTracking();
+  return null;
+};
+
 const ConditionalRadioPlayer = () => {
   const isMobile = useIsMobile();
   const location = useLocation();
@@ -126,11 +133,13 @@ const App = () => (
                 <BrowserRouter>
                   <RealtimeNotificationProvider>
                     <AuthHashRedirect />
+                    <GAPageTracker />
                     <ScrollToTop />
                     <Layout>
                       <AppRoutes />
                     </Layout>
                     <ConditionalRadioPlayer />
+                    <CookieConsentBanner />
                     <PWAInstallPrompt />
                     <OfflineIndicator />
                     <PWAUpdateHandler />

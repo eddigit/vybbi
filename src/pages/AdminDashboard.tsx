@@ -96,6 +96,13 @@ export default function AdminDashboard() {
 
   const quickActions = [
     {
+      title: "Analytics Health",
+      description: "Diagnostic Google Analytics 4",
+      icon: Activity,
+      link: "/admin/analytics-health",
+      color: "text-green-500"
+    },
+    {
       title: "Modération",
       description: "Gérer les contenus et utilisateurs",
       href: "/admin/moderation",
