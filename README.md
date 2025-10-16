@@ -162,6 +162,12 @@ This project is built with:
 
 Simply open [Lovable](https://lovable.dev/projects/1e644dba-bb62-4be6-913f-de2fb7f78a11) and click on Share -> Publish.
 
+### Déploiement (GitHub + Lovable)
+- Le déploiement s’effectue exclusivement via GitHub relié à Lovable.
+- Cloudflare Pages/Workers sont désactivés et non pris en charge par ce projet.
+- Les fichiers et configurations Cloudflare ont été retirés pour éviter toute réactivation accidentelle.
+- Utilisez `npm run build` pour vérifier localement avant publication.
+
 ## Can I connect a custom domain to my Lovable project?
 
 Yes, you can!

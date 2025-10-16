@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -52,12 +53,10 @@ export function AnnoncesWall() {
   const [selectedAnnonce, setSelectedAnnonce] = useState<string | null>(null);
   const [applicationMessage, setApplicationMessage] = useState("");
 
-  useEffect(() => {
-    fetchAnnonces();
-  }, []);
-
-  const fetchAnnonces = async () => {
-    try {
+  const { isLoading } = useQuery({
+    queryKey: ["annonces-wall"],
+    queryFn: async ({ signal }) => {
+      try {
       const { data, error } = await supabase
         .from("annonces")
         .select(`
@@ -78,27 +77,29 @@ export function AnnoncesWall() {
           image_position_y
         `)
         .eq("status", "published")
-        .order("created_at", { ascending: false });
+        .order("created_at", { ascending: false })
+        .abortSignal(signal as AbortSignal);
 
       if (error) throw error;
 
       if (!data) {
-        setAnnonces([]);
-        return;
+        setAnnonces([] as AnnonceWithProfile[]);
+        return [] as AnnonceWithProfile[];
       }
 
       // Fetch profiles for each announcement
       const userIds = data.map(annonce => annonce.user_id);
       
       if (userIds.length === 0) {
-        setAnnonces([]);
-        return;
+        setAnnonces([] as AnnonceWithProfile[]);
+        return [] as AnnonceWithProfile[];
       }
 
       const { data: profilesData, error: profilesError } = await supabase
         .from("profiles")
         .select("id, display_name, avatar_url, profile_type, user_id")
-        .in("user_id", userIds);
+        .in("user_id", userIds)
+        .abortSignal(signal as AbortSignal);
 
       if (profilesError) throw profilesError;
 
@@ -112,13 +113,25 @@ export function AnnoncesWall() {
       });
       
       setAnnonces(annoncesWithProfiles as AnnonceWithProfile[]);
+      return annoncesWithProfiles as AnnonceWithProfile[];
     } catch (error) {
       console.error("Error fetching annonces:", error);
       toast.error("Erreur lors du chargement des annonces");
+      return [] as AnnonceWithProfile[];
     } finally {
       setLoading(false);
     }
-  };
+    },
+    staleTime: 5 * 60 * 1000,
+    gcTime: 10 * 60 * 1000,
+    refetchOnWindowFocus: false,
+    retry: 1
+  });
+
+  // Synchronise l’état local de loading avec React Query
+  useEffect(() => {
+    setLoading(isLoading);
+  }, [isLoading]);
 
   const handleStartConversation = async (targetUserId: string) => {
     if (!profile) {

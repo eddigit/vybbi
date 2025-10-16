@@ -354,8 +354,20 @@ export function useAuth() {
   };
 
   useEffect(() => {
+    const SUPABASE_URL = (import.meta as any).env?.VITE_SUPABASE_URL as string;
+    const refMatch = SUPABASE_URL?.match(/^https:\/\/([^.]+)\.supabase\.co/);
+    const projectRef = refMatch?.[1];
+
     // Get initial session
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(({ data: { session }, error }) => {
+      // In dev, if Supabase reports a refresh token error, clear local auth storage
+      if (import.meta.env.DEV && error && /refresh token/i.test(error.message || '')) {
+        try {
+          if (projectRef) {
+            localStorage.removeItem(`sb-${projectRef}-auth-token`);
+          }
+        } catch {}
+      }
       setSession(session);
       setUser(session?.user ?? null);
       if (session?.user) {

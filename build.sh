@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script de build pour Cloudflare Pages
+# Script de build local/CI pour Vybbi (sans Cloudflare)
 echo "🚀 Starting Vybbi build process..."
 
 # Vérifier la version de Node.js
@@ -11,9 +11,9 @@ node --version
 echo "📦 npm version:"
 npm --version
 
-# Installer les dépendances avec legacy-peer-deps
+# Installer les dépendances
 echo "📥 Installing dependencies..."
-npm install --legacy-peer-deps
+npm install
 
 # Build de l'application
 echo "🔨 Building application..."
