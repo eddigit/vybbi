@@ -8,7 +8,7 @@ import { componentTagger } from "lovable-tagger";
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
   // Base path for GitHub Pages (e.g., /vybbi/) in production, root in dev
-  const base = mode === 'production' ? '/vybbi/' : '/';
+  const base = process.env.VITE_BASE ?? '/';
   return ({
   server: {
     host: true, // Écoute sur toutes les interfaces réseau (localhost, 127.0.0.1, etc.)
