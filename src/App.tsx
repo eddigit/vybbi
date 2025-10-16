@@ -130,7 +130,7 @@ const App = () => (
             <PerformanceOptimizer>
               <TooltipProvider>
                 <Sonner />
-                <BrowserRouter>
+                <BrowserRouter basename={import.meta.env.BASE_URL}>
                   <RealtimeNotificationProvider>
                     <AuthHashRedirect />
                     <GAPageTracker />

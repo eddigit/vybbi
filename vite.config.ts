@@ -6,11 +6,16 @@ import { VitePWA } from 'vite-plugin-pwa';
 import { componentTagger } from "lovable-tagger";
 
 // https://vitejs.dev/config/
-export default defineConfig(({ mode }) => ({
+export default defineConfig(({ mode }) => {
+  // Base path for GitHub Pages (e.g., /vybbi/) in production, root in dev
+  const base = mode === 'production' ? '/vybbi/' : '/';
+  return ({
   server: {
     host: true, // Écoute sur toutes les interfaces réseau (localhost, 127.0.0.1, etc.)
     port: 8080,
   },
+  // Ensure assets and router resolve correctly under sub-path deployments
+  base,
   define: {
     // Fix buffer issue for Solana web3.js
     global: 'globalThis',
@@ -66,16 +71,16 @@ export default defineConfig(({ mode }) => ({
         background_color: '#0F1419',
         display: 'standalone',
         orientation: 'portrait-primary',
-        scope: '/',
-        start_url: '/',
+        scope: base,
+        start_url: base,
         icons: [
           {
-            src: '/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png',
+            src: 'vybbi-logo-pwa.png',
             sizes: '192x192',
             type: 'image/png'
           },
           {
-            src: '/lovable-uploads/7c8bbe7e-fcc0-4a02-b295-fd73a7ca614c.png',
+            src: 'vybbi-logo-pwa.png',
             sizes: '512x512',
             type: 'image/png'
           }
@@ -142,4 +147,5 @@ export default defineConfig(({ mode }) => ({
     environment: 'jsdom',
     setupFiles: './src/tests/setup.ts',
   },
-}));
+  });
+});

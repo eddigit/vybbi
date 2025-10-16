@@ -8,17 +8,16 @@
     <!-- Google Analytics est chargé uniquement en production via src/lib/analytics.ts -->
     
     <!-- Favicon et icônes -->
-    <link rel="icon" type="image/png" href="/vybbi-logo-pwa.png">
-    <link rel="apple-touch-icon" href="/vybbi-logo-pwa.png">
-    <link rel="mask-icon" href="/vybbi-logo-pwa.png" color="#0F1419">
+    <link rel="icon" type="image/png" href="%BASE_URL%vybbi-logo-pwa.png">
+    <link rel="apple-touch-icon" href="%BASE_URL%vybbi-logo-pwa.png">
+    <link rel="mask-icon" href="%BASE_URL%vybbi-logo-pwa.png" color="#0F1419">
     
-    <!-- PWA Manifest -->
-    <link rel="manifest" href="/manifest.json">
+    <!-- PWA Manifest: géré par VitePWA, lien injecté automatiquement -->
     
     <!-- Thème et couleurs -->
     <meta name="theme-color" content="#0F1419">
     <meta name="msapplication-TileColor" content="#0F1419">
-    <meta name="msapplication-config" content="/browserconfig.xml">
+    <meta name="msapplication-config" content="%BASE_URL%browserconfig.xml">
     
     <!-- Apple PWA -->
     <meta name="apple-mobile-web-app-capable" content="yes">
