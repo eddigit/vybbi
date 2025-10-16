@@ -34,7 +34,7 @@ export default function AdminAnalyticsHealth() {
     // Try to get consent state
     if (typeof window.gtag === 'function') {
       try {
-        window.gtag('get', 'G-DKWTBNGQ47', 'consent', (consent: ConsentState) => {
+        window.gtag('get', 'G-K1LQ1MVX3R', 'consent', (consent: ConsentState) => {
           setConsentState(consent);
         });
       } catch (error) {
@@ -119,7 +119,7 @@ export default function AdminAnalyticsHealth() {
             <div className="space-y-2">
               <div className="flex items-center justify-between">
                 <span className="text-sm">Measurement ID:</span>
-                <code className="text-xs bg-muted px-2 py-1 rounded">G-DKWTBNGQ47</code>
+                <code className="text-xs bg-muted px-2 py-1 rounded">G-K1LQ1MVX3R</code>
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-sm">État:</span>

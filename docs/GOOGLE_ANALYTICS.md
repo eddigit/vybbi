@@ -8,7 +8,7 @@ Ce document couvre l'intégration complète de Google Analytics 4 (GA4) avec Vyb
 
 ### Measurement ID
 ```
-G-DKWTBNGQ47
+G-K1LQ1MVX3R
 ```
 
 ### Composants principaux
@@ -134,7 +134,7 @@ console.log(typeof window.gtag); // doit afficher "function"
 
 #### Vérifier l'état du consentement
 ```javascript
-window.gtag('get', 'G-DKWTBNGQ47', 'consent', (consent) => {
+window.gtag('get', 'G-K1LQ1MVX3R', 'consent', (consent) => {
   console.log(consent);
 });
 ```
@@ -368,7 +368,7 @@ VALUES ('ga4_property_id', '"464099935"');
 **Solutions :**
 1. Vérifier que le consentement est accordé :
    ```javascript
-   window.gtag('get', 'G-DKWTBNGQ47', 'consent', console.log);
+   window.gtag('get', 'G-K1LQ1MVX3R', 'consent', console.log);
    ```
 2. Vérifier que les events sont envoyés (Console Network > filter "collect")
 3. Attendre 10-30 secondes (délai de traitement GA4)
