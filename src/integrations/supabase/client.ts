@@ -10,6 +10,8 @@ if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
   console.warn(
     '[Supabase] Variables manquantes. Assurez-vous que VITE_SUPABASE_URL et VITE_SUPABASE_PUBLISHABLE_KEY sont définies dans votre fichier .env.'
   );
+} else {
+  console.log(`[Supabase] Configured with URL: ${SUPABASE_URL}`);
 }
 
 // Import the supabase client like this:
