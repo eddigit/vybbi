@@ -28,6 +28,7 @@ export default {
     },
     extend: {
       fontFamily: {
+        'sans': ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'sans-serif'],
         'vybbi': ['Vybbi Display', 'sans-serif'],
       },
       colors: {
