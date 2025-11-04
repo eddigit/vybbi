@@ -123,7 +123,7 @@ export default function Landing() {
     label: "Déploiement national"
   }, {
     number: "24h/24",
-    label: "Radio <span className='font-vybbi'>Vybbi</span>"
+    label: "Radio Vybbi"
   }];
   return <div className="min-h-screen bg-background">
       {/* Hero Section */}
@@ -233,11 +233,20 @@ export default function Landing() {
             </div>
 
             {/* Stats - Mobile optimized */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 lg:gap-8 max-w-4xl mx-auto px-2">
-              {stats.map((stat, index) => <div key={index} className="text-center mobile-card p-3 sm:p-4">
-                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-1">{stat.number}</div>
-                  <div className="text-xs sm:text-sm text-muted-foreground leading-tight">{stat.label}</div>
-                </div>)}
+            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 max-w-4xl mx-auto px-2">
+              {stats.map((stat, index) => (
+                <div 
+                  key={index} 
+                  className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4 text-center hover:border-primary/20 transition-all"
+                >
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-2 line-clamp-1">
+                    {stat.number}
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground leading-tight line-clamp-2">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
@@ -294,11 +303,20 @@ export default function Landing() {
             </div>
 
             {/* Stats */}
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 max-w-4xl mx-auto">
-              {stats.map((stat, index) => <div key={index} className="text-center">
-                  <div className="text-3xl font-bold text-primary mb-1">{stat.number}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>)}
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6 max-w-4xl mx-auto">
+              {stats.map((stat, index) => (
+                <div 
+                  key={index} 
+                  className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-lg p-4 text-center hover:border-primary/20 transition-all"
+                >
+                  <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-primary mb-2 line-clamp-1">
+                    {stat.number}
+                  </div>
+                  <div className="text-xs sm:text-sm text-muted-foreground leading-tight line-clamp-2">
+                    {stat.label}
+                  </div>
+                </div>
+              ))}
             </div>
         </div>
       </div>
