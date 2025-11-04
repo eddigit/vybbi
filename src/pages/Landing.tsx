@@ -144,10 +144,10 @@ export default function Landing() {
               <TickerBanner />
             </div>
             
-            <h1 className="title-hero mb-4 sm:mb-6 mt-6 sm:mt-8 px-2">
-              LE réseau social
+            <h1 className="text-5xl font-bold mb-4 sm:mb-6 mt-6 sm:mt-8 px-2" style={{ fontSize: '48px', lineHeight: '1.2' }}>
+              <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">LE réseau social</span>
               <br className="hidden sm:block" />
-              <span className="animate-pulse">de la nuit</span> 
+              <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">de la nuit</span> 
               <span className="text-white"> et de l'événement</span>
             </h1>
             
@@ -263,10 +263,10 @@ export default function Landing() {
             </div>
             
             
-            <h1 className="title-hero mb-6 mt-8 line-clamp-3 md:line-clamp-2">
-              Connectez votre
+            <h1 className="text-5xl font-bold mb-6 mt-8 line-clamp-3 md:line-clamp-2" style={{ fontSize: '48px', lineHeight: '1.2' }}>
+              <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">Connectez votre</span>
               <br />
-              <span className="animate-pulse">talent</span> 
+              <span className="bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">talent</span> 
               <span className="text-white"> au monde</span>
             </h1>
             
