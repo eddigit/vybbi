@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { createPortal } from 'react-dom';
-import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon, Home } from 'lucide-react';
+import { Menu, X, User, LogOut, Trophy, Users, Radio, Coins, MapPin, Star, Search, Target, Euro, BarChart3, Hash, Calendar, Shield, BookOpen, Lock, Route, MessageCircle, Megaphone, LinkIcon, Home, Tag } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '@/hooks/useAuth';
 import { useIsMobile } from '@/hooks/use-mobile';
@@ -73,6 +73,7 @@ export function MobileBurgerMenu() {
     { title: "Nos Artistes", url: "/artists", icon: Users },
     { title: "Web TV", url: "/webtv", icon: Radio },
     { title: "Token VYBBI", url: "/token", icon: Coins },
+    { title: "Tarifs", url: "/tarifs", icon: Tag },
     { title: "Nos Partenaires", url: "/partners", icon: Users },
     { title: "Nos Lieux", url: "/lieux", icon: MapPin },
     { title: "À propos", url: "/a-propos", icon: Star },

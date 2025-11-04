@@ -27,7 +27,8 @@ import {
   Activity,
   Search,
   Briefcase,
-  TrendingUp
+  TrendingUp,
+  Tag
 } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import {
@@ -132,6 +133,7 @@ export function TopNav() {
     { title: "Nos Artistes", url: "/artists" },
     { title: "Web TV", url: "/webtv" },
     { title: "Token VYBBI", url: "/token" },
+    { title: "Tarifs", url: "/tarifs" },
     { title: "Nos Partenaires", url: "/partners" },
     { title: "Nos Lieux", url: "/lieux" },
     { title: "À propos", url: "/a-propos" },
