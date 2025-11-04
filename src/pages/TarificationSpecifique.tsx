@@ -55,9 +55,7 @@ export default function TarificationSpecifique() {
             Programme Exclusif jusqu'au 31/01/2026
           </Badge>
           
-          <h1 className="text-4xl md:text-6xl font-bold bg-gradient-to-r from-primary via-primary/80 to-primary/60 bg-clip-text text-transparent">
-            Tarification par Profil
-          </h1>
+          <h1 className="title-section mb-4">Tarification par Profil</h1>
           
           <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             Des plans conçus spécifiquement pour <span className="text-primary font-semibold">votre métier</span> dans l'industrie musicale.

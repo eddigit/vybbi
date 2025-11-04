@@ -4,6 +4,78 @@
 
 Ce design system garantit une cohérence visuelle parfaite sur toutes les pages de l'application Vybbi.
 
+---
+
+## 🎨 Système de Titres Standardisé
+
+### Classes de titres disponibles
+
+Toutes les classes sont définies dans `src/index.css` avec police système (Inter, Apple System, BlinkMac) et gradient rose→violet.
+
+#### `.title-hero` - Titres principaux H1 (48px)
+- **Usage**: Héros de pages, titres principaux de landing
+- **Style**: Police système, gradient rose→violet, 48px, line-height 1.2
+- **Exemple**: 
+```tsx
+<h1 className="title-hero">Le réseau social de la nuit</h1>
+```
+
+#### `.title-section` - Titres de sections H2 (40px)
+- **Usage**: Titres de sections majeures
+- **Style**: Police système, gradient rose→violet, 40px, line-height 1.3
+- **Exemple**: 
+```tsx
+<h2 className="title-section">Fonctionnalités puissantes</h2>
+```
+
+#### `.title-subsection` - Sous-titres H3 (32px)
+- **Usage**: Sous-sections, titres de pages internes
+- **Style**: Police système, blanc pur, 32px, line-height 1.4
+- **Exemple**: 
+```tsx
+<h3 className="title-subsection">Nos Artistes</h3>
+```
+
+#### `.title-card` - Titres de cartes (24px)
+- **Usage**: Titres dans les cards, composants
+- **Style**: Police système, blanc pur, 24px, line-height 1.5
+- **Exemple**: 
+```tsx
+<h4 className="title-card">Titre de card</h4>
+```
+
+### ⚠️ Règles d'utilisation des titres
+
+✅ **À FAIRE:**
+- Utiliser les classes standardisées pour **TOUS** les titres
+- Réserver `font-vybbi` **UNIQUEMENT** pour la marque "Vybbi"
+- Respecter la hiérarchie sémantique (h1 > h2 > h3 > h4)
+- Ajouter `text-white` si besoin de blanc pur au lieu du gradient
+
+❌ **À ÉVITER:**
+- ❌ Utiliser `font-vybbi` sur des titres complets
+- ❌ Utiliser des classes de taille custom (`text-4xl`, `text-5xl`, etc.)
+- ❌ Mélanger plusieurs gradients différents
+- ❌ Ajouter `animate-pulse` sur les titres (non professionnel)
+
+### Exemples de migration titres
+
+**AVANT (❌ Inconsistant):**
+```tsx
+<h1 className="text-5xl md:text-7xl font-bold bg-gradient-primary bg-clip-text text-transparent">
+  Mon Titre
+</h1>
+```
+
+**APRÈS (✅ Standardisé):**
+```tsx
+<h1 className="title-hero">
+  Mon Titre
+</h1>
+```
+
+---
+
 ## Containers
 
 ### PageContainer

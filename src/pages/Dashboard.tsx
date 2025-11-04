@@ -164,7 +164,7 @@ export default function Dashboard() {
         <div className="space-y-6">
         
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">
+          <h1 className="title-subsection">
             <AutoTranslate text="Tableau de Bord Admin" />
           </h1>
           <p className="text-muted-foreground">
@@ -239,7 +239,7 @@ export default function Dashboard() {
     <div className="container mx-auto p-6">
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight"><AutoTranslate text="Tableau de Bord" /></h1>
+        <h1 className="title-subsection"><AutoTranslate text="Tableau de Bord" /></h1>
         <p className="text-muted-foreground">
           <AutoTranslate text="Vue d'ensemble de votre activité" />
         </p>

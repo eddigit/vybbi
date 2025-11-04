@@ -66,7 +66,7 @@ export default function Artists() {
       <PageContainer width="default">
         <SectionContainer spacing="content">
           <div className="mb-8">
-            <h1 className="text-3xl font-bold mb-4 line-clamp-2">Nos Artistes</h1>
+            <h1 className="title-subsection mb-4 line-clamp-2">Nos Artistes</h1>
             <p className="text-muted-foreground mb-6 line-clamp-3">
               Découvrez les artistes talentueux, DJs, musiciens et performers
             </p>

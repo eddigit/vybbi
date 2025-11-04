@@ -144,13 +144,11 @@ export default function Landing() {
               <TickerBanner />
             </div>
             
-            <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-bold mb-4 sm:mb-6 mt-6 sm:mt-8 leading-tight px-2">
-              <span className="bg-gradient-primary bg-clip-text text-transparent block sm:inline">
-                LE réseau social
-              </span>
+            <h1 className="title-hero mb-4 sm:mb-6 mt-6 sm:mt-8 px-2">
+              LE réseau social
               <br className="hidden sm:block" />
-              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">de la nuit</span> 
-              <span className="text-foreground"> et de l'événement</span>
+              <span className="animate-pulse">de la nuit</span> 
+              <span className="text-white"> et de l'événement</span>
             </h1>
             
             <p className="text-sm sm:text-base md:text-lg lg:text-xl text-muted-foreground mb-6 sm:mb-8 max-w-2xl mx-auto leading-relaxed px-3 sm:px-2">
@@ -265,13 +263,11 @@ export default function Landing() {
             </div>
             
             
-            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-6 mt-8 leading-tight line-clamp-3 md:line-clamp-2">
-              <span className="bg-gradient-primary bg-clip-text text-transparent">
-                Connectez votre
-              </span>
+            <h1 className="title-hero mb-6 mt-8 line-clamp-3 md:line-clamp-2">
+              Connectez votre
               <br />
-              <span className="bg-gradient-primary bg-clip-text text-transparent animate-pulse">talent</span> 
-              <span className="text-foreground"> au monde</span>
+              <span className="animate-pulse">talent</span> 
+              <span className="text-white"> au monde</span>
             </h1>
             
             <p className="text-base sm:text-lg md:text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed px-2">
@@ -373,7 +369,7 @@ export default function Landing() {
               
               {/* Colonne gauche : Texte */}
               <div>
-                <h2 className="text-3xl md:text-4xl font-bold mb-4">
+                <h2 className="title-section mb-4 text-white">
                   Devenez le <span className="bg-gradient-to-r from-primary via-purple-500 to-pink-500 bg-clip-text text-transparent">Launch Partner Paris</span>
                 </h2>
                 <p className="text-lg md:text-xl text-muted-foreground mb-6">
@@ -442,7 +438,7 @@ export default function Landing() {
       <section className="py-12 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Votre carte de visite digitale professionnelle</h2>
+            <h2 className="title-section mb-4">Votre carte de visite digitale professionnelle</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Créez votre profil de référence qui devient votre vitrine officielle dans l'écosystème de la nuit
             </p>
@@ -666,7 +662,7 @@ export default function Landing() {
       <section className="py-16 px-2 sm:px-6 bg-gradient-to-br from-primary/5 to-accent/5">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Le premier réseau social de l'écosystème nocturne</h2>
+            <h2 className="title-section mb-4">Le premier réseau social de l'écosystème nocturne</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               <span className="font-vybbi">Vybbi</span> révolutionne la découverte et le networking professionnel dans l'industrie de la nuit. 
               Votre profil devient votre référence officielle reconnue par tous les acteurs du secteur.
@@ -726,7 +722,7 @@ export default function Landing() {
       <section id="features" className="py-16 px-2 sm:px-6">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Fonctionnalités puissantes</h2>
+            <h2 className="title-section mb-4">Fonctionnalités puissantes</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
               Tout ce dont vous avez besoin pour développer votre activité dans l'industrie musicale. Les agents et bookers bénéficient d'outils dédiés pour gérer leurs artistes, trouver de nouveaux talents et organiser des tournées.
             </p>
@@ -774,7 +770,7 @@ export default function Landing() {
               <Zap className="w-4 h-4 mr-2" />
               DÉCOUVREZ <span className="font-vybbi">VYBBI</span> SANS RISQUE
             </Badge>
-            <h2 className="text-4xl font-bold mb-4 text-foreground">Commencez votre essai gratuit</h2>
+            <h2 className="title-section mb-4 text-white">Commencez votre essai gratuit</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               Nous facilitons votre adoption de <span className="font-vybbi">Vybbi</span> avec des offres de lancement exclusives 
               et un écosystème de partenaires pour vous accompagner dans votre croissance.
@@ -936,7 +932,7 @@ export default function Landing() {
                 <Gift className="w-4 h-4 mr-2" />
                 PROGRAMME EXCLUSIF JUSQU'AU 31/01/2026
               </Badge>
-              <h2 className="text-4xl font-bold mb-4 text-foreground">Programme d'Affiliation <span className="font-vybbi">Vybbi</span></h2>
+              <h2 className="title-section mb-4 text-white">Programme d'Affiliation <span className="font-vybbi">Vybbi</span></h2>
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                 Rejoignez notre programme d'affiliation exclusif et générez des revenus récurrents 
                 en recommandant <span className="font-vybbi">Vybbi</span>. 2€ par inscription + 0,50€/mois récurrents.
@@ -1008,7 +1004,7 @@ export default function Landing() {
        <section className="py-16 px-2 sm:px-6 bg-gradient-to-r from-primary/10 via-purple-500/10 to-pink-500/10">
          <div className="container mx-auto">
            <div className="text-center mb-12">
-             <h2 className="text-4xl font-bold mb-4">Radio <span className="font-vybbi">Vybbi</span> 24h/24</h2>
+             <h2 className="title-section mb-4">Radio <span className="font-vybbi">Vybbi</span> 24h/24</h2>
              <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
                Diffusez votre talent au monde entier avec notre radio dédiée aux artistes <span className="font-vybbi">Vybbi</span>. 
                Être écouté partout, à tout moment, et grimper dans notre Top 50.
@@ -1075,7 +1071,7 @@ export default function Landing() {
               <Shield className="w-4 h-4 mr-2" />
               TRANSPARENCE & PROFESSIONNALISME
             </Badge>
-            <h2 className="text-4xl font-bold mb-4">Avis vérifiés et transparents</h2>
+            <h2 className="title-section mb-4">Avis vérifiés et transparents</h2>
             <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
               <span className="font-vybbi">Vybbi</span> promeut la transparence et le professionnalisme en permettant aux lieux, agents et managers 
               de laisser des avis vérifiés sur les artistes. Cette exigence de qualité distingue notre plateforme 
@@ -1130,7 +1126,7 @@ export default function Landing() {
       <section id="testimonials" className="py-16 px-2 sm:px-6 bg-muted/30">
         <div className="container mx-auto">
           <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold mb-4">Les pionniers témoignent</h2>
+            <h2 className="title-section mb-4">Les pionniers témoignent</h2>
             <p className="text-xl text-muted-foreground">
               Découvrez ce que disent nos early adopters et partenaires
             </p>
@@ -1172,7 +1168,7 @@ export default function Landing() {
               <Coins className="w-4 h-4 text-pink-400" />
             </div>
             
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-purple-400 via-pink-400 to-purple-400 bg-clip-text text-transparent">
+            <h2 className="title-hero mb-4">
               Le <span className="font-vybbi">VYBBI</span> Token 🚀
             </h2>
             
@@ -1287,7 +1283,7 @@ export default function Landing() {
         <div className="container mx-auto">
           <Card className="bg-gradient-primary border-border shadow-glow">
             <CardContent className="p-12 text-center">
-              <h2 className="text-4xl font-bold mb-4 text-primary-foreground">Devenez membre fondateur</h2>
+              <h2 className="title-section mb-4 text-white">Devenez membre fondateur</h2>
               <p className="text-xl mb-8 text-primary-foreground/90 max-w-2xl mx-auto">
                 Soyez parmi les premiers à façonner l'avenir de l'industrie musicale. Places limitées pour les fondateurs.
               </p>
