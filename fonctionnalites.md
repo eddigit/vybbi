@@ -6,6 +6,93 @@ Vybbi est une plateforme complète de networking pour l'industrie musicale conne
 
 ---
 
+## Business Model & Tarification
+
+### Structure Tarifaire
+
+Vybbi propose un modèle freemium avec plusieurs niveaux d'abonnement adaptés à chaque type de profil :
+
+#### Plans Professionnels (Artistes, Agents & Managers, Lieux d'événements)
+
+**Solo - 9,90€/mois**
+- Visibilité de base
+- Outils essentiels
+- Portfolio/Profil complet
+- Messagerie intégrée
+- Accès Radio Vybbi
+- Système de réputation
+- **Public cible** : Débutants, petits artistes, managers indépendants, petits lieux
+- **Justification** : Point d'entrée accessible pour tester la plateforme sans grand investissement
+
+**Pro - 29,90€/mois** ⭐ Le plus populaire
+- Toutes fonctionnalités Solo
+- Visibilité maximale
+- Outils de gestion avancés
+- Gestion des contrats
+- Statistiques détaillées
+- Accès opportunités premium
+- Support prioritaire
+- **Public cible** : Professionnels actifs souhaitant développer leur activité
+- **Justification** : Offre complète pour les professionnels qui veulent maximiser leurs opportunités
+
+**Elite - 99,90€/mois**
+- Toutes fonctionnalités Pro
+- Mise en avant maximale
+- Support dédié personnel
+- Analytics complets
+- Blockchain & Smart Contracts
+- Optimisation maximale
+- Accès anticipé aux nouveautés
+- **Public cible** : Acteurs établis ou à fort potentiel
+- **Justification** : Fonctionnalités premium qui justifient le prix par le gain de temps, la sécurité et l'optimisation maximale
+
+#### Plan Fans - GRATUIT 🎁
+- Profil personnel gratuit
+- Suivez vos artistes favoris
+- Laissez des avis vérifiés
+- Participez à l'économie VYBBI Token
+- Tips & micro-transactions
+- Accès aux NFT exclusifs
+- **Justification** : Modèle basé sur l'engagement, les revenus proviennent des micro-transactions et NFT
+
+#### Programme Influenceur
+
+**Influenceur Standard - GRATUIT** 🎁
+- 5% commission sur chaque inscription
+- 0,50€/mois commission récurrente
+- Lien affiliation personnalisé
+- Dashboard temps réel
+- Paiements automatiques mensuels
+- **Justification** : Rémunération via commissions pour apporter de nouveaux utilisateurs et visibilité
+
+**Influenceur Premium - 49€/mois** (Optionnel)
+- Toutes fonctionnalités Influenceur Standard
+- Analytics sophistiqués
+- Support dédié personnalisé
+- Bonus de commission
+- Accès anticipé aux fonctionnalités
+- Outils d'optimisation de campagnes
+- **Public cible** : Influenceurs professionnels avec besoins avancés
+- **Justification** : Transforme les influenceurs en véritables partenaires commerciaux
+
+### Conditions Générales
+- ✅ 30 jours d'essai gratuit pour tous les plans professionnels
+- ✅ Sans engagement
+- ✅ Annulation à tout moment
+- ✅ Changement de plan possible à tout moment
+- ✅ Paiement au prorata lors des changements
+- ✅ Configuration via `useTrialConfig` hook
+- ✅ Promotions temporaires possibles
+
+### Sources de Revenus
+1. **Abonnements récurrents** (Solo, Pro, Elite, Influenceur Premium)
+2. **Commissions d'affiliation** (Programme Influenceur)
+3. **Micro-transactions** (Tips, donations via Vybbi Tokens)
+4. **NFT & Blockchain** (Vente de contenus exclusifs)
+5. **Publicités** (Système AdSlot pour partenaires)
+
+---
+
 ## 1. Authentification & Gestion des Profils
 
 ### Authentification

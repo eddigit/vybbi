@@ -1,7 +1,7 @@
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { CheckCircle, Star, Zap, Crown, Users } from "lucide-react";
+import { Check, Users, Sparkles, Gem, Heart, TrendingUp } from "lucide-react";
 import { Link } from "react-router-dom";
 import { SEOHead } from "@/components/SEOHead";
 import { useTrialConfig } from "@/hooks/useTrialConfig";
@@ -9,90 +9,119 @@ import { useTrialConfig } from "@/hooks/useTrialConfig";
 export default function Tarifs() {
   const { trialDays, isPromotionalActive } = useTrialConfig();
 
-  const plans = [
+  // Plans professionnels
+  const professionalPlans = [
     {
-      name: "Artiste",
-      price: "8€",
+      name: "Solo",
+      price: "9,90",
       period: "/mois",
-      description: "Parfait pour les artistes solo et DJ",
+      description: "Pour démarrer et tester la plateforme",
+      subtitle: "Artistes • Agents & Managers • Lieux",
       icon: Users,
-      color: "from-purple-500 to-pink-500",
       features: [
-        "Portfolio multimédia illimité",
-        "Diffusion Radio Vybbi 24h/24",
-        "Agenda des disponibilités",
-        "Gestion des contrats",
-        "Statistiques d'écoute détaillées",
-        "Système de réputation",
-        "Classement Top 50",
-        "Messagerie professionnelle",
-        "Support email"
+        "Visibilité de base",
+        "Outils essentiels",
+        "Portfolio/Profil complet",
+        "Messagerie intégrée",
+        "Accès Radio Vybbi",
+        "Système de réputation"
       ],
       popular: false
     },
     {
-      name: "Établissement",
-      price: "18€",
+      name: "Pro",
+      price: "29,90",
       period: "/mois",
-      description: "Pour les lieux et organisateurs d'événements",
-      icon: Crown,
-      color: "from-blue-500 to-cyan-500",
+      description: "Pour les professionnels actifs",
+      subtitle: "Artistes • Agents & Managers • Lieux",
+      icon: Sparkles,
       features: [
-        "Calendrier événementiel illimité",
-        "Galerie photos et vidéos",
-        "Historique des talents",
-        "Gestion des réservations",
-        "Partenariats avec autres lieux",
-        "Analytics de fréquentation",
-        "Recommandations IA",
-        "Outils de promotion",
+        "Toutes fonctionnalités Solo",
+        "Visibilité maximale",
+        "Outils de gestion avancés",
+        "Gestion des contrats",
+        "Statistiques détaillées",
+        "Accès opportunités premium",
         "Support prioritaire"
       ],
       popular: true
     },
     {
-      name: "Agent",
-      price: "25€",
+      name: "Elite",
+      price: "99,90",
       period: "/mois",
-      description: "Pour les agents et managers professionnels",
-      icon: Star,
-      color: "from-green-500 to-emerald-500",
+      description: "Pour les acteurs établis",
+      subtitle: "Artistes • Agents & Managers • Lieux",
+      icon: Gem,
       features: [
-        "Gestion de roster illimitée",
-        "Suivi des commissions automatisé",
-        "Organisation de tournées",
-        "Négociation de contrats",
-        "Reporting financier détaillé",
-        "Réseau professionnel étendu",
-        "Outils de prospection avancés",
-        "Dashboard analytics",
-        "Support VIP"
+        "Toutes fonctionnalités Pro",
+        "Mise en avant maximale",
+        "Support dédié personnel",
+        "Analytics complets",
+        "Blockchain & Smart Contracts",
+        "Optimisation maximale",
+        "Accès anticipé nouveautés"
       ],
       popular: false
     }
   ];
 
-  const influencerProgram = {
-    name: "Programme Influenceur",
-    description: "Gagnez des commissions en recommandant Vybbi",
+  // Plan Fans (gratuit)
+  const fansProgram = {
+    name: "Fans",
+    price: "Gratuit",
+    description: "Soutenez vos artistes préférés",
+    icon: Heart,
     features: [
-      "Liens d'affiliation personnalisés",
-      "QR codes dynamiques", 
-      "Tracking des conversions en temps réel",
-      "Commissions automatiques de 5%",
-      "Commissions récurrentes de 0,50€/mois",
-      "Dashboard analytique complet",
-      "Outils de promotion intégrés",
-      "Programme de parrainage",
-      "Paiements mensuels automatiques"
+      "Profil personnel gratuit",
+      "Suivez vos artistes favoris",
+      "Laissez des avis vérifiés",
+      "Participez à l'économie VYBBI Token",
+      "Tips & micro-transactions",
+      "Accès aux NFT exclusifs"
     ]
   };
+
+  // Programme influenceur
+  const influencerStandard = {
+    name: "Influenceur",
+    price: "Gratuit",
+    description: "Programme d'affiliation",
+    subtitle: "Apportez de nouveaux utilisateurs",
+    icon: TrendingUp,
+    features: [
+      "5% commission sur inscription",
+      "0,50€/mois commission récurrente",
+      "Lien affiliation personnalisé",
+      "Dashboard temps réel",
+      "Paiements automatiques mensuels",
+      "100% gratuit"
+    ]
+  };
+
+  const influencerPremium = {
+    name: "Influenceur Premium",
+    price: "49",
+    period: "/mois",
+    badge: "Optionnel",
+    description: "Outils avancés pour influenceurs pros",
+    icon: Gem,
+    features: [
+      "Toutes fonctionnalités Influenceur",
+      "Analytics sophistiqués",
+      "Support dédié personnalisé",
+      "Bonus de commission",
+      "Accès anticipé fonctionnalités",
+      "Outils optimisation campagnes"
+    ]
+  };
+
 
   return (
     <div className="min-h-screen bg-background">
       <SEOHead 
-        title="Tarifs" 
-        description={`Découvrez nos tarifs : Artistes ${trialDays} jours gratuits puis 8€/mois, Établissements 18€/mois, Agents 25€/mois. Programme influenceur avec commissions automatiques.`}
+        title="Tarifs Vybbi - Plans Solo, Pro & Elite" 
+        description={`Plans adaptés à tous : Solo 9,90€/mois, Pro 29,90€/mois, Elite 99,90€/mois. Fans gratuit, Programme Influenceur avec commissions. ${trialDays} jours d'essai gratuit.`}
         canonicalUrl={`${window.location.origin}/tarifs`}
       />
       
@@ -103,137 +132,200 @@ export default function Tarifs() {
             {isPromotionalActive ? "🔥 Offre limitée" : "Tarification transparente"}
           </Badge>
           <h1 className="text-5xl font-bold mb-6 bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
-            Des tarifs adaptés à chaque profil
+            Tarifs Transparents & Flexibles
           </h1>
           <p className="text-xl text-muted-foreground max-w-3xl mx-auto mb-8">
-            Choisissez l'abonnement qui correspond à vos besoins. Tous les plans incluent {trialDays || 14} jours d'essai gratuit 
-            {isPromotionalActive && " (offre limitée)"}.
+            Du débutant au professionnel établi, une offre adaptée à chaque profil. {trialDays || 30} jours d'essai gratuit pour tous les plans professionnels.
+            {isPromotionalActive && (
+              <span className="block mt-2 text-primary font-semibold">🎉 Offre promotionnelle active !</span>
+            )}
           </p>
           <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
-            <CheckCircle className="h-4 w-4 text-success" />
-            <span>Sans engagement • Annulation à tout moment</span>
+            <Check className="h-4 w-4 text-green-500" />
+            <span>Sans engagement • Annulation à tout moment • Changement de plan possible</span>
           </div>
         </div>
       </section>
 
-      {/* Pricing Plans */}
+      {/* Plans Professionnels */}
       <section className="py-16 px-6">
         <div className="container mx-auto">
-          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            {plans.map((plan, index) => {
+          <div className="text-center mb-12">
+            <h2 className="text-3xl font-bold mb-3">Plans Professionnels</h2>
+            <p className="text-muted-foreground">Pour Artistes, Agents & Managers, Lieux d'événements</p>
+          </div>
+          
+          <div className="grid lg:grid-cols-3 gap-8 max-w-6xl mx-auto mb-16">
+            {professionalPlans.map((plan, index) => {
               const IconComponent = plan.icon;
               return (
                 <Card 
                   key={index} 
-                  className={`relative group hover:shadow-xl transition-all duration-300 ${
-                    plan.popular ? 'ring-2 ring-primary scale-105' : 'hover:-translate-y-2'
+                  className={`relative ${
+                    plan.popular ? 'border-primary shadow-xl scale-105' : ''
                   }`}
                 >
                   {plan.popular && (
-                    <Badge className="absolute -top-3 left-1/2 transform -translate-x-1/2 bg-primary">
-                      Le plus populaire
-                    </Badge>
+                    <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                      <Badge className="bg-primary">Le plus populaire</Badge>
+                    </div>
                   )}
                   
-                  <CardHeader className="text-center">
-                    <div className={`w-16 h-16 rounded-full bg-gradient-to-r ${plan.color} flex items-center justify-center mx-auto mb-4`}>
-                      <IconComponent className="h-8 w-8 text-white" />
+                  <CardHeader>
+                    <div className="flex justify-center mb-4">
+                      <IconComponent className="h-12 w-12 text-primary" />
                     </div>
-                    <CardTitle className="text-2xl">{plan.name}</CardTitle>
-                    <p className="text-muted-foreground">{plan.description}</p>
-                    <div className="flex items-center justify-center gap-1 mt-4">
-                      <span className="text-4xl font-bold">{plan.price}</span>
+                    <CardTitle className="text-2xl text-center">{plan.name}</CardTitle>
+                    <p className="text-xs text-center text-muted-foreground font-medium">{plan.subtitle}</p>
+                    <CardDescription className="text-center">{plan.description}</CardDescription>
+                    <div className="mt-4 text-center">
+                      <span className="text-4xl font-bold">{plan.price}€</span>
                       <span className="text-muted-foreground">{plan.period}</span>
                     </div>
-                    <p className="text-sm text-success font-medium">
-                      {trialDays || 14} jours gratuits{isPromotionalActive && " (offre limitée)"}
-                    </p>
                   </CardHeader>
                   
-                  <CardContent className="pt-0">
-                    <ul className="space-y-3 mb-8">
+                  <CardContent>
+                    <ul className="space-y-3">
                       {plan.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-success shrink-0 mt-0.5" />
-                          <span className="text-sm text-muted-foreground">{feature}</span>
+                        <li key={idx} className="flex items-start gap-2">
+                          <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                          <span className="text-sm">{feature}</span>
                         </li>
                       ))}
                     </ul>
-                    
+                  </CardContent>
+                  
+                  <CardFooter>
                     <Button 
                       className="w-full" 
                       variant={plan.popular ? "default" : "outline"}
-                      size="lg"
                       asChild
                     >
                       <Link to="/auth">
-                        Commencer {trialDays || 14} jours gratuits
+                        Commencer {trialDays || 30} jours gratuits
                       </Link>
                     </Button>
-                  </CardContent>
+                  </CardFooter>
                 </Card>
               );
             })}
           </div>
-        </div>
-      </section>
 
-      {/* Influencer Program */}
-      <section className="py-16 px-6 bg-muted/30">
-        <div className="container mx-auto">
-          <div className="max-w-4xl mx-auto">
-            <Card className="bg-gradient-to-r from-orange-500/10 to-red-500/10 border-orange-200 dark:border-orange-800">
-              <CardHeader className="text-center">
-                <div className="w-16 h-16 rounded-full bg-gradient-to-r from-orange-500 to-red-500 flex items-center justify-center mx-auto mb-4">
-                  <Zap className="h-8 w-8 text-white" />
+          {/* Plan Fans */}
+          <div className="max-w-3xl mx-auto mb-16">
+            <h2 className="text-3xl font-bold text-center mb-8">Pour les Fans</h2>
+            <Card className="border-2">
+              <CardHeader>
+                <div className="flex items-center justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-3 mb-2">
+                      <Heart className="h-8 w-8 text-red-500" />
+                      <CardTitle className="text-2xl">{fansProgram.name}</CardTitle>
+                    </div>
+                    <CardDescription className="text-base">{fansProgram.description}</CardDescription>
+                  </div>
+                  <Badge className="text-lg px-4 py-2 bg-green-500">{fansProgram.price}</Badge>
                 </div>
-                <CardTitle className="text-3xl">{influencerProgram.name}</CardTitle>
-                <p className="text-xl text-muted-foreground">{influencerProgram.description}</p>
               </CardHeader>
               
               <CardContent>
-                <div className="grid md:grid-cols-2 gap-8">
-                  <div>
-                    <h4 className="font-semibold text-lg mb-4">Ce qui est inclus :</h4>
-                    <ul className="space-y-3">
-                      {influencerProgram.features.map((feature, idx) => (
-                        <li key={idx} className="flex items-start gap-3">
-                          <CheckCircle className="h-5 w-5 text-success shrink-0 mt-0.5" />
-                          <span className="text-sm text-muted-foreground">{feature}</span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  
-                  <div className="space-y-6">
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="font-semibold text-lg mb-2">Commission par conversion</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">5%</div>
-                      <p className="text-sm text-muted-foreground">
-                        Sur chaque nouvelle inscription que vous parrainez
-                      </p>
-                    </div>
-                    
-                    <div className="bg-card p-6 rounded-lg border">
-                      <h4 className="font-semibold text-lg mb-2">Commission récurrente</h4>
-                      <div className="text-3xl font-bold text-primary mb-2">0,50€</div>
-                      <p className="text-sm text-muted-foreground">
-                        Chaque mois tant que votre filleul reste abonné
-                      </p>
-                    </div>
-                    
-                    <Button size="lg" className="w-full" asChild>
-                      <Link to="/affiliation">
-                        Rejoindre le programme
-                      </Link>
-                    </Button>
-                  </div>
-                </div>
+                <ul className="grid md:grid-cols-2 gap-3">
+                  {fansProgram.features.map((feature, idx) => (
+                    <li key={idx} className="flex items-start gap-2">
+                      <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                      <span className="text-sm">{feature}</span>
+                    </li>
+                  ))}
+                </ul>
               </CardContent>
+              
+              <CardFooter>
+                <Button className="w-full" asChild>
+                  <Link to="/auth?role=fan">Créer mon compte gratuit</Link>
+                </Button>
+              </CardFooter>
             </Card>
+          </div>
+
+          {/* Programmes Influenceur */}
+          <div>
+            <h2 className="text-3xl font-bold text-center mb-8">Pour les Influenceurs</h2>
+            <div className="grid lg:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              {/* Influenceur Standard */}
+              <Card className="bg-gradient-to-br from-orange-500/10 to-red-500/10 border-orange-200 dark:border-orange-800">
+                <CardHeader>
+                  <div className="flex items-center justify-between mb-4">
+                    <Badge className="bg-green-500">100% Gratuit</Badge>
+                    <TrendingUp className="h-8 w-8 text-orange-500" />
+                  </div>
+                  <CardTitle className="text-2xl">{influencerStandard.name}</CardTitle>
+                  <p className="text-sm text-muted-foreground font-medium">{influencerStandard.subtitle}</p>
+                  <CardDescription className="text-base">{influencerStandard.description}</CardDescription>
+                  <div className="mt-4">
+                    <span className="text-4xl font-bold">{influencerStandard.price}</span>
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <ul className="space-y-3">
+                    {influencerStandard.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                
+                <CardFooter>
+                  <Button size="lg" className="w-full" asChild>
+                    <Link to="/inscription-influenceur">Devenir Influenceur</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+
+              {/* Influenceur Premium */}
+              <Card className="relative border-2 border-primary/50">
+                {influencerPremium.badge && (
+                  <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
+                    <Badge variant="secondary">{influencerPremium.badge}</Badge>
+                  </div>
+                )}
+                
+                <CardHeader>
+                  <div className="flex justify-center mb-4">
+                    <Gem className="h-12 w-12 text-primary" />
+                  </div>
+                  <CardTitle className="text-2xl text-center">{influencerPremium.name}</CardTitle>
+                  <CardDescription className="text-center">{influencerPremium.description}</CardDescription>
+                  <div className="mt-4 text-center">
+                    <span className="text-4xl font-bold">{influencerPremium.price}€</span>
+                    <span className="text-muted-foreground">{influencerPremium.period}</span>
+                  </div>
+                </CardHeader>
+                
+                <CardContent>
+                  <ul className="space-y-3">
+                    {influencerPremium.features.map((feature, idx) => (
+                      <li key={idx} className="flex items-start gap-2">
+                        <Check className="h-5 w-5 text-green-500 shrink-0 mt-0.5" />
+                        <span className="text-sm">{feature}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </CardContent>
+                
+                <CardFooter>
+                  <Button className="w-full" variant="outline" asChild>
+                    <Link to="/auth?plan=influencer-premium">Passer Premium</Link>
+                  </Button>
+                </CardFooter>
+              </Card>
+            </div>
           </div>
         </div>
       </section>
+
 
       {/* FAQ Section */}
       <section className="py-16 px-6">
@@ -283,7 +375,7 @@ export default function Tarifs() {
           </p>
           <Button size="lg" asChild className="text-lg px-8 py-6">
             <Link to="/auth">
-              Commencer {trialDays || 14} jours gratuits
+              Commencer {trialDays || 30} jours gratuits
             </Link>
           </Button>
         </div>
