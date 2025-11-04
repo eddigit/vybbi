@@ -134,6 +134,7 @@ export function TopNav() {
     { title: "Web TV", url: "/webtv" },
     { title: "Token VYBBI", url: "/token" },
     { title: "Tarifs", url: "/tarifs" },
+    { title: "Tarifs par Profil", url: "/tarification-specifique" },
     { title: "Nos Partenaires", url: "/partners" },
     { title: "Nos Lieux", url: "/lieux" },
     { title: "À propos", url: "/a-propos" },

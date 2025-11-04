@@ -74,6 +74,7 @@ export function MobileBurgerMenu() {
     { title: "Web TV", url: "/webtv", icon: Radio },
     { title: "Token VYBBI", url: "/token", icon: Coins },
     { title: "Tarifs", url: "/tarifs", icon: Tag },
+    { title: "Tarifs par Profil", url: "/tarification-specifique", icon: Users },
     { title: "Nos Partenaires", url: "/partners", icon: Users },
     { title: "Nos Lieux", url: "/lieux", icon: MapPin },
     { title: "À propos", url: "/a-propos", icon: Star },

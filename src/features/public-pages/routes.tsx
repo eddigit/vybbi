@@ -11,6 +11,7 @@ const Partenariats = lazy(() => import('@/pages/Partenariats'));
 const Parrainage = lazy(() => import('@/pages/Parrainage'));
 const Fonctionnalites = lazy(() => import('@/pages/Fonctionnalites'));
 const Tarifs = lazy(() => import('@/pages/Tarifs'));
+const TarificationSpecifique = lazy(() => import('@/pages/TarificationSpecifique'));
 const CentreAide = lazy(() => import('@/pages/CentreAide'));
 const Contact = lazy(() => import('@/pages/Contact'));
 const Confidentialite = lazy(() => import('@/pages/Confidentialite'));
@@ -33,6 +34,7 @@ export const publicRoutes: RouteObject[] = [
   { path: '/parrainage', element: <Parrainage /> },
   { path: '/fonctionnalites', element: <Fonctionnalites /> },
   { path: '/tarifs', element: <Tarifs /> },
+  { path: '/tarification-specifique', element: <TarificationSpecifique /> },
   { path: '/centre-aide', element: <CentreAide /> },
   { path: '/contact', element: <Contact /> },
   { path: '/confidentialite', element: <Confidentialite /> },
