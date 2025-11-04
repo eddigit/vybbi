@@ -11,6 +11,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { useAuth } from '@/hooks/useAuth';
 import { getProfileUrl } from '@/hooks/useProfileResolver';
+import { PageContainer } from "@/components/layout/PageContainer";
+import { SectionContainer } from "@/components/layout/SectionContainer";
+import { StandardCard } from "@/components/ui/standard-card";
+import { LAYOUT_CONFIG } from "@/lib/layoutConfig";
+import { cn } from "@/lib/utils";
 
 export default function Profiles() {
   const { user } = useAuth();
@@ -150,11 +155,12 @@ export default function Profiles() {
   }
 
   return (
-    <div className="container mx-auto p-6 py-8">
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold mb-2">Directory</h1>
-        <p className="text-muted-foreground">Discover artists, agents, and venues in the music industry</p>
-      </div>
+    <PageContainer width="default">
+      <SectionContainer spacing="content">
+        <div className="mb-8">
+          <h1 className="text-3xl font-bold mb-2 line-clamp-2">Directory</h1>
+          <p className="text-muted-foreground line-clamp-2">Discover artists, agents, and venues in the music industry</p>
+        </div>
 
       <div className="flex flex-col sm:flex-row gap-4 mb-8">
         <div className="flex-1">
@@ -191,11 +197,10 @@ export default function Profiles() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredProfiles.map((profile) => (
-          <Card key={profile.id} className="hover:shadow-lg transition-shadow cursor-pointer">
-            <CardHeader className="pb-3">
-              <div className="flex items-center gap-3">
+        <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3", LAYOUT_CONFIG.spacing.grid)}>
+          {filteredProfiles.map((profile) => (
+            <StandardCard key={profile.id} hover className="cursor-pointer">
+              <div className="flex items-center gap-3 mb-4">
                 <Avatar className="w-12 h-12">
                   <AvatarImage src={profile.avatar_url || undefined} />
                   <AvatarFallback>
@@ -203,7 +208,7 @@ export default function Profiles() {
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex-1 min-w-0">
-                  <CardTitle className="text-lg truncate">{profile.display_name}</CardTitle>
+                  <h3 className="text-lg font-semibold truncate">{profile.display_name}</h3>
                   <div className="flex items-center gap-2 mt-1">
                      <Badge variant="outline" className={getProfileColor(profile.profile_type)}>
                        {getProfileIcon(profile.profile_type)}
@@ -222,26 +227,24 @@ export default function Profiles() {
                   </div>
                 </div>
               </div>
-            </CardHeader>
-            
-            <CardContent>
+              
               {profile.bio && (
-                <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                <p className="text-sm text-muted-foreground mb-3 line-clamp-3">
                   {profile.bio}
                 </p>
               )}
               
               {profile.location && (
                 <div className="flex items-center gap-1 text-sm text-muted-foreground mb-2">
-                  <MapPin className="w-3 h-3" />
-                  <span>{profile.location}</span>
+                  <MapPin className="w-3 h-3 flex-shrink-0" />
+                  <span className="truncate">{profile.location}</span>
                 </div>
               )}
               
               {profile.genres && profile.genres.length > 0 && (
                 <div className="flex flex-wrap gap-1 mb-3">
                   {profile.genres.slice(0, 3).map((genre) => (
-                    <Badge key={genre} variant="secondary" className="text-xs">
+                    <Badge key={genre} variant="secondary" className="text-xs truncate max-w-[80px]">
                       {genre}
                     </Badge>
                   ))}
@@ -254,7 +257,7 @@ export default function Profiles() {
               )}
               
               {profile.experience && (
-                <p className="text-xs text-muted-foreground mb-3">
+                <p className="text-xs text-muted-foreground mb-3 line-clamp-2">
                   {profile.experience}
                 </p>
               )}
@@ -285,12 +288,11 @@ export default function Profiles() {
                           Message
                         </Link>
                       </Button>
-                    )}
-                  </>
-                )}
-              </div>
-            </CardContent>
-          </Card>
+                  )}
+                </>
+              )}
+            </div>
+          </StandardCard>
         ))}
       </div>
       
@@ -299,6 +301,7 @@ export default function Profiles() {
           <p className="text-muted-foreground">Aucun profil ne correspond à vos critères.</p>
         </div>
       )}
-    </div>
-  );
+    </SectionContainer>
+  </PageContainer>
+);
 }

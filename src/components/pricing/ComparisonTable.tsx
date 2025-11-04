@@ -164,21 +164,21 @@ export function ComparisonTable({ profileType }: ComparisonTableProps) {
         <table className="w-full">
           <thead className="border-b border-border/50">
             <tr className="bg-muted/30">
-              <th className="text-left p-4 text-sm font-semibold">Fonctionnalité</th>
-              {profileType === "artist" && <th className="text-center p-4 text-sm font-semibold">Gratuit</th>}
-              <th className="text-center p-4 text-sm font-semibold">Solo</th>
-              <th className="text-center p-4 text-sm font-semibold">Pro ⭐</th>
-              <th className="text-center p-4 text-sm font-semibold">Elite</th>
+              <th className="text-left p-4 text-sm font-semibold min-w-[200px]">Fonctionnalité</th>
+              {profileType === "artist" && <th className="text-center p-4 text-sm font-semibold min-w-[100px]">Gratuit</th>}
+              <th className="text-center p-4 text-sm font-semibold min-w-[100px]">Solo</th>
+              <th className="text-center p-4 text-sm font-semibold min-w-[100px]">Pro ⭐</th>
+              <th className="text-center p-4 text-sm font-semibold min-w-[100px]">Elite</th>
             </tr>
           </thead>
           <tbody>
             {features.map((feature, idx) => (
               <tr key={idx} className="border-b border-border/30 hover:bg-muted/20 transition-colors">
-                <td className="p-4 text-sm">{feature.name}</td>
-                {profileType === "artist" && <td className="text-center p-4">{renderCell(feature.freemium)}</td>}
-                <td className="text-center p-4">{renderCell(feature.solo)}</td>
-                <td className="text-center p-4 bg-primary/5">{renderCell(feature.pro)}</td>
-                <td className="text-center p-4">{renderCell(feature.elite)}</td>
+                <td className="p-4 text-sm line-clamp-2">{feature.name}</td>
+                {profileType === "artist" && <td className="text-center p-4 min-w-[100px]">{renderCell(feature.freemium)}</td>}
+                <td className="text-center p-4 min-w-[100px]">{renderCell(feature.solo)}</td>
+                <td className="text-center p-4 bg-primary/5 min-w-[100px]">{renderCell(feature.pro)}</td>
+                <td className="text-center p-4 min-w-[100px]">{renderCell(feature.elite)}</td>
               </tr>
             ))}
           </tbody>

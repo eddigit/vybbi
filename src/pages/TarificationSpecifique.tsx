@@ -2,6 +2,9 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Badge } from "@/components/ui/badge";
+import { PageContainer } from "@/components/layout/PageContainer";
+import { SectionContainer } from "@/components/layout/SectionContainer";
+import { StandardCard } from "@/components/ui/standard-card";
 import { 
   Check, 
   Sparkles, 
@@ -36,14 +39,15 @@ export default function TarificationSpecifique() {
   const { trialDays } = useTrialConfig();
 
   return (
-    <div className="min-h-screen">
+    <>
       <SEOHead
         title="Tarification par Profil - Vybbi"
         description="Découvrez nos plans tarifaires adaptés à chaque profil : Artistes, Agents & Managers, Lieux & Événements. Du Freemium au Elite, trouvez l'offre qui propulse votre carrière musicale."
         keywords="tarifs vybbi, abonnement artiste, plan agent musical, prix booking, freemium musique, smart contracts, blockchain musique"
       />
 
-      <div className="container mx-auto px-4 py-12 space-y-16">
+      <PageContainer width="default">
+        <SectionContainer spacing="section">
         {/* Hero Section */}
         <section className="text-center space-y-6 max-w-4xl mx-auto">
           <Badge variant="secondary" className="mb-4">
@@ -214,7 +218,8 @@ export default function TarificationSpecifique() {
             </Button>
           </div>
         </section>
-      </div>
-    </div>
+      </SectionContainer>
+    </PageContainer>
+    </>
   );
 }

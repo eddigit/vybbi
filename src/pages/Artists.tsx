@@ -9,6 +9,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { Profile } from '@/lib/types';
 import { getProfileUrl } from '@/hooks/useProfileResolver';
 import FeaturedArtistsStrip from '@/components/FeaturedArtistsStrip';
+import { PageContainer } from "@/components/layout/PageContainer";
+import { SectionContainer } from "@/components/layout/SectionContainer";
+import { StandardCard } from "@/components/ui/standard-card";
+import { LAYOUT_CONFIG } from "@/lib/layoutConfig";
+import { cn } from "@/lib/utils";
 
 
 export default function Artists() {
@@ -55,89 +60,92 @@ export default function Artists() {
   }
 
   return (
-    <div>
+    <>
       <FeaturedArtistsStrip />
       
-      <div className="container mx-auto p-6">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">Nos Artistes</h1>
-          <p className="text-muted-foreground mb-6">
-            Découvrez les artistes talentueux, DJs, musiciens et performers
-          </p>
-          
-          <div className="relative max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
-          <Input
-            placeholder="Search artists, genres, or locations..."
-            value={searchTerm}
-            onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10"
-          />
-        </div>
-      </div>
+      <PageContainer width="default">
+        <SectionContainer spacing="content">
+          <div className="mb-8">
+            <h1 className="text-3xl font-bold mb-4 line-clamp-2">Nos Artistes</h1>
+            <p className="text-muted-foreground mb-6 line-clamp-3">
+              Découvrez les artistes talentueux, DJs, musiciens et performers
+            </p>
+            
+            <div className="relative max-w-md">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                placeholder="Search artists, genres, or locations..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="pl-10"
+              />
+            </div>
+          </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        {filteredArtists.map((artist) => (
-          <Link key={artist.id} to={getProfileUrl(artist)}>
-            <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 bg-card/95 backdrop-blur-sm border border-border/50">
-              <CardContent className="p-6">
-                <div className="flex flex-col items-center text-center">
-                  <Avatar className="h-20 w-20 mb-4 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
-                    <AvatarImage src={artist.avatar_url || ''} />
-                    <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-semibold text-lg">
-                      {artist.display_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
-                    </AvatarFallback>
-                  </Avatar>
-                  
-                  <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors">
-                    {artist.display_name}
-                  </h3>
-                  
-                  {artist.location && (
-                    <div className="flex items-center text-muted-foreground text-sm mb-3">
-                      <MapPin className="h-3 w-3 mr-1" />
-                      {artist.location}
-                    </div>
-                  )}
-                  
-                  {artist.experience && (
-                    <p className="text-sm text-muted-foreground mb-3">
-                      {artist.experience}
-                    </p>
-                  )}
-                  
-                  {artist.genres && artist.genres.length > 0 && (
-                    <div className="flex flex-wrap gap-1 justify-center">
-                      {artist.genres.slice(0, 3).map((genre) => (
-                        <Badge key={genre} variant="secondary" className="text-xs">
-                          {genre}
-                        </Badge>
-                      ))}
-                      {artist.genres.length > 3 && (
-                        <Badge variant="outline" className="text-xs">
-                          +{artist.genres.length - 3}
-                        </Badge>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
-          </Link>
-        ))}
-      </div>
+          <div className={cn("grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4", LAYOUT_CONFIG.spacing.grid)}>
+            {filteredArtists.map((artist) => (
+              <Link key={artist.id} to={getProfileUrl(artist)}>
+                <StandardCard 
+                  padding="default" 
+                  hover
+                  className="h-full"
+                >
+                  <div className="flex flex-col items-center text-center">
+                    <Avatar className="h-20 w-20 mb-4 ring-2 ring-primary/20 group-hover:ring-primary/40 transition-all">
+                      <AvatarImage src={artist.avatar_url || ''} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary/20 to-primary/5 text-primary font-semibold text-lg">
+                        {artist.display_name.split(' ').map(n => n[0]).join('').slice(0, 2)}
+                      </AvatarFallback>
+                    </Avatar>
+                    
+                    <h3 className="font-semibold text-lg mb-2 group-hover:text-primary transition-colors line-clamp-2">
+                      {artist.display_name}
+                    </h3>
+                    
+                    {artist.location && (
+                      <div className="flex items-center text-muted-foreground text-sm mb-3">
+                        <MapPin className="h-3 w-3 mr-1" />
+                        <span className="truncate">{artist.location}</span>
+                      </div>
+                    )}
+                    
+                    {artist.experience && (
+                      <p className="text-sm text-muted-foreground mb-3 line-clamp-2">
+                        {artist.experience}
+                      </p>
+                    )}
+                    
+                    {artist.genres && artist.genres.length > 0 && (
+                      <div className="flex flex-wrap gap-1 justify-center">
+                        {artist.genres.slice(0, 3).map((genre) => (
+                          <Badge key={genre} variant="secondary" className="text-xs truncate max-w-[80px]">
+                            {genre}
+                          </Badge>
+                        ))}
+                        {artist.genres.length > 3 && (
+                          <Badge variant="outline" className="text-xs">
+                            +{artist.genres.length - 3}
+                          </Badge>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </StandardCard>
+              </Link>
+            ))}
+          </div>
 
-      {filteredArtists.length === 0 && (
-        <div className="text-center py-12">
-          <Music className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
-          <h3 className="text-lg font-semibold mb-2">No artists found</h3>
-          <p className="text-muted-foreground">
-            Try adjusting your search terms or browse all artists
-          </p>
-        </div>
-        )}
-      </div>
-      
-    </div>
+          {filteredArtists.length === 0 && (
+            <div className="text-center py-12">
+              <Music className="h-12 w-12 text-muted-foreground mx-auto mb-4" />
+              <h3 className="text-lg font-semibold mb-2">No artists found</h3>
+              <p className="text-muted-foreground line-clamp-2">
+                Try adjusting your search terms or browse all artists
+              </p>
+            </div>
+          )}
+        </SectionContainer>
+      </PageContainer>
+    </>
   );
 }
