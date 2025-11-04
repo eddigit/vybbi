@@ -167,7 +167,7 @@ export type Database = {
           created_at: string
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           page_url: string | null
           referrer: string | null
           user_agent: string | null
@@ -179,7 +179,7 @@ export type Database = {
           created_at?: string
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           page_url?: string | null
           referrer?: string | null
           user_agent?: string | null
@@ -191,7 +191,7 @@ export type Database = {
           created_at?: string
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           page_url?: string | null
           referrer?: string | null
           user_agent?: string | null
@@ -547,7 +547,7 @@ export type Database = {
           session_id: string
           user_agent: string | null
           visited_at: string
-          visitor_ip: unknown | null
+          visitor_ip: unknown
         }
         Insert: {
           city?: string | null
@@ -559,7 +559,7 @@ export type Database = {
           session_id?: string
           user_agent?: string | null
           visited_at?: string
-          visitor_ip?: unknown | null
+          visitor_ip?: unknown
         }
         Update: {
           city?: string | null
@@ -571,7 +571,7 @@ export type Database = {
           session_id?: string
           user_agent?: string | null
           visited_at?: string
-          visitor_ip?: unknown | null
+          visitor_ip?: unknown
         }
         Relationships: [
           {
@@ -1930,7 +1930,7 @@ export type Database = {
           email: string
           failure_reason: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           success: boolean | null
           user_agent: string | null
         }
@@ -1940,7 +1940,7 @@ export type Database = {
           email: string
           failure_reason?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           success?: boolean | null
           user_agent?: string | null
         }
@@ -1950,7 +1950,7 @@ export type Database = {
           email?: string
           failure_reason?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           success?: boolean | null
           user_agent?: string | null
         }
@@ -2240,7 +2240,7 @@ export type Database = {
         Row: {
           duration_played: number | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           music_release_id: string
           played_at: string
           source: string | null
@@ -2250,7 +2250,7 @@ export type Database = {
         Insert: {
           duration_played?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           music_release_id: string
           played_at?: string
           source?: string | null
@@ -2260,7 +2260,7 @@ export type Database = {
         Update: {
           duration_played?: number | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           music_release_id?: string
           played_at?: string
           source?: string | null
@@ -2605,6 +2605,77 @@ export type Database = {
           },
         ]
       }
+      profile_boosts: {
+        Row: {
+          boost_priority: number
+          boost_type: string
+          created_at: string | null
+          days_per_month: number | null
+          expires_at: string | null
+          id: string
+          is_active: boolean | null
+          profile_id: string
+          started_at: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          boost_priority?: number
+          boost_type: string
+          created_at?: string | null
+          days_per_month?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          profile_id: string
+          started_at?: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          boost_priority?: number
+          boost_type?: string
+          created_at?: string | null
+          days_per_month?: number | null
+          expires_at?: string | null
+          id?: string
+          is_active?: boolean | null
+          profile_id?: string
+          started_at?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "profile_boosts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_boosts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_boosts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profile_boosts_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profile_views: {
         Row: {
           created_at: string
@@ -2729,9 +2800,14 @@ export type Database = {
           slug: string | null
           soundcloud_url: string | null
           spotify_url: string | null
+          subscription_expires_at: string | null
+          subscription_started_at: string | null
+          subscription_status: string | null
+          subscription_tier: string | null
           talents: string[] | null
           temp_profile_notes: string | null
           tiktok_url: string | null
+          trial_ends_at: string | null
           updated_at: string
           user_id: string
           venue_capacity: number | null
@@ -2772,9 +2848,14 @@ export type Database = {
           slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
+          subscription_expires_at?: string | null
+          subscription_started_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
           talents?: string[] | null
           temp_profile_notes?: string | null
           tiktok_url?: string | null
+          trial_ends_at?: string | null
           updated_at?: string
           user_id: string
           venue_capacity?: number | null
@@ -2815,9 +2896,14 @@ export type Database = {
           slug?: string | null
           soundcloud_url?: string | null
           spotify_url?: string | null
+          subscription_expires_at?: string | null
+          subscription_started_at?: string | null
+          subscription_status?: string | null
+          subscription_tier?: string | null
           talents?: string[] | null
           temp_profile_notes?: string | null
           tiktok_url?: string | null
+          trial_ends_at?: string | null
           updated_at?: string
           user_id?: string
           venue_capacity?: number | null
@@ -2913,7 +2999,7 @@ export type Database = {
           event_data: Json | null
           event_type: string
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           occurred_at: string | null
           prospect_id: string | null
           source: string | null
@@ -2923,7 +3009,7 @@ export type Database = {
           event_data?: Json | null
           event_type: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           occurred_at?: string | null
           prospect_id?: string | null
           source?: string | null
@@ -2933,7 +3019,7 @@ export type Database = {
           event_data?: Json | null
           event_type?: string
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           occurred_at?: string | null
           prospect_id?: string | null
           source?: string | null
@@ -3978,7 +4064,7 @@ export type Database = {
           action: string
           created_at: string | null
           id: string
-          ip_address: unknown | null
+          ip_address: unknown
           metadata: Json | null
           record_id: string | null
           table_name: string
@@ -3989,7 +4075,7 @@ export type Database = {
           action: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           record_id?: string | null
           table_name: string
@@ -4000,7 +4086,7 @@ export type Database = {
           action?: string
           created_at?: string | null
           id?: string
-          ip_address?: unknown | null
+          ip_address?: unknown
           metadata?: Json | null
           record_id?: string | null
           table_name?: string
@@ -4261,6 +4347,83 @@ export type Database = {
           user_id?: string
         }
         Relationships: []
+      }
+      subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean | null
+          cancelled_at: string | null
+          created_at: string | null
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          profile_id: string
+          status: string
+          stripe_customer_id: string | null
+          stripe_subscription_id: string | null
+          tier: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean | null
+          cancelled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          profile_id: string
+          status: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean | null
+          cancelled_at?: string | null
+          created_at?: string | null
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          profile_id?: string
+          status?: string
+          stripe_customer_id?: string | null
+          stripe_subscription_id?: string | null
+          tier?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "subscriptions_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       system_config: {
         Row: {
@@ -4622,6 +4785,71 @@ export type Database = {
           },
           {
             foreignKeyName: "user_presence_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_public_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      user_quotas: {
+        Row: {
+          created_at: string | null
+          id: string
+          profile_id: string
+          quota_limit: number
+          quota_type: string
+          quota_used: number
+          reset_at: string
+          updated_at: string | null
+          user_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          id?: string
+          profile_id: string
+          quota_limit?: number
+          quota_type: string
+          quota_used?: number
+          reset_at: string
+          updated_at?: string | null
+          user_id: string
+        }
+        Update: {
+          created_at?: string | null
+          id?: string
+          profile_id?: string
+          quota_limit?: number
+          quota_type?: string
+          quota_used?: number
+          reset_at?: string
+          updated_at?: string | null
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "user_quotas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_quotas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "profiles_public_view"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_quotas_profile_id_fkey"
+            columns: ["profile_id"]
+            isOneToOne: false
+            referencedRelation: "safe_profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "user_quotas_profile_id_fkey"
             columns: ["profile_id"]
             isOneToOne: false
             referencedRelation: "safe_public_profiles"
@@ -5350,6 +5578,10 @@ export type Database = {
       }
     }
     Functions: {
+      activate_tier_boost: {
+        Args: { p_profile_id: string }
+        Returns: undefined
+      }
       agent_can_access_prospect: {
         Args: { prospect_id: string }
         Returns: boolean
@@ -5395,7 +5627,7 @@ export type Database = {
         Returns: boolean
       }
       calculate_monthly_recurring_commissions: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: undefined
       }
       calculate_profile_completion: {
@@ -5406,42 +5638,22 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: boolean
       }
-      check_profile_security_status: {
-        Args: Record<PropertyKey, never>
+      check_profile_security_status: { Args: never; Returns: Json }
+      check_quota: {
+        Args: { p_quota_type: string; p_user_id: string }
         Returns: Json
       }
-      check_security_integrity: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      check_security_integrity: { Args: never; Returns: Json }
       check_slug_availability: {
         Args: { desired_slug: string; profile_id_to_exclude?: string }
         Returns: boolean
       }
-      cleanup_expired_invitations: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_expired_task_locks: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_expired_temp_credentials: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_old_login_attempts: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_old_notifications: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      cleanup_security_logs: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
+      cleanup_expired_invitations: { Args: never; Returns: number }
+      cleanup_expired_task_locks: { Args: never; Returns: number }
+      cleanup_expired_temp_credentials: { Args: never; Returns: number }
+      cleanup_old_login_attempts: { Args: never; Returns: number }
+      cleanup_old_notifications: { Args: never; Returns: number }
+      cleanup_security_logs: { Args: never; Returns: number }
       complete_task_processing: {
         Args: { error_message?: string; new_status: string; task_id: string }
         Returns: boolean
@@ -5473,22 +5685,10 @@ export type Database = {
         }
         Returns: string
       }
-      generate_affiliate_code: {
-        Args: { base_name?: string }
-        Returns: string
-      }
-      generate_security_report: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      generate_slug: {
-        Args: { input_text: string }
-        Returns: string
-      }
-      get_admin_emails: {
-        Args: Record<PropertyKey, never>
-        Returns: string[]
-      }
+      generate_affiliate_code: { Args: { base_name?: string }; Returns: string }
+      generate_security_report: { Args: never; Returns: Json }
+      generate_slug: { Args: { input_text: string }; Returns: string }
+      get_admin_emails: { Args: never; Returns: string[] }
       get_artist_radio_stats: {
         Args: { artist_profile_id: string }
         Returns: {
@@ -5499,7 +5699,7 @@ export type Database = {
         }[]
       }
       get_conversations_with_details: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           conversation_id: string
           conversation_title: string
@@ -5519,7 +5719,7 @@ export type Database = {
         }[]
       }
       get_conversations_with_peers: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           conversation_id: string
           conversation_title: string
@@ -5592,10 +5792,7 @@ export type Database = {
           user_id: string
         }[]
       }
-      get_profile_stats: {
-        Args: { profile_id: string }
-        Returns: Json
-      }
+      get_profile_stats: { Args: { profile_id: string }; Returns: Json }
       get_profile_view_stats: {
         Args: { p_profile_id: string }
         Returns: {
@@ -5608,10 +5805,7 @@ export type Database = {
           views_this_week: number
         }[]
       }
-      get_profile_with_privacy: {
-        Args: { profile_id: string }
-        Returns: Json
-      }
+      get_profile_with_privacy: { Args: { profile_id: string }; Returns: Json }
       get_public_profile_data: {
         Args: { profile_identifier: string }
         Returns: {
@@ -5648,7 +5842,7 @@ export type Database = {
         }[]
       }
       get_radio_playlist: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           artist_avatar: string
           artist_name: string
@@ -5667,10 +5861,7 @@ export type Database = {
           youtube_url: string
         }[]
       }
-      get_safe_profile_columns: {
-        Args: Record<PropertyKey, never>
-        Returns: string[]
-      }
+      get_safe_profile_columns: { Args: never; Returns: string[] }
       get_safe_profile_data: {
         Args: { profile_identifier: string }
         Returns: {
@@ -5741,43 +5932,59 @@ export type Database = {
           youtube_url: string
         }[]
       }
-      get_security_status: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
-      get_social_feed: {
-        Args:
-          | {
+      get_security_status: { Args: never; Returns: Json }
+      get_social_feed:
+        | {
+            Args: {
+              feed_type?: string
+              limit_param?: number
+              offset_param?: number
+              user_id_param: string
+            }
+            Returns: {
+              author_avatar_url: string
+              author_display_name: string
+              author_profile_type: string
+              comments_count: number
+              content: string
+              created_at: string
+              id: string
+              likes_count: number
+              media_attachments: Json
+              post_type: string
+              profile_id: string
+              related_id: string
+              user_has_liked: boolean
+              user_id: string
+              visibility: string
+            }[]
+          }
+        | {
+            Args: {
               content_filter?: string
               feed_type?: string
               limit_param?: number
               offset_param?: number
               user_id_param: string
             }
-          | {
-              feed_type?: string
-              limit_param?: number
-              offset_param?: number
-              user_id_param: string
-            }
-        Returns: {
-          author_avatar_url: string
-          author_display_name: string
-          author_profile_type: string
-          comments_count: number
-          content: string
-          created_at: string
-          id: string
-          likes_count: number
-          media_attachments: Json
-          post_type: string
-          profile_id: string
-          related_id: string
-          user_has_liked: boolean
-          user_id: string
-          visibility: string
-        }[]
-      }
+            Returns: {
+              author_avatar_url: string
+              author_display_name: string
+              author_profile_type: string
+              comments_count: number
+              content: string
+              created_at: string
+              id: string
+              likes_count: number
+              media_attachments: Json
+              post_type: string
+              profile_id: string
+              related_id: string
+              user_has_liked: boolean
+              user_id: string
+              visibility: string
+            }[]
+          }
       get_top_artists: {
         Args: { genre_filter?: string; limit_count?: number }
         Returns: {
@@ -5825,14 +6032,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      increment_quota: {
+        Args: { p_quota_type: string; p_user_id: string }
+        Returns: boolean
+      }
+      initialize_user_quotas: {
+        Args: { p_profile_id: string; p_tier: string; p_user_id: string }
+        Returns: undefined
+      }
       is_community_member: {
         Args: { community_id_param: string; user_id_param: string }
         Returns: boolean
       }
-      is_user_blocked: {
-        Args: { p_email: string }
-        Returns: boolean
-      }
+      is_profile_boosted: { Args: { p_profile_id: string }; Returns: boolean }
+      is_user_blocked: { Args: { p_email: string }; Returns: boolean }
       lock_and_process_tasks: {
         Args: { max_tasks?: number }
         Returns: {
@@ -5933,18 +6146,9 @@ export type Database = {
           slug: string
         }[]
       }
-      security_critical_fixes_status: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      security_phase1_status: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      security_status_phase1: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      security_critical_fixes_status: { Args: never; Returns: string }
+      security_phase1_status: { Args: never; Returns: string }
+      security_status_phase1: { Args: never; Returns: string }
       send_admin_broadcast: {
         Args: {
           content?: string
@@ -5987,10 +6191,7 @@ export type Database = {
         Args: { target_user_id: string }
         Returns: string
       }
-      test_rls_security: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      test_rls_security: { Args: never; Returns: Json }
       track_affiliate_conversion: {
         Args: {
           p_conversion_type: string
@@ -6044,10 +6245,7 @@ export type Database = {
         }
         Returns: string
       }
-      trigger_trial_offer_update: {
-        Args: Record<PropertyKey, never>
-        Returns: Json
-      }
+      trigger_trial_offer_update: { Args: never; Returns: Json }
       user_can_access_conversation: {
         Args: { conv_id: string }
         Returns: boolean
@@ -6056,10 +6254,7 @@ export type Database = {
         Args: { profile_id_param: string }
         Returns: boolean
       }
-      validate_password_strength: {
-        Args: { password: string }
-        Returns: Json
-      }
+      validate_password_strength: { Args: { password: string }; Returns: Json }
     }
     Enums: {
       annonce_status: "draft" | "published" | "closed" | "cancelled"

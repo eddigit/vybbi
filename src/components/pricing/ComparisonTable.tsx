@@ -1,6 +1,10 @@
-import { Check, X } from "lucide-react";
+import { Check, X, Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
+import { useSubscription, SubscriptionTier } from "@/hooks/useSubscription";
+import { useAuth } from "@/hooks/useAuth";
+import { toast } from "sonner";
+import { useState } from "react";
 
 interface Feature {
   name: string;
@@ -12,6 +16,86 @@ interface Feature {
 
 interface ComparisonTableProps {
   profileType: "artist" | "agent" | "venue";
+}
+
+interface SubscriptionButtonProps {
+  tier: SubscriptionTier;
+  profileType: "artist" | "agent" | "venue";
+  variant?: "default" | "outline" | "secondary";
+  label: string;
+}
+
+function SubscriptionButton({ tier, profileType, variant = "secondary", label }: SubscriptionButtonProps) {
+  const { user } = useAuth();
+  const { createCheckoutSession, subscription, loading: subLoading } = useSubscription();
+  const [loading, setLoading] = useState(false);
+
+  const handleSubscribe = async () => {
+    if (!user) {
+      toast.error("Vous devez être connecté pour souscrire à un abonnement", {
+        action: {
+          label: "Se connecter",
+          onClick: () => window.location.href = "/auth",
+        },
+      });
+      return;
+    }
+
+    if (tier === 'freemium') {
+      toast.info("Vous utilisez déjà le plan gratuit");
+      return;
+    }
+
+    if (tier === 'elite') {
+      toast.info("Pour l'offre Elite, veuillez nous contacter directement", {
+        action: {
+          label: "Nous contacter",
+          onClick: () => window.location.href = "/contact",
+        },
+      });
+      return;
+    }
+
+    // Vérifier si l'utilisateur a déjà ce plan
+    if (subscription?.tier === tier) {
+      toast.info(`Vous êtes déjà abonné au plan ${tier}`);
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await createCheckoutSession(tier, profileType);
+      toast.success("Redirection vers le paiement...");
+    } catch (error) {
+      console.error("Subscription error:", error);
+      toast.error("Erreur lors de la création de l'abonnement");
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const isCurrentPlan = subscription?.tier === tier;
+
+  return (
+    <Button
+      variant={isCurrentPlan ? "outline" : variant}
+      size="sm"
+      className="w-full"
+      onClick={handleSubscribe}
+      disabled={loading || subLoading || isCurrentPlan}
+    >
+      {loading ? (
+        <>
+          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+          Chargement...
+        </>
+      ) : isCurrentPlan ? (
+        "Plan actuel"
+      ) : (
+        label
+      )}
+    </Button>
+  );
 }
 
 const artistFeatures: Feature[] = [
@@ -116,17 +200,37 @@ export function ComparisonTable({ profileType }: ComparisonTableProps) {
               <td></td>
               {profileType === "artist" && (
                 <td className="text-center p-4">
-                  <Button variant="outline" size="sm" className="w-full">Commencer</Button>
+                  <SubscriptionButton
+                    tier="freemium"
+                    profileType={profileType}
+                    variant="outline"
+                    label="Commencer"
+                  />
                 </td>
               )}
               <td className="text-center p-4">
-                <Button variant="secondary" size="sm" className="w-full">Choisir</Button>
+                <SubscriptionButton
+                  tier="solo"
+                  profileType={profileType}
+                  variant="secondary"
+                  label="Choisir Solo"
+                />
               </td>
               <td className="text-center p-4 bg-primary/5">
-                <Button variant="default" size="sm" className="w-full">Choisir</Button>
+                <SubscriptionButton
+                  tier="pro"
+                  profileType={profileType}
+                  variant="default"
+                  label="Choisir Pro"
+                />
               </td>
               <td className="text-center p-4">
-                <Button variant="secondary" size="sm" className="w-full">Contacter</Button>
+                <SubscriptionButton
+                  tier="elite"
+                  profileType={profileType}
+                  variant="secondary"
+                  label="Contacter"
+                />
               </td>
             </tr>
           </tfoot>
